@@ -1,0 +1,59 @@
+===============================================
+testAddCodeInsideExistingCode_Comprehensive3():
+===============================================
+
+Step 0:
+[--- Main.java, +++ Main.java, @@ -5,1 +5,7 @@, -	, +	private int i;, +, +	public Main(int j) {, +		this.i = j;, +		this.i = j + 3;, +		System.out.println();, +	}]
+
+5   private int i;
+
+	public Main(int j) {
+		this.i = j;
+		this.i = j + 3;
+		System.out.println();
+11	}
+_______________________________________________
+Step 1:
+[--- Main.java, +++ Main.java, @@ -11,0 +11,1 @@, +		System.out.println();]
+
+	private int i;
+
+	public Main(int j) {
+		this.i = j;
+		this.i = j + 3;
+		System.out.println();
+		System.out.println();
+	}
+_______________________________________________
+Step 2:
+[--- Main.java, +++ Main.java, @@ -8,1 +8,1 @@, -		this.i = j;, +		]
+	private int i;
+
+	public Main(int j) {
+		
+		this.i = j + 3;
+		System.out.println();
+		System.out.println();
+	}
+_______________________________________________
+Step 3:
+[--- Main.java, +++ Main.java, @@ -8,1 +8,1 @@, -		, +		this.i = j;]
+	private int i;
+
+	public Main(int j) {
+		this.i = j;
+		this.i = j + 3;
+		System.out.println();
+		System.out.println();
+	}
+_______________________________________________
+Step 4:
+[--- Main.java, +++ Main.java, @@ -11,1 +11,0 @@, -		System.out.println();]
+	private int i;
+
+	public Main(int j) {
+		this.i = j;
+		this.i = j + 3;
+		System.out.println();
+	}
+===============================================

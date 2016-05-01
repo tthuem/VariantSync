@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VariantSync
-Bundle-SymbolicName: de.ovgu.variantsync; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-SymbolicName: de.ovgu.variantsync;singleton:=true
+Bundle-Version: 2.0.0
 Bundle-Activator: de.ovgu.variantsync.VariantSyncPlugin
 Bundle-Vendor: University of Magdeburg
 Require-Bundle: org.eclipse.ui,
@@ -10,9 +10,28 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.5.2",
  org.eclipse.ui.console;bundle-version="3.5.0",
  org.eclipse.ui.views;bundle-version="3.5.1",
- de.ovgu.featureide.core;bundle-version="2.6.1",
- de.ovgu.featureide.ui;bundle-version="2.6.1",
- de.ovgu.featureide.fm.core;bundle-version="2.6.1",
- de.ovgu.featureide.fm.ui;bundle-version="2.6.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.eclipse.jface.text;bundle-version="3.9.2",
+ org.eclipse.ui.editors;bundle-version="3.8.200",
+ org.eclipse.core.expressions;bundle-version="3.4.600",
+ org.eclipse.jdt.core;bundle-version="3.10.2",
+ org.eclipse.ui.ide;bundle-version="3.10.2",
+ de.ovgu.featureide.core;bundle-version="2.7.4",
+ de.ovgu.featureide.fm.core;bundle-version="2.7.4",
+ de.ovgu.featureide.fm.ui;bundle-version="2.7.4",
+ de.ovgu.featureide.ui;bundle-version="2.7.4",
+ org.junit,
+ org.eclipse.e4.ui.di;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: libraries/diffutils-1.2.1.jar,
+ .,
+ libraries/de.ovgu.featureide.fm.core_2.7.3.201503021756.jar,
+ libraries/javaparser-core-2.2.3-SNAPSHOT.jar,
+ libraries/apache-commons-io.jar,
+ libraries/apache-commons-lang3.jar,
+ libraries/commons-cli.jar,
+ libraries/glpk-java.jar,
+ libraries/jastaddj.jar,
+ libraries/JDime.jar,
+ libraries/JJ7.jar,
+ libraries/log4j-1.2.jar

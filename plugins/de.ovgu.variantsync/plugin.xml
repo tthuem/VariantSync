@@ -8,11 +8,18 @@
             id="de.ovgu.variantsync">
       </category>
       <view
-            name="Resource Changes"
-            icon="icons/VariantSyncSupport.png"
             category="de.ovgu.variantsync"
-            class="de.ovgu.variantsync.views.ResourceChangesView"
-            id="de.ovgu.variantsync.views.ResourceChanges">
+            class="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChangesView"
+            icon="icons/VariantSyncSupport.png"
+            id="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChanges"
+            name="Resource Changes">
+      </view> 
+      <view
+            category="de.ovgu.variantsync"
+            class="de.ovgu.variantsync.presentationlayer.view.mergeprocess.FeatureView"
+            icon="icons/VariantSyncSupport.png"
+            id="de.ovgu.variantsync.presentationlayer.view.mergeprocess.featureview"
+            name="Feature View">
       </view>
    </extension>
    <extension
@@ -23,7 +30,7 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
                relationship="right"
-               id="de.ovgu.variantsync.views.ResourceChanges">
+               id="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChanges">
          </view>
       </perspectiveExtension>
    </extension>
@@ -54,16 +61,16 @@
             </separator>
          </menu>
          <action
-               class="de.ovgu.variantsync.actions.RemoveSyncSupportAction"
+               class="de.ovgu.variantsync.presentationlayer.controller.action.RemoveSyncSupportAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.actions.RemoveSyncSupportAction"
+               id="de.ovgu.variantsync.presentationlayer.controller.action.RemoveSyncSupportAction"
                label="Remove VariantSync Support"
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group0">
          </action>
          <action
-               class="de.ovgu.variantsync.actions.ShowChangeViewtAction"
+               class="de.ovgu.variantsync.presentationlayer.controller.action.ShowChangeViewAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.actions.ShowChangeViewtAction"
+               id="de.ovgu.variantsync.presentationlayer.controller.action.ShowChangeViewtAction"
                label="Show Change View"
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group1">
          </action>
@@ -93,9 +100,9 @@
             </separator>
          </menu>
          <action
-               class="de.ovgu.variantsync.actions.AddSyncSupportAction"
+               class="de.ovgu.variantsync.presentationlayer.controller.action.AddSyncSupportAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.actions.AddSyncSupportAction"
+               id="de.ovgu.variantsync.presentationlayer.controller.action.AddSyncSupportAction"
                label="Add VariantSync Support "
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group0">
          </action>
@@ -103,7 +110,7 @@
             <not>
                <objectState
                      name="nature"
-                     value="de.ovgu.variantsync.vsyncSupportProjectNature">
+                     value="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.vsyncSupportProjectNature">
                </objectState>
             </not>
          </visibility>
@@ -115,7 +122,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="de.ovgu.variantsync.VSyncSupportProjectNature">
+               class="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectNature">
          </run>
       </runtime>
    </extension>
@@ -123,8 +130,8 @@
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
-            class="de.ovgu.variantsync.VSyncSupportProjectDecorator"
-            id="de.ovgu.variantsync.VSyncSupportProjectDecorator"
+            class="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectDecorator"
+            id="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectDecorator"
             label="VariantSync Support Project Decorator"
             lightweight="true"
             state="true">
@@ -138,9 +145,599 @@
    <extension
          point="org.eclipse.ui.console.consoleFactories">
       <consoleFactory
-            class="de.ovgu.variantsync.console.ConsoleFactory"
+            class="de.ovgu.variantsync.presentationlayer.view.console.ConsoleFactory"
             icon="icons/VariantSyncSupport.png"
             label="VariantSync">
       </consoleFactory>
+   </extension>
+   
+   <!-- Code to Feature Mapping --> 
+   <extension point="org.eclipse.ui.handlers">
+      <handler class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.CodeMappingHandler"
+               commandId="CodeMappingPopupMenu.commands.mappingCommand">
+      </handler>
+    </extension>
+   <extension point="org.eclipse.ui.commands">
+    <command id="CodeMappingPopupMenu.commands.mapCodeToFeature"
+            name="Map Code to Feature..." />
+	</extension>
+    <extension
+         point="org.eclipse.ui.menus">
+       <menuContribution
+      		locationURI="popup:org.eclipse.ui.popup.any?after=additions"
+            id="CodeMapMenu.contribution1">
+			<menu
+           		id="codeMapMenu"
+           		label="map code to feature..."
+           		icon="icons/VariantSyncSupport.png">
+           		<visibleWhen>
+				    	<iterate ifEmpty="false">
+				        	 <adapt type="org.eclipse.jface.text.ITextSelection" />
+				        </iterate>
+         		</visibleWhen>
+         		<dynamic
+              	class="de.ovgu.variantsync.presentationlayer.view.codemapping.CodeEditorMapping"
+              	id="de.ovgu.variantsync.presentationlayer.view.codemapping.CodeEditorMapping">
+    			</dynamic>
+           	</menu>
+      </menuContribution>  	
+   </extension>
+
+   <!-- Class to Feature Mapping -->   
+   <extension point="org.eclipse.ui.commands">
+      <command
+            categoryId="CodeMappingPopupMenu.commands.category"
+            id="CodeMappingPopupMenu.commands.mappingCommand"
+            name="Map Java-Element to Feature...">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.ClassMappingHandler"
+               commandId="CodeMappingPopupMenu.commands.mappingCommand">
+      </handler>
+    </extension>
+    <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+            <menu
+           		id="classMapMenu"
+           		label="map element to feature..."
+           		icon="icons/VariantSyncSupport.png">
+           		<visibleWhen>
+				  	<with variable="activeMenuSelection">
+				    	<iterate ifEmpty="false">
+				    		<or>
+				        		<adapt type="org.eclipse.core.resources.IResource">
+				            		<test property="org.eclipse.core.resources.name" value="*.java" />
+				           	    </adapt>
+				           	    <adapt type="org.eclipse.jdt.core.IPackageFragment"/>
+				           	    <adapt type="org.eclipse.jdt.core.IMethod"/>
+				            </or>
+				        </iterate>
+				    </with>
+         		</visibleWhen>
+         		<dynamic
+              	class="de.ovgu.variantsync.presentationlayer.view.codemapping.PackageExplorerMapping"
+              	id="de.ovgu.variantsync.presentationlayer.view.codemapping.PackageExplorerMapping">
+    			</dynamic>
+           	</menu>
+      </menuContribution>
+   </extension>
+   
+    <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.ui.IEditorInput"
+            nameFilter="*.*"
+            id="SimplePopupMenu.contribution1">
+         <menu
+               label="remove tagging"
+               path="additions"
+               id="SimplePopupMenu.menu1"
+			   icon="icons/VariantSyncSupport.png">
+         </menu>
+         <action
+               label="remove tagging of whole class"
+               class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.RemoveMappingAction"
+               menubarPath="SimplePopupMenu.menu1/group1"
+               enablesFor="1"
+               id="SimplePopupMenu.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+   
+   <!-- Defines code highlighting marker -->
+	<extension point="org.eclipse.core.resources.markers"
+        id="de.ovgu.pfofe.variantsync.codehighlightmarkerYellow"
+        name="CodeHighlightMarkerYellow">
+        <super type="org.eclipse.core.resources.textmarker"/>
+        <super type="org.eclipse.core.resources.marker"/>
+        <persistent value="true"/>
+        <attribute name="description"/>
+    </extension>
+    
+    <extension point="org.eclipse.core.resources.markers"
+        id="de.ovgu.pfofe.variantsync.codehighlightmarkerGreen"
+        name="CodeHighlightMarkerGreen">
+        <super type="org.eclipse.core.resources.textmarker"/>
+        <super type="org.eclipse.core.resources.marker"/>
+        <persistent value="true"/>
+        <attribute name="description"/>
+    </extension>
+    
+    <extension point="org.eclipse.core.resources.markers"
+        id="de.ovgu.pfofe.variantsync.codehighlightmarkerBlue"
+        name="CodeHighlightMarkerBlue">
+        <super type="org.eclipse.core.resources.textmarker"/>
+        <super type="org.eclipse.core.resources.marker"/>
+        <persistent value="true"/>
+        <attribute name="description"/>
+    </extension>
+    
+    <!-- Annotation specification: define different colors for code highlighting -->
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationYellow"
+     name="CodeHighlightYellow">
+     <specification
+          annotationType="codehighlightannotationYellow"
+          label="YellowAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor1"
+          colorPreferenceValue="255,255,0"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationGreen"
+     name="CodeHighlightGreen">
+     <specification
+          annotationType="codehighlightannotationGreen"
+          label="GreenAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor2"
+          colorPreferenceValue="88,174,10"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationBlue"
+     name="CodeHighlightBlue">
+     <specification
+          annotationType="codehighlightannotationBlue"
+          label="BlueAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor3"
+          colorPreferenceValue="135,206,235"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationBlueBright"
+     name="CodeHighlightBlueBright">
+     <specification
+          annotationType="codehighlightannotationBlueBright"
+          label="BlueBrightAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor4"
+          colorPreferenceValue="151,255,255"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+  
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationPurple"
+     name="CodeHighlightPurple">
+     <specification
+          annotationType="codehighlightannotationPurple"
+          label="PurpleAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor5"
+          colorPreferenceValue="167,76,242"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationPink"
+     name="CodeHighlightPink">
+     <specification
+          annotationType="codehighlightannotationPink"
+          label="PinkAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor6"
+          colorPreferenceValue="205,67,211"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationRed"
+     name="CodeHighlightRed">
+     <specification
+          annotationType="codehighlightannotationRed"
+          label="RedAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor7"
+          colorPreferenceValue="255,140,105"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationOrange"
+     name="CodeHighlightOrange">
+     <specification
+          annotationType="codehighlightannotationOrange"
+          label="OrangeAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor8"
+          colorPreferenceValue="240,170,84"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationGreenBright"
+     name="CodeHighlightGreenBright">
+     <specification
+          annotationType="codehighlightannotationGreenBright"
+          label="GreenBrightAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor9"
+          colorPreferenceValue="70,244,69"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   
+   <!--
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationDefaultContext"
+     name="CodeHighlightDefaultContext">
+     <specification
+          annotationType="codehighlightannotationDefaultContext"
+          label="DefaultContextAnnotation"
+          icon="icons/defaultContext.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor10"
+          colorPreferenceValue="255,255,255"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
+   -->
+      
+   <!-- Links the annotation spec (color) to the marker -->
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationYellow"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerYellow"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationGreen"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerGreen"/>
+   </extension> 
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationBlue"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlue"/>
+   </extension>   
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationBlueBright"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlueBright"/>
+   </extension> 
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationPurple"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerPurple"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationPink"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerPink"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationRed"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerRed"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationOrange"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerOrange"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationGreenBright"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerGreenBright"/>
+   </extension>
+   <!--
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationDefaultContext"
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerDefaultContext"/>
+   </extension>
+   -->
+      
+  <!-- define the marker updater class-->
+  <extension point="org.eclipse.ui.editors.markerUpdaters">
+      <updater
+            id="de.ovgu.pfofe.variantsync.codehighlightmarkerupdater"
+            class=""
+            markerType="de.ovgu.pfofe.variantsync.codehighlightmarker">
+      </updater>
+  </extension>
+  
+  <!-- Popup menu to add a menu to right click of a java file in the text editor--> 
+	<extension point="org.eclipse.ui.popupMenus"> 
+	   	<viewerContribution 
+	      	id="org.eclipse.ui.articles.action.contribution.popup.navigator"
+	   		targetID="#CompilationUnitEditorContext"> 
+	      	<action
+	            class="de.ovgu.variantsync.presentationlayer.view.codemapping.RemoveMarkers"
+	            id="com.ibm.example.filecount.marker"
+	            label="remove selected mapping"
+	            icon="icons/VariantSyncSupport.png"
+	            menubarPath="additions">
+	      	</action> 
+	   	</viewerContribution>
+	</extension>
+	
+	<!-- Popup menu to add a menu to right click of a java file in the package explorer--> 	
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution id="Clarity.objectContribution2"
+	 		objectClass="org.eclipse.jdt.core.IOpenable">
+         	<action
+               label="remove all mappings of element"
+               class="de.ovgu.variantsync.presentationlayer.view.codemapping.RemoveMarkers"
+               menubarPath="additions"
+               icon="icons/VariantSyncSupport.png"
+               id="com.ibm.example.foldercount.marker">
+         	</action>
+		</objectContribution>
+	</extension>
+	
+	<!-- Drop-down menu in toolbar -->
+	<extension point="org.eclipse.ui.commands">
+    	<category id="de.ovgu.variantsync.FeatureDropDownMenu" name="Features">
+    	</category>
+    	<command categoryId="de.ovgu.variantsync.FeatureDropDownMenu" defaultHandler="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection"  
+        	id="de.ovgu.variantsync.FeatureDropDownCommand" name="Drop">
+        	<commandParameter id="de.ovgu.variantsync.FeatureDropDown.msg" name="Message" optional="true">
+        	</commandParameter>
+     	</command>
+        <command
+			categoryId="org.eclipse.ui.category.edit"
+			defaultHandler="de.ovgu.variantsync.presentationlayer.view.context.FeatureExpressionHandler"
+			id="de.ovgu.variantsync.FeatureExpressionHandler"
+			name="Feature Expressions">
+		</command>
+	</extension>
+	<extension point="org.eclipse.ui.commandImages">
+		<image commandId="de.ovgu.variantsync.FeatureDropDownCommand" icon="icons/VariantSyncSupport.png">
+		</image>
+	</extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+        	<toolbar id="de.ovgu.variantsync.toolbar">
+        		<command
+					commandId="de.ovgu.variantsync.FeatureExpressionHandler"
+					icon="icons/featureExpression.png"
+					style="push">
+				</command>
+            	<command commandId="de.ovgu.variantsync.FeatureDropDownCommand" id="de.ovgu.variantsync.toolbar.FeatureDropDownCommand" style="pulldown" 
+            		tooltip="choose a feature context">
+            	</command>
+            	<command
+                   commandId="de.ovgu.variantsync.ActiveFeatureContextCommand"
+                   id="de.ovgu.variantsync.toolbar.ActiveFeatureContextCommand"
+                   tooltip="show active feature expression"
+                   icon="icons/activeContext.png"
+                   label="default context active"
+                   mode="FORCE_TEXT"
+                   style="push">
+             	</command>
+			</toolbar>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+      <handler
+            class="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextActivity"
+            commandId="de.ovgu.variantsync.ActiveFeatureContextCommand">
+      </handler>
+      <handler
+            class="de.ovgu.variantsync.presentationlayer.view.context.FeatureExpressionHandler"
+            commandId="de.ovgu.pfofe.variantsync.FeatureExpressionCommand">xy
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:de.ovgu.variantsync.toolbar.FeatureDropDownCommand">
+        	<dynamic
+              	class="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection"
+              	id="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection">
+    		</dynamic>
+		</menuContribution>
+	</extension>
+
+	<!-- EXAMPLE -->
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+        <type name="annotations.demo.mutable" />
+    </extension>
+
+    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+        <specification
+            annotationType="annotations.demo.mutable"
+            colorPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.color"
+            colorPreferenceValue="224,25,25"
+            contributesToHeader="false"
+            includeOnPreferencePage="true"
+            icon="icons/mutable.gif"
+            label="Mutable collection calls"
+            overviewRulerPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.rulers.overview"
+            overviewRulerPreferenceValue="false"
+            presentationLayer="5"
+            symbolicIcon="info"
+            textPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.text"
+            textPreferenceValue="true"
+            textStylePreferenceKey="scala.tools.eclipse.ui.preferences.mutable.textStylePreference"
+            textStylePreferenceValue="SQUIGGLES"
+            verticalRulerPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.rulers.vertical"
+            verticalRulerPreferenceValue="true">
+        </specification>
+    </extension>
+   
+   <!-- Definition as product -->
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="VariantSync">
+         <property
+               name="windowImages"
+               value="icons/VariantSyncSupport.png,icons/VariantSyncSupport.png,icons/VariantSyncSupport.png">
+         </property>
+         <property
+               name="aboutText"
+               value="%productBlurb">
+         </property>
+         <property
+               name="aboutImage"
+               value="eclipse_lg.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="9c9696">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="2,290,448,10">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,265,320,20">
+         </property>
+         <property
+               name="appName"
+               value="VariantSync">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
    </extension>
 </plugin>

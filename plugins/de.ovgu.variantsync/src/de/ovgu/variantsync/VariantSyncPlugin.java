@@ -37,7 +37,7 @@ import de.ovgu.variantsync.applicationlayer.features.IFeatureOperations;
 import de.ovgu.variantsync.applicationlayer.monitoring.ChangeListener;
 import de.ovgu.variantsync.applicationlayer.monitoring.MonitorNotifier;
 import de.ovgu.variantsync.applicationlayer.synchronization.SynchronizationProvider;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.controller.ControllerHandler;
 import de.ovgu.variantsync.presentationlayer.controller.ControllerTypes;
 import de.ovgu.variantsync.presentationlayer.view.AbstractView;
@@ -65,7 +65,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	private List<IProject> projectList = new ArrayList<IProject>();
 	private Map<IProject, MonitorItemStorage> synchroInfoMap = new HashMap<IProject, MonitorItemStorage>();
 	private ChangeListener resourceModificationListener;
-	private IPersistanceOperations persistenceOp = ModuleFactory
+	private Persistable persistenceOp = ModuleFactory
 			.getPersistanceOperations();
 	private IContextOperations contextOp = ModuleFactory.getContextOperations();
 	private IFeatureOperations featureOp = ModuleFactory.getFeatureOperations();
@@ -255,7 +255,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Prepares resource monitoring in eclipse workspace. Resource monitoring
-	 * means that projects will be watches. If a projects´s resource changes and
+	 * means that projects will be watches. If a projectsï¿½s resource changes and
 	 * change was saved, monitoring will notice changed resource (POST_CHANGE).
 	 * A resource is a file or folder.
 	 * 

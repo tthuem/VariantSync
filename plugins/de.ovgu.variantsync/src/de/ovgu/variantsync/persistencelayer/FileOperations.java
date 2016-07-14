@@ -33,7 +33,7 @@ class FileOperations {
 
 	/**
 	 * Creates file with specific content.
-	 * 
+	 *
 	 * @param lines
 	 *            lines to add
 	 * @param file
@@ -41,8 +41,7 @@ class FileOperations {
 	 * @throws IOException
 	 *             file could not be created
 	 */
-	public void addLinesToFile(List<String> lines, File file)
-			throws FileOperationException {
+	public void addLinesToFile(List<String> lines, File file) throws FileOperationException {
 		if (file.exists()) {
 			file.delete();
 		}
@@ -68,18 +67,16 @@ class FileOperations {
 
 	/**
 	 * Reads TXT-file and adds each line to list of string elements.
-	 * 
+	 *
 	 * @param inputStream
 	 *            input file
 	 * @return list of file content
 	 * @throws IOException
 	 *             file could not be read
 	 */
-	public List<String> readFile(InputStream inputStream)
-			throws FileOperationException {
+	public List<String> readFile(InputStream inputStream) throws FileOperationException {
 		List<String> fileLines = new LinkedList<String>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				inputStream));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String line = "";
 		try {
 			while ((line = reader.readLine()) != null) {
@@ -94,15 +91,14 @@ class FileOperations {
 	/**
 	 * Reads content from file using buffered reader. Adds each line in file to
 	 * List<String>.
-	 * 
+	 *
 	 * @param in
 	 *            buffered Reader for file
 	 * @param charset
 	 * @return list with file content
 	 * @throws FileOperationException
 	 */
-	public List<String> readFile(InputStream in, String charset)
-			throws FileOperationException {
+	public List<String> readFile(InputStream in, String charset) throws FileOperationException {
 		List<String> fileContent = new LinkedList<String>();
 		String line = "";
 		BufferedReader reader = null;
@@ -117,8 +113,7 @@ class FileOperations {
 			try {
 				reader.close();
 			} catch (NullPointerException | IOException e) {
-				LogOperations
-						.logError("BufferedReader could not be closed.", e);
+				LogOperations.logError("BufferedReader could not be closed.", e);
 			}
 		}
 		return fileContent;
@@ -126,7 +121,7 @@ class FileOperations {
 
 	/**
 	 * Creates an IFile-object.
-	 * 
+	 *
 	 * @param file
 	 *            file to create
 	 * @return created IFile object
@@ -144,8 +139,7 @@ class FileOperations {
 		return file;
 	}
 
-	public void writeFile(List<String> lines, File file)
-			throws FileOperationException {
+	public void writeFile(List<String> lines, File file) throws FileOperationException {
 		if (file.exists()) {
 			file.delete();
 		}
@@ -175,11 +169,9 @@ class FileOperations {
 			LogOperations.logError("File states could not be retrieved.", e);
 			return null;
 		}
-		// List<String> currentFilelines = Util.getFileLines(res);
 		List<String> historyFilelines = null;
 		try {
-			historyFilelines = readFile(states[0].getContents(),
-					states[0].getCharset());
+			historyFilelines = readFile(states[0].getContents(), states[0].getCharset());
 		} catch (CoreException | FileOperationException e) {
 			LogOperations.logError("File states could not be read.", e);
 		}

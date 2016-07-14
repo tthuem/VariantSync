@@ -18,7 +18,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationExc
 import de.ovgu.variantsync.applicationlayer.datamodel.monitoring.MonitorSet;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ChangeTypes;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.utilitylayer.log.LogOperations;
 import difflib.Patch;
 
@@ -41,7 +41,7 @@ class DeltaCalculation {
 	private ExternalDeltaCalculation externalDeltaOperations;
 	private IContextOperations contextOperations = ModuleFactory
 			.getContextOperations();
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 
 	public DeltaCalculation() {

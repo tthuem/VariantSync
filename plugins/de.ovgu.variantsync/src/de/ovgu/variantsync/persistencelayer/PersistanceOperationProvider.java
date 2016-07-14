@@ -27,7 +27,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.monitoring.MonitorItemStor
  * @version 1.0
  * @since 17.05.2015
  */
-public class PersistanceOperationProvider implements IPersistanceOperations {
+public class PersistanceOperationProvider implements Persistable {
 
 	private FileOperations fileOperations;
 	private FolderOperations folderOperations;

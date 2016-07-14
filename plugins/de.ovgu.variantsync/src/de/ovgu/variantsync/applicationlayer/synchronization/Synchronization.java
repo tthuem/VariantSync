@@ -18,7 +18,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesF
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
 import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
 import de.ovgu.variantsync.applicationlayer.merging.IMergeOperations;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.utilitylayer.log.LogOperations;
 
 /**
@@ -34,7 +34,7 @@ abstract class Synchronization {
 			.getDeltaOperations();
 	protected IMergeOperations mergeOperations = ModuleFactory
 			.getMergeOperations();
-	protected IPersistanceOperations persistanceOperations = ModuleFactory
+	protected Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 
 	protected abstract void addFile();

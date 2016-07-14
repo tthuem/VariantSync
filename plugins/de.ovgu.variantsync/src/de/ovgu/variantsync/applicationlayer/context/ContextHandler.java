@@ -12,7 +12,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.view.context.MarkerHandler;
 import difflib.Patch;
 
@@ -27,7 +27,7 @@ class ContextHandler {
 
 	private Map<String, Context> contextMap;
 	private static ContextHandler instance;
-	private IPersistanceOperations persistenceOp = ModuleFactory
+	private Persistable persistenceOp = ModuleFactory
 			.getPersistanceOperations();
 	private Context activeContext;
 	private Map<String, List<CodeLine>> mapBaseVersion;

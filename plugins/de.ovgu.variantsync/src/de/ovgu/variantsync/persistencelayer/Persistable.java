@@ -25,11 +25,11 @@ import de.ovgu.variantsync.applicationlayer.datamodel.monitoring.MonitorItemStor
  * @version 1.0
  * @since 17.05.2015
  */
-public interface IPersistanceOperations {
+public interface Persistable {
 
 	/**
 	 * Creates specified folder.
-	 * 
+	 *
 	 * @param folder
 	 *            IFolder object
 	 * @throws FolderOperationException
@@ -39,7 +39,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Deletes specified folder.
-	 * 
+	 *
 	 * @param folder
 	 *            IFolder object
 	 * @throws FolderOperationException
@@ -50,7 +50,7 @@ public interface IPersistanceOperations {
 	/**
 	 * Creates file or folder in admin folder ".variantsync" which maps original
 	 * project structure. Each file contains informations about changes.
-	 * 
+	 *
 	 * @param res
 	 *            resource to add
 	 * @throws FileOperationException
@@ -60,7 +60,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Removes file or folder from admin folder ".variantsync".
-	 * 
+	 *
 	 * @param res
 	 *            resource to remove
 	 * @throws FileOperationException
@@ -70,7 +70,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Creates file with specific content.
-	 * 
+	 *
 	 * @param lines
 	 *            lines to add
 	 * @param file
@@ -83,7 +83,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Reads TXT-file and adds each line to list of string elements.
-	 * 
+	 *
 	 * @param inputStream
 	 *            input file
 	 * @return list of file content
@@ -95,7 +95,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Creates an IFile-object.
-	 * 
+	 *
 	 * @param file
 	 *            file to create
 	 * @return created IFile
@@ -106,7 +106,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Reads a xml file and creates a SynchroInfo object.
-	 * 
+	 *
 	 * @param inputStream
 	 * @return SynchroInfo object
 	 */
@@ -114,7 +114,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Writes SynchroInfo object in xml file.
-	 * 
+	 *
 	 * @param file
 	 *            target file
 	 * @param info
@@ -127,7 +127,7 @@ public interface IPersistanceOperations {
 	/**
 	 * Reads content from file using buffered reader. Adds each line in file to
 	 * List<String>.
-	 * 
+	 *
 	 * @param in
 	 *            buffered Reader for file
 	 * @param charset
@@ -139,7 +139,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Reads context information from its storage.
-	 * 
+	 *
 	 * @param path
 	 *            path to storage
 	 * @return context-object
@@ -148,7 +148,7 @@ public interface IPersistanceOperations {
 
 	/**
 	 * Saves a context to specified storage.
-	 * 
+	 *
 	 * @param context
 	 *            the context to save
 	 * @param path

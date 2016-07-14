@@ -24,7 +24,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.resources.IChangedFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFolder;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectNature;
 import de.ovgu.variantsync.utilitylayer.log.LogOperations;
 
@@ -43,7 +43,7 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 	private IChangedFile invisibleRoot;
 	private List<IProject> projectList = new ArrayList<IProject>();
 	private List<String> whitelist;
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 
 	@Override

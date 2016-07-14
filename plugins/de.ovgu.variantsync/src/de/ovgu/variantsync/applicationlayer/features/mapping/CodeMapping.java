@@ -17,14 +17,14 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Package;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
 
 public class CodeMapping extends Mapping {
 
 	private IMappingOperations classMapping;
 	private IMappingOperations packageMapping;
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 
 	public CodeMapping() {

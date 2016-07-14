@@ -16,11 +16,11 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.diff.Diff;
 import de.ovgu.variantsync.applicationlayer.datamodel.diff.DiffIndices;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 
 public class UpdateAlgorithm {
 
-	private IPersistanceOperations persistenceOp = ModuleFactory
+	private Persistable persistenceOp = ModuleFactory
 			.getPersistanceOperations();
 
 	public UpdateAlgorithm() {

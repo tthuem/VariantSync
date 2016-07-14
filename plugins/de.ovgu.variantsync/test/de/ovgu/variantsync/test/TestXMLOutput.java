@@ -17,7 +17,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 
 public class TestXMLOutput {
 
@@ -27,7 +27,7 @@ public class TestXMLOutput {
 	private final String PATH_CONTEXT_STORAGE = System.getProperty("user.dir")
 			+ "/test/context/" + "TestFeature.xml";
 	private Context context;
-	private IPersistanceOperations persistenceOp = ModuleFactory
+	private Persistable persistenceOp = ModuleFactory
 			.getPersistanceOperations();
 	private IContextOperations co = ModuleFactory.getContextOperations();
 

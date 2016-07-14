@@ -23,7 +23,7 @@ import de.ovgu.variantsync.applicationlayer.Util;
 import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectNature;
 import de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChangesView;
 import de.ovgu.variantsync.utilitylayer.log.LogOperations;
@@ -46,7 +46,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 	private IResourceDelta delta;
 	private IDeltaOperations deltaOperations = ModuleFactory
 			.getDeltaOperations();
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 	private static final String RESOURCE = "Resource ";
 
@@ -198,7 +198,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 	/**
 	 * Checks if resource does not fulfill any following criteria:<br>
 	 * <ul>
-	 * <li>resource´s project has nature support</li>
+	 * <li>resourceï¿½s project has nature support</li>
 	 * <li>resource is not admin folder</li>
 	 * <li>resource still exists</li>
 	 * <li>resource starts not with \".\"</li>

@@ -25,10 +25,13 @@ import de.ovgu.variantsync.applicationlayer.datamodel.resources.ChangeTypes;
  */
 class AdminFolderManager {
 
+	private static final String ERROR_CODE_FILENOTCREATED = "File could not created in admin folder.";
+	private static final String NAME_SEPARATOR = "_";
+
 	/**
 	 * Creates file in folder ".variantsync" which maps original project
 	 * structure. Each file contains informations about changes.
-	 * 
+	 *
 	 * @param res
 	 *            resource to add
 	 * @throws FileOperationException
@@ -41,42 +44,52 @@ class AdminFolderManager {
 			pointer = 1;
 		}
 		if (res instanceof IFolder) {
-			String addInfoFileName = res.getName() + "_"
-					+ ChangeTypes.ADDFOLDER + "_" + pointer + "_"
-					+ res.getLocalTimeStamp();
-			IPath subPath = res.getProjectRelativePath()
-					.append(addInfoFileName);
-			addInfoFilePath = res.getProject().getLocation()
-					.append(VariantSyncConstants.ADMIN_FOLDER).append(subPath);
+			addInfoFilePath = addFolder(res, pointer);
 		} else {
-			String addInfoFileName = res.getName() + "_" + ChangeTypes.ADDFILE
-					+ "_" + pointer + "_" + res.getLocalTimeStamp();
-			File parentFile = res.getProjectRelativePath().toFile()
-					.getParentFile();
-			String subPath = null;
-			if (parentFile == null) {
-				subPath = "";
-			} else {
-				subPath = parentFile.getPath();
-			}
-			addInfoFilePath = res.getProject().getLocation()
-					.append(VariantSyncConstants.ADMIN_FOLDER).append(subPath)
-					.append(addInfoFileName);
+			addInfoFilePath = addFile(res, pointer);
 		}
 		try {
-			if (!addInfoFilePath.toFile().getParentFile().exists()) {
-				addInfoFilePath.toFile().getParentFile().mkdirs();
-			}
-			addInfoFilePath.toFile().createNewFile();
+			createNewFile(addInfoFilePath);
 		} catch (IOException e) {
-			throw new FileOperationException(
-					"File could not be created in admin folder.", e);
+			throw new FileOperationException(ERROR_CODE_FILENOTCREATED, e);
 		}
+	}
+
+	private void createNewFile(IPath addInfoFilePath) throws IOException {
+		if (!addInfoFilePath.toFile().getParentFile().exists()) {
+			addInfoFilePath.toFile().getParentFile().mkdirs();
+		}
+		addInfoFilePath.toFile().createNewFile();
+	}
+
+	private IPath addFile(IResource res, int pointer) {
+		IPath addInfoFilePath;
+		String addInfoFileName = res.getName() + NAME_SEPARATOR + ChangeTypes.ADDFILE + NAME_SEPARATOR + pointer
+				+ NAME_SEPARATOR + res.getLocalTimeStamp();
+		File parentFile = res.getProjectRelativePath().toFile().getParentFile();
+		String subPath = null;
+		if (parentFile == null) {
+			subPath = "";
+		} else {
+			subPath = parentFile.getPath();
+		}
+		addInfoFilePath = res.getProject().getLocation().append(VariantSyncConstants.ADMIN_FOLDER).append(subPath)
+				.append(addInfoFileName);
+		return addInfoFilePath;
+	}
+
+	private IPath addFolder(IResource res, int pointer) {
+		String addInfoFileName = res.getName() + NAME_SEPARATOR + ChangeTypes.ADDFOLDER + NAME_SEPARATOR + pointer
+				+ NAME_SEPARATOR + res.getLocalTimeStamp();
+		IPath subPath = res.getProjectRelativePath().append(addInfoFileName);
+		IPath addInfoFilePath = res.getProject().getLocation().append(VariantSyncConstants.ADMIN_FOLDER)
+				.append(subPath);
+		return addInfoFilePath;
 	}
 
 	/**
 	 * Removes file from folder ".variantsync".
-	 * 
+	 *
 	 * @param res
 	 *            resource to remove
 	 * @throws FileOperationException
@@ -89,37 +102,39 @@ class AdminFolderManager {
 			zeiger = 1;
 		}
 		if (res instanceof IFolder) {
-			String addInfoFileName = res.getName() + "_"
-					+ ChangeTypes.REMOVEFOLDER + "_" + zeiger + "_"
-					+ System.currentTimeMillis();
-			IPath subPath = res.getProjectRelativePath()
-					.append(addInfoFileName);
-			addInfoFilePath = res.getProject().getLocation()
-					.append(VariantSyncConstants.ADMIN_FOLDER).append(subPath);
+			addInfoFilePath = removeFolder(res, zeiger);
 		} else {
-			String addInfoFileName = res.getName() + "_"
-					+ ChangeTypes.REMOVEFILE + "_" + zeiger + "_"
-					+ System.currentTimeMillis();
-			File parentFile = res.getProjectRelativePath().toFile()
-					.getParentFile();
-			String subPath = null;
-			if (parentFile == null) {
-				subPath = "";
-			} else {
-				subPath = parentFile.getPath();
-			}
-			addInfoFilePath = res.getProject().getLocation()
-					.append(VariantSyncConstants.ADMIN_FOLDER).append(subPath)
-					.append(addInfoFileName);
+			addInfoFilePath = removeFile(res, zeiger);
 		}
 		try {
-			if (!addInfoFilePath.toFile().getParentFile().exists()) {
-				addInfoFilePath.toFile().getParentFile().mkdirs();
-			}
-			addInfoFilePath.toFile().createNewFile();
+			createNewFile(addInfoFilePath);
 		} catch (IOException e) {
-			throw new FileOperationException(
-					"File could not be created in admin folder.", e);
+			throw new FileOperationException(ERROR_CODE_FILENOTCREATED, e);
 		}
+	}
+
+	private IPath removeFile(IResource res, int zeiger) {
+		IPath addInfoFilePath;
+		String addInfoFileName = res.getName() + NAME_SEPARATOR + ChangeTypes.REMOVEFILE + NAME_SEPARATOR + zeiger
+				+ NAME_SEPARATOR + System.currentTimeMillis();
+		File parentFile = res.getProjectRelativePath().toFile().getParentFile();
+		String subPath = null;
+		if (parentFile == null) {
+			subPath = "";
+		} else {
+			subPath = parentFile.getPath();
+		}
+		addInfoFilePath = res.getProject().getLocation().append(VariantSyncConstants.ADMIN_FOLDER).append(subPath)
+				.append(addInfoFileName);
+		return addInfoFilePath;
+	}
+
+	private IPath removeFolder(IResource res, int zeiger) {
+		IPath addInfoFilePath;
+		String addInfoFileName = res.getName() + NAME_SEPARATOR + ChangeTypes.REMOVEFOLDER + NAME_SEPARATOR + zeiger
+				+ NAME_SEPARATOR + System.currentTimeMillis();
+		IPath subPath = res.getProjectRelativePath().append(addInfoFileName);
+		addInfoFilePath = res.getProject().getLocation().append(VariantSyncConstants.ADMIN_FOLDER).append(subPath);
+		return addInfoFilePath;
 	}
 }

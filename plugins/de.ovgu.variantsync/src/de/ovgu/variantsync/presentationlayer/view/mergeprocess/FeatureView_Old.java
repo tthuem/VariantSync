@@ -44,7 +44,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
 import de.ovgu.variantsync.applicationlayer.merging.ResourceCompareInput;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.controller.ContextController;
 import de.ovgu.variantsync.presentationlayer.controller.ControllerHandler;
 import de.ovgu.variantsync.presentationlayer.controller.FeatureController;
@@ -65,7 +65,7 @@ public class FeatureView_Old extends ViewPart {
 			.getSynchronizationController();
 	private FeatureController fc = ControllerHandler.getInstance()
 			.getFeatureController();
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 	private IContextOperations contextOperations = ModuleFactory
 			.getContextOperations();

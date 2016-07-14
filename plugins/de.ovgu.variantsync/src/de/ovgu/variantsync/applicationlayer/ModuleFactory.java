@@ -10,7 +10,7 @@ import de.ovgu.variantsync.applicationlayer.merging.IMergeOperations;
 import de.ovgu.variantsync.applicationlayer.merging.MergeOperationProvider;
 import de.ovgu.variantsync.applicationlayer.synchronization.ISynchronizationOperations;
 import de.ovgu.variantsync.applicationlayer.synchronization.SynchronizationProvider;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.persistencelayer.PersistanceOperationProvider;
 
 /**
@@ -46,7 +46,7 @@ public class ModuleFactory {
 		return new MergeOperationProvider();
 	}
 
-	public static IPersistanceOperations getPersistanceOperations() {
+	public static Persistable getPersistanceOperations() {
 		return new PersistanceOperationProvider();
 	}
 }

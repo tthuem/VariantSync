@@ -28,7 +28,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.persistencelayer.IPersistanceOperations;
+import de.ovgu.variantsync.persistencelayer.Persistable;
 import de.ovgu.variantsync.presentationlayer.view.context.ConstraintTextValidator;
 import de.ovgu.variantsync.presentationlayer.view.context.ConstraintTextValidator.ValidationResult;
 import de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection;
@@ -46,7 +46,7 @@ public class ContextProvider extends AbstractModel implements
 		IContextOperations {
 
 	private ContextHandler contextHandler;
-	private IPersistanceOperations persistanceOperations = ModuleFactory
+	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
 	private boolean ignoreCodeChange;
 	private static final ConstraintTextValidator VALIDATOR = new ConstraintTextValidator();

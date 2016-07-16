@@ -7,21 +7,21 @@ import java.util.Set;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.PatchException;
-import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperations;
+import de.ovgu.variantsync.utilities.LogOperations;
 import difflib.Delta;
 import difflib.Patch;
 
 /**
  * Provides functions to merge changes.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */
 class MergeCalculation {
 
-	private IDeltaOperations deltaOperations = ModuleFactory
+	private DeltaOperations deltaOperations = ModuleFactory
 			.getDeltaOperations();
 
 	/**

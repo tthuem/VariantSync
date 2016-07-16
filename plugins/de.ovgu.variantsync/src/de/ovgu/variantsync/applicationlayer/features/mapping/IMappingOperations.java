@@ -5,7 +5,7 @@ import java.util.List;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
 
 public interface IMappingOperations {
 

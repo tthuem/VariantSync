@@ -16,23 +16,23 @@ import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationExc
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.IChangedFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
-import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.applicationlayer.merging.IMergeOperations;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperations;
+import de.ovgu.variantsync.applicationlayer.merging.Merging;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.utilities.LogOperations;
 
 /**
  * Provides functions to synchronize projects.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 17.05.2015
  */
 abstract class Synchronization {
 
-	protected IDeltaOperations deltaOperations = ModuleFactory
+	protected DeltaOperations deltaOperations = ModuleFactory
 			.getDeltaOperations();
-	protected IMergeOperations mergeOperations = ModuleFactory
+	protected Merging mergeOperations = ModuleFactory
 			.getMergeOperations();
 	protected Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();

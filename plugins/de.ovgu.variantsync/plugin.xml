@@ -9,23 +9,23 @@
       </category>
       <view
             category="de.ovgu.variantsync"
-            class="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChangesView"
+            class="de.ovgu.variantsync.ui.view.resourcechanges.ResourceChangesView"
             icon="icons/VariantSyncSupport.png"
-            id="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChanges"
+            id="de.ovgu.variantsync.ui.view.resourcechanges.ResourceChanges"
             name="Resource Changes">
-      </view> 
+      </view>
       <view
             category="de.ovgu.variantsync"
-            class="de.ovgu.variantsync.presentationlayer.view.mergeprocess.SourceFocusedView"
+            class="de.ovgu.variantsync.ui.view.mergeprocess.SourceFocusedView"
             icon="icons/VariantSyncSupport.png"
-            id="de.ovgu.variantsync.presentationlayer.view.mergeprocess.sourceFocusedView"
+            id="de.ovgu.variantsync.ui.view.mergeprocess.sourceFocusedView"
             name="Source-Focused View">
       </view>
       <view
             category="de.ovgu.variantsync"
-            class="de.ovgu.variantsync.presentationlayer.view.mergeprocess.TargetFocusedView"
+            class="de.ovgu.variantsync.ui.view.mergeprocess.TargetFocusedView"
             icon="icons/VariantSyncSupport.png"
-            id="de.ovgu.variantsync.presentationlayer.view.mergeprocess.targetFocusedview"
+            id="de.ovgu.variantsync.ui.view.mergeprocess.targetFocusedview"
             name="Target-Focused View">
       </view>
    </extension>
@@ -37,7 +37,7 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
                relationship="right"
-               id="de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChanges">
+               id="de.ovgu.variantsync.ui.view.resourcechanges.ResourceChanges">
          </view>
       </perspectiveExtension>
    </extension>
@@ -68,16 +68,16 @@
             </separator>
          </menu>
          <action
-               class="de.ovgu.variantsync.presentationlayer.controller.action.RemoveSyncSupportAction"
+               class="de.ovgu.variantsync.ui.controller.action.RemoveSyncSupportAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.presentationlayer.controller.action.RemoveSyncSupportAction"
+               id="de.ovgu.variantsync.ui.controller.action.RemoveSyncSupportAction"
                label="Remove VariantSync Support"
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group0">
          </action>
          <action
-               class="de.ovgu.variantsync.presentationlayer.controller.action.ShowChangeViewAction"
+               class="de.ovgu.variantsync.ui.controller.action.ShowChangeViewAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.presentationlayer.controller.action.ShowChangeViewtAction"
+               id="de.ovgu.variantsync.ui.controller.action.ShowChangeViewtAction"
                label="Show Change View"
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group1">
          </action>
@@ -107,9 +107,9 @@
             </separator>
          </menu>
          <action
-               class="de.ovgu.variantsync.presentationlayer.controller.action.AddSyncSupportAction"
+               class="de.ovgu.variantsync.ui.controller.action.AddSyncSupportAction"
                icon="icons/VariantSyncSupport.png"
-               id="de.ovgu.variantsync.presentationlayer.controller.action.AddSyncSupportAction"
+               id="de.ovgu.variantsync.ui.controller.action.AddSyncSupportAction"
                label="Add VariantSync Support "
                menubarPath="de.ovgu.variantsync.tools.popupMenu/group0">
          </action>
@@ -117,26 +117,26 @@
             <not>
                <objectState
                      name="nature"
-                     value="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.vsyncSupportProjectNature">
+                     value="de.ovgu.variantsync.ui.view.eclipseadjustment.vsyncSupportProjectNature">
                </objectState>
             </not>
          </visibility>
       </objectContribution>
    </extension>
-   <extension point = "org.eclipse.compare.structureCreators"> 
-     <structureCreator 
-         id="org.eclipse.compare.JavaStructureCreator" 
-         class="org.eclipse.compare.JavaStructureCreator" 
-         extensions="java" 
-    /> 
-	</extension> 
+   <extension point = "org.eclipse.compare.structureCreators">
+     <structureCreator
+         id="org.eclipse.compare.JavaStructureCreator"
+         class="org.eclipse.compare.JavaStructureCreator"
+         extensions="java"
+    />
+	</extension>
    <extension
          id="vsyncSupportProjectNature"
          name="Variantsync Support Project Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectNature">
+               class="de.ovgu.variantsync.ui.view.eclipseadjustment.VSyncSupportProjectNature">
          </run>
       </runtime>
    </extension>
@@ -144,8 +144,8 @@
          point="org.eclipse.ui.decorators">
       <decorator
             adaptable="true"
-            class="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectDecorator"
-            id="de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectDecorator"
+            class="de.ovgu.variantsync.ui.view.eclipseadjustment.VSyncSupportProjectDecorator"
+            id="de.ovgu.variantsync.ui.view.eclipseadjustment.VSyncSupportProjectDecorator"
             label="VariantSync Support Project Decorator"
             lightweight="true"
             state="true">
@@ -159,15 +159,15 @@
    <extension
          point="org.eclipse.ui.console.consoleFactories">
       <consoleFactory
-            class="de.ovgu.variantsync.presentationlayer.view.console.ConsoleFactory"
+            class="de.ovgu.variantsync.ui.view.console.ConsoleFactory"
             icon="icons/VariantSyncSupport.png"
             label="VariantSync">
       </consoleFactory>
    </extension>
-   
-   <!-- Code to Feature Mapping --> 
+
+   <!-- Code to Feature Mapping -->
    <extension point="org.eclipse.ui.handlers">
-      <handler class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.CodeMappingHandler"
+      <handler class="de.ovgu.variantsync.ui.controller.popup.actions.CodeMappingHandler"
                commandId="CodeMappingPopupMenu.commands.mappingCommand">
       </handler>
     </extension>
@@ -190,14 +190,14 @@
 				        </iterate>
          		</visibleWhen>
          		<dynamic
-              	class="de.ovgu.variantsync.presentationlayer.view.codemapping.CodeEditorMapping"
-              	id="de.ovgu.variantsync.presentationlayer.view.codemapping.CodeEditorMapping">
+              	class="de.ovgu.variantsync.ui.view.codemapping.CodeEditorMapping"
+              	id="de.ovgu.variantsync.ui.view.codemapping.CodeEditorMapping">
     			</dynamic>
            	</menu>
-      </menuContribution>  	
+      </menuContribution>
    </extension>
 
-   <!-- Class to Feature Mapping -->   
+   <!-- Class to Feature Mapping -->
    <extension point="org.eclipse.ui.commands">
       <command
             categoryId="CodeMappingPopupMenu.commands.category"
@@ -206,7 +206,7 @@
       </command>
    </extension>
    <extension point="org.eclipse.ui.handlers">
-      <handler class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.ClassMappingHandler"
+      <handler class="de.ovgu.variantsync.ui.controller.popup.actions.ClassMappingHandler"
                commandId="CodeMappingPopupMenu.commands.mappingCommand">
       </handler>
     </extension>
@@ -232,13 +232,13 @@
 				    </with>
          		</visibleWhen>
          		<dynamic
-              	class="de.ovgu.variantsync.presentationlayer.view.codemapping.PackageExplorerMapping"
-              	id="de.ovgu.variantsync.presentationlayer.view.codemapping.PackageExplorerMapping">
+              	class="de.ovgu.variantsync.ui.view.codemapping.PackageExplorerMapping"
+              	id="de.ovgu.variantsync.ui.view.codemapping.PackageExplorerMapping">
     			</dynamic>
            	</menu>
       </menuContribution>
    </extension>
-   
+
     <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -253,14 +253,14 @@
          </menu>
          <action
                label="remove tagging of whole class"
-               class="de.ovgu.variantsync.presentationlayer.controller.popup.actions.RemoveMappingAction"
+               class="de.ovgu.variantsync.ui.controller.popup.actions.RemoveMappingAction"
                menubarPath="SimplePopupMenu.menu1/group1"
                enablesFor="1"
                id="SimplePopupMenu.newAction">
          </action>
       </objectContribution>
    </extension>
-   
+
    <!-- Defines code highlighting marker -->
 	<extension point="org.eclipse.core.resources.markers"
         id="de.ovgu.pfofe.variantsync.codehighlightmarkerYellow"
@@ -270,7 +270,7 @@
         <persistent value="true"/>
         <attribute name="description"/>
     </extension>
-    
+
     <extension point="org.eclipse.core.resources.markers"
         id="de.ovgu.pfofe.variantsync.codehighlightmarkerGreen"
         name="CodeHighlightMarkerGreen">
@@ -279,7 +279,7 @@
         <persistent value="true"/>
         <attribute name="description"/>
     </extension>
-    
+
     <extension point="org.eclipse.core.resources.markers"
         id="de.ovgu.pfofe.variantsync.codehighlightmarkerBlue"
         name="CodeHighlightMarkerBlue">
@@ -288,7 +288,7 @@
         <persistent value="true"/>
         <attribute name="description"/>
     </extension>
-    
+
     <!-- Annotation specification: define different colors for code highlighting -->
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationYellow"
@@ -311,7 +311,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationGreen"
      name="CodeHighlightGreen">
@@ -333,7 +333,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationBlue"
      name="CodeHighlightBlue">
@@ -355,7 +355,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationBlueBright"
      name="CodeHighlightBlueBright">
@@ -377,7 +377,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-  
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationPurple"
      name="CodeHighlightPurple">
@@ -399,7 +399,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationPink"
      name="CodeHighlightPink">
@@ -421,7 +421,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationRed"
      name="CodeHighlightRed">
@@ -443,7 +443,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationOrange"
      name="CodeHighlightOrange">
@@ -465,7 +465,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationGreenBright"
      name="CodeHighlightGreenBright">
@@ -487,7 +487,7 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
-   
+
    <!--
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
      id="de.ovgu.pfofe.variantsync.codehighlightannotationDefaultContext"
@@ -511,7 +511,7 @@
      </specification>
    </extension>
    -->
-      
+
    <!-- Links the annotation spec (color) to the marker -->
 	<extension point="org.eclipse.ui.editors.annotationTypes">
       <type
@@ -526,21 +526,21 @@
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationGreen"
             markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerGreen"/>
-   </extension> 
+   </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationBlue"
             markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlue"/>
-   </extension>   
+   </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationBlueBright"
             markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlueBright"/>
-   </extension> 
+   </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
@@ -585,7 +585,7 @@
             markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerDefaultContext"/>
    </extension>
    -->
-      
+
   <!-- define the marker updater class-->
   <extension point="org.eclipse.ui.editors.markerUpdaters">
       <updater
@@ -594,48 +594,48 @@
             markerType="de.ovgu.pfofe.variantsync.codehighlightmarker">
       </updater>
   </extension>
-  
-  <!-- Popup menu to add a menu to right click of a java file in the text editor--> 
-	<extension point="org.eclipse.ui.popupMenus"> 
-	   	<viewerContribution 
+
+  <!-- Popup menu to add a menu to right click of a java file in the text editor-->
+	<extension point="org.eclipse.ui.popupMenus">
+	   	<viewerContribution
 	      	id="org.eclipse.ui.articles.action.contribution.popup.navigator"
-	   		targetID="#CompilationUnitEditorContext"> 
+	   		targetID="#CompilationUnitEditorContext">
 	      	<action
-	            class="de.ovgu.variantsync.presentationlayer.view.codemapping.RemoveMarkers"
+	            class="de.ovgu.variantsync.ui.view.codemapping.RemoveMarkers"
 	            id="com.ibm.example.filecount.marker"
 	            label="remove selected mapping"
 	            icon="icons/VariantSyncSupport.png"
 	            menubarPath="additions">
-	      	</action> 
+	      	</action>
 	   	</viewerContribution>
 	</extension>
-	
-	<!-- Popup menu to add a menu to right click of a java file in the package explorer--> 	
+
+	<!-- Popup menu to add a menu to right click of a java file in the package explorer-->
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution id="Clarity.objectContribution2"
 	 		objectClass="org.eclipse.jdt.core.IOpenable">
          	<action
                label="remove all mappings of element"
-               class="de.ovgu.variantsync.presentationlayer.view.codemapping.RemoveMarkers"
+               class="de.ovgu.variantsync.ui.view.codemapping.RemoveMarkers"
                menubarPath="additions"
                icon="icons/VariantSyncSupport.png"
                id="com.ibm.example.foldercount.marker">
          	</action>
 		</objectContribution>
 	</extension>
-	
+
 	<!-- Drop-down menu in toolbar -->
 	<extension point="org.eclipse.ui.commands">
     	<category id="de.ovgu.variantsync.FeatureDropDownMenu" name="Features">
     	</category>
-    	<command categoryId="de.ovgu.variantsync.FeatureDropDownMenu" defaultHandler="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection"  
+    	<command categoryId="de.ovgu.variantsync.FeatureDropDownMenu" defaultHandler="de.ovgu.variantsync.ui.view.context.FeatureContextSelection"
         	id="de.ovgu.variantsync.FeatureDropDownCommand" name="Drop">
         	<commandParameter id="de.ovgu.variantsync.FeatureDropDown.msg" name="Message" optional="true">
         	</commandParameter>
      	</command>
         <command
 			categoryId="org.eclipse.ui.category.edit"
-			defaultHandler="de.ovgu.variantsync.presentationlayer.view.context.FeatureExpressionHandler"
+			defaultHandler="de.ovgu.variantsync.ui.view.context.FeatureExpressionHandler"
 			id="de.ovgu.variantsync.FeatureExpressionHandler"
 			name="Feature Expressions">
 		</command>
@@ -652,7 +652,7 @@
 					icon="icons/featureExpression.png"
 					style="push">
 				</command>
-            	<command commandId="de.ovgu.variantsync.FeatureDropDownCommand" id="de.ovgu.variantsync.toolbar.FeatureDropDownCommand" style="pulldown" 
+            	<command commandId="de.ovgu.variantsync.FeatureDropDownCommand" id="de.ovgu.variantsync.toolbar.FeatureDropDownCommand" style="pulldown"
             		tooltip="choose a feature context">
             	</command>
             	<command
@@ -669,19 +669,19 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
       <handler
-            class="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextActivity"
+            class="de.ovgu.variantsync.ui.view.context.FeatureContextActivity"
             commandId="de.ovgu.variantsync.ActiveFeatureContextCommand">
       </handler>
       <handler
-            class="de.ovgu.variantsync.presentationlayer.view.context.FeatureExpressionHandler"
+            class="de.ovgu.variantsync.ui.view.context.FeatureExpressionHandler"
             commandId="de.ovgu.pfofe.variantsync.FeatureExpressionCommand">xy
       </handler>
    </extension>
    <extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:de.ovgu.variantsync.toolbar.FeatureDropDownCommand">
         	<dynamic
-              	class="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection"
-              	id="de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection">
+              	class="de.ovgu.variantsync.ui.view.context.FeatureContextSelection"
+              	id="de.ovgu.variantsync.ui.view.context.FeatureContextSelection">
     		</dynamic>
 		</menuContribution>
 	</extension>
@@ -702,7 +702,7 @@
             label="Mutable collection calls"
             overviewRulerPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.rulers.overview"
             overviewRulerPreferenceValue="false"
-            presentationLayer="5"
+            ui="5"
             symbolicIcon="info"
             textPreferenceKey="scala.tools.eclipse.ui.preferences.mutable.text"
             textPreferenceValue="true"
@@ -712,7 +712,7 @@
             verticalRulerPreferenceValue="true">
         </specification>
     </extension>
-   
+
    <!-- Definition as product -->
    <extension
          id="product"
@@ -758,12 +758,12 @@
          point="org.eclipse.compare.structureMergeViewers">
           <viewer
                extensions="java,java2,java3"
-               class="de.ovgu.variantsync.presentationlayer.view.mergeprocess.test.JavaContentViewerCreator"
-		       id="de.ovgu.variantsync.presentationlayer.view.mergeprocess.test.JavaContentViewerCreator">
+               class="de.ovgu.variantsync.ui.view.mergeprocess.test.JavaContentViewerCreator"
+		       id="de.ovgu.variantsync.ui.view.mergeprocess.test.JavaContentViewerCreator">
 	     </viewer>
 	     <contentTypeBinding
 		          contentTypeId="org.eclipse.jdt.core.javaSource"
-		          contentMergeViewerId="de.ovgu.variantsync.presentationlayer.view.mergeprocess.test.JavaContentViewerCreator">
-          </contentTypeBinding>   
+		          contentMergeViewerId="de.ovgu.variantsync.ui.view.mergeprocess.test.JavaContentViewerCreator">
+          </contentTypeBinding>
    </extension>
 </plugin>

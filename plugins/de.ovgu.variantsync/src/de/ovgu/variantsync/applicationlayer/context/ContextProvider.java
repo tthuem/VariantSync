@@ -19,35 +19,33 @@ import org.eclipse.core.runtime.CoreException;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.Util;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
-import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.presentationlayer.view.context.ConstraintTextValidator;
-import de.ovgu.variantsync.presentationlayer.view.context.ConstraintTextValidator.ValidationResult;
-import de.ovgu.variantsync.presentationlayer.view.context.FeatureContextSelection;
-import de.ovgu.variantsync.presentationlayer.view.context.MarkerHandler;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator;
+import de.ovgu.variantsync.ui.view.context.FeatureContextSelection;
+import de.ovgu.variantsync.ui.view.context.MarkerHandler;
+import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
+import de.ovgu.variantsync.utilities.Util;
 
 /**
  * Receives controller invocation as part of MVC implementation and encapsulates
  * functionality of its package.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 02.09.2015
  */
-public class ContextProvider extends AbstractModel implements
-		IContextOperations {
+public class ContextProvider extends AbstractModel implements ContextOperations {
 
 	private ContextHandler contextHandler;
-	private Persistable persistanceOperations = ModuleFactory
-			.getPersistanceOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
 	private boolean ignoreCodeChange;
 	private static final ConstraintTextValidator VALIDATOR = new ConstraintTextValidator();
 	private boolean ignoreAfterMerge;
@@ -71,8 +69,7 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public void activateContext(String selectedFeatureExpression,
-			boolean ignoreChange) {
+	public void activateContext(String selectedFeatureExpression, boolean ignoreChange) {
 		contextHandler.activateContext(selectedFeatureExpression);
 		ignoreAfterMerge = ignoreChange;
 	}
@@ -88,44 +85,39 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public void recordCodeChange(List<String> changedCode, String projectName,
-			String pathToProject, String packageName, String className,
-			List<String> wholeClass) {
+	public void recordCodeChange(List<String> changedCode, String projectName, String pathToProject, String packageName,
+			String className, List<String> wholeClass) {
 		if (ignoreAfterMerge) {
-			recordCodeChange(projectName, pathToProject, changedCode,
-					className, packageName, wholeClass, true);
+			recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass, true);
 			return;
 		}
 		if (!ignoreCodeChange) {
 			System.out.println("\n=== Changed Code ===");
 			System.out.println(changedCode.toString());
-			contextHandler.recordCodeChange(projectName, pathToProject,
-					changedCode, className, packageName, wholeClass);
+			contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName,
+					wholeClass);
 		}
 		ignoreCodeChange = false;
 	}
 
 	@Override
-	public void recordCodeChange(String projectName, String pathToProject,
-			List<String> changedCode, String className, String packageName,
-			List<String> wholeClass, boolean ignoreChange) {
-		contextHandler.recordCodeChange(projectName, pathToProject,
-				changedCode, className, packageName, wholeClass, ignoreChange);
+	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
+			String packageName, List<String> wholeClass, boolean ignoreChange) {
+		contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass,
+				ignoreChange);
 		ignoreChange = false;
 	}
 
 	@Override
-	public void recordFileAdded(String projectName, String pathToProject,
-			String packageName, String className, List<String> wholeClass) {
-		contextHandler.recordFileAdded(projectName, pathToProject, className,
-				packageName, wholeClass);
+	public void recordFileAdded(String projectName, String pathToProject, String packageName, String className,
+			List<String> wholeClass) {
+		contextHandler.recordFileAdded(projectName, pathToProject, className, packageName, wholeClass);
 	}
 
 	@Override
-	public void recordFileRemoved(String projectName, String pathToProject,
-			String packageName, String className, List<String> wholeClass) {
-		contextHandler.recordFileRemoved(projectName, pathToProject, className,
-				packageName, wholeClass);
+	public void recordFileRemoved(String projectName, String pathToProject, String packageName, String className,
+			List<String> wholeClass) {
+		contextHandler.recordFileRemoved(projectName, pathToProject, className, packageName, wholeClass);
 	}
 
 	@Override
@@ -144,27 +136,23 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public void addCode(String projectName, String packageName,
-			String className, List<String> code, List<String> wholeClass) {
-		ContextAlgorithm ca = new ContextAlgorithm(ContextHandler.getInstance()
-				.getActiveContext());
+	public void addCode(String projectName, String packageName, String className, List<String> code,
+			List<String> wholeClass) {
+		ContextAlgorithm ca = new ContextAlgorithm(ContextHandler.getInstance().getActiveContext());
 		ca.addCode(projectName, packageName, className, code, wholeClass, false);
 	}
 
 	@Override
-	public void addCode(String projectName, String packageName,
-			String className, List<String> code, Context c,
+	public void addCode(String projectName, String packageName, String className, List<String> code, Context c,
 			List<String> wholeClass) {
 		ContextAlgorithm ca = new ContextAlgorithm(c);
 		ca.addCode(projectName, packageName, className, code, wholeClass, false);
 	}
 
 	@Override
-	public Map<String, List<Class>> findJavaClass(String projectName,
-			String className) {
+	public Map<String, List<Class>> findJavaClass(String projectName, String className) {
 		Map<String, List<Class>> result = new HashMap<String, List<Class>>();
-		Collection<Context> contexts = ContextHandler.getInstance()
-				.getAllContexts();
+		Collection<Context> contexts = ContextHandler.getInstance().getAllContexts();
 		for (Context c : contexts) {
 			List<Class> classes = new ArrayList<Class>();
 			Variant jp = c.getJavaProject(projectName);
@@ -178,8 +166,7 @@ public class ContextProvider extends AbstractModel implements
 
 	@Override
 	public CodeHighlighting findColor(String featureExpression) {
-		Collection<Context> contexts = ContextHandler.getInstance()
-				.getAllContexts();
+		Collection<Context> contexts = ContextHandler.getInstance().getAllContexts();
 		for (Context c : contexts) {
 			if (c.getFeatureExpression().equals(featureExpression)) {
 				return c.getColor();
@@ -251,8 +238,7 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public Collection<CodeChange> getChanges(String fe, String projectName,
-			String className) {
+	public Collection<CodeChange> getChanges(String fe, String projectName, String className) {
 		Context c = ContextHandler.getInstance().getContext(fe);
 		Variant jp = c.getJavaProjects().get(projectName);
 		List<Element> classes = new ArrayList<Element>();
@@ -269,8 +255,7 @@ public class ContextProvider extends AbstractModel implements
 	// projects. If multiple classes with the same name exist, they will
 	// actually be ignored.
 	@Override
-	public Map<String, Collection<CodeChange>> getChangesForVariant(String fe,
-			String projectName, String className) {
+	public Map<String, Collection<CodeChange>> getChangesForVariant(String fe, String projectName, String className) {
 		Context c = ContextHandler.getInstance().getContext(fe);
 		Variant jp = c.getJavaProjects().get(projectName);
 		Map<String, Variant> projects = c.getJavaProjects();
@@ -282,14 +267,11 @@ public class ContextProvider extends AbstractModel implements
 			if (jp == null || !entry.getKey().equals(jp.getName())) {
 				List<Element> classes = new ArrayList<Element>();
 				Variant providingVariant = entry.getValue();
-				if (providingVariant != null
-						&& providingVariant.getChildren() != null) {
-					ContextUtils.iterateElements(
-							providingVariant.getChildren(), classes);
+				if (providingVariant != null && providingVariant.getChildren() != null) {
+					ContextUtils.iterateElements(providingVariant.getChildren(), classes);
 					for (Element e : classes) {
 						if (e.getName().equals(className)) {
-							changes.put(entry.getKey(),
-									((Class) e).getClonedChanges());
+							changes.put(entry.getKey(), ((Class) e).getClonedChanges());
 						}
 					}
 				}
@@ -299,8 +281,7 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public boolean isAlreadySynchronized(String fe, long key, String source,
-			String target) {
+	public boolean isAlreadySynchronized(String fe, long key, String source, String target) {
 		Context c = getContext(fe);
 		if (target.contains(":"))
 			target = target.split(":")[0].trim();
@@ -308,8 +289,7 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public void addSynchronizedChange(String fe, long key, String source,
-			String target) {
+	public void addSynchronizedChange(String fe, long key, String source, String target) {
 		Context c = getContext(fe);
 		if (target.contains(":"))
 			target = target.split(":")[0].trim();
@@ -317,10 +297,9 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<String> getAutoSyncTargets(String fe, String projectName,
-			String className, List<CodeLine> ancestor, List<CodeLine> left) {
-		List<String> possbileSyncTargets = getSyncTargets(fe, projectName,
-				className);
+	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<CodeLine> ancestor,
+			List<CodeLine> left) {
+		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictFreeSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
 			String[] targetInfo = target.split(":");
@@ -331,8 +310,7 @@ public class ContextProvider extends AbstractModel implements
 				conflictFreeSyncTargets.add(target);
 				continue;
 			}
-			if (!ModuleFactory.getMergeOperations().checkConflict(
-					Util.parseCodeLinesToString(ancestor),
+			if (!ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
 					Util.parseCodeLinesToString(left), right)) {
 				conflictFreeSyncTargets.add(target);
 			}
@@ -341,16 +319,14 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<String> getAutoSyncTargetsForVariant(String fe,
-			String targetVariant, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getAutoSyncTargetsForVariant(String fe, String targetVariant, String className,
+			List<CodeLine> ancestor, List<CodeLine> left) {
 		List<String> conflictFreeSyncTargets = new ArrayList<String>();
 		List<String> right = getCodeLines(targetVariant, className);
 		if (right.isEmpty()) {
 			conflictFreeSyncTargets.add(targetVariant + ": " + className);
 		}
-		if (!ModuleFactory.getMergeOperations().checkConflict(
-				Util.parseCodeLinesToString(ancestor),
+		if (!ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
 				Util.parseCodeLinesToString(left), right)) {
 			conflictFreeSyncTargets.add(targetVariant + ": " + className);
 		}
@@ -358,18 +334,16 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<String> getConflictSyncTargets(String fe, String projectName,
-			String className, List<CodeLine> ancestor, List<CodeLine> left) {
-		List<String> possbileSyncTargets = getSyncTargets(fe, projectName,
-				className);
+	public List<String> getConflictSyncTargets(String fe, String projectName, String className, List<CodeLine> ancestor,
+			List<CodeLine> left) {
+		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictedSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
 			String[] targetInfo = target.split(":");
 			String targetProject = targetInfo[0].trim();
 			String targetClass = targetInfo[1].trim();
 			List<String> right = getCodeLines(targetProject, targetClass);
-			if (ModuleFactory.getMergeOperations().checkConflict(
-					Util.parseCodeLinesToString(ancestor),
+			if (ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
 					Util.parseCodeLinesToString(left), right)) {
 				conflictedSyncTargets.add(target);
 			}
@@ -378,13 +352,11 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<String> getConflictedSyncForVariant(String fe,
-			String targetVariant, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getConflictedSyncForVariant(String fe, String targetVariant, String className,
+			List<CodeLine> ancestor, List<CodeLine> left) {
 		List<String> conflictedSyncTargets = new ArrayList<String>();
 		List<String> right = getCodeLines(targetVariant, className);
-		if (ModuleFactory.getMergeOperations().checkConflict(
-				Util.parseCodeLinesToString(ancestor),
+		if (ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
 				Util.parseCodeLinesToString(left), right)) {
 			conflictedSyncTargets.add(targetVariant + ": " + className);
 		}
@@ -392,8 +364,7 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	private List<String> getCodeLines(String projectName, String className) {
-		java.util.List<IProject> supportedProjects = VariantSyncPlugin
-				.getDefault().getSupportProjectList();
+		java.util.List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		IResource javaClass = null;
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
@@ -413,16 +384,14 @@ public class ContextProvider extends AbstractModel implements
 		}
 		List<String> linesOfCode = new ArrayList<String>();
 		try {
-			linesOfCode = persistanceOperations.readFile(((IFile) javaClass)
-					.getContents());
+			linesOfCode = persistanceOperations.readFile(((IFile) javaClass).getContents());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return linesOfCode;
 	}
 
-	public List<String> getSyncTargets(String fe, String projectName,
-			String className) {
+	public List<String> getSyncTargets(String fe, String projectName, String className) {
 		List<String> syncTargets = new ArrayList<String>();
 		Context c = ContextHandler.getInstance().getContext(fe);
 		Map<String, Variant> mapJp = c.getJavaProjects();
@@ -438,20 +407,17 @@ public class ContextProvider extends AbstractModel implements
 				ContextUtils.iterateElements(jp.getChildren(), classes);
 				for (Element element : classes) {
 					if (element.getName().equals(className)) {
-						syncTargets
-								.add(jp.getName() + ": " + element.getName());
+						syncTargets.add(jp.getName() + ": " + element.getName());
 						usedProjects.add(e.getKey());
 					}
 				}
 			}
 		}
-		List<IProject> supportedProjects = VariantSyncPlugin.getDefault()
-				.getSupportProjectList();
+		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
 			boolean isValidSyncTarget = checkSyncTarget(name, fe);
-			if (!usedProjects.contains(name) && !name.equals(projectName)
-					&& isValidSyncTarget) {
+			if (!usedProjects.contains(name) && !name.equals(projectName) && isValidSyncTarget) {
 				IResource javaClass = null;
 				try {
 					javaClass = ContextUtils.findFileRecursively(p, className);
@@ -471,15 +437,13 @@ public class ContextProvider extends AbstractModel implements
 
 		// check if feature expression is a feature that exists in target
 		// variant
-		Collection<String> featuresSyncTarget = Util
-				.getConfiguredFeatures(projectName);
+		Collection<String> featuresSyncTarget = Util.getConfiguredFeatures(projectName);
 		if (featuresSyncTarget.contains(fe)) {
 			return true;
 		}
 
 		// check syntax and semantic of feature expressions
-		ValidationResult result = VALIDATOR.validateSync(ModuleFactory
-				.getFeatureOperations().getFeatureModel(), fe);
+		ValidationResult result = VALIDATOR.validateSync(ModuleFactory.getFeatureOperations().getFeatureModel(), fe);
 		if (result != ValidationResult.OK) {
 			return false;
 		}
@@ -517,8 +481,7 @@ public class ContextProvider extends AbstractModel implements
 
 	// TODO: use package-name to get full-qualified path to class
 	@Override
-	public List<CodeLine> getTargetCode(String fe, String projectName,
-			String className) {
+	public List<CodeLine> getTargetCode(String fe, String projectName, String className) {
 		List<CodeLine> targetCode = new ArrayList<CodeLine>();
 		Context c = ContextHandler.getInstance().getContext(fe);
 		Map<String, Variant> mapJp = c.getJavaProjects();
@@ -541,11 +504,9 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<CodeLine> getTargetCodeWholeClass(String fe,
-			String projectName, String className) {
+	public List<CodeLine> getTargetCodeWholeClass(String fe, String projectName, String className) {
 		List<CodeLine> targetCode = new ArrayList<CodeLine>();
-		List<IProject> supportedProjects = VariantSyncPlugin.getDefault()
-				.getSupportProjectList();
+		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
 			if (name.equals(projectName)) {
@@ -564,8 +525,7 @@ public class ContextProvider extends AbstractModel implements
 						e1.printStackTrace();
 					}
 					try {
-						linesOfFile = persistanceOperations.readFile(
-								file.getContents(), file.getCharset());
+						linesOfFile = persistanceOperations.readFile(file.getContents(), file.getCharset());
 					} catch (FileOperationException | CoreException e) {
 						e.printStackTrace();
 					}
@@ -594,8 +554,7 @@ public class ContextProvider extends AbstractModel implements
 			e1.printStackTrace();
 		}
 		try {
-			linesOfFile = persistanceOperations.readFile(file.getContents(),
-					file.getCharset());
+			linesOfFile = persistanceOperations.readFile(file.getContents(), file.getCharset());
 		} catch (FileOperationException | CoreException e) {
 			e.printStackTrace();
 		}
@@ -605,8 +564,7 @@ public class ContextProvider extends AbstractModel implements
 			code.add(new CodeLine(line, i, false, false));
 			i++;
 		}
-		ContextHandler.getInstance()
-				.setLinesOfActualClass(file.getName(), code);
+		ContextHandler.getInstance().setLinesOfActualClass(file.getName(), code);
 	}
 
 	@Override
@@ -615,20 +573,16 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public File getFile(String selectedFeatureExpression,
-			String projectNameTarget, String classNameTarget) {
-		IResource res = ContextUtils.findResource(projectNameTarget,
-				classNameTarget);
+	public File getFile(String selectedFeatureExpression, String projectNameTarget, String classNameTarget) {
+		IResource res = ContextUtils.findResource(projectNameTarget, classNameTarget);
 		return new File(res.getLocation().toString());
 
 	}
 
 	@Override
-	public void removeChange(String selectedFeatureExpression,
-			String selectedProject, String selectedClass, int selectedChange,
-			long timestamp) {
-		Context c = ContextHandler.getInstance().getContext(
-				selectedFeatureExpression);
+	public void removeChange(String selectedFeatureExpression, String selectedProject, String selectedClass,
+			int selectedChange, long timestamp) {
+		Context c = ContextHandler.getInstance().getContext(selectedFeatureExpression);
 		if (selectedClass.contains(":")) {
 			String[] tmp = selectedClass.split(":");
 			selectedProject = tmp[0].trim();
@@ -649,17 +603,14 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public IResource getResource(String selectedFeatureExpression,
-			String selectedProject, String selectedClass) {
-		List<IProject> supportedProjects = VariantSyncPlugin.getDefault()
-				.getSupportProjectList();
+	public IResource getResource(String selectedFeatureExpression, String selectedProject, String selectedClass) {
+		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
 			if (name.equals(selectedProject)) {
 				IResource javaClass = null;
 				try {
-					javaClass = ContextUtils.findFileRecursively(p,
-							selectedClass);
+					javaClass = ContextUtils.findFileRecursively(p, selectedClass);
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
@@ -672,17 +623,13 @@ public class ContextProvider extends AbstractModel implements
 			if (!name.equals(selectedProject)) {
 				IResource javaClass = null;
 				try {
-					javaClass = ContextUtils.findFileRecursively(p,
-							selectedClass);
+					javaClass = ContextUtils.findFileRecursively(p, selectedClass);
 					if (javaClass != null) {
 						String projectName = javaClass.getLocation().toString();
-						projectName = projectName
-								.replace(name, selectedProject);
-						ModuleFactory.getPersistanceOperations().writeFile(
-								new ArrayList<CodeLine>() {
-								}, new File(projectName));
-						return getResource(selectedFeatureExpression,
-								selectedProject, selectedClass);
+						projectName = projectName.replace(name, selectedProject);
+						ModuleFactory.getPersistanceOperations().writeFile(new ArrayList<CodeLine>() {
+						}, new File(projectName));
+						return getResource(selectedFeatureExpression, selectedProject, selectedClass);
 					}
 				} catch (CoreException e) {
 					e.printStackTrace();
@@ -693,59 +640,17 @@ public class ContextProvider extends AbstractModel implements
 	}
 
 	@Override
-	public void refresh(boolean isAutomaticSync, String fe, String projectName,
-			String filename, List<CodeLine> codeWC, List<CodeLine> syncCode) {
+	public void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, List<CodeLine> codeWC,
+			List<CodeLine> syncCode) {
 
-		// format code for later diff
-		/*
-		 * codeWC = ModuleFactory.getMergeOperations().doAutoSync(codeWC,
-		 * codeWC, codeWC); IResource res = findResource(projectName, filename);
-		 * String packageName = res.getLocation().toString(); packageName =
-		 * packageName.substring(packageName.indexOf("src") + 4,
-		 * packageName.lastIndexOf("/")); packageName = packageName.replace("/",
-		 * "."); List<String> oldCode = new ArrayList<String>(); for (CodeLine
-		 * cl : codeWC) { oldCode.add(cl.getCode()); }
-		 * 
-		 * List<String> newCode = new ArrayList<String>(); for (CodeLine cl :
-		 * syncCode) { newCode.add(cl.getCode()); }
-		 * contextHandler.refreshContext(fe, projectName, packageName, filename,
-		 * oldCode, newCode);
-		 */
-		// ignoreCodeChange = true;
+		// TODO
 	}
-
-	// public void compare(String source1, String source2) throws IOException,
-	// InterruptedException {
-	//
-	// Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("java",
-	// new ResourceFactoryImpl());
-	//
-	// XSDEcoreBuilder builder = new XSDEcoreBuilder();
-	//
-	// Collection<EObject> model1 =
-	// builder.generate(URI.createFileURI("Test1.java"));
-	// Collection<EObject> model2 =
-	// builder.generate(URI.createFileURI("Test2.java"));
-	//
-	// final MatchModel match = MatchService.doMatch(model1.iterator().next(),
-	// model2.iterator().next(), Collections.<String, Object> emptyMap());
-	// final DiffModel diff = DiffService.doDiff(match, false);
-	//
-	// final List<DiffElement> differences = new
-	// ArrayList<DiffElement>(diff.getOwnedElements());
-	//
-	// System.out.println("MatchModel :\n");
-	// System.out.println(ModelUtils.serialize(match));
-	// System.out.println("DiffModel :\n");
-	// System.out.println(ModelUtils.serialize(diff));
-	// }
 
 	@Override
 	public void removeTagging(String path) {
 		String projectName = path.substring(0, path.indexOf("/"));
 		String className = path.substring(path.lastIndexOf("/") + 1);
-		Collection<Context> coll = ContextHandler.getInstance()
-				.getAllContexts();
+		Collection<Context> coll = ContextHandler.getInstance().getAllContexts();
 		Iterator<Context> it = coll.iterator();
 		while (it.hasNext()) {
 			Context c = it.next();
@@ -756,8 +661,7 @@ public class ContextProvider extends AbstractModel implements
 				for (Element e : classes) {
 					if (e.getName().equals(className)) {
 						((Class) e).removeContent();
-						IResource res = ContextUtils.findResource(projectName,
-								className);
+						IResource res = ContextUtils.findResource(projectName, className);
 						MarkerHandler.getInstance().clearAllMarker(res);
 						return;
 					}
@@ -787,8 +691,7 @@ public class ContextProvider extends AbstractModel implements
 				}
 				List<Class> classes = ContextUtils.getClasses(jp);
 				for (Class element : classes) {
-					if (!element.getChanges().isEmpty()
-							&& !features.contains(c.getFeatureExpression())) {
+					if (!element.getChanges().isEmpty() && !features.contains(c.getFeatureExpression())) {
 						features.add(c.getFeatureExpression());
 						break;
 					}

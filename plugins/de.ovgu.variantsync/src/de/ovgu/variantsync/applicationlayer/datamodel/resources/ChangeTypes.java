@@ -4,7 +4,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.resources;
  * Describe types for resource changes. E.g. a resource (like a java file or a
  * folder) can be changed, removed oder added.
  * 
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */

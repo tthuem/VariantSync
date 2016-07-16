@@ -1,23 +1,23 @@
 package de.ovgu.variantsync.applicationlayer;
 
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.context.ContextProvider;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
 import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperationProvider;
-import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
+import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperations;
+import de.ovgu.variantsync.applicationlayer.features.FeatureOperations;
 import de.ovgu.variantsync.applicationlayer.features.FeatureProvider;
-import de.ovgu.variantsync.applicationlayer.features.IFeatureOperations;
-import de.ovgu.variantsync.applicationlayer.merging.IMergeOperations;
 import de.ovgu.variantsync.applicationlayer.merging.MergeOperationProvider;
-import de.ovgu.variantsync.applicationlayer.synchronization.ISynchronizationOperations;
+import de.ovgu.variantsync.applicationlayer.merging.Merging;
 import de.ovgu.variantsync.applicationlayer.synchronization.SynchronizationProvider;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.persistencelayer.PersistanceOperationProvider;
+import de.ovgu.variantsync.applicationlayer.synchronization.Synchronizationable;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.io.PersistanceOperationProvider;
 
 /**
  * Creates operation provider which encapsulate functions of a module in
  * application layer.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.05.2015
  */
@@ -26,27 +26,27 @@ public class ModuleFactory {
 	private ModuleFactory() {
 	}
 
-	public static ISynchronizationOperations getSynchronizationOperations() {
+	public static Synchronizationable getSynchronizationOperations() {
 		return new SynchronizationProvider();
 	}
 
-	public static IDeltaOperations getDeltaOperations() {
+	public static DeltaOperations getDeltaOperations() {
 		return new DeltaOperationProvider();
 	}
 
-	public static IFeatureOperations getFeatureOperations() {
+	public static FeatureOperations getFeatureOperations() {
 		return new FeatureProvider();
 	}
 
-	public static IContextOperations getContextOperations() {
+	public static ContextOperations getContextOperations() {
 		return ContextProvider.getInstance();
 	}
 
-	public static IMergeOperations getMergeOperations() {
+	public static Merging getMergeOperations() {
 		return new MergeOperationProvider();
 	}
 
 	public static Persistable getPersistanceOperations() {
-		return new PersistanceOperationProvider();
+		return PersistanceOperationProvider.buildProvider();
 	}
 }

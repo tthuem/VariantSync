@@ -4,7 +4,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.monitoring;
  * Represents an item in eclipse workspace which can be monitored. Contains
  * informations about monitored file and workspace the file belongs to.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */

@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IResource;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.context.ContextUtils;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
 
 public class Class extends Element {
 
@@ -40,49 +40,49 @@ public class Class extends Element {
 		logChange = true;
 	}
 
-	// TODO: für syntaktischen Merge müssen korrekte JavaKlassen gebildet werden
+	// TODO: fï¿½r syntaktischen Merge mï¿½ssen korrekte JavaKlassen gebildet werden
 	// aus den Codezeilen, die per Diff ermittelt wurden als Code, der zum
-	// Context/Feature gehört
+	// Context/Feature gehï¿½rt
 	// TODO: use JavaParser to create AST (see CuPrinter example)
 
-	// 1) Änderung an Klasse wird gespeichert im Editor
-	// 2) VSync bemerkt Änderung, berechnet Diff, pflegt Code-Basis im Plugin
+	// 1) ï¿½nderung an Klasse wird gespeichert im Editor
+	// 2) VSync bemerkt ï¿½nderung, berechnet Diff, pflegt Code-Basis im Plugin
 	// (aktueller Stand der Klasse im Context)
 	// 3) VSync legt in Klasse einen CodeChange-Eintrag, bestehend aus
 	// Timestamp, baseVersion und newVersion,in Queue an
-	// baseVersion sind die Codezeilen, die vor der Änderung dem Feature aus
+	// baseVersion sind die Codezeilen, die vor der ï¿½nderung dem Feature aus
 	// dieser Klasse zugeordnet waren
-	// new Version sind die Codezeilen, die nach der Änderung dem Feature aus
+	// new Version sind die Codezeilen, die nach der ï¿½nderung dem Feature aus
 	// dieser Klasse zugeordnet waren
-	// base und newVersion müssen syntaktisch korrete Klassen darstellen für
+	// base und newVersion mï¿½ssen syntaktisch korrete Klassen darstellen fï¿½r
 	// syntaktischen Merge mit JDime
 	// => Problem: bisher nur Codezeilen ohne Semantic gespeichert
-	// => Lösung: AST erstellen mit javaparser. Dieser enthält den Code mit
+	// => Lï¿½sung: AST erstellen mit javaparser. Dieser enthï¿½lt den Code mit
 	// Zeilennummern zugeordnet zu Methoden
 	// AST ist Schablone, die auf den gespeicherten Code der Versions gelegt
 	// wird. Damit wird eine abgespeckte, syntaktisch korrekte Datei erstellt
 	// (wenn der Entwickler den Code syntaktisch korrekt mappt mit dem Context)
 	// wenn Code syntaktisch nicht korrekt ist, dann wird kein structured merge
 	// (synktatischer merge) sondern unstructured merge (line-based)
-	// durchgeführt.
+	// durchgefï¿½hrt.
 	/*
-	 * 
-	 * ====================================== === Synchronisieren von Änderungen
+	 *
+	 * ====================================== === Synchronisieren von ï¿½nderungen
 	 * === ======================================
-	 * 
+	 *
 	 * Beim Speichern Vorgang: - Sichern der bisherigen Code-Lines der Klasse,
-	 * die sich im Context befinden - Einfügen der Änderungen und Sichern der
+	 * die sich im Context befinden - Einfï¿½gen der ï¿½nderungen und Sichern der
 	 * aktuellen Code-Lines der Klasse, die sich im Context befinden -
-	 * Sicherungen erfolgen im Typ CodeChange, der für jede Klasse im Context
+	 * Sicherungen erfolgen im Typ CodeChange, der fï¿½r jede Klasse im Context
 	 * als Queue gespeichert wird - CodeChange bekommt Timestamp, damit beim
-	 * Synchronisieren die Reihenfolge der Änderungen an gleichen Klassen
+	 * Synchronisieren die Reihenfolge der ï¿½nderungen an gleichen Klassen
 	 * desselben Features rekonstruiert werden kann
-	 * 
-	 * Beim Synchronisieren: - Änderungen an Features (Context) Klassenweise
-	 * aufführen - Änderungen an gleichen Klassen in unterschiedlichen Projekten
+	 *
+	 * Beim Synchronisieren: - ï¿½nderungen an Features (Context) Klassenweise
+	 * auffï¿½hren - ï¿½nderungen an gleichen Klassen in unterschiedlichen Projekten
 	 * des gleiches Features nach zeitlicher Reihenfolge synchronisieren mit
-	 * jdime - Automatisierung der Änderungen durchführen, außer es tritt ein
-	 * Konflikt auf: Git-Vergleichsdialog für User öffnen
+	 * jdime - Automatisierung der ï¿½nderungen durchfï¿½hren, auï¿½er es tritt ein
+	 * Konflikt auf: Git-Vergleichsdialog fï¿½r User ï¿½ffnen
 	 */
 
 	public void setBaseVersion() {
@@ -222,7 +222,7 @@ public class Class extends Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -273,7 +273,7 @@ public class Class extends Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#clone()
 	 */
 	public Element clone() throws CloneNotSupportedException {
@@ -388,5 +388,10 @@ public class Class extends Element {
 	 */
 	public void setLogChange(boolean logChange) {
 		this.logChange = logChange;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return codeLines == null || codeLines.isEmpty();
 	}
 }

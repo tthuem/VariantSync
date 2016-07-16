@@ -10,15 +10,15 @@ import de.ovgu.variantsync.applicationlayer.features.mapping.CodeMapping;
 import de.ovgu.variantsync.applicationlayer.features.mapping.IMappingOperations;
 import de.ovgu.variantsync.applicationlayer.features.mapping.PackageMapping;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
+import de.ovgu.variantsync.utilities.LogOperations;
 
 /**
  * Provides functions to map code to features. Maps code to data structures of
  * package {@link de.ovgu.variantsync.applicationlayer.datamodel.features}.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 04.06.2015
  */

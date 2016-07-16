@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
-import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Package;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.utilities.LogOperations;
 
 public class UtilOperations {
 

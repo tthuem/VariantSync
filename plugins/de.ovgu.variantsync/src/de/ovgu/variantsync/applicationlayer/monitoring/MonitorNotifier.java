@@ -1,7 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.monitoring;
 
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
-import de.ovgu.variantsync.presentationlayer.controller.ControllerProperties;
+import de.ovgu.variantsync.ui.controller.ControllerProperties;
 
 public class MonitorNotifier extends AbstractModel {
 

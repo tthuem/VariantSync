@@ -11,25 +11,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
-import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
-import de.ovgu.variantsync.persistencelayer.Persistable;
+import de.ovgu.variantsync.io.Persistable;
 
 public class TestXMLOutput {
 
-	private final String FEATURE_EXPRESSION = "Test";
-	private final String PROJECT_NAME = "TestProject";
-	private final String PROJECT_PATH = "arbitraryPathToProject";
-	private final String PATH_CONTEXT_STORAGE = System.getProperty("user.dir")
-			+ "/test/context/" + "TestFeature.xml";
+	private static final String FEATURE_EXPRESSION = "Test";
+	private static final String PROJECT_NAME = "TestProject";
+	private static final String PROJECT_PATH = "arbitraryPathToProject";
+	private static final String PATH_CONTEXT_STORAGE = System.getProperty("user.dir")
+			+ "/test/variantsyncFeatureInfo/context/" + "TestFeature.xml";
 	private Context context;
 	private Persistable persistenceOp = ModuleFactory
 			.getPersistanceOperations();
-	private IContextOperations co = ModuleFactory.getContextOperations();
+	private ContextOperations co = ModuleFactory.getContextOperations();
 
 	@Before
 	public void before() {

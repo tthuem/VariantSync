@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
  * Describes resources which can be synchronized. These resources are files or
  * folders. They can be deleted, added or - in case of files - changed.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */

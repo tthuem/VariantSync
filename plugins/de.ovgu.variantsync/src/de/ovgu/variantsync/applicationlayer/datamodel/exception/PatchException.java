@@ -4,7 +4,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.exception;
  * Exception which can be thrown in applicationlayer using patch functions, e.g.
  * from difflib.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 21.05.2015
  */

@@ -4,7 +4,7 @@ package de.ovgu.variantsync.applicationlayer.features;
  * Describe file names and paths for feature handling. E.g. path to config
  * files, name of feature model file, ...
  * 
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.05.2015
  */

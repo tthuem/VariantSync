@@ -2,13 +2,13 @@ package de.ovgu.variantsync.applicationlayer.features.mapping;
 
 import java.util.List;
 
-import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Package;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
+import de.ovgu.variantsync.utilities.LogOperations;
 
 public abstract class Mapping implements IMappingOperations {
 

@@ -3,10 +3,10 @@ package de.ovgu.variantsync;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 /**
- * Describe file names and paths for feature handling. E.g. path to config
+ * Describe file names and paths for feature handling, e.g., path to config
  * files, name of feature model file, ...
- * 
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ *
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.05.2015
  */

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Stores items which will be monitored by eclipse functionality.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */

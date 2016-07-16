@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
@@ -21,7 +21,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
  * change, it adapts the code inside the inactive contexts. Run as JUnit Plug-in
  * test.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.09.2015
  */
@@ -33,7 +33,7 @@ public class TestUpdateCodeAlgorithm {
 	private final String PROJECT_PATH = "arbitraryPathToProject";
 	private final String PACKAGE_NAME = "mainpackage";
 	private final String CLASS_NAME = "Main.java";
-	private IContextOperations co = ModuleFactory.getContextOperations();
+	private ContextOperations co = ModuleFactory.getContextOperations();
 
 	@After
 	public void after() {
@@ -216,7 +216,7 @@ public class TestUpdateCodeAlgorithm {
 
 		System.out.println("JavaProject:\n" + jp.toString());
 
-		assertTrue(jp.getChildren() == null);
+		assertTrue(jp.isEmpty());
 
 		System.out
 				.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");

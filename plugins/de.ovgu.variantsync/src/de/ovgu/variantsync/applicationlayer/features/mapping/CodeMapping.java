@@ -11,14 +11,14 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
-import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Package;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
 
 public class CodeMapping extends Mapping {
 

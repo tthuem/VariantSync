@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 /**
  * 
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 16.10.2015
  */

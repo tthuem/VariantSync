@@ -8,11 +8,10 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
 
 @XmlTransient
-@XmlSeeAlso({ Variant.class, Package.class, Class.class,
-		JavaMethod.class })
+@XmlSeeAlso({ Variant.class, Package.class, Class.class, JavaMethod.class })
 public abstract class Element {
 
 	private String name;
@@ -21,6 +20,8 @@ public abstract class Element {
 	private List<Element> children;
 
 	public abstract boolean setCodeLines(List<CodeLine> removeCode);
+
+	public abstract boolean isEmpty();
 
 	public Element() {
 	}
@@ -50,8 +51,11 @@ public abstract class Element {
 	}
 
 	public void removeChild(String childName) {
-		children = UtilOperations.getInstance()
-				.removeChild(childName, children);
+		children = UtilOperations.getInstance().removeChild(childName, children);
+	}
+
+	public boolean hasNoChildren() {
+		return children == null || children.isEmpty();
 	}
 
 	/**
@@ -109,7 +113,7 @@ public abstract class Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#clone()
 	 */
 	public Element clone() throws CloneNotSupportedException {
@@ -129,13 +133,12 @@ public abstract class Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return " [name=" + name + ", path=" + path + ", type=" + type
-				+ ", children=" + children + "]";
+		return " [name=" + name + ", path=" + path + ", type=" + type + ", children=" + children + "]";
 	}
 
 }

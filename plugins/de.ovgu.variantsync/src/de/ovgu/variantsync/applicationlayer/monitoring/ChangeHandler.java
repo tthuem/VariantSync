@@ -19,14 +19,14 @@ import org.eclipse.ui.PlatformUI;
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.Util;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.presentationlayer.view.eclipseadjustment.VSyncSupportProjectNature;
-import de.ovgu.variantsync.presentationlayer.view.resourcechanges.ResourceChangesView;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperations;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.ui.view.eclipseadjustment.VSyncSupportProjectNature;
+import de.ovgu.variantsync.ui.view.resourcechanges.ResourceChangesView;
+import de.ovgu.variantsync.utilities.LogOperations;
+import de.ovgu.variantsync.utilities.Util;
 
 /**
  * Visits given resource delta and reacts on added, removed or changed resource
@@ -35,7 +35,7 @@ import de.ovgu.variantsync.utilitylayer.log.LogOperations;
  * org.eclipse.core.resources.IResourceDelta. A resource tree represents a
  * project of workspace.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */
@@ -44,7 +44,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 	private IResource res;
 	private int flag;
 	private IResourceDelta delta;
-	private IDeltaOperations deltaOperations = ModuleFactory
+	private DeltaOperations deltaOperations = ModuleFactory
 			.getDeltaOperations();
 	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();
@@ -106,7 +106,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 			int flag) {
 		if ((flag & IResourceDelta.MARKERS) == 0
 				|| (flag & IResourceDelta.MOVED_FROM) != 0) {
-			IContextOperations contextOperations = ModuleFactory
+			ContextOperations contextOperations = ModuleFactory
 					.getContextOperations();
 			contextOperations.recordFileAdded(res.getProject().getName(), res
 					.getProject().getLocation().toString(),
@@ -141,7 +141,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 		VariantSyncPlugin.getDefault().logMessage(
 				RESOURCE + res.getFullPath() + " was removed "
 						+ getFlagTxt(delta.getFlags()));
-		IContextOperations contextOperations = ModuleFactory
+		ContextOperations contextOperations = ModuleFactory
 				.getContextOperations();
 		contextOperations.recordFileRemoved(res.getProject().getName(), res
 				.getProject().getLocation().toString(),

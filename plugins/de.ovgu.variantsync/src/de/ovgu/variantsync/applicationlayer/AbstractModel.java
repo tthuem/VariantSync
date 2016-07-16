@@ -10,7 +10,7 @@ import java.beans.PropertyChangeSupport;
  * PropertyChangeSupport class to provide methods to register and remove
  * listener and to fire change events.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */

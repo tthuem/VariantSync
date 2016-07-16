@@ -27,13 +27,13 @@ import de.ovgu.variantsync.applicationlayer.datamodel.resources.ChangeTypes;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.IChangedFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFile;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.utilities.LogOperations;
 import difflib.Patch;
 
 /**
  * Performs synchronization of two or more projects.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 17.05.2015
  */

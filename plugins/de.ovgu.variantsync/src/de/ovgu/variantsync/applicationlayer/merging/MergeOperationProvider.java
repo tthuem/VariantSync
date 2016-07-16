@@ -10,12 +10,12 @@ import difflib.Delta;
  * Receives controller invocation as part of MVC implementation and encapsulates
  * functionality of its package.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */
 public class MergeOperationProvider extends AbstractModel implements
-		IMergeOperations {
+		Merging {
 
 	private MergeCalculation mergeCalculation;
 

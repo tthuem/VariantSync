@@ -7,19 +7,19 @@ import org.eclipse.core.resources.IResource;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.PatchException;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
-import de.ovgu.variantsync.presentationlayer.controller.ControllerProperties;
+import de.ovgu.variantsync.ui.controller.ControllerProperties;
 import difflib.Patch;
 
 /**
  * Receives controller invocation as part of MVC implementation and encapsulates
  * functionality of its package.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */
 public class DeltaOperationProvider extends AbstractModel implements
-		IDeltaOperations {
+		DeltaOperations {
 
 	private DeltaCalculation deltaCalculation;
 	private ExternalDeltaCalculation externalDeltaCalculation;

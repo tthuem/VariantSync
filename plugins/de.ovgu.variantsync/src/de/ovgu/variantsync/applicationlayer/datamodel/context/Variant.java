@@ -2,7 +2,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.context;
 
 import java.util.List;
 
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
 
 public class Variant extends Element {
 
@@ -10,8 +10,7 @@ public class Variant extends Element {
 		super();
 	}
 
-	public Variant(String name, String path, String project,
-			List<Element> projects) {
+	public Variant(String name, String path, String project, List<Element> projects) {
 		super(name, path, JavaElements.PROJECT);
 		setChildren(projects);
 	}
@@ -42,7 +41,7 @@ public class Variant extends Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -62,4 +61,14 @@ public class Variant extends Element {
 		return false;
 	}
 
+	public boolean isEmpty() {
+		return hasNoChildren() || hasEmptyChildren();
+	}
+
+	private boolean hasEmptyChildren() {
+		for (Element e : getChildren()) {
+			return e.isEmpty();
+		}
+		return false;
+	}
 }

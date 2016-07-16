@@ -4,12 +4,12 @@ import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
 
 /**
  * Not yet implemented.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 08.06.2015
  */

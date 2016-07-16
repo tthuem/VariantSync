@@ -2,7 +2,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.context;
 
 import java.util.List;
 
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
 
 public class JavaMethod extends Element {
 
@@ -20,7 +20,7 @@ public class JavaMethod extends Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -38,5 +38,10 @@ public class JavaMethod extends Element {
 
 		// only classes contain code lines
 		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return true;
 	}
 }

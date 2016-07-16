@@ -16,7 +16,7 @@ import de.ovgu.variantsync.VariantSyncConstants;
 /**
  * Represents a file which can be synchronized.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */

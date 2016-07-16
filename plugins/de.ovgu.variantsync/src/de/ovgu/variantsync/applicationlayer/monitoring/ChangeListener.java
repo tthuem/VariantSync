@@ -10,13 +10,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.variantsync.VariantSyncConstants;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.utilities.LogOperations;
 
 /**
  * Listener which notifies resource changes in workspace that have already
  * happened.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.1
  * @since 17.05.2015
  */

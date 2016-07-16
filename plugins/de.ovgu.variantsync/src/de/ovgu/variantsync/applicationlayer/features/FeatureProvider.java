@@ -15,27 +15,27 @@ import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.Util;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.FeatureExpressions;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
-import de.ovgu.variantsync.presentationlayer.controller.ControllerProperties;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
-import de.ovgu.variantsync.presentationlayer.view.codemapping.CodeMarkerFactory;
-import de.ovgu.variantsync.presentationlayer.view.context.MarkerHandler;
+import de.ovgu.variantsync.ui.controller.ControllerProperties;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
+import de.ovgu.variantsync.ui.view.codemapping.CodeMarkerFactory;
+import de.ovgu.variantsync.ui.view.context.MarkerHandler;
+import de.ovgu.variantsync.utilities.Util;
 
 /**
  * Receives controller invocation as part of MVC implementation and encapsulates
  * functionality of its package.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 18.05.2015
  */
-public class FeatureProvider extends AbstractModel implements IFeatureOperations {
+public class FeatureProvider extends AbstractModel implements FeatureOperations {
 
 	private FeatureHandler featureHandler;
 	private FeatureMapping featureMapping;
@@ -132,7 +132,7 @@ public class FeatureProvider extends AbstractModel implements IFeatureOperations
 
 	@Override
 	public FeatureExpressions getFeatureExpressions() {
-		String storageLocation = VariantSyncPlugin.getDefault().getWorkspaceLocation()
+		String storageLocation = VariantSyncPlugin.getWorkspaceLocation()
 				+ VariantSyncConstants.FEATURE_EXPRESSION_PATH;
 		File folder = new File(storageLocation.substring(0, storageLocation.lastIndexOf("/")));
 		if (folder.exists() && folder.isDirectory()) {

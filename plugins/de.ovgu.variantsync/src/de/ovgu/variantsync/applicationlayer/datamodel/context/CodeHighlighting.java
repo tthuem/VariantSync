@@ -5,7 +5,7 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * 
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.09.2015
  */

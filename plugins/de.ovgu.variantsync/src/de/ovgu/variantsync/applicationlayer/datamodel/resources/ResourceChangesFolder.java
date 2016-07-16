@@ -12,7 +12,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Represents a folder which can be synchronized.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */

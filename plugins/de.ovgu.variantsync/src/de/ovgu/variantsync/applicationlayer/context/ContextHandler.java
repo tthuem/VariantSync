@@ -7,19 +7,19 @@ import java.util.Map;
 
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.Util;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
-import de.ovgu.variantsync.applicationlayer.deltacalculation.IDeltaOperations;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.presentationlayer.view.context.MarkerHandler;
+import de.ovgu.variantsync.applicationlayer.deltacalculation.DeltaOperations;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.ui.view.context.MarkerHandler;
+import de.ovgu.variantsync.utilities.Util;
 import difflib.Patch;
 
 /**
- * 
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ *
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 02.09.2015
  */
@@ -27,8 +27,7 @@ class ContextHandler {
 
 	private Map<String, Context> contextMap;
 	private static ContextHandler instance;
-	private Persistable persistenceOp = ModuleFactory
-			.getPersistanceOperations();
+	private Persistable persistenceOp = ModuleFactory.getPersistanceOperations();
 	private Context activeContext;
 	private Map<String, List<CodeLine>> mapBaseVersion;
 
@@ -45,14 +44,14 @@ class ContextHandler {
 	}
 
 	public void activateContext(String featureExpression) {
-		if (existsContext(featureExpression)) {
+		if (contextExists(featureExpression)) {
 			continueRecording(featureExpression);
 		} else {
-			startContext(featureExpression);
+			startRecording(featureExpression);
 		}
 	}
 
-	private boolean existsContext(String featureExpression) {
+	private boolean contextExists(String featureExpression) {
 		return getContext(featureExpression) != null;
 	}
 
@@ -63,17 +62,15 @@ class ContextHandler {
 	public void stopRecording() {
 		if (activeContext != null) {
 			contextMap.put(activeContext.getFeatureExpression(), activeContext);
-			persistenceOp.saveContext(activeContext,
-					Util.parseStorageLocation(activeContext));
+			persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
 		}
 		activateContext(VariantSyncConstants.DEFAULT_CONTEXT);
 	}
 
-	private void startContext(String featureExpression) {
+	private void startRecording(String featureExpression) {
 		if (activeContext != null) {
 			contextMap.put(activeContext.getFeatureExpression(), activeContext);
-			persistenceOp.saveContext(activeContext,
-					Util.parseStorageLocation(activeContext));
+			persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
 		}
 		if (contextMap.containsKey(featureExpression)) {
 			activeContext = getContext(featureExpression);
@@ -82,56 +79,46 @@ class ContextHandler {
 		}
 	}
 
-	public void recordCodeChange(String projectName, String pathToProject,
-			List<String> changedCode, String className, String packageName,
+	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
+			String packageName, List<String> wholeClass) {
+		if (!activeContext.containsProject(projectName)) {
+			activeContext.initProject(projectName, pathToProject);
+		}
+		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
+		ca.addCode(projectName, packageName, className, changedCode, wholeClass, false);
+		UpdateAlgorithm ua = new UpdateAlgorithm();
+		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
+		if (packageName.equals("defaultpackage"))
+			packageName = "";
+		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
+		contextMap.put(activeContext.getFeatureExpression(), activeContext);
+		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
+	}
+
+	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
+			String packageName, List<String> wholeClass, boolean ignoreChange) {
+		if (!activeContext.containsProject(projectName)) {
+			activeContext.initProject(projectName, pathToProject);
+		}
+		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
+		ca.addCode(projectName, packageName, className, changedCode, wholeClass, ignoreChange);
+		UpdateAlgorithm ua = new UpdateAlgorithm();
+		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
+		if (packageName.equals("defaultpackage"))
+			packageName = "";
+		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
+		contextMap.put(activeContext.getFeatureExpression(), activeContext);
+		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
+	}
+
+	public void recordFileAdded(String projectName, String pathToProject, String className, String packageName,
 			List<String> wholeClass) {
-		if (!activeContext.containsProject(projectName)) {
-			activeContext.initProject(projectName, pathToProject);
-		}
-		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode,
-				wholeClass, false);
-		UpdateAlgorithm ua = new UpdateAlgorithm();
-		ua.updateCode(projectName, packageName, className, changedCode,
-				activeContext.getFeatureExpression());
-		if (packageName.equals("defaultpackage"))
-			packageName = "";
-		MarkerHandler.getInstance().updateMarker(projectName, packageName,
-				className, activeContext);
-		contextMap.put(activeContext.getFeatureExpression(), activeContext);
-		persistenceOp.saveContext(activeContext,
-				Util.parseStorageLocation(activeContext));
-	}
-
-	public void recordCodeChange(String projectName, String pathToProject,
-			List<String> changedCode, String className, String packageName,
-			List<String> wholeClass, boolean ignoreChange) {
-		if (!activeContext.containsProject(projectName)) {
-			activeContext.initProject(projectName, pathToProject);
-		}
-		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode,
-				wholeClass, ignoreChange);
-		UpdateAlgorithm ua = new UpdateAlgorithm();
-		ua.updateCode(projectName, packageName, className, changedCode,
-				activeContext.getFeatureExpression());
-		if (packageName.equals("defaultpackage"))
-			packageName = "";
-		MarkerHandler.getInstance().updateMarker(projectName, packageName,
-				className, activeContext);
-		contextMap.put(activeContext.getFeatureExpression(), activeContext);
-		persistenceOp.saveContext(activeContext,
-				Util.parseStorageLocation(activeContext));
-	}
-
-	public void recordFileAdded(String projectName, String pathToProject,
-			String className, String packageName, List<String> wholeClass) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
 		ca.addClass(projectName, packageName, className, wholeClass);
 	}
 
-	public void recordFileRemoved(String projectName, String pathToProject,
-			String className, String packageName, List<String> wholeClass) {
+	public void recordFileRemoved(String projectName, String pathToProject, String className, String packageName,
+			List<String> wholeClass) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
 		ca.removeClass(projectName, packageName, className, wholeClass);
 	}
@@ -155,19 +142,6 @@ class ContextHandler {
 		Context c = contextMap.get(featureExpression);
 		if (c != null) {
 			c.setColor(color);
-			// Map<String, JavaProject> jps = c.getJavaProjects();
-			// Set<Entry<String, JavaProject>> entries = jps.entrySet();
-			// Iterator<Entry<String, JavaProject>> it = entries.iterator();
-			// while (it.hasNext()) {
-			// Entry<String, JavaProject> e = it.next();
-			// List<JavaClass> classes = ContextUtils.getClasses(e.getValue());
-			// for (JavaClass jc : classes) {
-			// List<CodeLine> codelines = jc.getCodeLines();
-			// for (CodeLine cl : codelines) {
-			// cl.setColor(c.getColor());
-			// }
-			// }
-			// }
 			persistenceOp.saveContext(c, Util.parseStorageLocation(c));
 		}
 	}
@@ -185,8 +159,7 @@ class ContextHandler {
 		activateContext(VariantSyncConstants.DEFAULT_CONTEXT);
 	}
 
-	public void setLinesOfActualClass(String filename,
-			List<CodeLine> linesOfFile) {
+	public void setLinesOfActualClass(String filename, List<CodeLine> linesOfFile) {
 		this.mapBaseVersion.put(filename, linesOfFile);
 	}
 
@@ -197,24 +170,20 @@ class ContextHandler {
 		return this.mapBaseVersion.get(filename);
 	}
 
-	public void refreshContext(String fe, String projectName,
-			String packageName, String filename, List<String> oldCode,
+	public void refreshContext(String fe, String projectName, String packageName, String filename, List<String> oldCode,
 			List<String> newCode) {
-		IDeltaOperations deltaOperations = ModuleFactory.getDeltaOperations();
+		DeltaOperations deltaOperations = ModuleFactory.getDeltaOperations();
 		Patch patch = deltaOperations.computeDifference(oldCode, newCode);
-		List<String> tmpUnifiedDiff = deltaOperations.createUnifiedDifference(
-				filename, filename, oldCode, patch, 0);
+		List<String> tmpUnifiedDiff = deltaOperations.createUnifiedDifference(filename, filename, oldCode, patch, 0);
 		Context c = getContext(fe);
 		ContextAlgorithm ca = new ContextAlgorithm(c);
-		ca.addCode(projectName, packageName, filename, tmpUnifiedDiff, oldCode,
-				true);
+		ca.addCode(projectName, packageName, filename, tmpUnifiedDiff, oldCode, true);
 		UpdateAlgorithm ua = new UpdateAlgorithm();
-		ua.updateCode(projectName, packageName, filename, tmpUnifiedDiff,
-				c.getFeatureExpression());
-		if (packageName.equals("defaultpackage"))
+		ua.updateCode(projectName, packageName, filename, tmpUnifiedDiff, c.getFeatureExpression());
+		if (packageName.equals("defaultpackage")) {
 			packageName = "";
-		MarkerHandler.getInstance().updateMarker(projectName, packageName,
-				filename, c);
+		}
+		MarkerHandler.getInstance().updateMarker(projectName, packageName, filename, c);
 	}
 
 }

@@ -29,7 +29,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException
  * Provides functions to read and check features and feature configurations of
  * projects.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.05.2015
  */

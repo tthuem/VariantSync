@@ -12,14 +12,14 @@ import org.eclipse.core.runtime.Path;
 
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.Util;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.datamodel.monitoring.MonitorSet;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ChangeTypes;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
-import de.ovgu.variantsync.persistencelayer.Persistable;
-import de.ovgu.variantsync.utilitylayer.log.LogOperations;
+import de.ovgu.variantsync.io.Persistable;
+import de.ovgu.variantsync.utilities.LogOperations;
+import de.ovgu.variantsync.utilities.Util;
 import difflib.Patch;
 
 /**
@@ -31,7 +31,7 @@ import difflib.Patch;
  * <li>patch</li>
  * </ul>
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */
@@ -39,7 +39,7 @@ class DeltaCalculation {
 
 	private String unifiedDiff;
 	private ExternalDeltaCalculation externalDeltaOperations;
-	private IContextOperations contextOperations = ModuleFactory
+	private ContextOperations contextOperations = ModuleFactory
 			.getContextOperations();
 	private Persistable persistanceOperations = ModuleFactory
 			.getPersistanceOperations();

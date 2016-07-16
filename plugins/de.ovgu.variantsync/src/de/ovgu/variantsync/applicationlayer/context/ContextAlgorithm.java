@@ -12,21 +12,21 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.diff.Diff;
 import de.ovgu.variantsync.applicationlayer.datamodel.diff.DiffIndices;
 import de.ovgu.variantsync.applicationlayer.datamodel.diff.DiffStep;
-import de.ovgu.variantsync.applicationlayer.features.IFeatureOperations;
+import de.ovgu.variantsync.applicationlayer.features.FeatureOperations;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
-import de.ovgu.variantsync.presentationlayer.controller.data.MappingElement;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.MappingElement;
 
 /**
  * 
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 14.09.2015
  */
 class ContextAlgorithm {
 
-	private IFeatureOperations featureOperations = ModuleFactory
+	private FeatureOperations featureOperations = ModuleFactory
 			.getFeatureOperations();
 	private Context context;
 
@@ -53,7 +53,7 @@ class ContextAlgorithm {
 			boolean ignore) {
 
 		// Mapping auf FeatureExpressions umstellen/ von FeatureExpressions
-		// extrahieren und immer das Project zurückgeben mit angepasstem Mapping
+		// extrahieren und immer das Project zurï¿½ckgeben mit angepasstem Mapping
 		// => Blackbox mit Input (MappingElement, Project) und Output (Project)
 		// Zuordnung Project zu FeatureExpression und Datenhaltung erfolgt im
 		// Context

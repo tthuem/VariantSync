@@ -22,23 +22,20 @@ public class ContextUtils {
 	public static void decreaseCodeLines(List<Diff> diffs, int removeCounter) {
 		for (Diff diff : diffs) {
 			DiffIndices di = diff.getDiffIndices();
-			diff.setDiffIndices(new DiffIndices(di.getStartIndixOldCode()
-					- removeCounter, di.getNumberOfOldCodeLines(), di
-					.getStartIndixNewCode(), di.getNumberOfNewCodeLines()));
+			diff.setDiffIndices(new DiffIndices(di.getStartIndixOldCode() - removeCounter, di.getNumberOfOldCodeLines(),
+					di.getStartIndixNewCode(), di.getNumberOfNewCodeLines()));
 		}
 	}
 
 	public static void increaseCodeLines(List<Diff> diffs, int addCounter) {
 		for (Diff diff : diffs) {
 			DiffIndices di = diff.getDiffIndices();
-			diff.setDiffIndices(new DiffIndices(di.getStartIndixOldCode()
-					+ addCounter, di.getNumberOfOldCodeLines(), di
-					.getStartIndixNewCode(), di.getNumberOfNewCodeLines()));
+			diff.setDiffIndices(new DiffIndices(di.getStartIndixOldCode() + addCounter, di.getNumberOfOldCodeLines(),
+					di.getStartIndixNewCode(), di.getNumberOfNewCodeLines()));
 		}
 	}
 
-	public static IFile findFileRecursively(IContainer container, String name)
-			throws CoreException {
+	public static IFile findFileRecursively(IContainer container, String name) throws CoreException {
 		for (IResource r : container.members()) {
 			try {
 				r.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -58,10 +55,8 @@ public class ContextUtils {
 		return null;
 	}
 
-	public static IResource findResource(String projectNameTarget,
-			String classNameTarget) {
-		List<IProject> supportedProjects = VariantSyncPlugin.getDefault()
-				.getSupportProjectList();
+	public static IResource findResource(String projectNameTarget, String classNameTarget) {
+		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
 			if (name.equals(projectNameTarget)) {
@@ -79,35 +74,45 @@ public class ContextUtils {
 
 	public static List<Diff> analyzeDiff(List<String> code) {
 		List<Diff> diffs = new ArrayList<Diff>();
-		DiffIndices indices = null;
 		for (int i = 2; i < code.size(); i++) {
 			String codeChange = code.get(i);
-			if (codeChange.startsWith("@@")) {
-				indices = parseLineChanges(codeChange);
-				List<DiffStep> diffSteps = new ArrayList<DiffStep>();
-				for (int j = i + 1; j < code.size(); j++) {
-					DiffStep diffStep = null;
-					codeChange = code.get(j);
-					if (codeChange.startsWith("-")) {
-						codeChange = codeChange.substring(1).trim();
-						diffStep = new DiffStep(false, codeChange);
-					} else if (codeChange.startsWith("+")) {
-						codeChange = codeChange.substring(1).trim();
-						diffStep = new DiffStep(true, codeChange);
-					} else if (codeChange.startsWith("@@")) {
-						break;
-					}
-					diffSteps.add(diffStep);
-				}
-				diffs.add(new Diff(indices, diffSteps));
-			}
+			addDiff(code, diffs, i, codeChange);
 		}
 		return diffs;
 	}
 
+	private static void addDiff(List<String> code, List<Diff> diffs, int i, String codeChange) {
+		if (codeChange.startsWith("@@")) {
+			DiffIndices indices = parseLineChanges(codeChange);
+			List<DiffStep> diffSteps = new ArrayList<DiffStep>();
+			for (int j = i + 1; j < code.size(); j++) {
+				if (!addDiffStep(code, diffSteps, j)) {
+					break;
+				}
+			}
+			diffs.add(new Diff(indices, diffSteps));
+		}
+	}
+
+	private static boolean addDiffStep(List<String> code, List<DiffStep> diffSteps, int j) {
+		String codeChange;
+		DiffStep diffStep = null;
+		codeChange = code.get(j);
+		if (codeChange.startsWith("-")) {
+			codeChange = codeChange.substring(1).trim();
+			diffStep = new DiffStep(false, codeChange);
+		} else if (codeChange.startsWith("+")) {
+			codeChange = codeChange.substring(1).trim();
+			diffStep = new DiffStep(true, codeChange);
+		} else if (codeChange.startsWith("@@")) {
+			return false;
+		}
+		diffSteps.add(diffStep);
+		return true;
+	}
+
 	public static List<Class> getClasses(Variant jp) {
-		if (jp == null || jp.getChildren() == null
-				|| jp.getChildren().isEmpty()) {
+		if (jp == null || jp.getChildren() == null || jp.getChildren().isEmpty()) {
 			return new ArrayList<Class>();
 		}
 		List<Element> javaElements = new ArrayList<Element>();
@@ -119,8 +124,7 @@ public class ContextUtils {
 		return classes;
 	}
 
-	public static void iterateElements(List<Element> elements,
-			List<Element> classes) {
+	public static void iterateElements(List<Element> elements, List<Element> classes) {
 		for (Element e : elements) {
 			if (e.getChildren() != null) {
 				iterateElements(e.getChildren(), classes);
@@ -131,23 +135,15 @@ public class ContextUtils {
 	}
 
 	private static DiffIndices parseLineChanges(String codeChange) {
-		int startNew;
-		int numberOfLinesNew;
-		String startS = codeChange.substring(codeChange.lastIndexOf("+") + 1,
-				codeChange.lastIndexOf(","));
-		String endS = codeChange.substring(codeChange.lastIndexOf(",") + 1,
-				codeChange.lastIndexOf("@@") - 1);
-		startNew = Integer.valueOf(startS);
-		numberOfLinesNew = Integer.valueOf(endS);
-		int startOld;
-		int numberOfLinesOld;
-		startS = codeChange.substring(codeChange.indexOf("-") + 1,
-				codeChange.indexOf(","));
-		endS = codeChange.substring(codeChange.indexOf(",") + 1,
-				codeChange.indexOf("+") - 1);
-		startOld = Integer.valueOf(startS);
-		numberOfLinesOld = Integer.valueOf(endS);
-		return new DiffIndices(startOld, numberOfLinesOld, startNew,
-				numberOfLinesNew);
+		String startS = codeChange.substring(codeChange.lastIndexOf("+") + 1, codeChange.lastIndexOf(","));
+		String endS = codeChange.substring(codeChange.lastIndexOf(",") + 1, codeChange.lastIndexOf("@@") - 1);
+		int startNew = Integer.valueOf(startS);
+		int numberOfLinesNew = Integer.valueOf(endS);
+
+		startS = codeChange.substring(codeChange.indexOf("-") + 1, codeChange.indexOf(","));
+		endS = codeChange.substring(codeChange.indexOf(",") + 1, codeChange.indexOf("+") - 1);
+		int startOld = Integer.valueOf(startS);
+		int numberOfLinesOld = Integer.valueOf(endS);
+		return new DiffIndices(startOld, numberOfLinesOld, startNew, numberOfLinesNew);
 	}
 }

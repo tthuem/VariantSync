@@ -3,7 +3,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.exception;
 /**
  * Exception which can be thrown in applicationlayer handling features.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.05.2015
  */

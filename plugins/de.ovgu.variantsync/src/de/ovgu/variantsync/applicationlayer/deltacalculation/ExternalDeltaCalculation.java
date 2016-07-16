@@ -11,7 +11,7 @@ import difflib.PatchFailedException;
  * Provides functions to compute deltas (differences) between original and
  * revised files. Encapsulates functions of external difflib.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 15.05.2015
  */

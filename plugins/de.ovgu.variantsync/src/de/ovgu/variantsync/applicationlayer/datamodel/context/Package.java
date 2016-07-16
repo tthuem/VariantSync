@@ -3,7 +3,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.context;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.ovgu.variantsync.presentationlayer.controller.data.JavaElements;
+import de.ovgu.variantsync.ui.controller.data.JavaElements;
 
 public class Package extends Element {
 
@@ -28,7 +28,7 @@ public class Package extends Element {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -45,6 +45,18 @@ public class Package extends Element {
 	public boolean setCodeLines(List<CodeLine> removeCode) {
 
 		// only classes contain code lines
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (Element e : getChildren()) {
+			if (e.getChildren() != null) {
+				return isEmpty();
+			} else {
+				return e.isEmpty();
+			}
+		}
 		return false;
 	}
 

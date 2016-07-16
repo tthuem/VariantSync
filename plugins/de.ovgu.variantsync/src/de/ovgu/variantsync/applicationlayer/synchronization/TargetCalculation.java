@@ -21,7 +21,7 @@ import difflib.Patch;
 /**
  * Computes possible and compatible targets to synchronize files and folders.
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 17.05.2015
  */

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Context>
+    <changeLog>
+        <changeLog/>
+    </changeLog>
+    <color>DEFAULTCONTEXT</color>
+    <featureExpression>Default_Context</featureExpression>
+    <javaProjects>
+        <entry>
+            <key>TestProject</key>
+            <value>
+                <member xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="package">
+                    <member xsi:type="class">
+                        <changes>
+                            <change>
+<timestamp>1468711422049</timestamp>
+                            </change>
+                        </changes>
+                        <code/>
+                        <name>Main.java</name>
+                        <path>arbitraryPathToProject/src/mainpackage/Main.java</path>
+                        <wholeClass/>
+                    </member>
+                    <name>mainpackage</name>
+                    <path>arbitraryPathToProject/src/mainpackage</path>
+                </member>
+                <name>TestProject</name>
+                <path>arbitraryPathToProject</path>
+                <project>TestProject</project>
+            </value>
+        </entry>
+    </javaProjects>
+</Context>

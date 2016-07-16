@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
@@ -21,7 +21,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
  * 5 private int a; 7 public Main(int g) { 8 a = g; 9 } 10 11 public int getA()
  * { 12 return a; 13 } 14 15 public void setA(int a) { 16 this.a = a; 17 }
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 06.09.2015
  */
@@ -31,7 +31,7 @@ public class TestSingleContextMapping {
 	private final String PROJECT_NAME = "TestProject";
 	private final String PROJECT_PATH = "arbitraryPathToProject";
 	private Context context;
-	private IContextOperations co = ModuleFactory.getContextOperations();
+	private ContextOperations co = ModuleFactory.getContextOperations();
 
 	@Before
 	public void before() {

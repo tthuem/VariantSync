@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
-import de.ovgu.variantsync.applicationlayer.context.IContextOperations;
+import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
@@ -26,7 +26,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
  * 5 private int a; 7 public Main(int g) { 8 a = g; 9 } 10 11 public int getA()
  * { 12 return a; 13 } 14 15 public void setA(int a) { 16 this.a = a; 17 }
  *
- * @author Tristan Pfofe (tristan.pfofe@st.ovgu.de)
+ * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @version 1.0
  * @since 20.09.2015
  */
@@ -37,7 +37,7 @@ public class TestDefaultContext {
 	private final String PACKAGE_NAME = "mainpackage";
 	private final String CLASS_NAME = "Main.java";
 	private final String DEFAULT_CONTEXT = VariantSyncConstants.DEFAULT_CONTEXT;
-	private IContextOperations co = ModuleFactory.getContextOperations();
+	private ContextOperations co = ModuleFactory.getContextOperations();
 
 	@Before
 	public void before() {

@@ -66,9 +66,14 @@ public class Variant extends Element {
 	}
 
 	private boolean hasEmptyChildren() {
-		for (Element e : getChildren()) {
-			return e.isEmpty();
+		if (getChildren() == null || getChildren().isEmpty()) {
+			return true;
 		}
-		return false;
+		for (Element e : getChildren()) {
+			if (e != null && !e.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

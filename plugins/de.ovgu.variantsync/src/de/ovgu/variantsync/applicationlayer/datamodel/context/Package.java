@@ -11,8 +11,7 @@ public class Package extends Element {
 		super();
 	}
 
-	public Package(String name, String path,
-			CopyOnWriteArrayList<Element> classes) {
+	public Package(String name, String path, CopyOnWriteArrayList<Element> classes) {
 		super(name, path, JavaElements.PACKAGE);
 		setChildren(classes);
 	}
@@ -50,14 +49,15 @@ public class Package extends Element {
 
 	@Override
 	public boolean isEmpty() {
+		if (getChildren() == null || getChildren().isEmpty()) {
+			return true;
+		}
 		for (Element e : getChildren()) {
-			if (e.getChildren() != null) {
-				return isEmpty();
-			} else {
-				return e.isEmpty();
+			if (e != null && !e.isEmpty()) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 }

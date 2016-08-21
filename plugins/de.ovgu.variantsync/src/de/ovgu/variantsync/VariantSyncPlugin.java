@@ -200,8 +200,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 * Loads all contexts which are saved in a XML-file.
 	 */
 	private void initContext() {
-		String storageLocation = VariantSyncPlugin.getWorkspaceLocation()
-				+ VariantSyncConstants.CONTEXT_PATH;
+		String storageLocation = VariantSyncPlugin.getWorkspaceLocation() + VariantSyncConstants.CONTEXT_PATH;
 		File folder = new File(storageLocation);
 		if (folder.exists() && folder.isDirectory()) {
 			File[] files = folder.listFiles();
@@ -231,9 +230,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 				while (it.hasNext()) {
 					featureOp.addFeatureExpression(it.next());
 				}
-				it = featureOp.getFeatureModel().getFeatureNames().iterator();
-				while (it.hasNext()) {
-					featureOp.addFeatureExpression(it.next());
+				if (featureOp.getFeatureModel() != null) {
+					it = featureOp.getFeatureModel().getFeatureNames().iterator();
+					while (it.hasNext()) {
+						featureOp.addFeatureExpression(it.next());
+					}
 				}
 			}
 		}

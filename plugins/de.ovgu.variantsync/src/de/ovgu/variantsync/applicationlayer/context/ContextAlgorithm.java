@@ -34,6 +34,7 @@ class ContextAlgorithm {
 		this.context = context;
 	}
 
+	@SuppressWarnings("serial")
 	public void addClass(String projectName, String packageName,
 			String className, List<String> wholeClass) {
 		addCode(projectName, packageName, className, 0, 0, wholeClass,

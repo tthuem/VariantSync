@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -43,8 +42,7 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 	private IChangedFile invisibleRoot;
 	private List<IProject> projectList = new ArrayList<IProject>();
 	private List<String> whitelist;
-	private Persistable persistanceOperations = ModuleFactory
-			.getPersistanceOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
 
 	@Override
 	public Object[] getElements(Object inputElement) {
@@ -57,21 +55,16 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 			try {
 				initalize();
 			} catch (CoreException e) {
-				LogOperations
-						.logError(
-								"file states of info file (.variantsyncInfo) could not be read",
-								e);
+				LogOperations.logError("file states of info file (.variantsyncInfo) could not be read", e);
 			}
 			if (invisibleRoot.hasChildren()) {
 				return invisibleRoot.getChildren().toArray();
 			}
 		}
 		if (parentElement instanceof IChangedFile) {
-			List<IChangedFile> elements = ((IChangedFile) parentElement)
-					.getChildren();
+			List<IChangedFile> elements = ((IChangedFile) parentElement).getChildren();
 			if (elements != null) {
-				Collections.sort(elements,
-						ResourceChangesFilePatch.TIMECOMPARATOR);
+				Collections.sort(elements, ResourceChangesFilePatch.TIMECOMPARATOR);
 				return elements.toArray();
 			}
 		}
@@ -95,17 +88,13 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 	 */
 	private void initalize() throws CoreException {
 		projectList.clear();
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects()) {
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 			try {
-				if (project.isOpen()
-						&& project
-								.hasNature(VSyncSupportProjectNature.NATURE_ID)) {
+				if (project.isOpen() && project.hasNature(VSyncSupportProjectNature.NATURE_ID)) {
 					this.projectList.add(project);
 				}
 			} catch (CoreException e) {
-				LogOperations.logError(
-						"Project nature support could not be checked.", e);
+				LogOperations.logError("Project nature support could not be checked.", e);
 			}
 		}
 		IChangedFile root;
@@ -114,8 +103,7 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 			root = new ResourceChangesFolder("Project root", null);
 			invisibleRoot.addChildren(root);
 			for (IProject project : projectList) {
-				IPath adminPath = project.getLocation().append(
-						VariantSyncConstants.ADMIN_FOLDER);
+				IPath adminPath = project.getLocation().append(VariantSyncConstants.ADMIN_FOLDER);
 				File admin = new File(adminPath.toOSString());
 				if (admin.exists()) {
 					whitelist = getChangeEntries();
@@ -137,17 +125,14 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 	 */
 	private List<String> getChangeEntries() throws CoreException {
 		List<String> changeEntries = new ArrayList<String>();
-		List<IProject> projects = VariantSyncPlugin.getDefault()
-				.getSupportProjectList();
+		List<IProject> projects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject project : projects) {
-			IFile infoFile = project.getFolder(
-					VariantSyncConstants.ADMIN_FOLDER).getFile(
-					VariantSyncConstants.ADMIN_FILE);
+			IFile infoFile = project.getFolder(VariantSyncConstants.ADMIN_FOLDER)
+					.getFile(VariantSyncConstants.ADMIN_FILE);
 			MonitorItemStorage info = new MonitorItemStorage();
-			infoFile.refreshLocal(IResource.DEPTH_ZERO, null);
+			// infoFile.refreshLocal(IResource.DEPTH_ZERO, null);
 			if (infoFile.exists()) {
-				info = persistanceOperations.readSynchroXMLFile(infoFile
-						.getContents());
+				info = persistanceOperations.readSynchroXMLFile(infoFile.getContents());
 				List<MonitorItem> items = info.getMonitorItems();
 				for (MonitorItem item : items) {
 					changeEntries.add(item.getPatchName());
@@ -169,14 +154,11 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 		File[] files = file.listFiles();
 		for (File f : files) {
 			if (f.isDirectory()) {
-				IChangedFile subdir = new ResourceChangesFolder(f.getName(),
-						project);
+				IChangedFile subdir = new ResourceChangesFolder(f.getName(), project);
 				if (root.hasChildren() && root.getChildren().contains(subdir)) {
-					IChangedFile tempDir = root.getChildren().get(
-							root.getChildren().indexOf(subdir));
+					IChangedFile tempDir = root.getChildren().get(root.getChildren().indexOf(subdir));
 					scanAdminFiles(f, tempDir, project);
-				} else if (!root.hasChildren()
-						|| !root.getChildren().contains(subdir)) {
+				} else if (!root.hasChildren() || !root.getChildren().contains(subdir)) {
 					subdir.linkFile(f);
 					root.addChildren(subdir);
 					scanAdminFiles(f, subdir, project);
@@ -186,16 +168,13 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 				String[] adminFileInfo = f.getName().split("_");
 				if (adminFileInfo.length >= 4) {
 					String event = adminFileInfo[adminFileInfo.length - 3];
-					if (event.equals(ChangeTypes.ADDFOLDER)
-							|| event.equals(ChangeTypes.REMOVEFOLDER)) {
-						IChangedFile subfile = new ResourceChangesFilePatch(
-								f.getName(), project);
+					if (event.equals(ChangeTypes.ADDFOLDER) || event.equals(ChangeTypes.REMOVEFOLDER)) {
+						IChangedFile subfile = new ResourceChangesFilePatch(f.getName(), project);
 						subfile.setStatus(event);
 						subfile.linkFile(f);
 						root.addChildren(subfile);
 					} else {
-						String adminInfoTeil = "_"
-								+ adminFileInfo[adminFileInfo.length - 3] + "_"
+						String adminInfoTeil = "_" + adminFileInfo[adminFileInfo.length - 3] + "_"
 								+ adminFileInfo[adminFileInfo.length - 2] + "_"
 								+ adminFileInfo[adminFileInfo.length - 1];
 						String originName = f.getName();
@@ -204,17 +183,13 @@ public class ResourceChangesContentProvider implements ITreeContentProvider {
 						}
 						String name = originName.replaceAll(adminInfoTeil, "");
 						ResourceChangesFile temp = new ResourceChangesFile(name);
-						ResourceChangesFilePatch patch = new ResourceChangesFilePatch(
-								f.getName(), project);
+						ResourceChangesFilePatch patch = new ResourceChangesFilePatch(f.getName(), project);
 						patch.setStatus(adminFileInfo[adminFileInfo.length - 3]);
 						patch.linkFile(f);
-						if (root.hasChildren()
-								&& root.getChildren().contains(temp)) {
+						if (root.hasChildren() && root.getChildren().contains(temp)) {
 							int index = root.getChildren().indexOf(temp);
-							IChangedFile existFileKnoten = root.getChildren()
-									.get(index);
-							((ResourceChangesFile) existFileKnoten)
-									.addProject(project);
+							IChangedFile existFileKnoten = root.getChildren().get(index);
+							((ResourceChangesFile) existFileKnoten).addProject(project);
 							existFileKnoten.addChildren(patch);
 						} else {
 							root.addChildren(temp);

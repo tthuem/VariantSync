@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VariantSync
 Bundle-SymbolicName: de.ovgu.variantsync;singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 0.0.2
 Bundle-Activator: de.ovgu.variantsync.VariantSyncPlugin
 Bundle-Vendor: University of Magdeburg
 Require-Bundle: org.eclipse.ui,
@@ -24,7 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.ui;bundle-version="3.7.100",
  de.ovgu.featureide.core;bundle-version="2.7.4",
  de.ovgu.featureide.fm.core;bundle-version="2.7.3"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: libraries/diffutils-1.2.1.jar,
  .,

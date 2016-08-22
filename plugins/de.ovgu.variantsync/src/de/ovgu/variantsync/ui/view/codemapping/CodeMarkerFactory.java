@@ -86,7 +86,7 @@ public class CodeMarkerFactory {
 			int end, String feature, CodeHighlighting color)
 			throws CoreException {
 		try {
-			Job job = new CreateMarkerJob(feature + "�" + id, res, start, end,
+			Job job = new CreateMarkerJob(feature + "§" + id, res, start, end,
 					feature, getMarker(color));
 			job.setPriority(Job.SHORT);
 			job.schedule();

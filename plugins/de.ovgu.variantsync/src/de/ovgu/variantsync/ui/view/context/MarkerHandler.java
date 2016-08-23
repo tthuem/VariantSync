@@ -206,7 +206,7 @@ public class MarkerHandler {
 				i++;
 			}
 		}
-		markers.add(new MarkerInformation(0, 2, 5, 0, 0));
+		// markers.add(new MarkerInformation(0, 2, 5, 0, 0));
 		return new ArrayList<MarkerInformation>(markers);
 	}
 
@@ -245,7 +245,9 @@ public class MarkerHandler {
 									tmp.get(tmp.size() - 1).getLine(), 0, 0);
 							mi.setFeature(entry.getKey());
 							mi.setColor(contextOp.findColor(entry.getKey()));
-							markers.add(mi);
+							if (mi.getFeature() != null && !"Default_Context".equals(mi.getFeature())) {
+								markers.add(mi);
+							}
 							tmp.clear();
 						}
 						i++;

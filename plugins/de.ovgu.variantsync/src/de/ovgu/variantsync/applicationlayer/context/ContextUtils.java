@@ -84,14 +84,37 @@ public class ContextUtils {
 	private static void addDiff(List<String> code, List<Diff> diffs, int i, String codeChange) {
 		if (codeChange.startsWith("@@")) {
 			DiffIndices indices = parseLineChanges(codeChange);
+
 			List<DiffStep> diffSteps = new ArrayList<DiffStep>();
 			for (int j = i + 1; j < code.size(); j++) {
+				if (code.get(j).startsWith("@@")) {
+					removeConsecutiveLineChange(code, indices, j);
+				}
 				if (!addDiffStep(code, diffSteps, j)) {
 					break;
 				}
 			}
 			diffs.add(new Diff(indices, diffSteps));
 		}
+	}
+
+	private static void removeConsecutiveLineChange(List<String> code, DiffIndices indices, int j) {
+		DiffIndices indicesFollower = parseLineChanges(code.get(j));
+		if (isConsecutiveIndices(indices, indicesFollower)) {
+			code.remove(j);
+		}
+	}
+
+	/**
+	 * Workaround for misbehavior caused by diffutils.
+	 * 
+	 * @param actual
+	 * @param ancestor
+	 * @return
+	 */
+	private static boolean isConsecutiveIndices(DiffIndices actual, DiffIndices follower) {
+		int sumFollower = actual.getStartIndixNewCode() + actual.getNumberOfNewCodeLines();
+		return sumFollower == follower.getStartIndixNewCode() || sumFollower + 1 == follower.getStartIndixNewCode();
 	}
 
 	private static boolean addDiffStep(List<String> code, List<DiffStep> diffSteps, int j) {

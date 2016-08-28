@@ -131,7 +131,7 @@ public class ContextController extends AbstractController {
 	public java.util.List<CodeLine> getTargetCodeWholeClass(
 			String selectedFeatureExpression, String projectName,
 			String className) {
-		return contextOperations.getTargetCodeWholeClass(
+		return contextOperations.getLinesOfFile(
 				selectedFeatureExpression, projectName, className);
 	}
 

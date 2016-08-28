@@ -59,16 +59,11 @@ import de.ovgu.variantsync.ui.controller.SynchronizationController;
  */
 public class FeatureView_Old extends ViewPart {
 
-	private ContextController cc = ControllerHandler.getInstance()
-			.getContextController();
-	private SynchronizationController sc = ControllerHandler.getInstance()
-			.getSynchronizationController();
-	private FeatureController fc = ControllerHandler.getInstance()
-			.getFeatureController();
-	private Persistable persistanceOperations = ModuleFactory
-			.getPersistanceOperations();
-	private ContextOperations contextOperations = ModuleFactory
-			.getContextOperations();
+	private ContextController cc = ControllerHandler.getInstance().getContextController();
+	private SynchronizationController sc = ControllerHandler.getInstance().getSynchronizationController();
+	private FeatureController fc = ControllerHandler.getInstance().getFeatureController();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
+	private ContextOperations contextOperations = ModuleFactory.getContextOperations();
 
 	private List projects;
 	private List classes;
@@ -80,11 +75,9 @@ public class FeatureView_Old extends ViewPart {
 	private int selectedChange;
 	private Collection<CodeChange> collChanges;
 	private String featureExpressions[];
-	private Table oldCode;
 	private Table newCode;
 	private Table codeOfTarget;
 	private Table syncPreview;
-	private java.util.List<CodeLine> baseCode;
 	private java.util.List<CodeLine> syncCode;
 	private String projectNameTarget;
 	private String classNameTarget;
@@ -106,8 +99,7 @@ public class FeatureView_Old extends ViewPart {
 	}
 
 	public void setFocus() {
-		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions()
-				.toArray(new String[] {});
+		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions().toArray(new String[] {});
 		combo.setItems(featureExpressions);
 	}
 
@@ -121,19 +113,16 @@ public class FeatureView_Old extends ViewPart {
 
 		// reference = this;
 
-		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions()
-				.toArray(new String[] {});
+		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions().toArray(new String[] {});
 		combo = new CCombo(arg0, SWT.BORDER);
-		GridData gd_combo = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3,
-				1);
+		GridData gd_combo = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1);
 		gd_combo.widthHint = 189;
 		combo.setLayoutData(gd_combo);
 		combo.setItems(featureExpressions);
 		Listener listener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
-				featureExpressions = fc.getFeatureExpressions()
-						.getFeatureExpressions().toArray(new String[] {});
+				featureExpressions = fc.getFeatureExpressions().getFeatureExpressions().toArray(new String[] {});
 				combo.setItems(featureExpressions);
 			}
 		};
@@ -150,13 +139,10 @@ public class FeatureView_Old extends ViewPart {
 					codeOfTarget.removeAll();
 				if (collChanges != null)
 					collChanges.clear();
-				if (oldCode != null)
-					oldCode.removeAll();
 				if (newCode != null)
 					newCode.removeAll();
 				selectedFeatureExpression = combo.getText();
-				projects.setItems(cc.getProjects(combo.getText()).toArray(
-						new String[] {}));
+				projects.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
 			}
 		});
 		new Label(arg0, SWT.NONE);
@@ -208,15 +194,12 @@ public class FeatureView_Old extends ViewPart {
 					classes.setItems(new String[] {});
 				if (codeOfTarget != null)
 					codeOfTarget.removeAll();
-				if (oldCode != null)
-					oldCode.removeAll();
 				if (newCode != null)
 					newCode.removeAll();
 				if (syncPreview != null)
 					syncPreview.removeAll();
 				selectedProject = projects.getSelection()[0];
-				classes.setItems(cc.getClasses(selectedFeatureExpression,
-						selectedProject).toArray(new String[] {}));
+				classes.setItems(cc.getClasses(selectedFeatureExpression, selectedProject).toArray(new String[] {}));
 			}
 
 			public void widgetDefaultSelected(SelectionEvent event) {
@@ -226,8 +209,7 @@ public class FeatureView_Old extends ViewPart {
 		new Label(arg0, SWT.NONE);
 
 		classes = new List(arg0, SWT.BORDER | SWT.H_SCROLL);
-		GridData gd_list_1 = new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-				1);
+		GridData gd_list_1 = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		gd_list_1.heightHint = 259;
 		gd_list_1.widthHint = 83;
 		classes.setLayoutData(gd_list_1);
@@ -238,8 +220,6 @@ public class FeatureView_Old extends ViewPart {
 					syncTargets.setItems(new String[] {});
 				if (codeOfTarget != null)
 					codeOfTarget.removeAll();
-				if (oldCode != null)
-					oldCode.removeAll();
 				if (newCode != null)
 					newCode.removeAll();
 				selectedClass = classes.getSelection()[0];
@@ -253,72 +233,34 @@ public class FeatureView_Old extends ViewPart {
 		new Label(arg0, SWT.NONE);
 
 		changes = new List(arg0, SWT.H_SCROLL | SWT.BORDER);
-		GridData gd_changes = new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-				1);
+		GridData gd_changes = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		gd_changes.heightHint = 256;
 		gd_changes.widthHint = 93;
 		changes.setLayoutData(gd_changes);
 		changes.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent event) {
-				if (oldCode != null)
-					oldCode.removeAll();
 				if (newCode != null)
 					newCode.removeAll();
 				selectedChange = changes.getSelectionIndex();
 				btnRemoveChangeEntry.setEnabled(true);
 				Iterator<CodeChange> it = collChanges.iterator();
 				int i = 0;
-				oldCode.removeAll();
 				newCode.removeAll();
-				CodeHighlighting ccolor = cc
-						.getContextColor(selectedFeatureExpression);
+				CodeHighlighting ccolor = cc.getContextColor(selectedFeatureExpression);
 				while (it.hasNext()) {
 					CodeChange ch = it.next();
 					if (i == selectedChange) {
-						baseCode = ch.getBaseVersionWholeClass();
-						java.util.List<CodeLine> mappedCode = ch
-								.getBaseVersion();
-						for (CodeLine clWC : baseCode) {
-							for (CodeLine cl : mappedCode) {
-								if (cl.getLine() == clWC.getLine()) {
-									clWC.setMapped(true);
-								}
-							}
-						}
-						oldCode.removeAll();
-						for (CodeLine cl : baseCode) {
-							TableItem item = new TableItem(oldCode, SWT.NONE);
-							item.setText(cl.getLine() + ": " + cl.getCode());
-							if (cl.isMapped()) {
-								Color color = new Color(getSite().getShell()
-										.getDisplay(), ccolor.getRGB());
-								item.setBackground(color);
-							}
-						}
-						java.util.List<CodeLine> code = ch
-								.getNewVersionWholeClass();
-						mappedCode = ch.getNewVersion();
-						for (CodeLine clWC : code) {
-							for (CodeLine cl : mappedCode) {
-								if (cl.getLine() == clWC.getLine()) {
-									clWC.setMapped(true);
-								}
-							}
-						}
-						newCode.removeAll();
 						for (CodeLine cl : code) {
 							TableItem item = new TableItem(newCode, SWT.NONE);
 							item.setText(cl.getLine() + ": " + cl.getCode());
 							if (cl.isMapped()) {
-								Color color = new Color(getSite().getShell()
-										.getDisplay(), ccolor.getRGB());
+								Color color = new Color(getSite().getShell().getDisplay(), ccolor.getRGB());
 								item.setBackground(color);
 							}
 							if (cl.isNew()) {
-								item.setForeground(getSite().getShell()
-										.getDisplay()
-										.getSystemColor(SWT.COLOR_DARK_RED));
+								item.setForeground(
+										getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_RED));
 							}
 						}
 						break;
@@ -332,15 +274,13 @@ public class FeatureView_Old extends ViewPart {
 		});
 		new Label(arg0, SWT.NONE);
 
-		oldCode = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.CANCEL);
+		oldCode = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
 		GridData gd_text = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_text.heightHint = 241;
 		oldCode.setLayoutData(gd_text);
 		new Label(arg0, SWT.NONE);
 
-		newCode = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.CANCEL);
+		newCode = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
 		GridData gd_text_1 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_text_1.heightHint = 251;
 		newCode.setLayoutData(gd_text_1);
@@ -350,16 +290,15 @@ public class FeatureView_Old extends ViewPart {
 		new Label(arg0, SWT.NONE);
 
 		btnRemoveChangeEntry = new Button(arg0, SWT.NONE);
-		btnRemoveChangeEntry.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				false, false, 1, 1));
+		btnRemoveChangeEntry.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnRemoveChangeEntry.setText("Remove Change Entry");
 		btnRemoveChangeEntry.setEnabled(false);
 		btnRemoveChangeEntry.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Selection: {
-					contextOperations.removeChange(selectedFeatureExpression,
-							selectedProject, selectedClass, selectedChange, 0l);
+					contextOperations.removeChange(selectedFeatureExpression, selectedProject, selectedClass,
+							selectedChange, 0l);
 					btnRemoveChangeEntry.setEnabled(false);
 					setChanges();
 					if (codeOfTarget != null)
@@ -395,8 +334,7 @@ public class FeatureView_Old extends ViewPart {
 		lblSyncPreview.setText("Sync Preview");
 
 		syncTargets = new List(arg0, SWT.BORDER | SWT.H_SCROLL);
-		GridData gd_syncTargets = new GridData(SWT.FILL, SWT.FILL, false,
-				false, 1, 1);
+		GridData gd_syncTargets = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		gd_syncTargets.heightHint = 79;
 		gd_syncTargets.widthHint = 100;
 		syncTargets.setLayoutData(gd_syncTargets);
@@ -420,11 +358,9 @@ public class FeatureView_Old extends ViewPart {
 				projectNameTarget = tmp[0].trim();
 				classNameTarget = tmp[1].trim();
 				rightClass = projectNameTarget + " - " + classNameTarget;
-				java.util.List<CodeLine> code = cc.getTargetCode(
-						selectedFeatureExpression, projectNameTarget,
+				java.util.List<CodeLine> code = cc.getTargetCode(selectedFeatureExpression, projectNameTarget,
 						classNameTarget);
-				codeWC = cc.getTargetCodeWholeClass(selectedFeatureExpression,
-						projectNameTarget, classNameTarget);
+				codeWC = cc.getTargetCodeWholeClass(selectedFeatureExpression, projectNameTarget, classNameTarget);
 				for (CodeLine clWC : codeWC) {
 					for (CodeLine cl : code) {
 						if (cl.getLine() == clWC.getLine()) {
@@ -432,15 +368,13 @@ public class FeatureView_Old extends ViewPart {
 						}
 					}
 				}
-				CodeHighlighting ccolor = cc
-						.getContextColor(selectedFeatureExpression);
+				CodeHighlighting ccolor = cc.getContextColor(selectedFeatureExpression);
 				codeOfTarget.removeAll();
 				for (CodeLine cl : codeWC) {
 					TableItem item = new TableItem(codeOfTarget, SWT.NONE);
 					item.setText(cl.getLine() + ": " + cl.getCode());
 					if (cl.isMapped()) {
-						Color color = new Color(getSite().getShell()
-								.getDisplay(), ccolor.getRGB());
+						Color color = new Color(getSite().getShell().getDisplay(), ccolor.getRGB());
 						item.setBackground(color);
 					}
 				}
@@ -471,17 +405,15 @@ public class FeatureView_Old extends ViewPart {
 							continue;
 						}
 						if (addRight) {
-							item.setBackground(new Color(getSite().getShell()
-									.getDisplay(), CodeHighlighting.RED
-									.getRGB()));
+							item.setBackground(
+									new Color(getSite().getShell().getDisplay(), CodeHighlighting.RED.getRGB()));
 						}
 						if (cl.getCode().contains(">>>>>>>")) {
 							addRight = false;
 						}
 						if (addLeft) {
-							item.setBackground(new Color(getSite().getShell()
-									.getDisplay(), CodeHighlighting.RED
-									.getRGB()));
+							item.setBackground(
+									new Color(getSite().getShell().getDisplay(), CodeHighlighting.RED.getRGB()));
 						}
 					}
 					if (left.isEmpty() && right.isEmpty()) {
@@ -499,8 +431,7 @@ public class FeatureView_Old extends ViewPart {
 		new Label(arg0, SWT.NONE);
 
 		btnSynchronize = new Button(arg0, SWT.NONE);
-		btnSynchronize.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER,
-				false, false, 1, 1));
+		btnSynchronize.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		btnSynchronize.setText("Auto Sync");
 		btnSynchronize.setEnabled(false);
 		btnSynchronize.addListener(SWT.Selection, new Listener() {
@@ -522,8 +453,7 @@ public class FeatureView_Old extends ViewPart {
 					// Problem: only changes of merged feature
 					// expression is mapped, changes of other feature
 					// expressions are lost
-					cc.refreshContext(true, selectedFeatureExpression,
-							projectNameTarget, classNameTarget, codeWC,
+					cc.refreshContext(true, selectedFeatureExpression, projectNameTarget, classNameTarget, codeWC,
 							syncCode);
 					break;
 				}
@@ -533,15 +463,13 @@ public class FeatureView_Old extends ViewPart {
 		new Label(arg0, SWT.NONE);
 
 		btnManualSync = new Button(arg0, SWT.NONE);
-		btnManualSync.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
-				false, 1, 1));
+		btnManualSync.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		btnManualSync.setText("Manual Sync");
 		btnManualSync.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				switch (e.type) {
 				case SWT.Selection:
-					ManualMerge m = new ManualMerge(reference, left, leftClass,
-							right, rightClass, syncCode);
+					ManualMerge m = new ManualMerge(reference, left, leftClass, right, rightClass, syncCode);
 					m.open();
 					break;
 				}
@@ -549,30 +477,26 @@ public class FeatureView_Old extends ViewPart {
 		});
 		new Label(arg0, SWT.NONE);
 
-		codeOfTarget = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.CANCEL);
+		codeOfTarget = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
 		gd_text = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		gd_text.heightHint = 247;
 		codeOfTarget.setLayoutData(gd_text);
 		new Label(arg0, SWT.NONE);
 
-		syncPreview = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.CANCEL);
+		syncPreview = new Table(arg0, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL);
 		gd_text = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_text.heightHint = 111;
 		syncPreview.setLayoutData(gd_text);
 	}
 
-	private void syncWithEclipse(java.util.List<CodeLine> newCode)
-			throws FileOperationException, CoreException {
+	private void syncWithEclipse(java.util.List<CodeLine> newCode) throws FileOperationException, CoreException {
 
 		// Base Version
 		java.util.List<String> baseLines = new ArrayList<String>();
 		for (CodeLine cl : baseCode) {
 			baseLines.add(cl.getCode());
 		}
-		File f = new File(ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toString()
+		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
 		if (!f.exists())
 			try {
@@ -586,9 +510,8 @@ public class FeatureView_Old extends ViewPart {
 		for (CodeLine cl : newCode) {
 			leftLines.add(cl.getCode());
 		}
-		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toString()
-				+ VariantSyncConstants.MERGE_PATH + "/LeftVersion.java");
+		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
+				+ "/LeftVersion.java");
 		if (!f.exists())
 			try {
 				f.createNewFile();
@@ -598,8 +521,7 @@ public class FeatureView_Old extends ViewPart {
 		ModuleFactory.getPersistanceOperations().addLinesToFile(leftLines, f);
 
 		// Right Version
-		java.util.List<IProject> supportedProjects = VariantSyncPlugin
-				.getDefault().getSupportProjectList();
+		java.util.List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		IResource left = null;
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
@@ -615,8 +537,7 @@ public class FeatureView_Old extends ViewPart {
 
 		IResource base = null;
 		IProject p = null;
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects()) {
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 			if (project.getName().equals("variantsyncFeatureInfo")) {
 				p = project;
 				base = findFileRecursively(project, "BaseVersion");
@@ -627,11 +548,9 @@ public class FeatureView_Old extends ViewPart {
 
 		// Editor
 		CompareConfiguration compconf = new CompareConfiguration();
-		compconf.setRightLabel(selectedProject + ": " + selectedClass
-				+ " - changed version");
+		compconf.setRightLabel(selectedProject + ": " + selectedClass + " - changed version");
 		compconf.setLeftLabel(projectNameTarget + ": " + classNameTarget);
-		compconf.setAncestorLabel(selectedProject + ": " + selectedClass
-				+ " - version without change");
+		compconf.setAncestorLabel(selectedProject + ": " + selectedClass + " - version without change");
 		compconf.setLeftEditable(true);
 		compconf.setRightEditable(false);
 
@@ -639,12 +558,10 @@ public class FeatureView_Old extends ViewPart {
 		// compconf);
 		// a.openWizard();
 		new ViewerPane();
-		CompareUI.openCompareEditor(new ResourceCompareInput(compconf, base,
-				left, right));
+		CompareUI.openCompareEditor(new ResourceCompareInput(compconf, base, left, right));
 	}
 
-	private IFile findFileRecursively(IContainer container, String name)
-			throws CoreException {
+	private IFile findFileRecursively(IContainer container, String name) throws CoreException {
 		for (IResource r : container.members()) {
 			if (r instanceof IContainer) {
 				IFile file = findFileRecursively((IContainer) r, name);
@@ -660,11 +577,9 @@ public class FeatureView_Old extends ViewPart {
 	}
 
 	public void solveChange(java.util.List<CodeLine> code) {
-		File file = contextOperations.getFile(selectedFeatureExpression,
-				projectNameTarget, classNameTarget);
+		File file = contextOperations.getFile(selectedFeatureExpression, projectNameTarget, classNameTarget);
 		persistanceOperations.writeFile(code, file);
-		IResource res = contextOperations.getResource(
-				selectedFeatureExpression, projectNameTarget, classNameTarget);
+		IResource res = contextOperations.getResource(selectedFeatureExpression, projectNameTarget, classNameTarget);
 		try {
 			res.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e1) {
@@ -676,19 +591,17 @@ public class FeatureView_Old extends ViewPart {
 	}
 
 	public void setChanges() {
-		collChanges = cc.getChanges(selectedFeatureExpression, selectedProject,
-				selectedClass);
+		collChanges = cc.getChanges(selectedFeatureExpression, selectedProject, selectedClass);
 		java.util.List<String> timestamps = new ArrayList<String>();
-		SimpleDateFormat formatter = new SimpleDateFormat(
-				"hh:mm:ss 'at' dd.MM.yyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss 'at' dd.MM.yyyy");
 		for (CodeChange ch : collChanges) {
 			timestamps.add(formatter.format(new Date(ch.getTimestamp())));
 		}
 		changes.setItems(timestamps.toArray(new String[] {}));
 
-//		String[] items = cc.getAutoSyncTargets(selectedFeatureExpression,
-//				selectedProject, selectedClass).toArray(new String[] {});
-//		syncTargets.setItems(items);
+		// String[] items = cc.getAutoSyncTargets(selectedFeatureExpression,
+		// selectedProject, selectedClass).toArray(new String[] {});
+		// syncTargets.setItems(items);
 	}
 
 	public void checkManualMerge(java.util.List<CodeLine> mergeResult) {
@@ -701,8 +614,7 @@ public class FeatureView_Old extends ViewPart {
 		}
 		if (manualMergeIsNeeded) {
 			UtilOperations.getInstance().printCode(mergeResult);
-			ManualMerge m = new ManualMerge(reference, mergeResult, leftClass,
-					mergeResult, rightClass, syncCode);
+			ManualMerge m = new ManualMerge(reference, mergeResult, leftClass, mergeResult, rightClass, syncCode);
 			m.open();
 		} else {
 			btnManualSync.setEnabled(false);
@@ -714,8 +626,7 @@ public class FeatureView_Old extends ViewPart {
 				newCode.removeAll();
 			if (syncPreview != null)
 				syncPreview.removeAll();
-			cc.refreshContext(false, selectedFeatureExpression,
-					projectNameTarget, classNameTarget, codeWC, syncCode);
+			cc.refreshContext(false, selectedFeatureExpression, projectNameTarget, classNameTarget, codeWC, syncCode);
 			solveChange(mergeResult);
 			setChanges();
 		}

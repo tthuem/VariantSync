@@ -15,17 +15,17 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class CodeChange {
 
-	private List<CodeLine> baseVersion;
-	protected List<CodeLine> baseVersionWholeClass;
+	private String baseVersion;
+	// protected List<CodeLine> baseVersionWholeClass;
 	private List<CodeLine> newVersion;
-	protected List<CodeLine> newVersionWholeClass;
+	// protected List<CodeLine> newVersionWholeClass;
 	private long timestamp;
 
 	public CodeChange() {
-		baseVersion = new ArrayList<CodeLine>();
+		baseVersion = "";
 		newVersion = new ArrayList<CodeLine>();
-		baseVersionWholeClass = new ArrayList<CodeLine>();
-		newVersionWholeClass = new ArrayList<CodeLine>();
+		// baseVersionWholeClass = new ArrayList<CodeLine>();
+		// newVersionWholeClass = new ArrayList<CodeLine>();
 	}
 
 	public void createTimeStamp() {
@@ -36,7 +36,7 @@ public class CodeChange {
 	 * @return the baseVersion
 	 */
 	@XmlElement
-	public List<CodeLine> getBaseVersion() {
+	public String getBaseVersion() {
 		return baseVersion;
 	}
 
@@ -44,7 +44,7 @@ public class CodeChange {
 	 * @param baseVersion
 	 *            the baseVersion to set
 	 */
-	public void setBaseVersion(List<CodeLine> baseVersion) {
+	public void setBaseVersion(String baseVersion) {
 		this.baseVersion = baseVersion;
 	}
 
@@ -80,17 +80,10 @@ public class CodeChange {
 		this.timestamp = timestamp;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "CodeChange [baseVersion=" + baseVersion
-				+ ", baseVersionWholeClass=" + baseVersionWholeClass
-				+ ", newVersion=" + newVersion + ", newVersionWholeClass="
-				+ newVersionWholeClass + ", timestamp=" + timestamp + "]";
+		return "CodeChange [baseVersion=" + baseVersion + ", newVersion=" + newVersion + ", timestamp=" + timestamp
+				+ "]";
 	}
 
 	/*
@@ -102,59 +95,62 @@ public class CodeChange {
 	protected CodeChange clone() {
 		CodeChange copy = new CodeChange();
 		copy.setTimestamp(this.timestamp);
-		List<CodeLine> baseVersion = new ArrayList<CodeLine>();
-		for (CodeLine line : this.baseVersion) {
-			baseVersion.add(line.clone());
-		}
-		copy.setBaseVersion(baseVersion);
+		copy.setBaseVersion(this.baseVersion);
+		// List<CodeLine> baseVersion = new ArrayList<CodeLine>();
+		// for (CodeLine line : this.baseVersion) {
+		// baseVersion.add(line.clone());
+		// }
+		// copy.setBaseVersion(baseVersion);
 		List<CodeLine> newVersion = new ArrayList<CodeLine>();
 		for (CodeLine line : this.newVersion) {
 			newVersion.add(line.clone());
 		}
 		copy.setNewVersion(newVersion);
-		List<CodeLine> baseVersionWholeClass = new ArrayList<CodeLine>();
-		for (CodeLine line : this.baseVersionWholeClass) {
-			baseVersionWholeClass.add(line.clone());
-		}
-		copy.setBaseVersionWholeClass(baseVersionWholeClass);
-		List<CodeLine> newVersionWholeClass = new ArrayList<CodeLine>();
-		for (CodeLine line : this.newVersionWholeClass) {
-			newVersionWholeClass.add(line.clone());
-		}
-		copy.setNewVersionWholeClass(newVersionWholeClass);
+		// List<CodeLine> baseVersionWholeClass = new ArrayList<CodeLine>();
+		// for (CodeLine line : this.baseVersionWholeClass) {
+		// baseVersionWholeClass.add(line.clone());
+		// }
+		// copy.setBaseVersionWholeClass(baseVersionWholeClass);
+		// List<CodeLine> newVersionWholeClass = new ArrayList<CodeLine>();
+		// for (CodeLine line : this.newVersionWholeClass) {
+		// newVersionWholeClass.add(line.clone());
+		// }
+		// copy.setNewVersionWholeClass(newVersionWholeClass);
 		return copy;
 	}
 
 	/**
 	 * @return the baseVersionWholeClass
 	 */
-	@XmlElement
-	public List<CodeLine> getBaseVersionWholeClass() {
-		return baseVersionWholeClass;
-	}
+	// @XmlElement
+	// public List<CodeLine> getBaseVersionWholeClass() {
+	// return baseVersionWholeClass;
+	// }
 
 	/**
 	 * @param baseVersionWholeClass
 	 *            the baseVersionWholeClass to set
 	 */
-	public void setBaseVersionWholeClass(List<CodeLine> baseVersionWholeClass) {
-		this.baseVersionWholeClass = baseVersionWholeClass;
-	}
+	// public void setBaseVersionWholeClass(List<CodeLine>
+	// baseVersionWholeClass) {
+	// this.baseVersionWholeClass = baseVersionWholeClass;
+	// }
 
 	/**
 	 * @return the newVersionWholeClass
 	 */
-	@XmlElement
-	public List<CodeLine> getNewVersionWholeClass() {
-		return newVersionWholeClass;
-	}
+	// @XmlElement
+	// public List<CodeLine> getNewVersionWholeClass() {
+	// return newVersionWholeClass;
+	// }
 
 	/**
 	 * @param newVersionWholeClass
 	 *            the newVersionWholeClass to set
 	 */
-	public void setNewVersionWholeClass(List<CodeLine> newVersionWholeClass) {
-		this.newVersionWholeClass = newVersionWholeClass;
-	}
+	// public void setNewVersionWholeClass(List<CodeLine> newVersionWholeClass)
+	// {
+	// this.newVersionWholeClass = newVersionWholeClass;
+	// }
 
 }

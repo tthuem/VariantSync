@@ -60,11 +60,9 @@ public class MarkerHandler {
 		return instance;
 	}
 
-	public void addMarker(MarkerInformation mi, IMarker marker, IResource file,
-			String feature) {
+	public void addMarker(MarkerInformation mi, IMarker marker, IResource file, String feature) {
 		CodeMarkerFactory.addAnnotation(marker, VariantSyncPlugin.getEditor(),
-				CodeMarkerFactory.getFeatureColor(feature), mi.getOffset(),
-				mi.getLength());
+				CodeMarkerFactory.getFeatureColor(feature), mi.getOffset(), mi.getLength());
 		mi.setMarkerId(marker.getId());
 		markerMap.put(mi.getMarkerId(), mi);
 	}
@@ -94,9 +92,7 @@ public class MarkerHandler {
 	private void setMarker(IFile file, List<MarkerInformation> markers) {
 		IDocument document = null;
 		try {
-			document = (IDocument) VariantSyncPlugin
-					.getEditor()
-					.getDocumentProvider()
+			document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider()
 					.getDocument(VariantSyncPlugin.getEditor().getEditorInput());
 		} catch (NullPointerException e) {
 			return;
@@ -104,10 +100,8 @@ public class MarkerHandler {
 		int i = 0;
 		for (MarkerInformation mi : markers) {
 			try {
-				IRegion regionStart = document
-						.getLineInformation(mi.getStart() - 1);
-				IRegion regionEnd = document
-						.getLineInformation(mi.getEnd() - 1);
+				IRegion regionStart = document.getLineInformation(mi.getStart() - 1);
+				IRegion regionEnd = document.getLineInformation(mi.getEnd() - 1);
 				try {
 					int start = regionStart.getOffset();
 					int end = regionEnd.getOffset() + 2;
@@ -115,8 +109,7 @@ public class MarkerHandler {
 							&& regionStart.getOffset() == regionEnd.getOffset()) {
 						end = regionStart.getOffset() + regionEnd.getLength();
 					}
-					CodeMarkerFactory.createMarker(String.valueOf(i), file,
-							start, end, mi.getFeature(), mi.getColor());
+					CodeMarkerFactory.createMarker(String.valueOf(i), file, start, end, mi.getFeature(), mi.getColor());
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
@@ -127,8 +120,7 @@ public class MarkerHandler {
 		}
 	}
 
-	public void updateMarker(String projectName, String packageName,
-			String className, Context activeContext) {
+	public void updateMarker(String projectName, String packageName, String className, Context activeContext) {
 		if (activeContext.getFeatureExpression().equals("Default_Context"))
 			return;
 		String file = "/src/" + packageName + "/" + className;
@@ -137,8 +129,7 @@ public class MarkerHandler {
 		IPath path = new Path(file);
 		IProject iProject = null;
 		if (VariantSyncPlugin.getDefault() != null) {
-			List<IProject> projects = VariantSyncPlugin.getDefault()
-					.getSupportProjectList();
+			List<IProject> projects = VariantSyncPlugin.getDefault().getSupportProjectList();
 			for (IProject p : projects) {
 				if (p.getName().equals(projectName)) {
 					iProject = p;
@@ -149,23 +140,18 @@ public class MarkerHandler {
 		if (iProject != null) {
 			IFile iFile = iProject.getFile(path);
 			MarkerHandler.getInstance().clearAllMarker(iFile);
-			List<MarkerInformation> markers = initMarker(
-					activeContext,
-					projectName,
-					iFile.toString().substring(
-							iFile.toString().lastIndexOf("/") + 1));
+			List<MarkerInformation> markers = initMarker(activeContext, projectName,
+					iFile.toString().substring(iFile.toString().lastIndexOf("/") + 1));
 
 			setMarker(iFile, markers);
 		}
 	}
 
-	private List<MarkerInformation> initMarker(Context context,
-			String projectName, String className) {
+	private List<MarkerInformation> initMarker(Context context, String projectName, String className) {
 		if (context.getFeatureExpression().equals("Default_Context"))
 			return new ArrayList<MarkerInformation>();
 		Set<MarkerInformation> markers = new HashSet<MarkerInformation>();
-		Map<String, List<Class>> classes = ModuleFactory
-				.getContextOperations().findJavaClass(projectName, className);
+		Map<String, List<Class>> classes = ModuleFactory.getContextOperations().findJavaClass(projectName, className);
 		Set<Entry<String, List<Class>>> set = classes.entrySet();
 		Iterator<Entry<String, List<Class>>> it = set.iterator();
 		while (it.hasNext()) {
@@ -177,16 +163,16 @@ public class MarkerHandler {
 				List<CodeLine> tmp = new ArrayList<CodeLine>();
 				for (CodeLine cl : cls) {
 					tmp.add(cl);
-					if (cls.size() > i + 1
-							&& cls.get(i + 1).getLine() == cl.getLine() + 1) {
+					if (cls.size() > i + 1 && cls.get(i + 1).getLine() == cl.getLine() + 1) {
 						tmp.add(cls.get(i + 1));
+						System.out.println("Tagged: " + cls.get(i + 1));
 					} else {
-						MarkerInformation mi = new MarkerInformation(0, tmp
-								.get(0).getLine(), tmp.get(tmp.size() - 1)
-								.getLine(), 0, 0);
+						MarkerInformation mi = new MarkerInformation(0, tmp.get(0).getLine(),
+								tmp.get(tmp.size() - 1).getLine(), 0, 0);
+						System.out.println("Tagged: " + tmp.get(0).getLine() + " - " + tmp.get(tmp.size() - 1).getLine()
+								+ " => " + tmp.get(0).getCode() + ", " + tmp.get(tmp.size() - 1).getCode());
 						mi.setFeature(entry.getKey());
-						mi.setColor(ModuleFactory.getContextOperations()
-								.findColor(entry.getKey()));
+						mi.setColor(ModuleFactory.getContextOperations().findColor(entry.getKey()));
 						markers.add(mi);
 						tmp.clear();
 					}
@@ -204,12 +190,14 @@ public class MarkerHandler {
 			List<CodeLine> tmp = new ArrayList<CodeLine>();
 			for (CodeLine cl : cls) {
 				tmp.add(cl);
-				if (cls.size() > i + 1
-						&& cls.get(i + 1).getLine() == cl.getLine() + 1) {
+				if (cls.size() > i + 1 && cls.get(i + 1).getLine() == cl.getLine() + 1) {
 					tmp.add(cls.get(i + 1));
+					System.out.println("Tagged: " + cls.get(i + 1));
 				} else {
-					MarkerInformation mi = new MarkerInformation(0, tmp.get(0)
-							.getLine(), tmp.get(tmp.size() - 1).getLine(), 0, 0);
+					MarkerInformation mi = new MarkerInformation(0, tmp.get(0).getLine(),
+							tmp.get(tmp.size() - 1).getLine(), 0, 0);
+					System.out.println("Tagged: " + tmp.get(0).getLine() + " - " + tmp.get(tmp.size() - 1).getLine()
+							+ " => " + tmp.get(0).getCode() + ", " + tmp.get(tmp.size() - 1).getCode());
 					mi.setFeature(context.getFeatureExpression());
 					mi.setColor(context.getColor());
 					markers.add(mi);
@@ -218,6 +206,7 @@ public class MarkerHandler {
 				i++;
 			}
 		}
+		// markers.add(new MarkerInformation(0, 2, 5, 0, 0));
 		return new ArrayList<MarkerInformation>(markers);
 	}
 
@@ -234,8 +223,7 @@ public class MarkerHandler {
 		if (file != null && file.getProject() != null) {
 			String projectName = file.getProject().getName();
 			String fileName = file.getName();
-			Map<String, List<Class>> classes = contextOp.findJavaClass(
-					projectName, fileName);
+			Map<String, List<Class>> classes = contextOp.findJavaClass(projectName, fileName);
 
 			MarkerHandler.getInstance().clearAllMarker(file);
 			List<MarkerInformation> markers = new ArrayList<MarkerInformation>();
@@ -250,16 +238,16 @@ public class MarkerHandler {
 					List<CodeLine> tmp = new ArrayList<CodeLine>();
 					for (CodeLine cl : cls) {
 						tmp.add(cl);
-						if (cls.size() > i + 1
-								&& cls.get(i + 1).getLine() == cl.getLine() + 1) {
+						if (cls.size() > i + 1 && cls.get(i + 1).getLine() == cl.getLine() + 1) {
 							tmp.add(cls.get(i + 1));
 						} else {
-							MarkerInformation mi = new MarkerInformation(0, tmp
-									.get(0).getLine(), tmp.get(tmp.size() - 1)
-									.getLine(), 0, 0);
+							MarkerInformation mi = new MarkerInformation(0, tmp.get(0).getLine(),
+									tmp.get(tmp.size() - 1).getLine(), 0, 0);
 							mi.setFeature(entry.getKey());
 							mi.setColor(contextOp.findColor(entry.getKey()));
-							markers.add(mi);
+							if (mi.getFeature() != null && !"Default_Context".equals(mi.getFeature())) {
+								markers.add(mi);
+							}
 							tmp.clear();
 						}
 						i++;

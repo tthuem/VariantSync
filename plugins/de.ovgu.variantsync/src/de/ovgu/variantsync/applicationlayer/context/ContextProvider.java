@@ -504,7 +504,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<CodeLine> getTargetCodeWholeClass(String fe, String projectName, String className) {
+	public List<CodeLine> getLinesOfFile(String fe, String projectName, String fileName) {
 		List<CodeLine> targetCode = new ArrayList<CodeLine>();
 		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
@@ -512,7 +512,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			if (name.equals(projectName)) {
 				IResource javaClass = null;
 				try {
-					javaClass = ContextUtils.findFileRecursively(p, className);
+					javaClass = ContextUtils.findFileRecursively(p, fileName);
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}

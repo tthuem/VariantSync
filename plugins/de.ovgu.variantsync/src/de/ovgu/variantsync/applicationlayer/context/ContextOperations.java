@@ -78,7 +78,7 @@ public interface ContextOperations {
 
 	CodeHighlighting getContextColor(String featureExpression);
 
-	List<CodeLine> getTargetCodeWholeClass(String fe, String projectName,
+	List<CodeLine> getLinesOfFile(String fe, String projectName,
 			String className);
 
 	void setBaseVersion(IFile file);

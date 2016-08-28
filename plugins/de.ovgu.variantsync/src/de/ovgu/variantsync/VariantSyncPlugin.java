@@ -343,7 +343,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static ITextEditor getEditor() {
-		return (ITextEditor) getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if (getActiveWorkbenchWindow().getActivePage().getActiveEditor() instanceof ITextEditor) {
+			return (ITextEditor) getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		} else {
+			return null;
+		}
 	}
 
 	public static Shell getShell() {

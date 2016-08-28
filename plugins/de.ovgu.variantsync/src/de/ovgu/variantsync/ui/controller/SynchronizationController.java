@@ -37,16 +37,10 @@ public class SynchronizationController extends AbstractController {
 
 	public List<CodeLine> doAutoSync(List<CodeLine> left, List<CodeLine> base,
 			List<CodeLine> right) {
-		// return mergeOperations.doAutoSync(left, base, right);
-//		if (!mergeOperations.checkConflict(parseCodeLinesToString(base),
-//				parseCodeLinesToString(left), parseCodeLinesToString(right))) {
 			List<String> mergeResult = mergeOperations.performThreeWayMerge(
 					parseCodeLinesToString(base), parseCodeLinesToString(left),
 					parseCodeLinesToString(right));
 			return parseStringsToCodeLines(mergeResult);
-//		} else {
-//			return new ArrayList<CodeLine>();
-//		}
 	}
 
 	public boolean checkSyncConflict(List<CodeLine> ancestor,

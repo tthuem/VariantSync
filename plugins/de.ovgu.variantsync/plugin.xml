@@ -518,63 +518,63 @@
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationYellow"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerYellow"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerYellow"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationGreen"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerGreen"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerGreen"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationBlue"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlue"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerBlue"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationBlueBright"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerBlueBright"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerBlueBright"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationPurple"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerPurple"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerPurple"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationPink"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerPink"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerPink"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationRed"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerRed"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerRed"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationOrange"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerOrange"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerOrange"/>
    </extension>
    <extension point="org.eclipse.ui.editors.annotationTypes">
       <type
             markerSeverity="0"
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationGreenBright"
-            markerType="de.ovgu.pfofe.variantsync.codehighlightmarkerGreenBright"/>
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerGreenBright"/>
    </extension>
    <!--
    <extension point="org.eclipse.ui.editors.annotationTypes">
@@ -674,7 +674,7 @@
       </handler>
       <handler
             class="de.ovgu.variantsync.ui.view.context.FeatureExpressionHandler"
-            commandId="de.ovgu.pfofe.variantsync.FeatureExpressionCommand">xy
+            commandId="de.ovgu.pfofe.variantsync.FeatureExpressionCommand">
       </handler>
    </extension>
    <extension point="org.eclipse.ui.menus">

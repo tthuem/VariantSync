@@ -754,7 +754,7 @@
          </property>
       </product>
    </extension>
-   <extension
+ <!--  <extension
          point="org.eclipse.compare.structureMergeViewers">
           <viewer
                extensions="java,java2,java3"
@@ -765,5 +765,5 @@
 		          contentTypeId="org.eclipse.jdt.core.javaSource"
 		          contentMergeViewerId="de.ovgu.variantsync.ui.view.mergeprocess.test.JavaContentViewerCreator">
           </contentTypeBinding>
-   </extension>
+   </extension> -->
 </plugin>

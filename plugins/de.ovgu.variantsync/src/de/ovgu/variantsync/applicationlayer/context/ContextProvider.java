@@ -558,17 +558,11 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 		} catch (FileOperationException | CoreException e) {
 			e.printStackTrace();
 		}
-		List<CodeLine> code = new ArrayList<CodeLine>();
-		int i = 1;
-		for (String line : linesOfFile) {
-			code.add(new CodeLine(line, i, false, false));
-			i++;
-		}
-		ContextHandler.getInstance().setLinesOfActualClass(file.getName(), code);
+		ContextHandler.getInstance().setLinesOfActualClass(file.getName(), linesOfFile);
 	}
 
 	@Override
-	public List<CodeLine> getLinesOfActualFile(String filename) {
+	public List<String> getLinesOfActualFile(String filename) {
 		return ContextHandler.getInstance().getLinesOfActualClass(filename);
 	}
 

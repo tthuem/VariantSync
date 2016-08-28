@@ -83,7 +83,7 @@ public interface ContextOperations {
 
 	void setBaseVersion(IFile file);
 
-	List<CodeLine> getLinesOfActualFile(String filename);
+	List<String> getLinesOfActualFile(String filename);
 
 	File getFile(String selectedFeatureExpression, String projectNameTarget,
 			String classNameTarget);

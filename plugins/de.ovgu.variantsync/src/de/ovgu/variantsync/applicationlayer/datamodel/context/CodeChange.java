@@ -20,9 +20,11 @@ public class CodeChange {
 	private List<CodeLine> newVersion;
 	// protected List<CodeLine> newVersionWholeClass;
 	private long timestamp;
+	private String filename;
 
 	public CodeChange() {
 		baseVersion = "";
+		filename = "";
 		newVersion = new ArrayList<CodeLine>();
 		// baseVersionWholeClass = new ArrayList<CodeLine>();
 		// newVersionWholeClass = new ArrayList<CodeLine>();
@@ -117,6 +119,14 @@ public class CodeChange {
 		// }
 		// copy.setNewVersionWholeClass(newVersionWholeClass);
 		return copy;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	/**

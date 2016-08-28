@@ -112,8 +112,7 @@ public class PersistanceOperationProvider implements Persistable {
 
 	@Override
 	public void saveFeatureExpressions(FeatureExpressions fe) {
-		String path = VariantSyncPlugin.getWorkspaceLocation()
-				+ VariantSyncConstants.FEATURE_EXPRESSION_PATH;
+		String path = VariantSyncPlugin.getWorkspaceLocation() + VariantSyncConstants.FEATURE_EXPRESSION_PATH;
 
 		// creates target folder if it does not already exist
 		File folder = new File(path.substring(0, path.lastIndexOf("/")));

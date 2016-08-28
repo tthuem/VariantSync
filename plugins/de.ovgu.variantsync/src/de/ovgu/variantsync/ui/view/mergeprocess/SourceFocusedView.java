@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MenuAdapter;
@@ -520,6 +521,10 @@ public class SourceFocusedView extends ViewPart {
 						// }
 						// }
 						// }
+
+						Path path = new Path(filename);
+						IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+
 						ModuleFactory.getContextOperations().activateContext(selectedFeatureExpression);
 						java.util.List<CodeLine> syncCode = sc.doAutoSync(ch.getNewVersionWholeClass(), baseCode,
 								codeWC);

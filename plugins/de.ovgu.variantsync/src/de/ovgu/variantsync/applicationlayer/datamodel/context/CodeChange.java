@@ -30,9 +30,11 @@ public class CodeChange {
 		// newVersionWholeClass = new ArrayList<CodeLine>();
 	}
 
-	public void createTimeStamp() {
-		this.timestamp = new Date().getTime();
-	}
+	// TODO: Timestamp aus IFile History nehmen, um beim Synchronisieren damit
+	// die passende Version aus IFileStates herausfinden zu können
+//	public void createTimeStamp() {
+//		this.timestamp = new Date().getTime();
+//	}
 
 	/**
 	 * @return the baseVersion
@@ -98,6 +100,7 @@ public class CodeChange {
 		CodeChange copy = new CodeChange();
 		copy.setTimestamp(this.timestamp);
 		copy.setBaseVersion(this.baseVersion);
+		copy.setFilename(this.filename);
 		// List<CodeLine> baseVersion = new ArrayList<CodeLine>();
 		// for (CodeLine line : this.baseVersion) {
 		// baseVersion.add(line.clone());
@@ -121,6 +124,7 @@ public class CodeChange {
 		return copy;
 	}
 
+	@XmlElement
 	public String getFilename() {
 		return filename;
 	}

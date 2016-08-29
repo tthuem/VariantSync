@@ -501,7 +501,7 @@ public class TargetFocusedView extends ViewPart {
 							java.util.List<CodeLine> code = cc.getTargetCode(s,
 									targetProject, targetClass);
 							java.util.List<CodeLine> codeWC = cc
-									.getTargetCodeWholeClass(s, targetProject,
+									.getTargetFile(s, targetProject,
 											targetClass);
 							for (CodeLine clWC : codeWC) {
 								for (CodeLine cl : code) {

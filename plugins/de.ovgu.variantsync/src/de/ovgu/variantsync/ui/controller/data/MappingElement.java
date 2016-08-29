@@ -18,9 +18,10 @@ public class MappingElement {
 	private boolean isFirstStep;
 	private boolean isLastStep;
 	private boolean ignore;
+	private long modificationTime;
 
-	public MappingElement(String feature, String title, JavaElements type,
-			String pathToSelectedElement, String pathToProject) {
+	public MappingElement(String feature, String title, JavaElements type, String pathToSelectedElement,
+			String pathToProject) {
 		this.feature = feature;
 		this.title = title;
 		this.type = type;
@@ -28,11 +29,9 @@ public class MappingElement {
 		this.pathToProject = pathToProject;
 	}
 
-	public MappingElement(String feature, String title, JavaElements type,
-			String pathToSelectedElement, List<String> code,
-			int startLineOfSelection, int endLineOfSelection, int offset,
-			List<String> wholeClass, boolean isFirstStep, boolean isLastStep,
-			boolean ignore) {
+	public MappingElement(String feature, String title, JavaElements type, String pathToSelectedElement,
+			List<String> code, int startLineOfSelection, int endLineOfSelection, int offset, List<String> wholeClass,
+			boolean isFirstStep, boolean isLastStep, boolean ignore, long modificationTime) {
 		this.feature = feature;
 		this.title = title;
 		this.type = type;
@@ -45,10 +44,10 @@ public class MappingElement {
 		this.isFirstStep = isFirstStep;
 		this.isLastStep = isLastStep;
 		this.ignore = ignore;
+		this.modificationTime = modificationTime;
 	}
 
-	public MappingElement(String feature, String title, JavaElements type,
-			String pathToSelectedElement, String code,
+	public MappingElement(String feature, String title, JavaElements type, String pathToSelectedElement, String code,
 			int startLineOfSelection, int endLineOfSelection, int offset) {
 		this.feature = feature;
 		this.title = title;
@@ -76,6 +75,14 @@ public class MappingElement {
 	 */
 	public String getTitle() {
 		return title;
+	}
+
+	public long getModificationTime() {
+		return modificationTime;
+	}
+
+	public void setModificationTime(long modificationTime) {
+		this.modificationTime = modificationTime;
 	}
 
 	/**
@@ -127,19 +134,13 @@ public class MappingElement {
 		return offset;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "MappingElement [feature=" + feature + ", title=" + title
-				+ ", type=" + type + ", pathToSelectedElement="
-				+ pathToSelectedElement + ", code=" + code
-				+ ", startLineOfSelection=" + startLineOfSelection
-				+ ", endLineOfSelection=" + endLineOfSelection + ", offset="
-				+ offset + ", pathToProject=" + pathToProject + "]";
+		return "MappingElement [feature=" + feature + ", title=" + title + ", type=" + type + ", pathToSelectedElement="
+				+ pathToSelectedElement + ", code=" + code + ", startLineOfSelection=" + startLineOfSelection
+				+ ", endLineOfSelection=" + endLineOfSelection + ", offset=" + offset + ", pathToProject="
+				+ pathToProject + ", wholeClass=" + wholeClass + ", isFirstStep=" + isFirstStep + ", isLastStep="
+				+ isLastStep + ", ignore=" + ignore + ", modificationTime=" + modificationTime + "]";
 	}
 
 	/**

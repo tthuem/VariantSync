@@ -360,7 +360,7 @@ public class FeatureView_Old extends ViewPart {
 				rightClass = projectNameTarget + " - " + classNameTarget;
 				java.util.List<CodeLine> code = cc.getTargetCode(selectedFeatureExpression, projectNameTarget,
 						classNameTarget);
-				codeWC = cc.getTargetCodeWholeClass(selectedFeatureExpression, projectNameTarget, classNameTarget);
+				codeWC = cc.getTargetFile(selectedFeatureExpression, projectNameTarget, classNameTarget);
 				for (CodeLine clWC : codeWC) {
 					for (CodeLine cl : code) {
 						if (cl.getLine() == clWC.getLine()) {

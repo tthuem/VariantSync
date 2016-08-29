@@ -15,6 +15,7 @@ import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -52,6 +53,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
 import de.ovgu.variantsync.applicationlayer.merging.ResourceCompareInput;
+import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.controller.ContextController;
 import de.ovgu.variantsync.ui.controller.ControllerHandler;
 import de.ovgu.variantsync.ui.controller.FeatureController;
@@ -70,6 +72,7 @@ public class SourceFocusedView extends ViewPart {
 	private SynchronizationController sc = ControllerHandler.getInstance().getSynchronizationController();
 	private FeatureController fc = ControllerHandler.getInstance().getFeatureController();
 	private ContextOperations contextOperations = ModuleFactory.getContextOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
 
 	private List projects;
 	private List classes;
@@ -81,8 +84,8 @@ public class SourceFocusedView extends ViewPart {
 	private int selectedChange;
 	private Collection<CodeChange> collChanges;
 	private String featureExpressions[];
-	private java.util.List<CodeLine> baseCode;
-	private java.util.List<CodeLine> syncCode;
+	// private java.util.List<String> baseCode;
+	private java.util.List<String> syncCode;
 	private String projectNameTarget;
 	private String classNameTarget;
 	private Button btnSynchronize;
@@ -91,7 +94,7 @@ public class SourceFocusedView extends ViewPart {
 	private String rightClass;
 	private SourceFocusedView reference;
 	private Button btnRemoveChangeEntry;
-	private java.util.List<CodeLine> codeWC;
+	private java.util.List<String> codeWC;
 	private CCombo combo;
 	private Label lblMergeConflict;
 	private List manualSyncTargets;
@@ -104,6 +107,7 @@ public class SourceFocusedView extends ViewPart {
 	private java.util.List<CodeLine> newVersionWholeClass;
 	private List list_batchVariants;
 	private GridData gd_list_2;
+	private CodeChange currentChange;
 
 	public SourceFocusedView() {
 	}
@@ -274,6 +278,7 @@ public class SourceFocusedView extends ViewPart {
 				while (it.hasNext()) {
 					CodeChange ch = it.next();
 					if (i == selectedChange) {
+						currentChange = ch;
 						timestamp = ch.getTimestamp();
 						newCode.removeAll();
 						for (CodeLine cl : ch.getNewVersion()) {
@@ -315,18 +320,11 @@ public class SourceFocusedView extends ViewPart {
 				projectNameTarget = tmp[0].trim();
 				classNameTarget = tmp[1].trim();
 				rightClass = projectNameTarget + " - " + classNameTarget;
-				java.util.List<CodeLine> code = cc.getTargetCode(selectedFeatureExpression, projectNameTarget,
-						classNameTarget);
-				codeWC = cc.getTargetCodeWholeClass(selectedFeatureExpression, projectNameTarget, classNameTarget);
-				for (CodeLine clWC : codeWC) {
-					for (CodeLine cl : code) {
-						if (cl.getLine() == clWC.getLine()) {
-							clWC.setMapped(true);
-						}
-					}
-				}
-				CodeHighlighting ccolor = cc.getContextColor(selectedFeatureExpression);
-				syncCode = sc.doAutoSync(getNewCode(), baseCode, codeWC);
+
+				// CodeHighlighting ccolor =
+				// cc.getContextColor(selectedFeatureExpression);
+				syncCode = sc.doAutoSync(getLinesOfString(currentChange.getNewVersion()), getBaseCode(currentChange),
+						cc.getTargetFile(selectedFeatureExpression, projectNameTarget, classNameTarget));
 				if (syncCode != null && !syncCode.isEmpty()) {
 					btnSynchronize.setEnabled(true);
 				} else {
@@ -417,9 +415,10 @@ public class SourceFocusedView extends ViewPart {
 					// right, rightClass, syncCode);
 					// m.open();
 					btnManualSync.setEnabled(false);
+
 					try {
-						syncWithEclipse(baseCode, getNewCode(), selectedProject, selectedClass, projectNameTarget,
-								classNameTarget);
+						syncWithEclipse(getBaseCode(currentChange), getLinesOfString(currentChange.getNewVersion()),
+								selectedProject, selectedClass, projectNameTarget, classNameTarget);
 					} catch (FileOperationException | CoreException ex) {
 						ex.printStackTrace();
 					}
@@ -470,6 +469,36 @@ public class SourceFocusedView extends ViewPart {
 		new Label(arg0, SWT.NONE);
 	}
 
+	private java.util.List<String> getBaseCode(CodeChange ch) {
+		Path path = new Path(ch.getFilename());
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		try {
+			return getCodeFromFile(file, ch.getTimestamp());
+		} catch (CoreException | FileOperationException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private java.util.List<String> getCodeFromFile(IFile file, long timestamp)
+			throws CoreException, FileOperationException {
+		IFileState[] states = file.getHistory(null);
+		for (IFileState state : states) {
+			if (state.getModificationTime() == timestamp) {
+				return persistanceOperations.readFile(state.getContents(), state.getCharset());
+			}
+		}
+		return null;
+	}
+
+	private java.util.List<String> getLinesOfString(java.util.List<CodeLine> clines) {
+		java.util.List<String> result = new ArrayList<String>();
+		for (CodeLine cl : clines) {
+			result.add(cl.getCode());
+		}
+		return result;
+	}
+
 	private java.util.List<CodeLine> getDifference(java.util.List<CodeLine> base, java.util.List<CodeLine> changed) {
 		java.util.List<CodeLine> diff = new ArrayList<CodeLine>();
 		int i = 0;
@@ -494,8 +523,8 @@ public class SourceFocusedView extends ViewPart {
 				while (it.hasNext()) {
 					CodeChange ch = it.next();
 					long timestamp = ch.getTimestamp();
-					String[] autoItems = cc
-							.getAutoSyncTargets(selectedFeatureExpression, s, c, baseCode, newVersionWholeClass)
+					String[] autoItems = cc.getAutoSyncTargets(selectedFeatureExpression, s, c,
+							getBaseCode(currentChange), getLinesOfString(currentChange.getNewVersion()))
 							.toArray(new String[] {});
 					java.util.List<String> checkedItems = new ArrayList<String>();
 					for (String target : autoItems) {
@@ -512,8 +541,8 @@ public class SourceFocusedView extends ViewPart {
 						// cc.getTargetCode(selectedFeatureExpression,
 						// targetProject,
 						// targetClass);
-						java.util.List<CodeLine> codeWC = cc.getTargetCodeWholeClass(selectedFeatureExpression,
-								targetProject, targetClass);
+						java.util.List<String> codeWC = cc.getTargetFile(selectedFeatureExpression, targetProject,
+								targetClass);
 						// for (CodeLine clWC : codeWC) {
 						// for (CodeLine cl : code) {
 						// if (cl.getLine() == clWC.getLine()) {
@@ -522,19 +551,20 @@ public class SourceFocusedView extends ViewPart {
 						// }
 						// }
 
-						Path path = new Path(filename);
+						Path path = new Path(ch.getFilename());
 						IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 
 						ModuleFactory.getContextOperations().activateContext(selectedFeatureExpression);
-						java.util.List<CodeLine> syncCode = sc.doAutoSync(ch.getNewVersionWholeClass(), baseCode,
-								codeWC);
+						java.util.List<String> syncCode = sc.doAutoSync(persistanceOperations.getHistoryFileLines(file),
+								persistanceOperations.getHistoryFileLines(file), codeWC);
 						solveChange(syncCode, selectedFeatureExpression, targetProject, targetClass, false);
 						cc.addSynchronizedChange(selectedFeatureExpression, timestamp, selectedProject, target);
 					}
 
 					// manueller Anteil
-					java.util.List<String> manualSyncTargetsAsList = cc
-							.getConflictedSyncTargets(selectedFeatureExpression, s, c, baseCode, newVersionWholeClass);
+					java.util.List<String> manualSyncTargetsAsList = cc.getConflictedSyncTargets(
+							selectedFeatureExpression, s, c, getBaseCode(currentChange),
+							getLinesOfString(currentChange.getNewVersion()));
 					String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 					checkedItems = new ArrayList<String>();
 					for (String target : manualItems) {
@@ -548,7 +578,8 @@ public class SourceFocusedView extends ViewPart {
 						String targetProject = t[0].trim();
 						String targetClass = t[1].trim();
 						try {
-							syncWithEclipse(baseCode, newVersionWholeClass, s, c, targetProject, targetClass);
+							syncWithEclipse(getBaseCode(currentChange), getLinesOfString(currentChange.getNewVersion()),
+									s, c, targetProject, targetClass);
 						} catch (FileOperationException | CoreException e1) {
 							e1.printStackTrace();
 						}
@@ -561,29 +592,11 @@ public class SourceFocusedView extends ViewPart {
 		}
 	}
 
-	private java.util.List<CodeLine> getNewCode() {
-		Iterator<CodeChange> it = collChanges.iterator();
-		java.util.List<CodeLine> newCode = null;
-		int i = 0;
-		while (it.hasNext()) {
-			CodeChange cc = it.next();
-			if (i == selectedChange) {
-				newCode = cc.getNewVersionWholeClass();
-			}
-			i++;
-		}
-		return newCode;
-	}
-
-	private void syncWithEclipse(java.util.List<CodeLine> baseCode, java.util.List<CodeLine> leftCode,
-			String projectName, String className, String projectNameRight, String classNameRight)
+	private void syncWithEclipse(java.util.List<String> baseCode, java.util.List<String> leftCode, String projectName,
+			String className, String projectNameRight, String classNameRight)
 			throws FileOperationException, CoreException {
 
 		// Base Version
-		java.util.List<String> baseLines = new ArrayList<String>();
-		for (CodeLine cl : baseCode) {
-			baseLines.add(cl.getCode());
-		}
 		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
 		if (!f.exists())
@@ -592,12 +605,8 @@ public class SourceFocusedView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(baseLines, f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile(baseCode, f);
 
-		java.util.List<String> leftLines = new ArrayList<String>();
-		for (CodeLine cl : leftCode) {
-			leftLines.add(cl.getCode());
-		}
 		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
 				+ "/LeftVersion.java");
 		if (!f.exists())
@@ -606,7 +615,7 @@ public class SourceFocusedView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(leftLines, f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile(leftCode, f);
 
 		// Right Version
 		java.util.List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
@@ -667,7 +676,7 @@ public class SourceFocusedView extends ViewPart {
 		return null;
 	}
 
-	public void solveChange(java.util.List<CodeLine> code, String selectedFeatureExpression, String projectName,
+	public void solveChange(java.util.List<String> code, String selectedFeatureExpression, String projectName,
 			String className, boolean refreshGUI) {
 		IResource res = contextOperations.getResource(selectedFeatureExpression, projectName, className);
 		// try {
@@ -686,8 +695,8 @@ public class SourceFocusedView extends ViewPart {
 		}
 
 		java.util.List<String> source = new ArrayList<String>();
-		for (CodeLine line : code) {
-			source.add(line.getCode() + "\n");
+		for (String line : code) {
+			source.add(line + "\n");
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		for (String line : source) {
@@ -717,10 +726,13 @@ public class SourceFocusedView extends ViewPart {
 		// btnRemoveChangeEntry.setEnabled(false);
 	}
 
+	// TODO: currentChange.getNewVersion: whole file neccessary!
 	private void refreshSyncTargets() {
 		boolean isAutoSyncPossible = false;
-		String[] autoItems = cc.getAutoSyncTargets(selectedFeatureExpression, selectedProject, selectedClass, baseCode,
-				newVersionWholeClass).toArray(new String[] {});
+		String[] autoItems = cc
+				.getAutoSyncTargets(selectedFeatureExpression, selectedProject, selectedClass,
+						getBaseCode(currentChange), getLinesOfString(currentChange.getNewVersion()))
+				.toArray(new String[] {});
 		java.util.List<String> checkedItems = new ArrayList<String>();
 		for (String target : autoItems) {
 			if (!contextOperations.isAlreadySynchronized(selectedFeatureExpression, timestamp, selectedProject,
@@ -734,7 +746,7 @@ public class SourceFocusedView extends ViewPart {
 
 		boolean isManualSyncPossible = false;
 		manualSyncTargetsAsList = cc.getConflictedSyncTargets(selectedFeatureExpression, selectedProject, selectedClass,
-				baseCode, newVersionWholeClass);
+				getBaseCode(currentChange), getLinesOfString(currentChange.getNewVersion()));
 		String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 		checkedItems = new ArrayList<String>();
 		for (String target : manualItems) {
@@ -765,16 +777,16 @@ public class SourceFocusedView extends ViewPart {
 		changes.setItems(timestamps.toArray(new String[] {}));
 	}
 
-	public void checkManualMerge(java.util.List<CodeLine> mergeResult) {
+	public void checkManualMerge(java.util.List<String> mergeResult) {
 		boolean manualMergeIsNeeded = false;
-		for (CodeLine cl : mergeResult) {
-			if (cl.getCode().contains("<<<<<<<")) {
+		for (String cl : mergeResult) {
+			if (cl.contains("<<<<<<<")) {
 				manualMergeIsNeeded = true;
 				break;
 			}
 		}
 		if (manualMergeIsNeeded) {
-			UtilOperations.getInstance().printCode(mergeResult);
+			UtilOperations.getInstance().printLines(mergeResult);
 			ManualMerge m = new ManualMerge(reference, mergeResult, leftClass, mergeResult, rightClass, syncCode);
 			m.open();
 		} else {

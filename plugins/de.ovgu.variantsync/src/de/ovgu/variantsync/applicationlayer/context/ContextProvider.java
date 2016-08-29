@@ -86,38 +86,41 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 
 	@Override
 	public void recordCodeChange(List<String> changedCode, String projectName, String pathToProject, String packageName,
-			String className, List<String> wholeClass) {
+			String className, List<String> wholeClass, long modificationTime) {
 		if (ignoreAfterMerge) {
-			recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass, true);
+			recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass, true,
+					modificationTime);
 			return;
 		}
 		if (!ignoreCodeChange) {
 			System.out.println("\n=== Changed Code ===");
 			System.out.println(changedCode.toString());
-			contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName,
-					wholeClass);
+			contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass,
+					modificationTime);
 		}
 		ignoreCodeChange = false;
 	}
 
 	@Override
 	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, boolean ignoreChange) {
+			String packageName, List<String> wholeClass, boolean ignoreChange, long modificationTime) {
 		contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass,
-				ignoreChange);
+				ignoreChange, modificationTime);
 		ignoreChange = false;
 	}
 
 	@Override
 	public void recordFileAdded(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass) {
-		contextHandler.recordFileAdded(projectName, pathToProject, className, packageName, wholeClass);
+			List<String> wholeClass, long modificationTime) {
+		contextHandler.recordFileAdded(projectName, pathToProject, className, packageName, wholeClass,
+				modificationTime);
 	}
 
 	@Override
 	public void recordFileRemoved(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass) {
-		contextHandler.recordFileRemoved(projectName, pathToProject, className, packageName, wholeClass);
+			List<String> wholeClass, long modificationTime) {
+		contextHandler.recordFileRemoved(projectName, pathToProject, className, packageName, wholeClass,
+				modificationTime);
 	}
 
 	@Override
@@ -137,16 +140,16 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 
 	@Override
 	public void addCode(String projectName, String packageName, String className, List<String> code,
-			List<String> wholeClass) {
+			List<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(ContextHandler.getInstance().getActiveContext());
-		ca.addCode(projectName, packageName, className, code, wholeClass, false);
+		ca.addCode(projectName, packageName, className, code, wholeClass, false, modificationTime);
 	}
 
 	@Override
 	public void addCode(String projectName, String packageName, String className, List<String> code, Context c,
-			List<String> wholeClass) {
+			List<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(c);
-		ca.addCode(projectName, packageName, className, code, wholeClass, false);
+		ca.addCode(projectName, packageName, className, code, wholeClass, false, modificationTime);
 	}
 
 	@Override
@@ -297,8 +300,8 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<String> ancestor,
+			List<String> left) {
 		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictFreeSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
@@ -310,8 +313,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 				conflictFreeSyncTargets.add(target);
 				continue;
 			}
-			if (!ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
-					Util.parseCodeLinesToString(left), right)) {
+			if (!ModuleFactory.getMergeOperations().checkConflict(ancestor, left, right)) {
 				conflictFreeSyncTargets.add(target);
 			}
 		}
@@ -334,8 +336,8 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<String> getConflictSyncTargets(String fe, String projectName, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getConflictSyncTargets(String fe, String projectName, String className, List<String> ancestor,
+			List<String> left) {
 		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictedSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
@@ -343,8 +345,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			String targetProject = targetInfo[0].trim();
 			String targetClass = targetInfo[1].trim();
 			List<String> right = getCodeLines(targetProject, targetClass);
-			if (ModuleFactory.getMergeOperations().checkConflict(Util.parseCodeLinesToString(ancestor),
-					Util.parseCodeLinesToString(left), right)) {
+			if (ModuleFactory.getMergeOperations().checkConflict(ancestor, left, right)) {
 				conflictedSyncTargets.add(target);
 			}
 		}
@@ -504,7 +505,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<CodeLine> getLinesOfFile(String fe, String projectName, String fileName) {
+	public List<String> getLinesOfFile(String fe, String projectName, String fileName) {
 		List<CodeLine> targetCode = new ArrayList<CodeLine>();
 		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
@@ -525,7 +526,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 						e1.printStackTrace();
 					}
 					try {
-						linesOfFile = persistanceOperations.readFile(file.getContents(), file.getCharset());
+						return persistanceOperations.readFile(file.getContents(), file.getCharset());
 					} catch (FileOperationException | CoreException e) {
 						e.printStackTrace();
 					}
@@ -537,7 +538,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 				}
 			}
 		}
-		return targetCode;
+		return null;
 	}
 
 	@Override
@@ -634,8 +635,8 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, List<CodeLine> codeWC,
-			List<CodeLine> syncCode) {
+	public void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, List<String> codeWC,
+			List<String> syncCode) {
 
 		// TODO
 	}

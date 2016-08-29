@@ -88,7 +88,7 @@ public class ContextController extends AbstractController {
 	}
 
 	public List<String> getAutoSyncTargets(String fe, String projectName,
-			String className, List<CodeLine> ancestor, List<CodeLine> left) {
+			String className, List<String> ancestor, List<String> left) {
 		return contextOperations.getAutoSyncTargets(fe, projectName, className,
 				ancestor, left);
 	}
@@ -102,7 +102,7 @@ public class ContextController extends AbstractController {
 	}
 
 	public List<String> getConflictedSyncTargets(String fe, String projectName,
-			String className, List<CodeLine> ancestor, List<CodeLine> left) {
+			String className, List<String> ancestor, List<String> left) {
 		return contextOperations.getConflictSyncTargets(fe, projectName,
 				className, ancestor, left);
 	}
@@ -128,7 +128,7 @@ public class ContextController extends AbstractController {
 		return contextOperations.getContextColor(featureExpression);
 	}
 
-	public java.util.List<CodeLine> getTargetCodeWholeClass(
+	public java.util.List<String> getTargetFile(
 			String selectedFeatureExpression, String projectName,
 			String className) {
 		return contextOperations.getLinesOfFile(
@@ -142,7 +142,7 @@ public class ContextController extends AbstractController {
 
 	public void refreshContext(boolean isAutomaticSync, String fe,
 			String projectName, String filename,
-			java.util.List<CodeLine> codeWC, java.util.List<CodeLine> syncCode) {
+			java.util.List<String> codeWC, List<String> syncCode) {
 		contextOperations.refresh(isAutomaticSync, fe, projectName, filename,
 				codeWC, syncCode);
 	}

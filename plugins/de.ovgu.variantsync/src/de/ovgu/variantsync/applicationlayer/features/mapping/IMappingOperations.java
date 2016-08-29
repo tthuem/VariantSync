@@ -22,5 +22,5 @@ public interface IMappingOperations {
 
 	void removeMapping(String elementName, String pathToElement,
 			CodeFragment code, Element project, boolean isFirstStep,
-			boolean isLastStep, List<String> wholeClass);
+			boolean isLastStep, List<String> wholeClass, long modificationTime);
 }

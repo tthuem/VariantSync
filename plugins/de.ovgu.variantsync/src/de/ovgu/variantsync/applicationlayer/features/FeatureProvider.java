@@ -126,8 +126,8 @@ public class FeatureProvider extends AbstractModel implements FeatureOperations 
 	}
 
 	@Override
-	public void removeMapping(MappingElement mapping, Variant project) {
-		featureMapping.removeMapping(mapping, project);
+	public void removeMapping(MappingElement mapping, Variant project, long modificationTime) {
+		featureMapping.removeMapping(mapping, project, modificationTime);
 	}
 
 	@Override

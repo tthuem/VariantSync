@@ -42,7 +42,7 @@ public class MemberMapping extends Mapping {
 	protected boolean removeElement(Element element,
 			List<Element> elements, String elementName, String elementPath,
 			CodeFragment code, boolean isFirstStep, boolean isLastStep,
-			List<String> wholeClass) {
+			List<String> wholeClass, long modificationTime) {
 		return false;
 	}
 

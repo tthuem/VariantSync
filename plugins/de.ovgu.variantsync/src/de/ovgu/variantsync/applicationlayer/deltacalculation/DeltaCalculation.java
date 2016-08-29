@@ -39,10 +39,8 @@ class DeltaCalculation {
 
 	private String unifiedDiff;
 	private ExternalDeltaCalculation externalDeltaOperations;
-	private ContextOperations contextOperations = ModuleFactory
-			.getContextOperations();
-	private Persistable persistanceOperations = ModuleFactory
-			.getPersistanceOperations();
+	private ContextOperations contextOperations = ModuleFactory.getContextOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
 
 	public DeltaCalculation() {
 		externalDeltaOperations = new ExternalDeltaCalculation();
@@ -96,37 +94,33 @@ class DeltaCalculation {
 		List<String> currentFilelines = Util.getFileLines(res);
 		List<String> historyFilelines = null;
 		try {
-			historyFilelines = persistanceOperations.readFile(
-					states[0].getContents(), states[0].getCharset());
+			historyFilelines = persistanceOperations.readFile(states[0].getContents(), states[0].getCharset());
 		} catch (CoreException | FileOperationException e) {
 			LogOperations.logError("File states could not be read.", e);
 		}
 
-		Patch patch = externalDeltaOperations.computeDifference(
-				historyFilelines, currentFilelines);
+		Patch patch = externalDeltaOperations.computeDifference(historyFilelines, currentFilelines);
 		if (patch.getDeltas().isEmpty()) {
 			return;
 		}
 		String filename = currentFile.getName();
-		List<String> tmpUnifiedDiff = externalDeltaOperations
-				.createUnifiedDifference(filename, filename, historyFilelines,
-						patch, 0);
+		List<String> tmpUnifiedDiff = externalDeltaOperations.createUnifiedDifference(filename, filename,
+				historyFilelines, patch, 0);
 
 		String packageName = Util.parsePackageNameFromResource(res);
-		contextOperations.recordCodeChange(tmpUnifiedDiff, res.getProject()
-				.getName(), res.getProject().getLocation().toString(),
-				packageName, ((IFile) res).getName(), currentFilelines);
+		contextOperations.recordCodeChange(tmpUnifiedDiff, res.getProject().getName(),
+				res.getProject().getLocation().toString(), packageName, ((IFile) res).getName(), currentFilelines,
+				states[0].getModificationTime());
 		if (contextOperations.getActiveFeatureContext() != null
-				&& !contextOperations.getActiveFeatureContext().equals(
-						VariantSyncConstants.DEFAULT_CONTEXT))
+				&& !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
 			contextOperations.setBaseVersion((IFile) res);
 
 		int pointer = 0;
 		if (MonitorSet.getInstance().removeSynchroItem(res)) {
 			pointer = 1;
 		}
-		String diffFileName = res.getName() + "_" + ChangeTypes.CHANGE + "_"
-				+ pointer + "_" + System.currentTimeMillis();
+		String diffFileName = res.getName() + "_" + ChangeTypes.CHANGE + "_" + pointer + "_"
+				+ System.currentTimeMillis();
 
 		File parentFile = res.getProjectRelativePath().toFile().getParentFile();
 		String subPath = null;
@@ -136,17 +130,13 @@ class DeltaCalculation {
 			subPath = parentFile.getPath();
 		}
 
-		IPath diffFilePath = res.getProject().getLocation()
-				.append(VariantSyncConstants.ADMIN_FOLDER).append(subPath);
+		IPath diffFilePath = res.getProject().getLocation().append(VariantSyncConstants.ADMIN_FOLDER).append(subPath);
 		File diffFile = new File(diffFilePath.append(diffFileName).toOSString());
 
 		try {
 			persistanceOperations.addLinesToFile(tmpUnifiedDiff, diffFile);
 		} catch (FileOperationException e) {
-			LogOperations
-					.logError(
-							"Lines could not be added to diff file in admin folder.",
-							e);
+			LogOperations.logError("Lines could not be added to diff file in admin folder.", e);
 		}
 	}
 
@@ -160,41 +150,32 @@ class DeltaCalculation {
 	public synchronized Patch getPatch(ResourceChangesFilePatch changedFile) {
 		Patch patch = null;
 		String parentFolder = changedFile.getFile().getParentFile().getPath();
-		IPath base = new Path(changedFile.getProject().getLocation()
-				.toOSString());
-		IPath temp = new Path(parentFolder).append(changedFile
-				.getPatchFileName());
+		IPath base = new Path(changedFile.getProject().getLocation().toOSString());
+		IPath temp = new Path(parentFolder).append(changedFile.getPatchFileName());
 		IPath relativePath = temp.makeRelativeTo(base);
 		if (changedFile.getStatus().equals(ChangeTypes.CHANGE)) {
 			if (!changedFile.getProject().getFile(relativePath).exists()) {
 				try {
-					changedFile.getProject().getFile(relativePath)
-							.refreshLocal(IResource.DEPTH_ZERO, null);
+					changedFile.getProject().getFile(relativePath).refreshLocal(IResource.DEPTH_ZERO, null);
 				} catch (CoreException e) {
-					LogOperations.logError(
-							"File could not be refreshed in workspace.", e);
+					LogOperations.logError("File could not be refreshed in workspace.", e);
 				}
 			}
 			if (changedFile.getProject().getFile(relativePath).exists()) {
 				try {
 					List<String> lines = persistanceOperations
-							.readFile(changedFile.getProject()
-									.getFile(relativePath).getContents());
+							.readFile(changedFile.getProject().getFile(relativePath).getContents());
 					unifiedDiff = parseListToString(lines);
-					patch = externalDeltaOperations
-							.createUnifiedDifference(lines);
+					patch = externalDeltaOperations.createUnifiedDifference(lines);
 				} catch (CoreException | FileOperationException e) {
-					LogOperations.logError(
-							"Diff file in admin folder could not be read.", e);
+					LogOperations.logError("Diff file in admin folder could not be read.", e);
 					unifiedDiff = "";
 				}
 			} else {
 				try {
-					changedFile.getProject().getFile(relativePath)
-							.refreshLocal(IResource.DEPTH_ZERO, null);
+					changedFile.getProject().getFile(relativePath).refreshLocal(IResource.DEPTH_ZERO, null);
 				} catch (CoreException e) {
-					LogOperations.logError(
-							"File could not be refreshed in workspace.", e);
+					LogOperations.logError("File could not be refreshed in workspace.", e);
 				}
 			}
 		}

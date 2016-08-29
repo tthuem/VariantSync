@@ -60,14 +60,12 @@ class FeatureMapping {
 		return instance;
 	}
 
-	public Variant mapCodeFragment(MappingElement mapping,
-			Variant project) {
+	public Variant mapCodeFragment(MappingElement mapping, Variant project) {
 		readMappingInfo(mapping);
 		List<String> code = mapping.getCode();
 		String projectPath = project.getPath();
 		String projectName = project.getName();
-		String relativeClassPath = UtilOperations.getInstance()
-				.parseToRelativeElementPath(projectName, elementPath);
+		String relativeClassPath = UtilOperations.getInstance().parseToRelativeElementPath(projectName, elementPath);
 		switch (elementType) {
 		case CODE_FRAGMENT: {
 
@@ -77,19 +75,13 @@ class FeatureMapping {
 
 				// check
 			} else {
-				Variant javaProject = ((ClassMapping) classMapping)
-						.addClassWithCode(projectPath, elementName,
-								relativeClassPath, code,
-								mapping.getStartLineOfSelection(),
-								mapping.getEndLineOfSelection(),
-								mapping.getOffset());
+				Variant javaProject = ((ClassMapping) classMapping).addClassWithCode(projectPath, elementName,
+						relativeClassPath, code, mapping.getStartLineOfSelection(), mapping.getEndLineOfSelection(),
+						mapping.getOffset());
 				try {
 					return (Variant) javaProject.clone();
 				} catch (CloneNotSupportedException e) {
-					LogOperations
-							.logError(
-									"Clone-method in class JavaProject not yet implemented.",
-									e);
+					LogOperations.logError("Clone-method in class JavaProject not yet implemented.", e);
 				}
 			}
 		}
@@ -124,22 +116,19 @@ class FeatureMapping {
 				break;
 			}
 		} else {
-			Element javaProject = new Variant(UtilOperations
-					.getInstance().parseProjectName(projectPath), projectPath,
+			Element javaProject = new Variant(UtilOperations.getInstance().parseProjectName(projectPath), projectPath,
 					null);
 			switch (elementType) {
 
 			// check
 			case PACKAGE: {
-				javaProject.addChild(packageMapping.createElement(projectPath,
-						elementName, elementPath));
+				javaProject.addChild(packageMapping.createElement(projectPath, elementName, elementPath));
 				break;
 			}
 
 			// check
 			case CLASS: {
-				javaProject = (Variant) classMapping.createElement(
-						projectPath, elementName, elementPath);
+				javaProject = (Variant) classMapping.createElement(projectPath, elementName, elementPath);
 				break;
 			}
 			case METHOD: {
@@ -152,18 +141,14 @@ class FeatureMapping {
 			try {
 				return (Variant) javaProject.clone();
 			} catch (CloneNotSupportedException e) {
-				LogOperations
-						.logError(
-								"Clone-method in class JavaProject not yet implemented.",
-								e);
+				LogOperations.logError("Clone-method in class JavaProject not yet implemented.", e);
 			}
 		}
 		return null;
 	}
 
-	public Variant removeMapping(MappingElement mapping, Variant project) {
-		String pathToFile = UtilOperations.getInstance().unifyStartOfPath(
-				mapping.getPathToSelectedElement());
+	public Variant removeMapping(MappingElement mapping, Variant project, long modificationTime) {
+		String pathToFile = UtilOperations.getInstance().unifyStartOfPath(mapping.getPathToSelectedElement());
 		// pathToFile =
 		// UtilOperations.getInstance().removeSrcInPath(pathToFile);
 		String filename = mapping.getTitle();
@@ -172,27 +157,24 @@ class FeatureMapping {
 
 		// check
 		case PACKAGE: {
-			packageMapping.removeMapping(filename, pathToFile, null, project,
-					mapping.isFirstStep(), mapping.isLastStep(),
-					mapping.getWholeClass());
+			packageMapping.removeMapping(filename, pathToFile, null, project, mapping.isFirstStep(),
+					mapping.isLastStep(), mapping.getWholeClass(), modificationTime);
 			break;
 		}
 
 		// check
 		case CLASS: {
-			classMapping.removeMapping(filename, pathToFile, null, project,
-					mapping.isFirstStep(), mapping.isLastStep(),
-					mapping.getWholeClass());
+			classMapping.removeMapping(filename, pathToFile, null, project, mapping.isFirstStep(), mapping.isLastStep(),
+					mapping.getWholeClass(), modificationTime);
 			break;
 		}
 
 		// check
 		case CODE_FRAGMENT: {
-			codeMapping.removeMapping(filename, pathToFile, new CodeFragment(
-					mapping.getCode(), mapping.getStartLineOfSelection(),
-					mapping.getEndLineOfSelection(), mapping.getOffset()),
-					project, mapping.isFirstStep(), mapping.isLastStep(),
-					mapping.getWholeClass());
+			codeMapping.removeMapping(filename, pathToFile,
+					new CodeFragment(mapping.getCode(), mapping.getStartLineOfSelection(),
+							mapping.getEndLineOfSelection(), mapping.getOffset()),
+					project, mapping.isFirstStep(), mapping.isLastStep(), mapping.getWholeClass(), modificationTime);
 			break;
 		}
 		default:

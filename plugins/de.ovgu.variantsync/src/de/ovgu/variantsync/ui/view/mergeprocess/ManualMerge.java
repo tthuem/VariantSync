@@ -22,15 +22,15 @@ public class ManualMerge {
 
 	protected Object result;
 	protected Shell shell;
-	private java.util.List<CodeLine> left;
+	private java.util.List<String> left;
 	private String classLeft;
-	private java.util.List<CodeLine> right;
+	private java.util.List<String> right;
 	private String classRight;
 	private String selectedCode;
 	private boolean isLeftChosen;
 	private boolean isRightChosen;
 	private SourceFocusedView featureView;
-	private List<CodeLine> syncCode;
+	private List<String> syncCode;
 
 	/**
 	 * Create the dialog.
@@ -41,9 +41,9 @@ public class ManualMerge {
 	 * @param parent
 	 * @param style
 	 */
-	public ManualMerge(SourceFocusedView reference, java.util.List<CodeLine> left,
-			String classLeft, java.util.List<CodeLine> right,
-			String classRight, List<CodeLine> syncCode) {
+	public ManualMerge(SourceFocusedView reference, java.util.List<String> left,
+			String classLeft, java.util.List<String> right,
+			String classRight, List<String> syncCode) {
 		shell = new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL
 				| SWT.SHEET);
 		shell.setText("Manual Merge");
@@ -84,42 +84,42 @@ public class ManualMerge {
 		leftCode.setBounds(27, 68, 282, 220);
 		boolean take = false;
 		boolean isConflict = false;
-		for (CodeLine cl : right) {
-			if (cl.getCode().contains("<<<<<<<")) {
+		for (String cl : right) {
+			if (cl.contains("<<<<<<<")) {
 				take = true;
 				isConflict = true;
 				continue;
 			}
-			if (cl.getCode().contains("=======")) {
+			if (cl.contains("=======")) {
 				take = false;
 				break;
 			}
 			if (take)
-				leftCode.append(cl.getCode() + "\n");
+				leftCode.append(cl + "\n");
 		}
 
 		final Text rightCode = new Text(shell, SWT.BORDER | SWT.MULTI
 				| SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL);
 		rightCode.setBounds(346, 68, 295, 220);
 		take = false;
-		for (CodeLine cl : right) {
-			if (cl.getCode().contains("=======")) {
+		for (String cl : right) {
+			if (cl.contains("=======")) {
 				take = true;
 				continue;
 			}
-			if (cl.getCode().contains(">>>>>>>")) {
+			if (cl.contains(">>>>>>>")) {
 				take = false;
 				break;
 			}
 			if (take)
-				rightCode.append(cl.getCode() + "\n");
+				rightCode.append(cl + "\n");
 		}
 		if (!isConflict) {
-			for (CodeLine cl : left) {
-				leftCode.append(cl.getCode() + "\n");
+			for (String cl : left) {
+				leftCode.append(cl + "\n");
 			}
-			for (CodeLine cl : right) {
-				rightCode.append(cl.getCode() + "\n");
+			for (String cl : right) {
+				rightCode.append(cl + "\n");
 			}
 		}
 		Label lblLeft = new Label(shell, SWT.NONE);
@@ -215,7 +215,7 @@ public class ManualMerge {
 								s = s.substring(0, s.lastIndexOf("\r"));
 							codeLines.add(s);
 						}
-						List<CodeLine> mergeResult = insertMergedCode(right,
+						List<String> mergeResult = insertMergedCode(right,
 								codeLines);
 						featureView.checkManualMerge(mergeResult);
 						shell.dispose();
@@ -230,7 +230,7 @@ public class ManualMerge {
 								s = s.substring(0, s.lastIndexOf("\r"));
 							codeLines.add(s);
 						}
-						List<CodeLine> mergeResult = insertMergedCode(right,
+						List<String> mergeResult = insertMergedCode(right,
 								codeLines);
 						featureView.checkManualMerge(mergeResult);
 						shell.dispose();
@@ -240,35 +240,35 @@ public class ManualMerge {
 		});
 	}
 
-	private List<CodeLine> insertMergedCode(List<CodeLine> wholeCode,
+	private List<String> insertMergedCode(List<String> wholeCode,
 			List<String> mergedCode) {
-		List<CodeLine> codeLines = new ArrayList<CodeLine>();
+		List<String> codeLines = new ArrayList<String>();
 		boolean insert = false;
 		boolean lock = false;
 		int newLineNumber = 0;
-		int lineNumber = wholeCode.get(0).getLine();
-		for (CodeLine cl : wholeCode) {
+//		int lineNumber = wholeCode.get(0).getLine();
+		for (String cl : wholeCode) {
 			newLineNumber++;
-			if (cl.getCode().contains("<<<<<<<")) {
+			if (cl.contains("<<<<<<<")) {
 				insert = true;
 				continue;
 			}
 			if (!lock && insert) {
 				for (String s : mergedCode) {
-					codeLines.add(new CodeLine(s, lineNumber++));
+					codeLines.add(s);
 				}
 				insert = false;
 				lock = true;
 			} else if (!lock) {
-				codeLines.add(new CodeLine(cl.getCode(), lineNumber++));
+				codeLines.add(cl);
 			}
-			if (cl.getCode().contains(">>>>>>>")) {
+			if (cl.contains(">>>>>>>")) {
 				break;
 			}
 		}
 		for (int i = newLineNumber; i < wholeCode.size(); i++) {
-			CodeLine cl = wholeCode.get(i);
-			codeLines.add(new CodeLine(cl.getCode(), lineNumber++));
+			String cl = wholeCode.get(i);
+			codeLines.add(cl);
 		}
 		return codeLines;
 	}

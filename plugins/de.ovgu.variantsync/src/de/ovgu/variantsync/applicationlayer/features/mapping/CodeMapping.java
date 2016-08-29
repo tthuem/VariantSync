@@ -67,7 +67,7 @@ public class CodeMapping extends Mapping {
 
 			if (!ignoreChange && mapping.isLastStep())
 				((Class) javaElement).addChange(newLines,
-						mapping.getPathToProject().substring(mapping.getPathToProject().lastIndexOf("/") + 1), name);
+						mapping.getPathToProject().substring(mapping.getPathToProject().lastIndexOf("/") + 1), name,mapping.getModificationTime());
 		} else {
 			Element packageOfClass = packageMapping.getElement(element.getChildren(), name, relativeClassPath);
 			if (packageOfClass == null) {
@@ -79,7 +79,7 @@ public class CodeMapping extends Mapping {
 			Class jc = new Class(name, path + "/" + name, new CodeFragment(code, mapping.getStartLineOfSelection(),
 					mapping.getEndLineOfSelection(), mapping.getOffset()));
 			if (!ignoreChange && mapping.isLastStep()) {
-				jc.addChange(jc.getClonedCodeLines(), mapping.getWholeClass());
+				jc.addChange(jc.getClonedCodeLines(), mapping.getModificationTime());
 			}
 			packageOfClass.addChild(jc);
 		}
@@ -138,7 +138,7 @@ public class CodeMapping extends Mapping {
 
 	@Override
 	protected boolean removeElement(Element javaElement, List<Element> elements, String elementName, String elementPath,
-			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass) {
+			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass, long modificationTime) {
 		String nameOfClass = javaElement.getName();
 		String pathOfClass = UtilOperations.getInstance().removeToSrcInPath(javaElement.getPath());
 		if (nameOfClass.equals(elementName)
@@ -156,7 +156,7 @@ public class CodeMapping extends Mapping {
 				String projectName = elementPath.substring(0, elementPath.indexOf("/src"));
 				if (projectName.contains("/"))
 					projectName = projectName.substring(projectName.lastIndexOf("/"));
-				((Class) javaElement).addChange(codeLines, projectName, elementName);
+				((Class) javaElement).addChange(codeLines, projectName, elementName, modificationTime);
 			}
 
 			return javaElement.setCodeLines(codeLines);

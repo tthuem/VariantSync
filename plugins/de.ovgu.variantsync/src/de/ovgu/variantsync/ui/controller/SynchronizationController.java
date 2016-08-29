@@ -19,34 +19,25 @@ import de.ovgu.variantsync.applicationlayer.merging.Merging;
  */
 public class SynchronizationController extends AbstractController {
 
-	private Merging mergeOperations = ModuleFactory
-			.getMergeOperations();
+	private Merging mergeOperations = ModuleFactory.getMergeOperations();
 
 	public void synchronize(Object[] result, ResourceChangesFilePatch patch) {
-		setModelProperty(
-				ControllerProperties.SYNCHRONIZATION_PROPERTY.getProperty(),
-				result, patch);
+		setModelProperty(ControllerProperties.SYNCHRONIZATION_PROPERTY.getProperty(), result, patch);
 	}
 
 	public void getSynchronizedProjects(ResourceChangesFilePatch patch) {
-		setModelProperty(
-				ControllerProperties.SYNCHRONIZEDPROJECTS_PROPERTY
-						.getProperty(),
-				patch);
+		setModelProperty(ControllerProperties.SYNCHRONIZEDPROJECTS_PROPERTY.getProperty(), patch);
 	}
 
-	public List<CodeLine> doAutoSync(List<CodeLine> left, List<CodeLine> base,
-			List<CodeLine> right) {
-			List<String> mergeResult = mergeOperations.performThreeWayMerge(
-					parseCodeLinesToString(base), parseCodeLinesToString(left),
-					parseCodeLinesToString(right));
-			return parseStringsToCodeLines(mergeResult);
+	public List<String> doAutoSync(List<String> left, List<String> base, List<String> right) {
+		/* List<String> mergeResult = */
+		return mergeOperations.performThreeWayMerge(base, left, right);
+		// return parseStringsToCodeLines(mergeResult);
 	}
 
-	public boolean checkSyncConflict(List<CodeLine> ancestor,
-			List<CodeLine> left, List<CodeLine> right) {
-		return mergeOperations.checkConflict(parseCodeLinesToString(ancestor),
-				parseCodeLinesToString(left), parseCodeLinesToString(right));
+	public boolean checkSyncConflict(List<CodeLine> ancestor, List<CodeLine> left, List<CodeLine> right) {
+		return mergeOperations.checkConflict(parseCodeLinesToString(ancestor), parseCodeLinesToString(left),
+				parseCodeLinesToString(right));
 	}
 
 	private List<String> parseCodeLinesToString(List<CodeLine> codelines) {

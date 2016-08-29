@@ -21,8 +21,7 @@ import de.ovgu.variantsync.utilities.LogOperations;
 
 public class UtilOperations {
 
-	private Persistable persistanceOperations = ModuleFactory
-			.getPersistanceOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
 	private static boolean ignoreAddCounter = false;
 
 	private static UtilOperations instance;
@@ -37,14 +36,12 @@ public class UtilOperations {
 		return instance;
 	}
 
-	public List<Element> addChild(Element element,
-			List<Element> elements) {
+	public List<Element> addChild(Element element, List<Element> elements) {
 		if (elements == null) {
 			elements = new CopyOnWriteArrayList<Element>();
 		}
 		for (Element e : elements) {
-			if (e != null && e.getName() != null
-					&& e.getName().equals(element.getName())) {
+			if (e != null && e.getName() != null && e.getName().equals(element.getName())) {
 				elements.remove(e);
 				break;
 			}
@@ -99,8 +96,7 @@ public class UtilOperations {
 				for (String newCodeLine : newCodeLines) {
 					int lineNumber = tmpNumber;
 					if (lineNumber < oldStart) {
-						beginning.add(new CodeLine(newCodeLine, lineNumber,
-								true, true));
+						beginning.add(new CodeLine(newCodeLine, lineNumber, true, true));
 					} else {
 						insertCode(code, tmpNumber, newCodeLine);
 					}
@@ -185,8 +181,7 @@ public class UtilOperations {
 		return c;
 	}
 
-	private List<CodeLine> addCodeToList(int newStart,
-			List<String> newCodeLines, List<CodeLine> list) {
+	private List<CodeLine> addCodeToList(int newStart, List<String> newCodeLines, List<CodeLine> list) {
 		int j = newStart;
 		for (String newCodeLine : newCodeLines) {
 			list.add(new CodeLine(newCodeLine, j, true, true));
@@ -195,8 +190,7 @@ public class UtilOperations {
 		return list;
 	}
 
-	private void insertCode(List<CodeLine> code, int tmpNumber,
-			String newCodeLine) {
+	private void insertCode(List<CodeLine> code, int tmpNumber, String newCodeLine) {
 		List<CodeLine> tmp = new LinkedList<CodeLine>();
 		int listIndex = 0;
 		for (CodeLine cl : code) {
@@ -226,10 +220,15 @@ public class UtilOperations {
 		}
 	}
 
+	public void printLines(List<String> code) {
+		for (String line : code) {
+			System.out.println(line);
+		}
+	}
+
 	public void printProject(Element element) {
 		if (element instanceof Variant) {
-			System.out
-					.println("\n=================== Project ===================");
+			System.out.println("\n=================== Project ===================");
 			System.out.println(element.getName());
 		}
 		if (element.getChildren() != null) {
@@ -309,8 +308,7 @@ public class UtilOperations {
 	public String parseToRelativeElementPath(String projectName, String path) {
 		final String SRC_FOLDER = "/src/";
 		if (path.contains(SRC_FOLDER)) {
-			return projectName + "/"
-					+ path.substring(path.indexOf(SRC_FOLDER) + 5);
+			return projectName + "/" + path.substring(path.indexOf(SRC_FOLDER) + 5);
 		} else {
 			return path;
 		}
@@ -322,24 +320,21 @@ public class UtilOperations {
 
 			// case: is full path to resource on file system
 			if (countChar(tmp, '/') > 1 || countChar(tmp, '\\') > 1) {
-				String projectName = tmp
-						.substring(getIndexOfLastPathSeparator(tmp) + 1);
+				String projectName = tmp.substring(getIndexOfLastPathSeparator(tmp) + 1);
 				String relativePath = path.substring(path.lastIndexOf("/src/"));
 				path = projectName + relativePath;
 			}
 		}
 		String packageName = path.substring(0, path.lastIndexOf("/"));
 		packageName = packageName.substring(1);
-		packageName = packageName
-				.substring(getIndexOfFirstPathSeparator(packageName));
+		packageName = packageName.substring(getIndexOfFirstPathSeparator(packageName));
 		packageName = packageName.substring(5);
 		packageName = packageName.replace("/", ".");
 		if (packageName.contains("/src/")) {
 			packageName = packageName.replace("/src", "");
 		}
 		if (packageName.endsWith(".java")) {
-			packageName = packageName
-					.substring(0, packageName.indexOf(".java"));
+			packageName = packageName.substring(0, packageName.indexOf(".java"));
 		}
 		return packageName;
 	}
@@ -366,8 +361,7 @@ public class UtilOperations {
 		}
 	}
 
-	public List<Element> readClassFiles(String projectPath,
-			String packagePath, String className) {
+	public List<Element> readClassFiles(String projectPath, String packagePath, String className) {
 		CopyOnWriteArrayList<Element> classes = new CopyOnWriteArrayList<Element>();
 		String tmpPackagePath = packagePath.substring(1);
 		tmpPackagePath = tmpPackagePath.substring(tmpPackagePath.indexOf("/"));
@@ -381,17 +375,13 @@ public class UtilOperations {
 		}
 		for (String filePath : results) {
 			try {
-				List<String> listString = persistanceOperations
-						.readFile(new FileInputStream(filePath));
-				String name = filePath
-						.substring(getIndexOfLastPathSeparator(filePath) + 1);
+				List<String> listString = persistanceOperations.readFile(new FileInputStream(filePath));
+				String name = filePath.substring(getIndexOfLastPathSeparator(filePath) + 1);
 				if (!className.isEmpty() && name.equals(className)) {
-					classes.add(new Class(name, packagePath + name,
-							listString, listString.size()));
+					classes.add(new Class(name, packagePath + name, listString, listString.size()));
 					break;
 				} else if (className.isEmpty()) {
-					classes.add(new Class(name, packagePath + "/" + name,
-							listString, listString.size()));
+					classes.add(new Class(name, packagePath + "/" + name, listString, listString.size()));
 				}
 			} catch (FileNotFoundException | FileOperationException e) {
 				LogOperations.logError("Class could not be read.", e);

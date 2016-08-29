@@ -53,7 +53,7 @@ public interface FeatureOperations {
 
 	void addCodeFragment(MappingElement mapping, Variant project);
 
-	void removeMapping(MappingElement mapping, Variant project);
+	void removeMapping(MappingElement mapping, Variant project, long modificationTime);
 
 	FeatureModel getFeatureModel();
 

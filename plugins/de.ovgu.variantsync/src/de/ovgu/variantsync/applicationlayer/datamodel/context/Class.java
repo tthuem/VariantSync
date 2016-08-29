@@ -31,6 +31,7 @@ public class Class extends Element {
 		if (changes == null)
 			changes = new LinkedList<CodeChange>();
 		logChange = true;
+		actualChange = new CodeChange();
 	}
 
 	// TODO: f�r syntaktischen Merge m�ssen korrekte JavaKlassen gebildet werden
@@ -78,14 +79,16 @@ public class Class extends Element {
 	 * Konflikt auf: Git-Vergleichsdialog f�r User �ffnen
 	 */
 
-	public void addChange(List<CodeLine> newLines, List<String> list) {
+	public void addChange(List<CodeLine> newLines, long modificationTime) {
 		if (logChange) {
 			List<CodeLine> newVersion = new ArrayList<CodeLine>();
 			for (CodeLine cl : newLines) {
 				newVersion.add(cl.clone());
 			}
+			actualChange = new CodeChange();
 			actualChange.setNewVersion(newVersion);
-			actualChange.createTimeStamp();
+			actualChange.setFilename(getPath());
+			actualChange.setTimestamp(modificationTime);
 			changes.add(actualChange);
 			System.out.println(changes.toString());
 		} else {
@@ -93,14 +96,16 @@ public class Class extends Element {
 		}
 	}
 
-	public void addChange(List<CodeLine> newLines, String projectName, String className) {
+	public void addChange(List<CodeLine> newLines, String projectName, String className, long modificationTime) {
 		if (logChange) {
 			List<CodeLine> newVersion = new ArrayList<CodeLine>();
 			for (CodeLine cl : newLines) {
 				newVersion.add(cl.clone());
 			}
+			actualChange = new CodeChange();
 			actualChange.setNewVersion(newVersion);
-			actualChange.createTimeStamp();
+			actualChange.setFilename(getPath());
+			actualChange.setTimestamp(modificationTime);
 			if (!changes.isEmpty() && timestampToString(actualChange.getTimestamp())
 					.equals(timestampToString(changes.get(changes.size() - 1).getTimestamp()))) {
 				changes.set(changes.size() - 1, actualChange);

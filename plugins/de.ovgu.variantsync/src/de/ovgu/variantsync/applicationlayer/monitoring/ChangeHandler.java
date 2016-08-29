@@ -111,7 +111,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 			contextOperations.recordFileAdded(res.getProject().getName(), res
 					.getProject().getLocation().toString(),
 					Util.parsePackageNameFromResource(res),
-					((IFile) res).getName(), Util.getFileLines(res));
+					((IFile) res).getName(), Util.getFileLines(res), res.getModificationStamp());
 			if (contextOperations.getActiveFeatureContext() != null
 					&& !contextOperations.getActiveFeatureContext().equals(
 							VariantSyncConstants.DEFAULT_CONTEXT))
@@ -146,7 +146,7 @@ class ChangeHandler implements IResourceDeltaVisitor {
 		contextOperations.recordFileRemoved(res.getProject().getName(), res
 				.getProject().getLocation().toString(),
 				Util.parsePackageNameFromResource(res),
-				((IFile) res).getName(), Util.getFileLines(res));
+				((IFile) res).getName(), Util.getFileLines(res), res.getModificationStamp());
 		if (contextOperations.getActiveFeatureContext() != null
 				&& !contextOperations.getActiveFeatureContext().equals(
 						VariantSyncConstants.DEFAULT_CONTEXT))

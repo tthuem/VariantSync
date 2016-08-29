@@ -79,12 +79,12 @@ class ContextHandler {
 	}
 
 	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass) {
+			String packageName, List<String> wholeClass, long modificationTime) {
 		if (!activeContext.containsProject(projectName)) {
 			activeContext.initProject(projectName, pathToProject);
 		}
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode, wholeClass, false);
+		ca.addCode(projectName, packageName, className, changedCode, wholeClass, false, modificationTime);
 		UpdateAlgorithm ua = new UpdateAlgorithm();
 		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
 		if (packageName.equals("defaultpackage"))
@@ -95,12 +95,12 @@ class ContextHandler {
 	}
 
 	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, boolean ignoreChange) {
+			String packageName, List<String> wholeClass, boolean ignoreChange, long modificationTime) {
 		if (!activeContext.containsProject(projectName)) {
 			activeContext.initProject(projectName, pathToProject);
 		}
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode, wholeClass, ignoreChange);
+		ca.addCode(projectName, packageName, className, changedCode, wholeClass, ignoreChange, modificationTime);
 		UpdateAlgorithm ua = new UpdateAlgorithm();
 		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
 		if (packageName.equals("defaultpackage"))
@@ -111,15 +111,15 @@ class ContextHandler {
 	}
 
 	public void recordFileAdded(String projectName, String pathToProject, String className, String packageName,
-			List<String> wholeClass) {
+			List<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addClass(projectName, packageName, className, wholeClass);
+		ca.addClass(projectName, packageName, className, wholeClass, modificationTime);
 	}
 
 	public void recordFileRemoved(String projectName, String pathToProject, String className, String packageName,
-			List<String> wholeClass) {
+			List<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.removeClass(projectName, packageName, className, wholeClass);
+		ca.removeClass(projectName, packageName, className, wholeClass, modificationTime);
 	}
 
 	public void addContext(Context c) {
@@ -170,13 +170,13 @@ class ContextHandler {
 	}
 
 	public void refreshContext(String fe, String projectName, String packageName, String filename, List<String> oldCode,
-			List<String> newCode) {
+			List<String> newCode, long modificationTime) {
 		DeltaOperations deltaOperations = ModuleFactory.getDeltaOperations();
 		Patch patch = deltaOperations.computeDifference(oldCode, newCode);
 		List<String> tmpUnifiedDiff = deltaOperations.createUnifiedDifference(filename, filename, oldCode, patch, 0);
 		Context c = getContext(fe);
 		ContextAlgorithm ca = new ContextAlgorithm(c);
-		ca.addCode(projectName, packageName, filename, tmpUnifiedDiff, oldCode, true);
+		ca.addCode(projectName, packageName, filename, tmpUnifiedDiff, oldCode, true, modificationTime);
 		UpdateAlgorithm ua = new UpdateAlgorithm();
 		ua.updateCode(projectName, packageName, filename, tmpUnifiedDiff, c.getFeatureExpression());
 		if (packageName.equals("defaultpackage")) {

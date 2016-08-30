@@ -4,7 +4,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -19,6 +25,8 @@ import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
+import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
+import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.view.context.MarkerHandler;
 
 /**
@@ -32,11 +40,75 @@ import de.ovgu.variantsync.ui.view.context.MarkerHandler;
  */
 public class ContextController extends AbstractController {
 
-	private ContextOperations contextOperations = ModuleFactory
-			.getContextOperations();
+	private ContextOperations contextOperations = ModuleFactory.getContextOperations();
+	private Persistable persistanceOperations = ModuleFactory.getPersistanceOperations();
+
 	private boolean isPartActivated = false;
 	private boolean featureView = false;
 	private boolean productView = false;
+
+	public IFile findFileRecursively(IContainer container, String name) throws CoreException {
+		for (IResource r : container.members()) {
+			if (r instanceof IContainer) {
+				IFile file = findFileRecursively((IContainer) r, name);
+				if (file != null) {
+					return file;
+				}
+			} else if (r instanceof IFile && r.getName().equals(name)) {
+				return (IFile) r;
+			}
+		}
+
+		return null;
+	}
+
+	public java.util.List<String> getBaseCode(CodeChange ch) {
+		Path path = new Path(ch.getFilename());
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		try {
+			return getCodeFromFile(file, ch.getTimestamp());
+		} catch (CoreException | FileOperationException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private java.util.List<String> getCodeFromFile(IFile file, long timestamp)
+			throws CoreException, FileOperationException {
+		IFileState[] states = file.getHistory(null);
+		for (IFileState state : states) {
+			if (state.getModificationTime() == timestamp) {
+				return persistanceOperations.readFile(state.getContents(), state.getCharset());
+			}
+		}
+		return null;
+	}
+
+	public java.util.List<String> getNewCode(CodeChange ch) {
+		Path path = new Path(ch.getFilename());
+		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+		try {
+			return getNewCodeFromFile(file, ch.getTimestamp());
+		} catch (CoreException | FileOperationException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private java.util.List<String> getNewCodeFromFile(IFile file, long timestamp)
+			throws CoreException, FileOperationException {
+		IFileState[] states = file.getHistory(null);
+		int i = 0;
+		for (IFileState state : states) {
+			if (state.getModificationTime() == timestamp && (i - 1) == -1) {
+				return persistanceOperations.readFile(states[0].getContents(), states[0].getCharset());
+			} else if (state.getModificationTime() == timestamp) {
+				return persistanceOperations.readFile(states[i - 1].getContents(), states[i - 1].getCharset());
+			}
+			i++;
+		}
+		return null;
+	}
 
 	public String getActiveFeatureContext() {
 		return contextOperations.getActiveFeatureContext();
@@ -54,13 +126,10 @@ public class ContextController extends AbstractController {
 			IWorkbenchPart part = page.getActivePart();
 			if (part instanceof IEditorPart) {
 				if (((IEditorPart) part).getEditorInput() instanceof IFileEditorInput) {
-					IFile file = ((IFileEditorInput) ((EditorPart) part)
-							.getEditorInput()).getFile();
-					System.out
-							.println("\n====== LOCATION OF ACTIVE FILE IN EDITOR ======");
+					IFile file = ((IFileEditorInput) ((EditorPart) part).getEditorInput()).getFile();
+					System.out.println("\n====== LOCATION OF ACTIVE FILE IN EDITOR ======");
 					System.out.println(file.getLocation());
-					System.out
-							.println("===============================================");
+					System.out.println("===============================================");
 					MarkerHandler.getInstance().refreshMarker(file);
 					setBaseVersion(file);
 				}
@@ -77,50 +146,41 @@ public class ContextController extends AbstractController {
 		return contextOperations.getProjects(fe);
 	}
 
-	public Collection<CodeChange> getChanges(String fe, String projectName,
-			String className) {
+	public Collection<CodeChange> getChanges(String fe, String projectName, String className) {
 		return contextOperations.getChanges(fe, projectName, className);
 	}
 
-	public List<String> getSyncTargets(String fe, String projectName,
-			String className) {
+	public List<String> getSyncTargets(String fe, String projectName, String className) {
 		return contextOperations.getSyncTargets(fe, projectName, className);
 	}
 
-	public List<String> getAutoSyncTargets(String fe, String projectName,
-			String className, List<String> ancestor, List<String> left) {
-		return contextOperations.getAutoSyncTargets(fe, projectName, className,
-				ancestor, left);
+	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<String> ancestor,
+			List<String> left) {
+		return contextOperations.getAutoSyncTargets(fe, projectName, className, ancestor, left);
 	}
 
-	public List<String> getAutoSyncTargetsForVariant(String fe,
-			String projectName, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getAutoSyncTargetsForVariant(String fe, String projectName, String className,
+			List<CodeLine> ancestor, List<CodeLine> left) {
 		className = className.split(":")[1].trim();
-		return contextOperations.getAutoSyncTargetsForVariant(fe, projectName,
-				className, ancestor, left);
+		return contextOperations.getAutoSyncTargetsForVariant(fe, projectName, className, ancestor, left);
 	}
 
-	public List<String> getConflictedSyncTargets(String fe, String projectName,
-			String className, List<String> ancestor, List<String> left) {
-		return contextOperations.getConflictSyncTargets(fe, projectName,
-				className, ancestor, left);
+	public List<String> getConflictedSyncTargets(String fe, String projectName, String className, List<String> ancestor,
+			List<String> left) {
+		return contextOperations.getConflictSyncTargets(fe, projectName, className, ancestor, left);
 	}
 
-	public List<String> getConflictedSyncForVariant(String fe,
-			String projectName, String className, List<CodeLine> ancestor,
-			List<CodeLine> left) {
+	public List<String> getConflictedSyncForVariant(String fe, String projectName, String className,
+			List<CodeLine> ancestor, List<CodeLine> left) {
 		className = className.split(":")[1].trim();
-		return contextOperations.getConflictedSyncForVariant(fe, projectName,
-				className, ancestor, left);
+		return contextOperations.getConflictedSyncForVariant(fe, projectName, className, ancestor, left);
 	}
 
 	public Collection<String> getClasses(String fe, String projectName) {
 		return contextOperations.getClasses(fe, projectName);
 	}
 
-	public List<CodeLine> getTargetCode(String fe, String projectName,
-			String className) {
+	public List<CodeLine> getTargetCode(String fe, String projectName, String className) {
 		return contextOperations.getTargetCode(fe, projectName, className);
 	}
 
@@ -128,11 +188,9 @@ public class ContextController extends AbstractController {
 		return contextOperations.getContextColor(featureExpression);
 	}
 
-	public java.util.List<String> getTargetFile(
-			String selectedFeatureExpression, String projectName,
+	public java.util.List<String> getTargetFile(String selectedFeatureExpression, String projectName,
 			String className) {
-		return contextOperations.getLinesOfFile(
-				selectedFeatureExpression, projectName, className);
+		return contextOperations.getLinesOfFile(selectedFeatureExpression, projectName, className);
 	}
 
 	public void setBaseVersion(IFile file) {
@@ -140,11 +198,9 @@ public class ContextController extends AbstractController {
 		contextOperations.setBaseVersion(file);
 	}
 
-	public void refreshContext(boolean isAutomaticSync, String fe,
-			String projectName, String filename,
+	public void refreshContext(boolean isAutomaticSync, String fe, String projectName, String filename,
 			java.util.List<String> codeWC, List<String> syncCode) {
-		contextOperations.refresh(isAutomaticSync, fe, projectName, filename,
-				codeWC, syncCode);
+		contextOperations.refresh(isAutomaticSync, fe, projectName, filename, codeWC, syncCode);
 	}
 
 	public void removeTagging(String path) {
@@ -167,13 +223,11 @@ public class ContextController extends AbstractController {
 		return productView;
 	}
 
-	public boolean isAlreadySynchronized(String fe, long key, String source,
-			String target) {
+	public boolean isAlreadySynchronized(String fe, long key, String source, String target) {
 		return contextOperations.isAlreadySynchronized(fe, key, source, target);
 	}
 
-	public void addSynchronizedChange(String fe, long key, String source,
-			String target) {
+	public void addSynchronizedChange(String fe, long key, String source, String target) {
 		contextOperations.addSynchronizedChange(fe, key, source, target);
 	}
 
@@ -181,11 +235,10 @@ public class ContextController extends AbstractController {
 		return contextOperations.getFeatures(variant);
 	}
 
-	public Map<String, Collection<CodeChange>> getChangesForVariant(
-			String selectedFeature, String selectedVariant, String selectedClass) {
+	public Map<String, Collection<CodeChange>> getChangesForVariant(String selectedFeature, String selectedVariant,
+			String selectedClass) {
 		String className = selectedClass.split(":")[1].trim();
-		return contextOperations.getChangesForVariant(selectedFeature,
-				selectedVariant, className);
+		return contextOperations.getChangesForVariant(selectedFeature, selectedVariant, className);
 	}
 
 	public Collection<String> getClassesForVariant(String fe, String projectName) {

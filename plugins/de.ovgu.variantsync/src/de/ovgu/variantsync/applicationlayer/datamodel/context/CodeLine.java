@@ -7,7 +7,6 @@ public class CodeLine {
 	private String code;
 	private int line;
 	private boolean isMapped;
-	protected boolean isNew;
 
 	public CodeLine() {
 	}
@@ -18,11 +17,10 @@ public class CodeLine {
 		isMapped = true;
 	}
 
-	public CodeLine(String code, int line, boolean isMapped, boolean isNew) {
+	public CodeLine(String code, int line, boolean isMapped) {
 		this.code = code;
 		this.line = line;
 		this.isMapped = isMapped;
-		this.isNew = isNew;
 	}
 
 	/**
@@ -66,8 +64,7 @@ public class CodeLine {
 	 */
 	@Override
 	public String toString() {
-		return "CodeLine [code=" + code + ", line=" + line + ", isMapped="
-				+ isMapped + ", isNew=" + isNew + "]";
+		return "CodeLine [code=" + code + ", line=" + line + ", isMapped=" + isMapped + "]";
 	}
 
 	/*
@@ -77,7 +74,7 @@ public class CodeLine {
 	 */
 	@Override
 	public CodeLine clone() {
-		return new CodeLine(code, line, isMapped, isNew);
+		return new CodeLine(code, line, isMapped);
 	}
 
 	/**
@@ -93,21 +90,6 @@ public class CodeLine {
 	 */
 	public void setMapped(boolean isMapped) {
 		this.isMapped = isMapped;
-	}
-
-	/**
-	 * @return the isNew
-	 */
-	public boolean isNew() {
-		return isNew;
-	}
-
-	/**
-	 * @param isNew
-	 *            the isNew to set
-	 */
-	public void setNew(boolean isNew) {
-		this.isNew = isNew;
 	}
 
 }

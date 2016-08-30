@@ -54,11 +54,9 @@ public class CodeMapping extends Mapping {
 		String relativeClassPath = UtilOperations.getInstance().getRelativeClassPath(path);
 		if (classMapping.containsElement(element.getChildren(), name, path, "")) {
 			Element javaElement = classMapping.getElement(element.getChildren(), name, relativeClassPath);
-			List<CodeLine> tmpCode = new ArrayList<CodeLine>();
 			List<CodeLine> actualCode = javaElement.getClonedCodeLines();
-			for (CodeLine cl : actualCode) {
-				tmpCode.add(cl.clone());
-			}
+			
+			// actualCode is wrong...debug
 			List<CodeLine> newLines = UtilOperations.getInstance().addCode(new CodeFragment(code,
 					mapping.getStartLineOfSelection(), mapping.getEndLineOfSelection(), mapping.getOffset()),
 					actualCode);

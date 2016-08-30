@@ -1,7 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.datamodel.context;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -15,7 +14,6 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class CodeChange {
 
-	private String baseVersion;
 	// protected List<CodeLine> baseVersionWholeClass;
 	private List<CodeLine> newVersion;
 	// protected List<CodeLine> newVersionWholeClass;
@@ -23,7 +21,6 @@ public class CodeChange {
 	private String filename;
 
 	public CodeChange() {
-		baseVersion = "";
 		filename = "";
 		newVersion = new ArrayList<CodeLine>();
 		// baseVersionWholeClass = new ArrayList<CodeLine>();
@@ -32,25 +29,9 @@ public class CodeChange {
 
 	// TODO: Timestamp aus IFile History nehmen, um beim Synchronisieren damit
 	// die passende Version aus IFileStates herausfinden zu können
-//	public void createTimeStamp() {
-//		this.timestamp = new Date().getTime();
-//	}
-
-	/**
-	 * @return the baseVersion
-	 */
-	@XmlElement
-	public String getBaseVersion() {
-		return baseVersion;
-	}
-
-	/**
-	 * @param baseVersion
-	 *            the baseVersion to set
-	 */
-	public void setBaseVersion(String baseVersion) {
-		this.baseVersion = baseVersion;
-	}
+	// public void createTimeStamp() {
+	// this.timestamp = new Date().getTime();
+	// }
 
 	/**
 	 * @return the newVersion
@@ -86,8 +67,7 @@ public class CodeChange {
 
 	@Override
 	public String toString() {
-		return "CodeChange [baseVersion=" + baseVersion + ", newVersion=" + newVersion + ", timestamp=" + timestamp
-				+ "]";
+		return "CodeChange [newVersion=" + newVersion + ", timestamp=" + timestamp + "]";
 	}
 
 	/*
@@ -99,7 +79,6 @@ public class CodeChange {
 	protected CodeChange clone() {
 		CodeChange copy = new CodeChange();
 		copy.setTimestamp(this.timestamp);
-		copy.setBaseVersion(this.baseVersion);
 		copy.setFilename(this.filename);
 		// List<CodeLine> baseVersion = new ArrayList<CodeLine>();
 		// for (CodeLine line : this.baseVersion) {

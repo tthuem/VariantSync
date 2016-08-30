@@ -75,7 +75,7 @@ public class UtilOperations {
 			List<String> codeLines = codeFragment.getCode();
 			int i = codeFragment.getStartLine();
 			for (String line : codeLines) {
-				code.add(new CodeLine(line, i, true, true));
+				code.add(new CodeLine(line, i, true));
 				i++;
 			}
 		} else {
@@ -96,7 +96,7 @@ public class UtilOperations {
 				for (String newCodeLine : newCodeLines) {
 					int lineNumber = tmpNumber;
 					if (lineNumber < oldStart) {
-						beginning.add(new CodeLine(newCodeLine, lineNumber, true, true));
+						beginning.add(new CodeLine(newCodeLine, lineNumber, true));
 					} else {
 						insertCode(code, tmpNumber, newCodeLine);
 					}
@@ -106,7 +106,7 @@ public class UtilOperations {
 				int tmpNumber = newStart;
 				for (String newCodeLine : newCodeLines) {
 					if (tmpNumber > oldEnd) {
-						end.add(new CodeLine(newCodeLine, tmpNumber, true, true));
+						end.add(new CodeLine(newCodeLine, tmpNumber, true));
 					} else {
 						insertCode(code, tmpNumber, newCodeLine);
 					}
@@ -184,7 +184,7 @@ public class UtilOperations {
 	private List<CodeLine> addCodeToList(int newStart, List<String> newCodeLines, List<CodeLine> list) {
 		int j = newStart;
 		for (String newCodeLine : newCodeLines) {
-			list.add(new CodeLine(newCodeLine, j, true, true));
+			list.add(new CodeLine(newCodeLine, j, true));
 			j++;
 		}
 		return list;
@@ -202,16 +202,7 @@ public class UtilOperations {
 		for (int x = listIndex; x < code.size(); x++) {
 			tmp.add(code.get(x).clone());
 		}
-		code.add(listIndex, new CodeLine(newCodeLine, tmpNumber, true, true));
-		// for (int k = 0; k < tmp.size(); k++) {
-		// try {
-		// CodeLine cl = tmp.get(k);
-		// cl.setLine(cl.getLine() + 1);
-		// code.set(++listIndex, cl);
-		// } catch (Exception e) {
-		// code.add(tmp.get(k));
-		// }
-		// }
+		code.add(listIndex, new CodeLine(newCodeLine, tmpNumber, true));
 	}
 
 	public void printCode(List<CodeLine> code) {

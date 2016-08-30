@@ -29,9 +29,9 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator;
+import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
 import de.ovgu.variantsync.ui.view.context.FeatureContextSelection;
 import de.ovgu.variantsync.ui.view.context.MarkerHandler;
-import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
 import de.ovgu.variantsync.utilities.Util;
 
 /**
@@ -188,6 +188,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 		contextHandler.clean();
 	}
 
+	@SuppressWarnings("serial")
 	@Override
 	public Collection<String> getProjects(String fe) {
 		Context c = ContextHandler.getInstance().getContext(fe);
@@ -506,7 +507,6 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 
 	@Override
 	public List<String> getLinesOfFile(String fe, String projectName, String fileName) {
-		List<CodeLine> targetCode = new ArrayList<CodeLine>();
 		List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
@@ -519,7 +519,6 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 				}
 				if (javaClass != null) {
 					IFile file = (IFile) javaClass;
-					List<String> linesOfFile = null;
 					try {
 						file.refreshLocal(IResource.DEPTH_INFINITE, null);
 					} catch (CoreException e1) {
@@ -529,11 +528,6 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 						return persistanceOperations.readFile(file.getContents(), file.getCharset());
 					} catch (FileOperationException | CoreException e) {
 						e.printStackTrace();
-					}
-					int i = 1;
-					for (String line : linesOfFile) {
-						targetCode.add(new CodeLine(line, i, false, false));
-						i++;
 					}
 				}
 			}
@@ -592,8 +586,6 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 				break;
 			}
 		}
-		// TODO
-		// c.removeSynchronizedChange(timestamp);
 		persistanceOperations.saveContext(c, Util.parseStorageLocation(c));
 	}
 

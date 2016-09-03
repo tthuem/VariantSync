@@ -65,6 +65,7 @@ class ContextAlgorithm {
 		System.out.println("===============================================");
 	}
 
+	// TODO: hier liegt der Fehler ...
 	private void refreshCodeBase(List<Diff> diffs, String projectName, String packageName, String className,
 			List<String> wholeClass, boolean ignore, long modificationTime) {
 		int i = 0;

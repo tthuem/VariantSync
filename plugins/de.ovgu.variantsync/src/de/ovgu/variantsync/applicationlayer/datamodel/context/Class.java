@@ -2,6 +2,7 @@ package de.ovgu.variantsync.applicationlayer.datamodel.context;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,10 +97,10 @@ public class Class extends Element {
 		}
 	}
 
-	public void addChange(List<CodeLine> newLines, String projectName, String className, long modificationTime) {
+	public void addChange(Collection<CodeLine> collection, String projectName, String className, long modificationTime) {
 		if (logChange) {
 			List<CodeLine> newVersion = new ArrayList<CodeLine>();
-			for (CodeLine cl : newLines) {
+			for (CodeLine cl : collection) {
 				newVersion.add(cl.clone());
 			}
 			actualChange = new CodeChange();

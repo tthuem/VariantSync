@@ -91,7 +91,7 @@ class ContextHandler {
 			packageName = "";
 		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
 		contextMap.put(activeContext.getFeatureExpression(), activeContext);
-		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
+ 		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
 	}
 
 	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,

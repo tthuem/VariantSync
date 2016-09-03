@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.features.mapping;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -47,6 +48,8 @@ public class CodeMapping extends Mapping {
 		return false;
 	}
 
+	private static Collection<CodeLine> changedLines = new ArrayList<CodeLine>();
+
 	@Override
 	protected void computeElement(Element element, MappingElement mapping, String name, String path) {
 		List<String> code = mapping.getCode();
@@ -55,17 +58,22 @@ public class CodeMapping extends Mapping {
 		if (classMapping.containsElement(element.getChildren(), name, path, "")) {
 			Element javaElement = classMapping.getElement(element.getChildren(), name, relativeClassPath);
 			List<CodeLine> actualCode = javaElement.getClonedCodeLines();
-			
+
 			// actualCode is wrong...debug
-			List<CodeLine> newLines = UtilOperations.getInstance().addCode(new CodeFragment(code,
-					mapping.getStartLineOfSelection(), mapping.getEndLineOfSelection(), mapping.getOffset()),
-					actualCode);
+			CodeFragment change = new CodeFragment(code, mapping.getStartLineOfSelection(),
+					mapping.getEndLineOfSelection(), mapping.getOffset());
+			List<CodeLine> newLines = UtilOperations.getInstance().addCode(change, actualCode);
 
 			javaElement.setCodeLines(newLines);
 
-			if (!ignoreChange && mapping.isLastStep())
-				((Class) javaElement).addChange(newLines,
-						mapping.getPathToProject().substring(mapping.getPathToProject().lastIndexOf("/") + 1), name,mapping.getModificationTime());
+			changedLines.addAll(getChange(change));
+
+			if (!ignoreChange && mapping.isLastStep()) {
+				((Class) javaElement).addChange(changedLines,
+						mapping.getPathToProject().substring(mapping.getPathToProject().lastIndexOf("/") + 1), name,
+						mapping.getModificationTime());
+				changedLines.clear();
+			}
 		} else {
 			Element packageOfClass = packageMapping.getElement(element.getChildren(), name, relativeClassPath);
 			if (packageOfClass == null) {
@@ -81,6 +89,17 @@ public class CodeMapping extends Mapping {
 			}
 			packageOfClass.addChild(jc);
 		}
+	}
+
+	private Collection<CodeLine> getChange(CodeFragment cf) {
+		Collection<CodeLine> code = new ArrayList<CodeLine>();
+		List<String> codeLines = cf.getCode();
+		int i = cf.getStartLine();
+		for (String line : codeLines) {
+			code.add(new CodeLine(line, i, true));
+			i++;
+		}
+		return code;
 	}
 
 	private List<String> getCodeLinesFromFile(String projectName, String className) {
@@ -136,7 +155,8 @@ public class CodeMapping extends Mapping {
 
 	@Override
 	protected boolean removeElement(Element javaElement, List<Element> elements, String elementName, String elementPath,
-			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass, long modificationTime) {
+			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass,
+			long modificationTime) {
 		String nameOfClass = javaElement.getName();
 		String pathOfClass = UtilOperations.getInstance().removeToSrcInPath(javaElement.getPath());
 		if (nameOfClass.equals(elementName)

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -72,7 +73,7 @@ public class UtilOperations {
 	public List<CodeLine> addCode(CodeFragment codeFragment, List<CodeLine> code) {
 		if (code == null || code.isEmpty()) {
 			code = new ArrayList<CodeLine>();
-			List<String> codeLines = codeFragment.getCode();
+			Collection<String> codeLines = codeFragment.getCode();
 			int i = codeFragment.getStartLine();
 			for (String line : codeLines) {
 				code.add(new CodeLine(line, i, true));
@@ -81,7 +82,7 @@ public class UtilOperations {
 		} else {
 			int newStart = codeFragment.getStartLine();
 			int newEnd = codeFragment.getEndLine();
-			List<String> newCodeLines = codeFragment.getCode();
+			Collection<String> newCodeLines = codeFragment.getCode();
 			List<CodeLine> beginning = new LinkedList<CodeLine>();
 			List<CodeLine> end = new LinkedList<CodeLine>();
 			int oldStart = code.get(0).getLine();
@@ -181,7 +182,7 @@ public class UtilOperations {
 		return c;
 	}
 
-	private List<CodeLine> addCodeToList(int newStart, List<String> newCodeLines, List<CodeLine> list) {
+	private List<CodeLine> addCodeToList(int newStart, Collection<String> newCodeLines, List<CodeLine> list) {
 		int j = newStart;
 		for (String newCodeLine : newCodeLines) {
 			list.add(new CodeLine(newCodeLine, j, true));

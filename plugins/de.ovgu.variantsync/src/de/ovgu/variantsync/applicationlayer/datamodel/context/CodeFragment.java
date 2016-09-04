@@ -1,17 +1,18 @@
 package de.ovgu.variantsync.applicationlayer.datamodel.context;
 
+import java.util.Collection;
 import java.util.List;
 
 public class CodeFragment {
 
-	private List<String> code;
+	private Collection<String> code;
 	private int startLine;
 	private int endLine;
 	private int offset;
 
-	public CodeFragment(List<String> code, int startLine, int endLine,
+	public CodeFragment(Collection<String> code2, int startLine, int endLine,
 			int offset) {
-		this.code = code;
+		this.code = code2;
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.offset = offset;
@@ -20,7 +21,7 @@ public class CodeFragment {
 	/**
 	 * @return the code
 	 */
-	public List<String> getCode() {
+	public Collection<String> getCode() {
 		return code;
 	}
 

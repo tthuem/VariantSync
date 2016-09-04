@@ -3,6 +3,7 @@ package de.ovgu.variantsync.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -71,14 +72,14 @@ public interface Persistable {
 	/**
 	 * Creates file with specific content.
 	 *
-	 * @param lines
+	 * @param base2
 	 *            lines to add
 	 * @param file
 	 *            target file
 	 * @throws FileOperationException
 	 *             file could not be created
 	 */
-	void addLinesToFile(List<String> lines, File file) throws FileOperationException;
+	void addLinesToFile(Collection<String> base2, File file) throws FileOperationException;
 
 	/**
 	 * Reads TXT-file and adds each line to list of string elements.
@@ -167,4 +168,10 @@ public interface Persistable {
 	void writeFile(java.util.List<CodeLine> syncCode, File file);
 
 	List<String> getHistoryFileLines(IResource res);
+
+	void saveBaseVersion(Collection<String> baseVersion, long timestamp);
+
+	void saveNewVersion(Collection<String> lines, long timestamp);
+
+	void deldir(IFolder folder, File f) throws FolderOperationException;
 }

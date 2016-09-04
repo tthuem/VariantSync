@@ -1,7 +1,7 @@
 package de.ovgu.variantsync.ui.controller.data;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class MappingElement {
 
@@ -9,12 +9,12 @@ public class MappingElement {
 	private String title;
 	private JavaElements type;
 	private String pathToSelectedElement;
-	private List<String> code;
+	private Collection<String> code;
 	private int startLineOfSelection;
 	private int endLineOfSelection;
 	private int offset;
 	private String pathToProject;
-	private List<String> wholeClass;
+	private Collection<String> wholeClass;
 	private boolean isFirstStep;
 	private boolean isLastStep;
 	private boolean ignore;
@@ -30,17 +30,17 @@ public class MappingElement {
 	}
 
 	public MappingElement(String feature, String title, JavaElements type, String pathToSelectedElement,
-			List<String> code, int startLineOfSelection, int endLineOfSelection, int offset, List<String> wholeClass,
+			Collection<String> wholeClass2, int startLineOfSelection, int endLineOfSelection, int offset, Collection<String> newVersion,
 			boolean isFirstStep, boolean isLastStep, boolean ignore, long modificationTime) {
 		this.feature = feature;
 		this.title = title;
 		this.type = type;
 		this.pathToSelectedElement = pathToSelectedElement;
-		this.code = code;
+		this.code = wholeClass2;
 		this.startLineOfSelection = startLineOfSelection;
 		this.endLineOfSelection = endLineOfSelection;
 		this.offset = offset;
-		this.wholeClass = wholeClass;
+		this.wholeClass = newVersion;
 		this.isFirstStep = isFirstStep;
 		this.isLastStep = isLastStep;
 		this.ignore = ignore;
@@ -102,7 +102,7 @@ public class MappingElement {
 	/**
 	 * @return the code
 	 */
-	public List<String> getCode() {
+	public Collection<String> getCode() {
 		return code;
 	}
 
@@ -154,7 +154,7 @@ public class MappingElement {
 	/**
 	 * @return the wholeClass
 	 */
-	public List<String> getWholeClass() {
+	public Collection<String> getWholeClass() {
 		return wholeClass;
 	}
 

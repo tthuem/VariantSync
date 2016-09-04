@@ -30,6 +30,18 @@
       </view>
    </extension>
    <extension
+      point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            extensions="java,java2,txt"
+            class="org.eclipse.jdt.internal.ui.compare.TextMergeViewerCreator"
+            id="org.eclipse.jdt.internal.ui.compare.TextMergeViewerCreator">
+      </viewer>
+      <contentTypeBinding
+            contentTypeId="org.eclipse.jdt.core.javaSource"
+            contentMergeViewerId="org.eclipse.jdt.internal.ui.compare.TextMergeViewerCreator">
+	  </contentTypeBinding>
+   </extension>
+   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">

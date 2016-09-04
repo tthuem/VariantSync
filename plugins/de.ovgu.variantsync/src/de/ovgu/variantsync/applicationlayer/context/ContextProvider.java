@@ -12,10 +12,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
@@ -27,12 +30,14 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
+import de.ovgu.variantsync.applicationlayer.datamodel.exception.FolderOperationException;
 import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
 import de.ovgu.variantsync.ui.view.context.FeatureContextSelection;
 import de.ovgu.variantsync.ui.view.context.MarkerHandler;
 import de.ovgu.variantsync.utilities.Util;
+import difflib.Delta;
 
 /**
  * Receives controller invocation as part of MVC implementation and encapsulates
@@ -85,40 +90,42 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public void recordCodeChange(List<String> changedCode, String projectName, String pathToProject, String packageName,
-			String className, List<String> wholeClass, long modificationTime) {
+	public void recordCodeChange(Collection<String> changedCode, String projectName, String pathToProject,
+			String packageName, String className, Collection<String> newVersion, Collection<String> baseVersion,
+			long modificationTime) {
 		if (ignoreAfterMerge) {
-			recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass, true,
-					modificationTime);
+			recordCodeChange(projectName, pathToProject, changedCode, className, packageName, newVersion, baseVersion,
+					true, modificationTime);
 			return;
 		}
 		if (!ignoreCodeChange) {
 			System.out.println("\n=== Changed Code ===");
 			System.out.println(changedCode.toString());
-			contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass,
-					modificationTime);
+			contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, newVersion,
+					baseVersion, modificationTime);
 		}
 		ignoreCodeChange = false;
 	}
 
 	@Override
-	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, boolean ignoreChange, long modificationTime) {
+	public void recordCodeChange(String projectName, String pathToProject, Collection<String> changedCode,
+			String className, String packageName, Collection<String> wholeClass, Collection<String> baseVersion,
+			boolean ignoreChange, long modificationTime) {
 		contextHandler.recordCodeChange(projectName, pathToProject, changedCode, className, packageName, wholeClass,
-				ignoreChange, modificationTime);
+				baseVersion, ignoreChange, modificationTime);
 		ignoreChange = false;
 	}
 
 	@Override
 	public void recordFileAdded(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass, long modificationTime) {
+			Collection<String> wholeClass, long modificationTime) {
 		contextHandler.recordFileAdded(projectName, pathToProject, className, packageName, wholeClass,
 				modificationTime);
 	}
 
 	@Override
 	public void recordFileRemoved(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass, long modificationTime) {
+			Collection<String> wholeClass, long modificationTime) {
 		contextHandler.recordFileRemoved(projectName, pathToProject, className, packageName, wholeClass,
 				modificationTime);
 	}
@@ -139,15 +146,15 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public void addCode(String projectName, String packageName, String className, List<String> code,
-			List<String> wholeClass, long modificationTime) {
+	public void addCode(String projectName, String packageName, String className, Collection<String> code,
+			Collection<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(ContextHandler.getInstance().getActiveContext());
 		ca.addCode(projectName, packageName, className, code, wholeClass, false, modificationTime);
 	}
 
 	@Override
-	public void addCode(String projectName, String packageName, String className, List<String> code, Context c,
-			List<String> wholeClass, long modificationTime) {
+	public void addCode(String projectName, String packageName, String className, Collection<String> code, Context c,
+			Collection<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(c);
 		ca.addCode(projectName, packageName, className, code, wholeClass, false, modificationTime);
 	}
@@ -301,8 +308,14 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left) {
+	public Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
+			Collection<String> right) {
+		return ModuleFactory.getMergeOperations().getConflictingDeltas(ancestor, left, right);
+	}
+
+	@Override
+	public Collection<String> getAutoSyncTargets(String fe, String projectName, String className,
+			Collection<String> ancestor, Collection<String> left) {
 		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictFreeSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
@@ -337,8 +350,8 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 	}
 
 	@Override
-	public List<String> getConflictSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left) {
+	public Collection<String> getConflictSyncTargets(String fe, String projectName, String className,
+			Collection<String> ancestor, Collection<String> left) {
 		List<String> possbileSyncTargets = getSyncTargets(fe, projectName, className);
 		List<String> conflictedSyncTargets = new ArrayList<String>();
 		for (String target : possbileSyncTargets) {
@@ -586,6 +599,20 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 				break;
 			}
 		}
+		try {
+			List<IProject> projects = VariantSyncPlugin.getDefault().getSupportProjectList();
+			for (IProject p : projects) {
+				if (p.getName().equals(selectedProject)) {
+					p.getFolder(VariantSyncConstants.CHANGES_PATH).refreshLocal(IResource.DEPTH_INFINITE, null);
+					IFolder f = p.getFolder(VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp));
+					persistanceOperations.deldir(f,
+							new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+									+ VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp)));
+				}
+			}
+		} catch (FolderOperationException | CoreException e1) {
+			e1.printStackTrace();
+		}
 		persistanceOperations.saveContext(c, Util.parseStorageLocation(c));
 	}
 
@@ -624,13 +651,6 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, List<String> codeWC,
-			List<String> syncCode) {
-
-		// TODO
 	}
 
 	@Override
@@ -686,5 +706,12 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			}
 		}
 		return features;
+	}
+
+	@Override
+	public void refresh(boolean isAutomaticSync, String fe, String projectName, String filename,
+			Collection<String> codeWC, Collection<String> syncCode) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.deltacalculation;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -55,13 +56,13 @@ public class DeltaOperationProvider extends AbstractModel implements
 	}
 
 	@Override
-	public List<String> computePatch(List<String> content, Patch patch)
+	public Collection<String> computePatch(Collection<String> content, Patch patch)
 			throws PatchException {
 		return externalDeltaCalculation.computePatch(content, patch);
 	}
 
 	@Override
-	public Patch computeDifference(List<String> content1, List<String> content2) {
+	public Patch computeDifference(Collection<String> content1, Collection<String> content2) {
 		return externalDeltaCalculation.computeDifference(content1, content2);
 	}
 

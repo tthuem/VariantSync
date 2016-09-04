@@ -3,11 +3,13 @@ package de.ovgu.variantsync.io;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
@@ -56,8 +58,13 @@ public class PersistanceOperationProvider implements Persistable {
 	}
 
 	@Override
-	public void addLinesToFile(List<String> lines, File file) throws FileOperationException {
-		fileOperations.addLinesToFile(lines, file);
+	public void deldir(IFolder folder, File f) throws FolderOperationException {
+		folderOperations.deldir(folder, f);
+	}
+	
+	@Override
+	public void addLinesToFile(Collection<String> lines, File file) throws FileOperationException {
+		fileOperations.addLinesToFile(new ArrayList<String>(lines), file);
 	}
 
 	@Override
@@ -140,6 +147,34 @@ public class PersistanceOperationProvider implements Persistable {
 	@Override
 	public List<String> getHistoryFileLines(IResource res) {
 		return fileOperations.getHistoryFileLines(res);
+	}
+
+	@Override
+	public void saveBaseVersion(Collection<String> lines, long timestamp) {
+		try {
+			fileOperations.writeFileInNewFolder(new ArrayList<String>(lines),
+					new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp)),
+					new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp)
+							+ VariantSyncConstants.BASE_VERION));
+		} catch (FileOperationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void saveNewVersion(Collection<String> lines, long timestamp) {
+		try {
+			fileOperations.writeFileInNewFolder(new ArrayList<String>(lines),
+					new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp)),
+					new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH + String.valueOf(timestamp)
+							+ VariantSyncConstants.NEW_VERION));
+		} catch (FileOperationException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

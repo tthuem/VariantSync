@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.context;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;

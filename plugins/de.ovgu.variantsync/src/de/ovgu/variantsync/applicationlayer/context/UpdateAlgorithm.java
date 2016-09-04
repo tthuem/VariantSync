@@ -22,9 +22,9 @@ public class UpdateAlgorithm {
 
 	private Persistable persistenceOp = ModuleFactory.getPersistanceOperations();
 
-	public void updateCode(String projectName, String packageName, String className, List<String> code,
+	public void updateCode(String projectName, String packageName, String className, Collection<String> changedCode,
 			String featureExpression) {
-		List<Diff> diffs = ContextUtils.analyzeDiff(code);
+		List<Diff> diffs = ContextUtils.analyzeDiff(new ArrayList<String>(changedCode));
 		Collection<Context> contexts = ContextHandler.getInstance().getAllContexts();
 		Iterator<Context> itC = contexts.iterator();
 		while (itC.hasNext()) {

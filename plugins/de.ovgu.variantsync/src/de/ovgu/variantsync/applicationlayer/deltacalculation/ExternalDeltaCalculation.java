@@ -1,5 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.deltacalculation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.PatchException;
@@ -46,11 +48,9 @@ class ExternalDeltaCalculation {
 	 *            file
 	 * @return list of strings representing the unified diff of patch argument
 	 */
-	public List<String> createUnifiedDifference(String originalFile,
-			String revisedFile, List<String> linesOriginalFile, Patch patch,
-			int lineNumbers) {
-		return DiffUtils.generateUnifiedDiff(originalFile, revisedFile,
-				linesOriginalFile, patch, lineNumbers);
+	public List<String> createUnifiedDifference(String originalFile, String revisedFile, List<String> linesOriginalFile,
+			Patch patch, int lineNumbers) {
+		return DiffUtils.generateUnifiedDiff(originalFile, revisedFile, linesOriginalFile, patch, lineNumbers);
 	}
 
 	/**
@@ -80,8 +80,8 @@ class ExternalDeltaCalculation {
 	 * @return patch describing the difference between the original and revised
 	 *         sequences. Never {@code null}
 	 */
-	public Patch computeDifference(List<String> content1, List<String> content2) {
-		return DiffUtils.diff(content1, content2);
+	public Patch computeDifference(Collection<String> content1, Collection<String> content2) {
+		return DiffUtils.diff(new ArrayList<String>(content1), new ArrayList<String>(content2));
 	}
 
 	/**
@@ -96,13 +96,11 @@ class ExternalDeltaCalculation {
 	 *             patch cannot be applied
 	 */
 	@SuppressWarnings("unchecked")
-	public List<String> computePatch(List<String> content, Patch patch)
-			throws PatchException {
+	public Collection<String> computePatch(Collection<String> content, Patch patch) throws PatchException {
 		try {
-			return (List<String>) DiffUtils.patch(content, patch);
+			return (List<String>) DiffUtils.patch(new ArrayList<String>(content), patch);
 		} catch (PatchFailedException e) {
-			throw new PatchException("Patch could not be computed in diffLib.",
-					e);
+			throw new PatchException("Patch could not be computed in diffLib.", e);
 		}
 	}
 

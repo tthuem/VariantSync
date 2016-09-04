@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.deltacalculation;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -57,7 +58,7 @@ public interface DeltaOperations {
 	/**
 	 * Patches original text with given patch.
 	 * 
-	 * @param content
+	 * @param fOrigin
 	 *            original text
 	 * @param patch
 	 *            given patch
@@ -65,7 +66,7 @@ public interface DeltaOperations {
 	 * @throws PatchException
 	 *             patch could not be applied
 	 */
-	List<String> computePatch(List<String> content, Patch patch)
+	Collection<String> computePatch(Collection<String> fOrigin, Patch patch)
 			throws PatchException;
 
 	/**
@@ -79,7 +80,7 @@ public interface DeltaOperations {
 	 * @return PatchWrapper-object describing difference between original and
 	 *         revised sequences.
 	 */
-	Patch computeDifference(List<String> content1, List<String> content2);
+	Patch computeDifference(Collection<String> fOrigin, Collection<String> fList1);
 
 	/**
 	 * Unpatches revised text for a given patch.

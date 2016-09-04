@@ -1,16 +1,17 @@
 package de.ovgu.variantsync.ui.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -20,6 +21,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.context.ContextOperations;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
@@ -28,6 +30,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.view.context.MarkerHandler;
+import difflib.Delta;
 
 /**
  * Manages context operations and data exchanges between view and model.
@@ -63,52 +66,56 @@ public class ContextController extends AbstractController {
 	}
 
 	public java.util.List<String> getBaseCode(CodeChange ch) {
-		Path path = new Path(ch.getFilename());
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		try {
-			return getCodeFromFile(file, ch.getTimestamp());
-		} catch (CoreException | FileOperationException e) {
+			return persistanceOperations.readFile(
+					new FileInputStream(new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH
+							+ String.valueOf(ch.getTimestamp() + VariantSyncConstants.BASE_VERION))));
+		} catch (FileOperationException | FileNotFoundException e) {
 			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private java.util.List<String> getCodeFromFile(IFile file, long timestamp)
-			throws CoreException, FileOperationException {
-		IFileState[] states = file.getHistory(null);
-		for (IFileState state : states) {
-			if (state.getModificationTime() == timestamp) {
-				return persistanceOperations.readFile(state.getContents(), state.getCharset());
-			}
 		}
 		return null;
 	}
 
 	public java.util.List<String> getNewCode(CodeChange ch) {
-		Path path = new Path(ch.getFilename());
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 		try {
-			return getNewCodeFromFile(file, ch.getTimestamp());
-		} catch (CoreException | FileOperationException e) {
+			return persistanceOperations.readFile(
+					new FileInputStream(new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+							+ VariantSyncConstants.CHANGES_PATH
+							+ String.valueOf(ch.getTimestamp() + VariantSyncConstants.NEW_VERION))));
+		} catch (FileOperationException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	private java.util.List<String> getNewCodeFromFile(IFile file, long timestamp)
-			throws CoreException, FileOperationException {
-		IFileState[] states = file.getHistory(null);
-		int i = 0;
-		for (IFileState state : states) {
-			if (state.getModificationTime() == timestamp && (i - 1) == -1) {
-				return persistanceOperations.readFile(states[0].getContents(), states[0].getCharset());
-			} else if (state.getModificationTime() == timestamp) {
-				return persistanceOperations.readFile(states[i - 1].getContents(), states[i - 1].getCharset());
-			}
-			i++;
-		}
-		return null;
-	}
+	// private java.util.List<String> getCodeFromFile(IFile file, long
+	// timestamp)
+	// throws CoreException, FileOperationException {
+	// IFileState[] states = file.getHistory(null);
+	// for (IFileState state : states) {
+	// if (state.getModificationTime() == timestamp) {
+	// return persistanceOperations.readFile(state.getContents(),
+	// state.getCharset());
+	// }
+	// }
+	// return null;
+	// }
+	//
+	// private java.util.List<String> getAncientCodeFromFile(IFile file, long
+	// timestamp)
+	// throws CoreException, FileOperationException {
+	// IFileState[] states = file.getHistory(null);
+	// int i = 0;
+	// for (IFileState state : states) {
+	// if (state.getModificationTime() == timestamp) {
+	// return persistanceOperations.readFile(states[i + 1].getContents(),
+	// states[i + 1].getCharset());
+	// }
+	// i++;
+	// }
+	// return null;
+	// }
 
 	public String getActiveFeatureContext() {
 		return contextOperations.getActiveFeatureContext();
@@ -150,13 +157,18 @@ public class ContextController extends AbstractController {
 		return contextOperations.getChanges(fe, projectName, className);
 	}
 
+	public Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
+			Collection<String> right) {
+		return contextOperations.getConflictingDeltas(ancestor, left, right);
+	}
+
 	public List<String> getSyncTargets(String fe, String projectName, String className) {
 		return contextOperations.getSyncTargets(fe, projectName, className);
 	}
 
-	public List<String> getAutoSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left) {
-		return contextOperations.getAutoSyncTargets(fe, projectName, className, ancestor, left);
+	public Collection<String> getAutoSyncTargets(String fe, String projectName, String className,
+			Collection<String> base, Collection<String> left) {
+		return contextOperations.getAutoSyncTargets(fe, projectName, className, base, left);
 	}
 
 	public List<String> getAutoSyncTargetsForVariant(String fe, String projectName, String className,
@@ -165,9 +177,9 @@ public class ContextController extends AbstractController {
 		return contextOperations.getAutoSyncTargetsForVariant(fe, projectName, className, ancestor, left);
 	}
 
-	public List<String> getConflictedSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left) {
-		return contextOperations.getConflictSyncTargets(fe, projectName, className, ancestor, left);
+	public Collection<String> getConflictedSyncTargets(String fe, String projectName, String className,
+			Collection<String> base, Collection<String> left) {
+		return contextOperations.getConflictSyncTargets(fe, projectName, className, base, left);
 	}
 
 	public List<String> getConflictedSyncForVariant(String fe, String projectName, String className,
@@ -199,7 +211,7 @@ public class ContextController extends AbstractController {
 	}
 
 	public void refreshContext(boolean isAutomaticSync, String fe, String projectName, String filename,
-			java.util.List<String> codeWC, List<String> syncCode) {
+			java.util.List<String> codeWC, Collection<String> syncCode) {
 		contextOperations.refresh(isAutomaticSync, fe, projectName, filename, codeWC, syncCode);
 	}
 

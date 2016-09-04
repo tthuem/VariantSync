@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.features.mapping;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
@@ -62,7 +63,7 @@ public class ClassMapping extends Mapping {
 
 	@Override
 	protected boolean removeElement(Element element, List<Element> elements, String elementName, String elementPath,
-			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass,
+			CodeFragment code, boolean isFirstStep, boolean isLastStep, Collection<String> wholeClass,
 			long modificationTime) {
 		List<Element> classes = element.getChildren();
 		for (Element javaClass : classes) {
@@ -145,7 +146,7 @@ public class ClassMapping extends Mapping {
 		return UtilOperations.getInstance().readClassFiles(projectPath, packagePath, className).get(0);
 	}
 
-	public Variant addClassWithCode(String projectPath, String elementName, String elementPath, List<String> code,
+	public Variant addClassWithCode(String projectPath, String elementName, String elementPath, Collection<String> collection,
 			int startLine, int endLine, int offset) {
 		String projectName = UtilOperations.getInstance().parseProjectName(projectPath);
 		Variant javaProject = new Variant(projectName, projectPath);
@@ -155,7 +156,7 @@ public class ClassMapping extends Mapping {
 		elementPath = elementPath.substring(0, elementPath.lastIndexOf(elementName) - 1);
 		Package javaPackage = new Package(packageName, elementPath);
 		javaPackage.addChild(new Class(elementName, elementPath + "/" + elementName,
-				new CodeFragment(code, startLine, endLine, offset)));
+				new CodeFragment(collection, startLine, endLine, offset)));
 		javaProject.addChild(javaPackage);
 		return javaProject;
 	}

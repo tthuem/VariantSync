@@ -84,6 +84,12 @@ class FileOperations {
 			}
 		} catch (IOException e) {
 			throw new FileOperationException(ERROR_CODE_FILENOTREAD, e);
+		} finally {
+			try {
+				reader.close();
+			} catch (NullPointerException | IOException e) {
+				LogOperations.logError("BufferedReader could not be closed.", e);
+			}
 		}
 		return fileLines;
 	}
@@ -145,6 +151,30 @@ class FileOperations {
 		}
 		PrintWriter out = null;
 		try {
+			file.createNewFile();
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+			for (int i = 0; i < lines.size(); i++) {
+				out.println(lines.get(i));
+			}
+		} catch (IOException e) {
+			throw new FileOperationException(ERROR_CODE_FILENOTREAD, e);
+		} finally {
+			if (out != null) {
+				out.flush();
+				out.close();
+			}
+		}
+	}
+
+	public void writeFileInNewFolder(List<String> lines, File folder, File file) throws FileOperationException {
+		PrintWriter out = null;
+		try {
+			if (file.exists()) {
+				file.delete();
+			}
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
 			file.createNewFile();
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			for (int i = 0; i < lines.size(); i++) {

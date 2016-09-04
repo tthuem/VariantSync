@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.merging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
@@ -14,8 +15,7 @@ import difflib.Delta;
  * @version 1.0
  * @since 18.05.2015
  */
-public class MergeOperationProvider extends AbstractModel implements
-		Merging {
+public class MergeOperationProvider extends AbstractModel implements Merging {
 
 	private MergeCalculation mergeCalculation;
 
@@ -29,20 +29,21 @@ public class MergeOperationProvider extends AbstractModel implements
 	}
 
 	@Override
-	public boolean checkConflict(ArrayList<String> fAncestor,
-			ArrayList<String> fLeft, ArrayList<String> fRight) {
-		return mergeCalculation.checkConflict(fAncestor, fLeft, fRight);
+	public boolean checkConflict(Collection<String> fAncestor, Collection<String> fLeft, Collection<String> fRight) {
+		return mergeCalculation.checkConflict(new ArrayList<String>(fAncestor), new ArrayList<String>(fLeft),
+				new ArrayList<String>(fRight));
 	}
 
 	@Override
-	public List<String> performThreeWayMerge(List<String> fOrigin,
-			List<String> fList1, List<String> fList2) {
+	public Collection<String> performThreeWayMerge(Collection<String> fOrigin, Collection<String> fList1,
+			Collection<String> fList2) {
 		return mergeCalculation.performThreeWayMerge(fOrigin, fList1, fList2);
 	}
 
 	@Override
-	public boolean checkConflict(List<String> fOrigin, List<String> fList1,
-			List<String> fList2) {
-		return mergeCalculation.checkConflict(fOrigin, fList1, fList2);
+	public Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
+			Collection<String> right) {
+		return mergeCalculation.getConflictingDeltas(new ArrayList<String>(ancestor), new ArrayList<String>(left),
+				new ArrayList<String>(right));
 	}
 }

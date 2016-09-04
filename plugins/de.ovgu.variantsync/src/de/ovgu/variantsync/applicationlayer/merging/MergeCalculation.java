@@ -1,6 +1,8 @@
 package de.ovgu.variantsync.applicationlayer.merging;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,8 +23,7 @@ import difflib.Patch;
  */
 class MergeCalculation {
 
-	private DeltaOperations deltaOperations = ModuleFactory
-			.getDeltaOperations();
+	private DeltaOperations deltaOperations = ModuleFactory.getDeltaOperations();
 
 	/**
 	 * Performs three way merge. Joins three development histories together.
@@ -35,13 +36,11 @@ class MergeCalculation {
 	 *            development history two
 	 * @return merged development branch
 	 */
-	public List<String> performThreeWayMerge(List<String> fOrigin,
-			List<String> fList1, List<String> fList2) {
-		List<String> result = null;
-		Patch patchOriginWithOne = deltaOperations.computeDifference(fOrigin,
-				fList1);
-		Patch patchOriginWithTwo = deltaOperations.computeDifference(fOrigin,
-				fList2);
+	public Collection<String> performThreeWayMerge(Collection<String> fOrigin, Collection<String> fList1,
+			Collection<String> fList2) {
+		Collection<String> result = null;
+		Patch patchOriginWithOne = deltaOperations.computeDifference(fOrigin, fList1);
+		Patch patchOriginWithTwo = deltaOperations.computeDifference(fOrigin, fList2);
 		List<Delta> deltasO1 = patchOriginWithOne.getDeltas();
 		List<Delta> deltasO2 = patchOriginWithTwo.getDeltas();
 		if (!checkConflict(deltasO1, deltasO2)) {
@@ -64,12 +63,9 @@ class MergeCalculation {
 		}
 	}
 
-	public boolean checkConflict(List<String> fOrigin, List<String> fList1,
-			List<String> fList2) {
-		Patch patchOriginWithOne = deltaOperations.computeDifference(fOrigin,
-				fList1);
-		Patch patchOriginWithTwo = deltaOperations.computeDifference(fOrigin,
-				fList2);
+	public boolean checkConflict(List<String> fOrigin, List<String> fList1, List<String> fList2) {
+		Patch patchOriginWithOne = deltaOperations.computeDifference(fOrigin, fList1);
+		Patch patchOriginWithTwo = deltaOperations.computeDifference(fOrigin, fList2);
 		List<Delta> deltasO1 = patchOriginWithOne.getDeltas();
 		List<Delta> deltasO2 = patchOriginWithTwo.getDeltas();
 		return checkConflict(deltasO1, deltasO2);
@@ -124,5 +120,50 @@ class MergeCalculation {
 			}
 		}
 		return false;
+	}
+
+	public Collection<Delta> getConflictingDeltas(ArrayList<String> arrayList, ArrayList<String> arrayList2,
+			ArrayList<String> arrayList3) {
+		Patch patchOriginWithOne = deltaOperations.computeDifference(arrayList, arrayList2);
+		Patch patchOriginWithTwo = deltaOperations.computeDifference(arrayList, arrayList3);
+		List<Delta> deltasO1 = patchOriginWithOne.getDeltas();
+		List<Delta> deltasO2 = patchOriginWithTwo.getDeltas();
+
+		List<Delta> deltas12 = new ArrayList<Delta>();
+		for (Delta dw : deltasO1) {
+			deltas12.add(dw);
+		}
+		List<Delta> deltas13 = new ArrayList<Delta>();
+		for (Delta dw : deltasO2) {
+			deltas13.add(dw);
+		}
+		if (deltas13.containsAll(deltas12)) {
+			return Collections.emptyList();
+		}
+		Set<Delta> tempDeltas = new HashSet<Delta>();
+		tempDeltas.addAll(deltas12);
+		tempDeltas.addAll(deltas13);
+		Patch patchTemp = new Patch();
+		for (Delta d : tempDeltas) {
+			patchTemp.addDelta(d);
+		}
+		List<Delta> deltas = patchTemp.getDeltas();
+		for (int i = 0; i < deltas.size(); i++) {
+			if (i + 1 < deltas.size()) {
+				Delta actualDelta = deltas.get(i + 1);
+				int nextStartPosition = actualDelta.getOriginal().getPosition();
+				Delta followingDelta = deltas.get(i);
+				int curEndPosition = followingDelta.getOriginal().last();
+				if (nextStartPosition - curEndPosition > 1) {
+					continue;
+				} else {
+					Collection<Delta> result = new ArrayList<Delta>();
+					result.add(actualDelta);
+					result.add(followingDelta);
+					return result;
+				}
+			}
+		}
+		return Collections.emptyList();
 	}
 }

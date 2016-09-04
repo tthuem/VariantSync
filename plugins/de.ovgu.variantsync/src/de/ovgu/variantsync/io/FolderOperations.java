@@ -1,5 +1,14 @@
 package de.ovgu.variantsync.io;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -41,8 +50,7 @@ class FolderOperations {
 		try {
 			folder.create(true, true, null);
 		} catch (CoreException e) {
-			throw new FolderOperationException("Folder could not be created.",
-					e);
+			throw new FolderOperationException("Folder could not be created.", e);
 		}
 	}
 
@@ -59,10 +67,59 @@ class FolderOperations {
 			recordDelItem(folder);
 			folder.delete(true, null);
 		} catch (CoreException e) {
-			throw new FolderOperationException("Folder could not be deleted.",
-					e);
+			throw new FolderOperationException("Folder could not be deleted.", e);
 		}
 	}
+
+	public void deldir(IFolder folder, File f) throws FolderOperationException {
+		try {
+			if (f.exists()) {
+				try {
+					deleteFileOrFolder(f.toPath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (f.exists()) {
+				try {
+					FileUtils.deleteDirectory(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			folder.delete(true, null);
+		} catch (CoreException e) {
+			throw new FolderOperationException("Folder could not be deleted.", e);
+		}
+	}
+
+	private static void deleteFileOrFolder(final Path path) throws IOException {
+		Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(final Path file, final IOException e) {
+				return handleException(e);
+			}
+
+			private FileVisitResult handleException(final IOException e) {
+				e.printStackTrace(); // replace with more robust error handling
+				return FileVisitResult.TERMINATE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(final Path dir, final IOException e) throws IOException {
+				if (e != null)
+					return handleException(e);
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		});
+	};
 
 	/**
 	 * Adds monitoring to folder and its containing sub-folders and files.
@@ -77,8 +134,7 @@ class FolderOperations {
 		try {
 			members = folder.members();
 		} catch (CoreException e) {
-			throw new FolderOperationException(
-					"Folder members could not be retrieved.", e);
+			throw new FolderOperationException("Folder members could not be retrieved.", e);
 		}
 		for (IResource res : members) {
 			if (res instanceof IFolder) {
@@ -88,4 +144,5 @@ class FolderOperations {
 			}
 		}
 	}
+
 }

@@ -110,7 +110,7 @@ class DeltaCalculation {
 		String packageName = Util.parsePackageNameFromResource(res);
 		contextOperations.recordCodeChange(tmpUnifiedDiff, res.getProject().getName(),
 				res.getProject().getLocation().toString(), packageName, ((IFile) res).getName(), currentFilelines,
-				states[0].getModificationTime());
+				historyFilelines, states[0].getModificationTime());
 		if (contextOperations.getActiveFeatureContext() != null
 				&& !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
 			contextOperations.setBaseVersion((IFile) res);

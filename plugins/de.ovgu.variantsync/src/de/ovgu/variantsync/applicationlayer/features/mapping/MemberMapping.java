@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.features.mapping;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
@@ -42,7 +43,7 @@ public class MemberMapping extends Mapping {
 	protected boolean removeElement(Element element,
 			List<Element> elements, String elementName, String elementPath,
 			CodeFragment code, boolean isFirstStep, boolean isLastStep,
-			List<String> wholeClass, long modificationTime) {
+			Collection<String> wholeClass, long modificationTime) {
 		return false;
 	}
 

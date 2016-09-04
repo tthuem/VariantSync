@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.features.mapping;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
@@ -22,5 +23,5 @@ public interface IMappingOperations {
 
 	void removeMapping(String elementName, String pathToElement,
 			CodeFragment code, Element project, boolean isFirstStep,
-			boolean isLastStep, List<String> wholeClass, long modificationTime);
+			boolean isLastStep, Collection<String> collection, long modificationTime);
 }

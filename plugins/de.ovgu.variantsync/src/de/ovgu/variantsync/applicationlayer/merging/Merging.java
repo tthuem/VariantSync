@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.merging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import difflib.Delta;
@@ -25,23 +26,22 @@ public interface Merging {
 	 */
 	boolean checkConflict(List<Delta> deltas12, List<Delta> deltas13);
 
-	boolean checkConflict(ArrayList<String> fAncestor, ArrayList<String> fLeft,
-			ArrayList<String> fRight);
-
 	/**
 	 * Performs three way merge. Joins three development histories together.
 	 * 
 	 * @param fOrigin
 	 *            origin development history
-	 * @param fList2
+	 * @param left
 	 *            development history two
 	 * @param fList3
 	 *            development history three
 	 * @return merged development branch
 	 */
-	List<String> performThreeWayMerge(List<String> fList1, List<String> fList2,
-			List<String> fList3);
+	Collection<String> performThreeWayMerge(Collection<String> base, Collection<String> left,
+			Collection<String> fList3);
 
-	boolean checkConflict(List<String> fOrigin, List<String> fList1,
-			List<String> fList2);
+	boolean checkConflict(Collection<String> fAncestor, Collection<String> fLeft, Collection<String> fRight);
+
+	Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
+			Collection<String> right);
 }

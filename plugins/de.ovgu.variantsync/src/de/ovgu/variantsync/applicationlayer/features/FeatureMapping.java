@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.features;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeFragment;
@@ -62,7 +63,7 @@ class FeatureMapping {
 
 	public Variant mapCodeFragment(MappingElement mapping, Variant project) {
 		readMappingInfo(mapping);
-		List<String> code = mapping.getCode();
+		Collection<String> code = mapping.getCode();
 		String projectPath = project.getPath();
 		String projectName = project.getName();
 		String relativeClassPath = UtilOperations.getInstance().parseToRelativeElementPath(projectName, elementPath);

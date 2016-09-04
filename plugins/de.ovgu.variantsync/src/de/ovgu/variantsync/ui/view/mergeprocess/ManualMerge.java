@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.ui.view.mergeprocess;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -16,8 +17,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
-import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
-
 public class ManualMerge {
 
 	protected Object result;
@@ -30,20 +29,20 @@ public class ManualMerge {
 	private boolean isLeftChosen;
 	private boolean isRightChosen;
 	private SourceFocusedView featureView;
-	private List<String> syncCode;
+	private Collection<String> syncCode;
 
 	/**
 	 * Create the dialog.
 	 * 
 	 * @param reference
-	 * @param syncCode
+	 * @param syncCode2
 	 * 
 	 * @param parent
 	 * @param style
 	 */
 	public ManualMerge(SourceFocusedView reference, java.util.List<String> left,
 			String classLeft, java.util.List<String> right,
-			String classRight, List<String> syncCode) {
+			String classRight, Collection<String> syncCode2) {
 		shell = new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL
 				| SWT.SHEET);
 		shell.setText("Manual Merge");
@@ -52,7 +51,7 @@ public class ManualMerge {
 		this.left = left;
 		this.right = right;
 		this.featureView = reference;
-		this.syncCode = syncCode;
+		this.syncCode = syncCode2;
 	}
 
 	/**

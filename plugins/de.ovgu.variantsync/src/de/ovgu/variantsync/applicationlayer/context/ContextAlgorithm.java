@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.applicationlayer.context;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,20 +35,20 @@ class ContextAlgorithm {
 	}
 
 	@SuppressWarnings("serial")
-	public void addClass(String projectName, String packageName, String className, List<String> wholeClass,
+	public void addClass(String projectName, String packageName, String className, Collection<String> wholeClass,
 			long modificationTime) {
 		addCode(projectName, packageName, className, 0, 0, wholeClass, new ArrayList<String>() {
 		}, true, true, false, modificationTime);
 	}
 
-	public void removeClass(String projectName, String packageName, String className, List<String> wholeClass,
+	public void removeClass(String projectName, String packageName, String className, Collection<String> wholeClass,
 			long modificationTime) {
 		removeCode(projectName, packageName, className, 0, 0, new ArrayList<String>() {
 		}, true, true, wholeClass, false, modificationTime);
 	}
 
-	public void addCode(String projectName, String packageName, String className, List<String> code,
-			List<String> wholeClass, boolean ignore, long modificationTime) {
+	public void addCode(String projectName, String packageName, String className, Collection<String> code,
+			Collection<String> newVersion, boolean ignore, long modificationTime) {
 
 		// Mapping auf FeatureExpressions umstellen/ von FeatureExpressions
 		// extrahieren und immer das Project zur�ckgeben mit angepasstem Mapping
@@ -55,8 +56,8 @@ class ContextAlgorithm {
 		// Zuordnung Project zu FeatureExpression und Datenhaltung erfolgt im
 		// Context
 
-		List<Diff> diffs = ContextUtils.analyzeDiff(code);
-		refreshCodeBase(diffs, projectName, packageName, className, wholeClass, ignore, modificationTime);
+		List<Diff> diffs = ContextUtils.analyzeDiff(new ArrayList<String>(code));
+		refreshCodeBase(diffs, projectName, packageName, className, newVersion, ignore, modificationTime);
 
 		// String file = "/src/" + packageName + "/" + className;
 		// refreshMarker(diffs, file, context.getPathOfJavaProject());
@@ -65,9 +66,8 @@ class ContextAlgorithm {
 		System.out.println("===============================================");
 	}
 
-	// TODO: hier liegt der Fehler ...
 	private void refreshCodeBase(List<Diff> diffs, String projectName, String packageName, String className,
-			List<String> wholeClass, boolean ignore, long modificationTime) {
+			Collection<String> newVersion, boolean ignore, long modificationTime) {
 		int i = 0;
 		for (Diff diff : diffs) {
 			DiffIndices di = diff.getDiffIndices();
@@ -88,7 +88,7 @@ class ContextAlgorithm {
 				}
 				list.add(ds.getCode());
 				if (ds.isAddFlag()) {
-					addCode(projectName, packageName, className, startNew, startNew, list, wholeClass, isFirstStep,
+					addCode(projectName, packageName, className, startNew, startNew, list, newVersion, isFirstStep,
 							isLastStep, ignore, modificationTime);
 					if (!UtilOperations.getInstance().ignoreAddCounter()) {
 						addCounter++;
@@ -99,7 +99,7 @@ class ContextAlgorithm {
 						isLastStep = true;
 					}
 					removeCode(projectName, packageName, className, startOld, startOld, list, isFirstStep, isLastStep,
-							wholeClass, ignore, modificationTime);
+							newVersion, ignore, modificationTime);
 					if (j < diffSteps.size() - 2 && diffSteps.get(j + 1).isAddFlag()) {
 						isLastStep = false;
 					}
@@ -125,26 +125,26 @@ class ContextAlgorithm {
 	}
 
 	private void addCode(String projectName, String packageName, String className, int start, int end,
-			List<String> extractedCode, List<String> wholeClass, boolean isFirstStep, boolean isLastStep,
+			Collection<String> wholeClass, Collection<String> newVersion, boolean isFirstStep, boolean isLastStep,
 			boolean ignore, long modificationTime) {
 		setUpProject(projectName);
 		MappingElement mapping = new MappingElement(context.getFeatureExpression(), className,
 				JavaElements.CODE_FRAGMENT,
 				context.getPathToProject(projectName) + "/src/" + packageName.replace(".", "/") + "/" + className,
-				extractedCode, start, end, end - start, wholeClass, isFirstStep, isLastStep, ignore, modificationTime);
+				wholeClass, start, end, end - start, newVersion, isFirstStep, isLastStep, ignore, modificationTime);
 		mapping.setPathToProject(context.getPathToProject(projectName));
 
 		featureOperations.addCodeFragment(mapping, context.getJavaProject(projectName));
 	}
 
 	private void removeCode(String projectName, String packageName, String className, int start, int end,
-			List<String> extractedCode, boolean isFirstStep, boolean isLastStep, List<String> wholeClass,
+			List<String> extractedCode, boolean isFirstStep, boolean isLastStep, Collection<String> newVersion,
 			boolean ignore, long modificationTime) {
 		setUpProject(projectName);
 		MappingElement mapping = new MappingElement(context.getFeatureExpression(), className,
 				JavaElements.CODE_FRAGMENT,
 				context.getPathToProject(projectName) + "/src/" + packageName.replace(".", "/") + "/" + className,
-				extractedCode, start, end, end - start, wholeClass, isFirstStep, isLastStep, ignore, modificationTime);
+				extractedCode, start, end, end - start, newVersion, isFirstStep, isLastStep, ignore, modificationTime);
 		mapping.setPathToProject(context.getPathToProject(projectName));
 		featureOperations.removeMapping(mapping, context.getJavaProject(projectName), modificationTime);
 	}

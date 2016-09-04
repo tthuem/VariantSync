@@ -1,5 +1,6 @@
 package de.ovgu.variantsync.applicationlayer.features.mapping;
 
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
@@ -21,7 +22,7 @@ public abstract class Mapping implements IMappingOperations {
 			MappingElement mapping);
 
 	protected abstract boolean removeElement(Element element, List<Element> elements, String elementName,
-			String elementPath, CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass,
+			String elementPath, CodeFragment code, boolean isFirstStep, boolean isLastStep, Collection<String> wholeClass,
 			long modificationTime);
 
 	protected abstract boolean checkElement(Element element, String elementName, String pathToElement);
@@ -63,7 +64,7 @@ public abstract class Mapping implements IMappingOperations {
 
 	@Override
 	public void removeMapping(String elementName, String pathToElement, CodeFragment code, Element element,
-			boolean isFirstStep, boolean isLastStep, List<String> wholeClass, long modificationTime) {
+			boolean isFirstStep, boolean isLastStep, Collection<String> wholeClass, long modificationTime) {
 		List<Element> packages = element.getChildren();
 		if (packages == null && !(element instanceof Class)) {
 			computeElementForRemove(element, elementName, pathToElement);

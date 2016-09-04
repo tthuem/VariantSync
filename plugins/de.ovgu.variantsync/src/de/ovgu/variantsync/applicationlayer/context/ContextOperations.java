@@ -13,6 +13,7 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
+import difflib.Delta;
 
 /**
  * Defines functions to manage contexts.
@@ -30,14 +31,15 @@ public interface ContextOperations {
 
 	String getActiveProject();
 
-	void recordCodeChange(List<String> tmpUnifiedDiff, String projectName, String pathToProject, String packageName,
-			String className, List<String> wholeClass, long modificationTime);
+	void recordCodeChange(Collection<String> tmpUnifiedDiff, String projectName, String pathToProject,
+			String packageName, String className, Collection<String> newVersion, Collection<String> baseVersion,
+			long modificationTime);
 
 	void recordFileAdded(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass, long modificationTime);
+			Collection<String> wholeClass, long modificationTime);
 
 	void recordFileRemoved(String projectName, String pathToProject, String packageName, String className,
-			List<String> wholeClass, long modificationTime);
+			Collection<String> wholeClass, long modificationTime);
 
 	void setContextColor(String featureExpression, CodeHighlighting color);
 
@@ -45,10 +47,11 @@ public interface ContextOperations {
 
 	void addContext(Context c);
 
-	void addCode(String projectName, String packageName, String className, List<String> code, List<String> wholeClass, long modificationTime);
+	void addCode(String projectName, String packageName, String className, Collection<String> code,
+			Collection<String> wholeClass, long modificationTime);
 
-	void addCode(String projectName, String packageName, String className, List<String> code, Context c,
-			List<String> wholeClass, long modificationTime);
+	void addCode(String projectName, String packageName, String className, Collection<String> code, Context c,
+			Collection<String> wholeClass, long modificationTime);
 
 	Map<String, List<Class>> findJavaClass(String projectName, String className);
 
@@ -62,11 +65,11 @@ public interface ContextOperations {
 
 	Collection<String> getClasses(String fe, String projectName);
 
-	List<String> getAutoSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left);
+	Collection<String> getAutoSyncTargets(String fe, String projectName, String className, Collection<String> base,
+			Collection<String> left);
 
-	List<String> getConflictSyncTargets(String fe, String projectName, String className, List<String> ancestor,
-			List<String> left);
+	Collection<String> getConflictSyncTargets(String fe, String projectName, String className, Collection<String> base,
+			Collection<String> left);
 
 	Collection<CodeChange> getChanges(String fe, String projectName, String className);
 
@@ -84,13 +87,14 @@ public interface ContextOperations {
 
 	IResource getResource(String selectedFeatureExpression, String selectedProject, String selectedClass);
 
-	void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, List<String> codeWC,
-			List<String> syncCode);
+	void refresh(boolean isAutomaticSync, String fe, String projectName, String filename, Collection<String> codeWC,
+			Collection<String> syncCode);
 
 	void removeTagging(String path);
 
-	void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, boolean ignoreChange, long modificationTime);
+	void recordCodeChange(String projectName, String pathToProject, Collection<String> changedCode, String className,
+			String packageName, Collection<String> wholeClass, Collection<String> baseVersion, boolean ignoreChange,
+			long modificationTime);
 
 	void activateContext(String selectedFeatureExpression, boolean ignoreChange);
 
@@ -114,5 +118,8 @@ public interface ContextOperations {
 
 	List<String> getConflictedSyncForVariant(String fe, String targetVariant, String className, List<CodeLine> ancestor,
 			List<CodeLine> left);
+
+	Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
+			Collection<String> right);
 
 }

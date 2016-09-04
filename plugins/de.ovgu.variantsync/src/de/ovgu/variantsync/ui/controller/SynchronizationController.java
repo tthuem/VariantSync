@@ -1,6 +1,7 @@
 package de.ovgu.variantsync.ui.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
@@ -29,7 +30,7 @@ public class SynchronizationController extends AbstractController {
 		setModelProperty(ControllerProperties.SYNCHRONIZEDPROJECTS_PROPERTY.getProperty(), patch);
 	}
 
-	public List<String> doAutoSync(List<String> left, List<String> base, List<String> right) {
+	public Collection<String> doAutoSync(Collection<String> left, Collection<String> base, Collection<String> right) {
 		/* List<String> mergeResult = */
 		return mergeOperations.performThreeWayMerge(base, left, right);
 		// return parseStringsToCodeLines(mergeResult);

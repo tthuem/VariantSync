@@ -3,6 +3,7 @@ package de.ovgu.variantsync.applicationlayer.synchronization;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -210,7 +211,7 @@ class ProjectSynchronization extends Synchronization {
 							&& project.getFile(relativePath).exists()) {
 						fList3 = getFileContent(project, patch);
 						try {
-							List<String> mergedList = mergeOperations
+							Collection<String> mergedList = mergeOperations
 									.performThreeWayMerge(fList1, fList2,
 											fList3);
 							String mergedString = "";

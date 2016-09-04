@@ -43,7 +43,7 @@ public class TestDefaultContext {
 	public void before() {
 		co.activateContext(DEFAULT_CONTEXT);
 	}
-	
+
 	@After
 	public void after() {
 		co.deleteAllContexts();
@@ -51,8 +51,7 @@ public class TestDefaultContext {
 
 	@Test
 	public void testAddCodeToEmptyDefaultContext() {
-		System.out
-				.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeToEmptyDefaultContext()\n");
 
 		List<String> diff = new ArrayList<String>();
@@ -65,14 +64,12 @@ public class TestDefaultContext {
 		}
 		System.out.println("\nDiff-String:\n" + diff.toString());
 
-		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME,
-				CLASS_NAME, new ArrayList<String>());
+		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME, CLASS_NAME, new ArrayList<String>(), 0l);
 		co.stopRecording();
 		Context defaultContext = co.getContext(DEFAULT_CONTEXT);
 		Variant jp = defaultContext.getJavaProject(PROJECT_NAME);
 
-		List<CodeLine> codeOfClass = jp.getChildren().get(0).getChildren()
-				.get(0).getClonedCodeLines();
+		List<CodeLine> codeOfClass = jp.getChildren().get(0).getChildren().get(0).getClonedCodeLines();
 
 		System.out.println("JavaProject:\n" + jp.toString());
 
@@ -113,14 +110,12 @@ public class TestDefaultContext {
 		assertEquals(cl.getCode(), "}");
 		assertEquals(cl.getLine(), 17);
 
-		System.out
-				.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
 	@Test
 	public void testAddCodeInsideExistingCode() {
-		System.out
-				.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode()\n");
 
 		List<String> diff = new ArrayList<String>();
@@ -133,8 +128,7 @@ public class TestDefaultContext {
 		}
 		System.out.println("\nDiff-String:\n" + diff.toString());
 
-		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME,
-				CLASS_NAME, new ArrayList<String>());
+		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME, CLASS_NAME, new ArrayList<String>(), 0l);
 
 		// add code line inside existing code
 		diffArray = "--- Main.java, +++ Main.java, @@ -6,0 +6,1 @@, +	private int b;, @@ -7,1 +8,1 @@, -	public Main(int g) {, +	public Main(int g, int h) {, @@ -9,0 +10,1 @@, +		b = h;"
@@ -147,15 +141,12 @@ public class TestDefaultContext {
 		diff.remove(7);
 		System.out.println("\nDiff-String:\n" + diff.toString());
 
-		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME,
-				CLASS_NAME, new ArrayList<String>());
+		co.recordCodeChange(diff, PROJECT_NAME, PROJECT_PATH, PACKAGE_NAME, CLASS_NAME, new ArrayList<String>(), 0l);
 		co.stopRecording();
-		Context defaultContext = co
-				.getContext(VariantSyncConstants.DEFAULT_CONTEXT);
+		Context defaultContext = co.getContext(VariantSyncConstants.DEFAULT_CONTEXT);
 		Variant jp = defaultContext.getJavaProject(PROJECT_NAME);
 
-		List<CodeLine> codeOfClass = jp.getChildren().get(0).getChildren()
-				.get(0).getClonedCodeLines();
+		List<CodeLine> codeOfClass = jp.getChildren().get(0).getChildren().get(0).getClonedCodeLines();
 
 		System.out.println("JavaProject:\n" + jp.toString());
 
@@ -203,7 +194,6 @@ public class TestDefaultContext {
 		assertEquals(cl.getLine(), 19);
 
 		System.out.println("JavaProject:\n" + jp.toString());
-		System.out
-				.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 }

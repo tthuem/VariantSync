@@ -78,29 +78,14 @@ class ContextHandler {
 		}
 	}
 
-	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, long modificationTime) {
+	public void recordCodeChange(String projectName, String pathToProject, Collection<String> changedCode,
+			String className, String packageName, Collection<String> newVersion, Collection<String> baseVersion,
+			boolean ignoreChange, long modificationTime) {
 		if (!activeContext.containsProject(projectName)) {
 			activeContext.initProject(projectName, pathToProject);
 		}
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode, wholeClass, false, modificationTime);
-		UpdateAlgorithm ua = new UpdateAlgorithm();
-		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
-		if (packageName.equals("defaultpackage"))
-			packageName = "";
-		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
-		contextMap.put(activeContext.getFeatureExpression(), activeContext);
- 		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
-	}
-
-	public void recordCodeChange(String projectName, String pathToProject, List<String> changedCode, String className,
-			String packageName, List<String> wholeClass, boolean ignoreChange, long modificationTime) {
-		if (!activeContext.containsProject(projectName)) {
-			activeContext.initProject(projectName, pathToProject);
-		}
-		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
-		ca.addCode(projectName, packageName, className, changedCode, wholeClass, ignoreChange, modificationTime);
+		ca.addCode(projectName, packageName, className, changedCode, newVersion, ignoreChange, modificationTime);
 		UpdateAlgorithm ua = new UpdateAlgorithm();
 		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
 		if (packageName.equals("defaultpackage"))
@@ -108,16 +93,39 @@ class ContextHandler {
 		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
 		contextMap.put(activeContext.getFeatureExpression(), activeContext);
 		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
+
+		persistenceOp.saveBaseVersion(baseVersion, modificationTime);
+		persistenceOp.saveNewVersion(newVersion, modificationTime);
+	}
+
+	public void recordCodeChange(String projectName, String pathToProject, Collection<String> changedCode,
+			String className, String packageName, Collection<String> newVersion, Collection<String> baseVersion,
+			long modificationTime) {
+		if (!activeContext.containsProject(projectName)) {
+			activeContext.initProject(projectName, pathToProject);
+		}
+		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
+		ca.addCode(projectName, packageName, className, changedCode, newVersion, false, modificationTime);
+		UpdateAlgorithm ua = new UpdateAlgorithm();
+		ua.updateCode(projectName, packageName, className, changedCode, activeContext.getFeatureExpression());
+		if (packageName.equals("defaultpackage"))
+			packageName = "";
+		MarkerHandler.getInstance().updateMarker(projectName, packageName, className, activeContext);
+		contextMap.put(activeContext.getFeatureExpression(), activeContext);
+		persistenceOp.saveContext(activeContext, Util.parseStorageLocation(activeContext));
+
+		persistenceOp.saveBaseVersion(baseVersion, modificationTime);
+		persistenceOp.saveNewVersion(newVersion, modificationTime);
 	}
 
 	public void recordFileAdded(String projectName, String pathToProject, String className, String packageName,
-			List<String> wholeClass, long modificationTime) {
+			Collection<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
 		ca.addClass(projectName, packageName, className, wholeClass, modificationTime);
 	}
 
 	public void recordFileRemoved(String projectName, String pathToProject, String className, String packageName,
-			List<String> wholeClass, long modificationTime) {
+			Collection<String> wholeClass, long modificationTime) {
 		ContextAlgorithm ca = new ContextAlgorithm(activeContext);
 		ca.removeClass(projectName, packageName, className, wholeClass, modificationTime);
 	}

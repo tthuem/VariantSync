@@ -52,7 +52,7 @@ public class CodeMapping extends Mapping {
 
 	@Override
 	protected void computeElement(Element element, MappingElement mapping, String name, String path) {
-		List<String> code = mapping.getCode();
+		Collection<String> code = mapping.getCode();
 		boolean ignoreChange = mapping.isIgnore();
 		String relativeClassPath = UtilOperations.getInstance().getRelativeClassPath(path);
 		if (classMapping.containsElement(element.getChildren(), name, path, "")) {
@@ -93,7 +93,7 @@ public class CodeMapping extends Mapping {
 
 	private Collection<CodeLine> getChange(CodeFragment cf) {
 		Collection<CodeLine> code = new ArrayList<CodeLine>();
-		List<String> codeLines = cf.getCode();
+		Collection<String> codeLines = cf.getCode();
 		int i = cf.getStartLine();
 		for (String line : codeLines) {
 			code.add(new CodeLine(line, i, true));
@@ -155,7 +155,7 @@ public class CodeMapping extends Mapping {
 
 	@Override
 	protected boolean removeElement(Element javaElement, List<Element> elements, String elementName, String elementPath,
-			CodeFragment code, boolean isFirstStep, boolean isLastStep, List<String> wholeClass,
+			CodeFragment code, boolean isFirstStep, boolean isLastStep, Collection<String> wholeClass,
 			long modificationTime) {
 		String nameOfClass = javaElement.getName();
 		String pathOfClass = UtilOperations.getInstance().removeToSrcInPath(javaElement.getPath());

@@ -3,21 +3,32 @@ package de.ovgu.variantsync.ui.view.mergeprocess;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.eclipse.compare.BufferedContent;
+import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MenuAdapter;
@@ -26,6 +37,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,10 +62,12 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
 import de.ovgu.variantsync.applicationlayer.merging.ResourceCompareInput;
+import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.controller.ContextController;
 import de.ovgu.variantsync.ui.controller.ControllerHandler;
 import de.ovgu.variantsync.ui.controller.FeatureController;
 import de.ovgu.variantsync.ui.controller.SynchronizationController;
+import difflib.Delta;
 
 /**
  * 
@@ -68,6 +82,7 @@ public class SourceFocusedView extends ViewPart {
 	private SynchronizationController sc = ControllerHandler.getInstance().getSynchronizationController();
 	private FeatureController fc = ControllerHandler.getInstance().getFeatureController();
 	private ContextOperations contextOperations = ModuleFactory.getContextOperations();
+	private Persistable persOp = ModuleFactory.getPersistanceOperations();
 
 	private List projects;
 	private List classes;
@@ -79,7 +94,7 @@ public class SourceFocusedView extends ViewPart {
 	private int selectedChange;
 	private Collection<CodeChange> collChanges;
 	private String featureExpressions[];
-	private java.util.List<String> syncCode;
+	private Collection<String> syncCode;
 	private String projectNameTarget;
 	private String classNameTarget;
 	private Button btnSynchronize;
@@ -94,13 +109,18 @@ public class SourceFocusedView extends ViewPart {
 	private List manualSyncTargets;
 	private Label lblChangedCode;
 	private Table newCode;
-	private java.util.List<String> manualSyncTargetsAsList;
+	private Collection<String> manualSyncTargetsAsList;
 	private String autoSelection;
 	private String manualSelection;
 	private long timestamp;
 	private List list_batchVariants;
 	private GridData gd_list_2;
 	private CodeChange currentChange;
+
+	private Collection<String> base;
+	private Collection<String> left;
+
+	private Composite composite;
 
 	public SourceFocusedView() {
 	}
@@ -119,6 +139,7 @@ public class SourceFocusedView extends ViewPart {
 
 	@Override
 	public void createPartControl(final Composite arg0) {
+		composite = arg0;
 		reference = this;
 		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions().toArray(new String[] {});
 		arg0.setLayout(new GridLayout(5, false));
@@ -280,6 +301,10 @@ public class SourceFocusedView extends ViewPart {
 							Color color = new Color(getSite().getShell().getDisplay(), ccolor.getRGB());
 							item.setBackground(color);
 						}
+
+						left = cc.getNewCode(currentChange);
+						base = cc.getBaseCode(currentChange);
+
 						refreshSyncTargets();
 						break;
 					}
@@ -310,7 +335,7 @@ public class SourceFocusedView extends ViewPart {
 				classNameTarget = tmp[1].trim();
 				rightClass = projectNameTarget + " - " + classNameTarget;
 
-				syncCode = sc.doAutoSync(cc.getNewCode(currentChange), cc.getBaseCode(currentChange),
+				syncCode = sc.doAutoSync(left, base,
 						cc.getTargetFile(selectedFeatureExpression, projectNameTarget, classNameTarget));
 				if (syncCode != null && !syncCode.isEmpty()) {
 					btnSynchronize.setEnabled(true);
@@ -366,6 +391,7 @@ public class SourceFocusedView extends ViewPart {
 						projectNameTarget = targetInfo[0].trim();
 						classNameTarget = targetInfo[1].trim();
 						manualSelection = target;
+
 						break;
 					}
 					i++;
@@ -392,8 +418,7 @@ public class SourceFocusedView extends ViewPart {
 					btnManualSync.setEnabled(false);
 
 					try {
-						syncWithEclipse(cc.getBaseCode(currentChange), cc.getNewCode(currentChange), selectedProject,
-								selectedClass, projectNameTarget, classNameTarget);
+						syncWithEclipse(base, left, selectedProject, selectedClass, projectNameTarget, classNameTarget);
 					} catch (FileOperationException | CoreException ex) {
 						ex.printStackTrace();
 					}
@@ -444,6 +469,7 @@ public class SourceFocusedView extends ViewPart {
 		new Label(arg0, SWT.NONE);
 	}
 
+	// TODO
 	private void startBatchSync(String[] variantBatchSelection) {
 		for (String s : variantBatchSelection) {
 			String[] classes = cc.getClasses(selectedFeatureExpression, s).toArray(new String[] {});
@@ -470,13 +496,13 @@ public class SourceFocusedView extends ViewPart {
 								targetClass);
 
 						ModuleFactory.getContextOperations().activateContext(selectedFeatureExpression);
-						java.util.List<String> syncCode = sc.doAutoSync(cc.getNewCode(ch), cc.getBaseCode(ch), codeWC);
+						Collection<String> syncCode = sc.doAutoSync(cc.getNewCode(ch), cc.getBaseCode(ch), codeWC);
 						solveChange(syncCode, selectedFeatureExpression, targetProject, targetClass, false);
 						cc.addSynchronizedChange(selectedFeatureExpression, timestamp, selectedProject, target);
 					}
 
 					// manueller Anteil
-					java.util.List<String> manualSyncTargetsAsList = cc.getConflictedSyncTargets(
+					java.util.Collection<String> manualSyncTargetsAsList = cc.getConflictedSyncTargets(
 							selectedFeatureExpression, s, c, cc.getBaseCode(currentChange),
 							cc.getNewCode(currentChange));
 					String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
@@ -504,30 +530,9 @@ public class SourceFocusedView extends ViewPart {
 		}
 	}
 
-	private void syncWithEclipse(java.util.List<String> baseCode, java.util.List<String> leftCode, String projectName,
+	private void syncWithEclipse(Collection<String> base2, Collection<String> left2, String projectName,
 			String className, String projectNameRight, String classNameRight)
 			throws FileOperationException, CoreException {
-
-		// Base Version
-		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
-				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
-		if (!f.exists())
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(baseCode, f);
-
-		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
-				+ "/LeftVersion.java");
-		if (!f.exists())
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(leftCode, f);
 
 		// Right Version
 		java.util.List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
@@ -543,6 +548,60 @@ public class SourceFocusedView extends ViewPart {
 				}
 			}
 		}
+		Collection<Delta> deltas = null;
+		try {
+			deltas = cc.getConflictingDeltas(base2, left2,
+					persOp.readFile(new FileInputStream(new File(right.getLocationURI().getPath()))));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		Delta d1 = null;
+		Delta d2 = null;
+		int i = 0;
+		for (Delta d : deltas) {
+			if (i == 0) {
+				d1 = d;
+			} else if (i == 1) {
+				d2 = d;
+			}
+			i++;
+		}
+
+		System.out.println(d1.getOriginal().getLines());
+		System.out.println(d1.getRevised().getLines());
+		System.out.println(d2.getOriginal().getLines());
+		System.out.println(d2.getRevised().getLines());
+
+		// Base Version
+		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
+		if (!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getOriginal().getLines(), f);
+
+		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
+				+ "/LeftVersion.java");
+		if (!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getRevised().getLines(), f);
+
+		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
+				+ "/RightVersion.java");
+		if (!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d2.getRevised().getLines(), f);
 
 		IResource base = null;
 		IProject p = null;
@@ -555,6 +614,7 @@ public class SourceFocusedView extends ViewPart {
 		base = p.getFolder("merge").getFile("BaseVersion.java");
 
 		final IResource left = p.getFolder("merge").getFile("LeftVersion.java");
+		right = p.getFolder("merge").getFile("RightVersion.java");
 
 		// Editor
 		org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
@@ -566,10 +626,169 @@ public class SourceFocusedView extends ViewPart {
 
 		CompareEditorInput rci = new ResourceCompareInput(compconf, base, left, right);
 
+		String path = right.getLocation().toString();
+		String path2 = right.getName();
+		String path3 = right.getFileExtension();
+		String path4 = right.getFullPath().toString();
+		String path5 = right.getLocationURI().getPath();
+
+		CompareEditorInput cei = null;
+		try {
+			System.out.println(base2.toString());
+			System.out.println(left2.toString());
+			
+			// TODO: check and compare contents of base2, left2 and right...right only snippet while base and left are whole versions...
+			// TODO: save/commit does not put changes into the target file
+			// TODO: Cancel also removes the change
+			// TODO: test if order is correct to solve a conflict
+			System.out.println(persOp.readFile(new FileInputStream(path)).toString());
+			cei = new EditorInput(compconf, base2.toString(), left2.toString(),
+					persOp.readFile(new FileInputStream(path)).toString());
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// TextMergeViewer tmv = new TextMergeViewer(composite, compconf);
+
+		// TODO: Dialog oder Editor? Settings ignore whitespace + show ancestor?
 		CompareUI.openCompareDialog(rci);
+
+		// String leftPath, rightPath, name;
+		//
+		// leftPath =
+		// ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() +
+		// VariantSyncConstants.MERGE_PATH
+		// + "/LeftVersion.java";
+		// rightPath = path;
+		// name = "testing";
+		//
+		// CompareInput compare = new CompareInput(leftPath, rightPath, name);
+
+		// CompareUI.openCompareEditorOnPage(compare, this.getSite().getPage());
 	}
 
-	public void solveChange(java.util.List<String> code, String selectedFeatureExpression, String projectName,
+	public class CompareInput extends CompareEditorInput {
+
+		private String left, right;
+		CompareItem leftItem;
+		CompareItem rightItem;
+
+		public CompareInput(String result, String expected, String title) {
+			super(new CompareConfiguration());
+			init(result, expected, title);
+		}
+
+		private void init(String result, String expected, String title) {
+			this.left = result;
+			this.right = expected;
+			setTitle(title);
+			getCompareConfiguration().setLeftEditable(true);
+			getCompareConfiguration().setRightEditable(true);
+			getCompareConfiguration().setLeftLabel("Left");
+			getCompareConfiguration().setRightLabel("Right");
+		}
+
+		protected Object prepareInput(IProgressMonitor pm) {
+			leftItem = new CompareItem("Left", this.left);
+			rightItem = new CompareItem("Right", this.right);
+
+			return new DiffNode(leftItem, rightItem);
+		}
+
+		public void saveChanges(IProgressMonitor pm) throws CoreException {
+			System.out.println("Saved changes STUB");
+		}
+	}
+
+	public class CompareItem extends BufferedContent implements ITypedElement {
+
+		private String name;
+		private File file;
+		FileInputStream input;
+
+		CompareItem(String name, String fileName) {
+			this.name = name;
+			file = new File(fileName);
+		}
+
+		public InputStream getContents() throws CoreException {
+			return createStream();
+		}
+
+		protected InputStream createStream() throws CoreException {
+			try {
+				input = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+			}
+
+			return input;
+		}
+
+		public Image getImage() {
+			return null;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getType() {
+			return ITypedElement.TEXT_TYPE;
+		}
+
+	}
+
+	class EditorInput extends CompareEditorInput {
+
+		private String ancestor;
+		private String left;
+		private String right;
+
+		public EditorInput(CompareConfiguration configuration, String ancestor, String left, String right) {
+			super(configuration);
+			this.ancestor = ancestor;
+			this.left = left;
+			this.right = right;
+		}
+
+		protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			return new Differencer().findDifferences(true, new NullProgressMonitor(), null, ancestor, left, right);
+		}
+
+	}
+
+	class Input implements ITypedElement, IStreamContentAccessor {
+
+		String fContent;
+
+		public Input(String s) {
+			fContent = s;
+		}
+
+		public String getName() {
+			// TODO Auto-generated method stub
+			return "name";
+		}
+
+		public Image getImage() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public String getType() {
+			// TODO Auto-generated method stub
+			return "txt";
+		}
+
+		public InputStream getContents() throws CoreException {
+			// TODO Auto-generated method stub
+			return new ByteArrayInputStream(fContent.getBytes());
+		}
+
+	}
+
+	public void solveChange(Collection<String> syncCode2, String selectedFeatureExpression, String projectName,
 			String className, boolean refreshGUI) {
 		IResource res = contextOperations.getResource(selectedFeatureExpression, projectName, className);
 		IFile f = (IFile) res;
@@ -580,7 +799,7 @@ public class SourceFocusedView extends ViewPart {
 		}
 
 		java.util.List<String> source = new ArrayList<String>();
-		for (String line : code) {
+		for (String line : syncCode2) {
 			source.add(line + "\n");
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -603,14 +822,19 @@ public class SourceFocusedView extends ViewPart {
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
+		contextOperations.removeChange(selectedFeatureExpression, selectedProject, selectedClass, selectedChange,
+				timestamp);
+
 		if (refreshGUI)
 			refreshSyncTargets();
 	}
 
 	private void refreshSyncTargets() {
+
 		boolean isAutoSyncPossible = false;
-		String[] autoItems = cc.getAutoSyncTargets(selectedFeatureExpression, selectedProject, selectedClass,
-				cc.getBaseCode(currentChange), cc.getNewCode(currentChange)).toArray(new String[] {});
+		String[] autoItems = cc
+				.getAutoSyncTargets(selectedFeatureExpression, selectedProject, selectedClass, base, left)
+				.toArray(new String[] {});
 		java.util.List<String> checkedItems = new ArrayList<String>();
 		for (String target : autoItems) {
 			if (!contextOperations.isAlreadySynchronized(selectedFeatureExpression, timestamp, selectedProject,
@@ -624,7 +848,7 @@ public class SourceFocusedView extends ViewPart {
 
 		boolean isManualSyncPossible = false;
 		manualSyncTargetsAsList = cc.getConflictedSyncTargets(selectedFeatureExpression, selectedProject, selectedClass,
-				cc.getBaseCode(currentChange), cc.getNewCode(currentChange));
+				base, left);
 		String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 		checkedItems = new ArrayList<String>();
 		for (String target : manualItems) {

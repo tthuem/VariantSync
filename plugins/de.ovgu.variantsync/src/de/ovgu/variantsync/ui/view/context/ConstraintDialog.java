@@ -556,8 +556,8 @@ public class ConstraintDialog implements GUIDefaults {
 		constraintText.setSelection(constraintText.getCharCount());
 		shell.open();
 
-		if (constraint != null)
-			validate();
+//		if (constraint != null)
+//			validate();
 
 		updateDialogState(DialogState.SAVE_CHANGES_DISABLED);
 	}
@@ -805,7 +805,8 @@ public class ConstraintDialog implements GUIDefaults {
 							HeaderPanel.HeaderDescriptionImage.NONE);
 					updateDialogState(DialogState.SAVE_CHANGES_DISABLED);
 				} else {
-					validate();
+//					validate();
+					updateDialogState(DialogState.SAVE_CHANGES_ENABLED);
 				}
 			}
 		});

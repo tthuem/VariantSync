@@ -231,7 +231,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 					featureOp.addFeatureExpression(it.next());
 				}
 				if (featureOp.getFeatureModel() != null) {
-					it = featureOp.getFeatureModel().getFeatureNames().iterator();
+					it = featureOp.getFeatureModel().getFeatureOrderList().iterator();
 					while (it.hasNext()) {
 						featureOp.addFeatureExpression(it.next());
 					}

@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import de.ovgu.featureide.fm.core.Feature;
+import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.variantsync.applicationlayer.datamodel.resources.ResourceChangesFilePatch;
 import de.ovgu.variantsync.ui.view.resourcechanges.ResourceChangesView;
 
@@ -17,8 +17,7 @@ import de.ovgu.variantsync.ui.view.resourcechanges.ResourceChangesView;
  * @author Lei Luo
  * 
  */
-public class FeatureListViewerContentProvider implements
-		IStructuredContentProvider {
+public class FeatureListViewerContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {
@@ -33,23 +32,22 @@ public class FeatureListViewerContentProvider implements
 	@Override
 	public Object[] getElements(Object inputElement) {
 		List<String> result = new ArrayList<String>();
-		ResourceChangesFilePatch filePatch = ResourceChangesView.getDefault()
-				.getSelectedFilePatch();
+		ResourceChangesFilePatch filePatch = ResourceChangesView.getDefault().getSelectedFilePatch();
 		IProject project = filePatch.getProject();
 		ProjectSelectionDialog dlg = ProjectSelectionDialog.getDefault();
-		Set<Feature> features = dlg.getFeatures(project);
+		Set<IFeature> features = dlg.getFeatures(project);
 		if (features == null) {
-			features = new HashSet<Feature>();
+			features = new HashSet<IFeature>();
 		}
-		Feature rootFeature = null;
-		for (Feature f : features) {
-			if (f.isRoot()) {
+		IFeature rootFeature = null;
+		for (IFeature f : features) {
+			if (f.getStructure().isRoot()) {
 				rootFeature = f;
 				break;
 			}
 		}
 		features.remove(rootFeature);
-		for (Feature f : features) {
+		for (IFeature f : features) {
 			result.add(f.getName());
 		}
 		return result.toArray();

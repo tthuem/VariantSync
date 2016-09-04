@@ -166,7 +166,7 @@ public class SourceFocusedView extends ViewPart {
 					newCode.removeAll();
 				selectedFeatureExpression = combo.getText();
 				projects.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
-				list_batchVariants.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
+				// list_batchVariants.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
 				contextOperations.activateContext(selectedFeatureExpression, true);
 				cc.setFeatureView(true);
 			}

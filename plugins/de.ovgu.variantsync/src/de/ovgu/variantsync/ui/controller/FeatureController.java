@@ -8,8 +8,8 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.FeatureExpressions;
@@ -51,7 +51,7 @@ public class FeatureController extends AbstractController {
 				.checkFeatureSupport(projects, selectedFeatures);
 	}
 
-	public Map<IProject, Set<Feature>> getFeaturesDirectly(
+	public Map<IProject, Set<IFeature>> getFeaturesDirectly(
 			List<IProject> projects) {
 		return featureOperations.getFeatures(projects);
 	}

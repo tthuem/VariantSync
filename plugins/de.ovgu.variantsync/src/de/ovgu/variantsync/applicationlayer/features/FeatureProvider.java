@@ -9,14 +9,14 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.impl.Feature;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
-import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.FeatureExpressions;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException;
@@ -59,19 +59,19 @@ public class FeatureProvider extends AbstractModel implements FeatureOperations 
 	}
 
 	@Override
-	public Map<IProject, Set<Feature>> getFeatures(List<IProject> projects) {
-		Map<IProject, Set<Feature>> featureMap = new HashMap<IProject, Set<Feature>>();
+	public Map<IProject, Set<IFeature>> getFeatures(List<IProject> projects) {
+		Map<IProject, Set<IFeature>> featureMap = new HashMap<IProject, Set<IFeature>>();
 		for (IProject project : projects) {
-			Set<Feature> features = null;
+			Set<IFeature> features = null;
 			try {
 				features = featureHandler.getConfiguredFeaturesOfProject(project);
 				featureMap.put(project, features);
 
 				// TODO: Kapseln
-				Iterator<Feature> it = features.iterator();
+				Iterator<IFeature> it = features.iterator();
 				int i = 1;
 				while (it.hasNext()) {
-					Feature f = it.next();
+					IFeature f = it.next();
 					CodeMarkerFactory.setFeatureColor(f.getName(), String.valueOf(i));
 					if (i == 3) {
 						i = 0;
@@ -181,7 +181,7 @@ public class FeatureProvider extends AbstractModel implements FeatureOperations 
 	}
 
 	@Override
-	public Set<Feature> getConfiguredFeaturesOfProject(IProject project) {
+	public Set<IFeature> getConfiguredFeaturesOfProject(IProject project) {
 		try {
 			return featureHandler.getConfiguredFeaturesOfProject(project);
 		} catch (FeatureException e) {

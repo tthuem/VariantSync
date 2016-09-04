@@ -12,14 +12,13 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
-import de.ovgu.featureide.fm.core.configuration.ConfigurationReader;
 import de.ovgu.featureide.fm.core.io.FeatureModelReaderIFileWrapper;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
 import de.ovgu.featureide.fm.core.io.xml.XmlFeatureModelReader;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.FeatureExpressions;
@@ -59,25 +58,21 @@ class FeatureHandler {
 	 *             configuration object could not be created and features could
 	 *             not be read
 	 */
-	public Set<Feature> getConfiguredFeaturesOfProject(IProject project)
-			throws FeatureException {
+	public Set<IFeature> getConfiguredFeaturesOfProject(IProject project) throws FeatureException {
 		IProject featureInfoProject = getFeatureInfoProject();
 		IFile modelFile = null;
 		IFile configFile = null;
 		if (featureInfoProject != null) {
 			modelFile = featureInfoProject.getFile(FeatureConstants.MODEL_FILE);
-			configFile = featureInfoProject.getFolder(
-					FeatureConstants.CONFIGS_PATH).getFile(
-					project.getName() + "."
-							+ FeatureConstants.CONFIG_FILE_EXTENSION);
+			configFile = featureInfoProject.getFolder(FeatureConstants.CONFIGS_PATH)
+					.getFile(project.getName() + "." + FeatureConstants.CONFIG_FILE_EXTENSION);
 		}
-		if (featureInfoProject != null && modelFile.exists()
-				&& configFile.exists()) {
+		if (featureInfoProject != null && modelFile.exists() && configFile.exists()) {
 			Configuration config = null;
 			config = readConfig(configFile, modelFile);
-			return new HashSet<Feature>(config.getSelectedFeatures());
+			return new HashSet<IFeature>(config.getSelectedFeatures());
 		} else {
-			return new HashSet<Feature>();
+			return new HashSet<IFeature>();
 		}
 	}
 
@@ -92,7 +87,7 @@ class FeatureHandler {
 	public Set<String> getFeatures() throws FeatureException {
 		IProject featureInfoProject = getFeatureInfoProject();
 		if (featureInfoProject != null) {
-			return getFeatureModel().getFeatureNames();
+			return new HashSet<String>(getFeatureModel().getFeatureOrderList());
 		}
 		return null;
 	}
@@ -109,10 +104,8 @@ class FeatureHandler {
 		IProject featureInfoProject = getFeatureInfoProject();
 		if (featureInfoProject != null) {
 			FeatureExpressions expressions = new FeatureExpressions();
-			expressions.addFeatureExpressions(getFeatureModel()
-					.getFeatureNames());
-			expressions.addFeatureExpressions(featureExpressions
-					.getFeatureExpressions());
+			expressions.addFeatureExpressions(getFeatureModel().getFeatureOrderList());
+			expressions.addFeatureExpressions(featureExpressions.getFeatureExpressions());
 			return expressions;
 		}
 		return null;
@@ -131,8 +124,8 @@ class FeatureHandler {
 	 *             configuration object could not be created and features could
 	 *             not be read
 	 */
-	public Map<IProject, Boolean> checkFeatureSupport(List<IProject> projects,
-			Object[] selectedFeatures) throws FeatureException {
+	public Map<IProject, Boolean> checkFeatureSupport(List<IProject> projects, Object[] selectedFeatures)
+			throws FeatureException {
 		Map<IProject, Boolean> checkedProjects = new HashMap<IProject, Boolean>();
 		for (IProject project : projects) {
 			Boolean value = checkFeatureSupport(project, selectedFeatures);
@@ -143,14 +136,12 @@ class FeatureHandler {
 
 	public FeatureModel getFeatureModel() throws FeatureException {
 		FeatureModel fm = new FeatureModel();
-		fm.setRoot(new Feature(fm));
+		// fm.setRoot(new Feature(fm));
 		try {
 			new FeatureModelReaderIFileWrapper(new XmlFeatureModelReader(fm))
-					.readFromFile(getFeatureInfoProject().getFile(
-							FeatureConstants.MODEL_FILE));
+					.readFromFile(getFeatureInfoProject().getFile(FeatureConstants.MODEL_FILE));
 		} catch (FileNotFoundException | UnsupportedModelException e) {
-			throw new FeatureException(
-					"Features from feature model could not be read.", e);
+			throw new FeatureException("Features from feature model could not be read.", e);
 		}
 		return fm;
 	}
@@ -158,8 +149,7 @@ class FeatureHandler {
 	public void addFeatureExpression(String featureExpression) {
 		featureExpressions.addFeatureExpression(featureExpression);
 		try {
-			ModuleFactory.getPersistanceOperations().saveFeatureExpressions(
-					getFeatureExpressions());
+			ModuleFactory.getPersistanceOperations().saveFeatureExpressions(getFeatureExpressions());
 		} catch (FeatureException e) {
 			e.printStackTrace();
 		}
@@ -176,8 +166,7 @@ class FeatureHandler {
 			if (name.equals(expr)) {
 				featureExpressions.removeFeatureExpression(name);
 				try {
-					ModuleFactory.getPersistanceOperations()
-							.saveFeatureExpressions(getFeatureExpressions());
+					ModuleFactory.getPersistanceOperations().saveFeatureExpressions(getFeatureExpressions());
 				} catch (FeatureException e) {
 					e.printStackTrace();
 				}
@@ -197,18 +186,20 @@ class FeatureHandler {
 	 * @throws FeatureException
 	 *             feature model or configuration file could not be read
 	 */
-	private Configuration readConfig(IFile configFile, IFile modelFile)
-			throws FeatureException {
+	private Configuration readConfig(IFile configFile, IFile modelFile) throws FeatureException {
 		FeatureModel fm = new FeatureModel();
-		fm.setRoot(new Feature(fm));
+		// fm.setRoot(new Feature(fm));
 		Configuration config = null;
 		try {
-			new FeatureModelReaderIFileWrapper(new XmlFeatureModelReader(fm))
-					.readFromFile(modelFile);
+			new FeatureModelReaderIFileWrapper(new XmlFeatureModelReader(fm)).readFromFile(modelFile);
 			config = new Configuration(fm);
-			ConfigurationReader reader = new ConfigurationReader(config);
-			reader.readFromFile(configFile);
-		} catch (CoreException | IOException | UnsupportedModelException e) {
+			String path = configFile.getLocationURI().getPath();
+			path = path.substring(path.indexOf(":") + 1);
+			ConfigurationManager cm = ConfigurationManager.getInstance(config, path);
+			cm.read();
+			// ConfigurationReader reader = new ConfigurationReader(config);
+			// reader.readFromFile(configFile);
+		} catch (IOException | UnsupportedModelException e) {
 			throw new FeatureException(
 					"Feature model or configuration file could not be read. See stacktace for more precisely informations.",
 					e);
@@ -227,12 +218,11 @@ class FeatureHandler {
 	 * @throws FeatureException
 	 *             features could not be read
 	 */
-	private boolean checkFeatureSupport(IProject project, Object[] features)
-			throws FeatureException {
-		Set<Feature> projectFeatures = getConfiguredFeaturesOfProject(project);
+	private boolean checkFeatureSupport(IProject project, Object[] features) throws FeatureException {
+		Set<IFeature> projectFeatures = getConfiguredFeaturesOfProject(project);
 		int flag = 0;
 		for (Object feature : features) {
-			for (Feature f : projectFeatures) {
+			for (IFeature f : projectFeatures) {
 				if (f.getName().equals(feature)) {
 					flag++;
 					break;
@@ -244,11 +234,8 @@ class FeatureHandler {
 
 	private IProject getFeatureInfoProject() throws FeatureException {
 		IProject featureInfoProject = null;
-		for (IProject p : ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects()) {
-			if (p.isOpen()
-					&& p.getName().equals(
-							FeatureConstants.FEATUREINFO_PROJECT_NAME)) {
+		for (IProject p : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+			if (p.isOpen() && p.getName().equals(FeatureConstants.FEATUREINFO_PROJECT_NAME)) {
 				featureInfoProject = p;
 				break;
 			}

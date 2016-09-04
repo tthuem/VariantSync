@@ -53,24 +53,26 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.prop4j.Node;
 import org.prop4j.NodeReader;
 
-import de.ovgu.featureide.fm.core.Constraint;
 import de.ovgu.featureide.fm.core.Constraints;
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
-import de.ovgu.featureide.fm.core.FunctionalInterfaces.IConsumer;
 import de.ovgu.featureide.fm.core.Operator;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.impl.Constraint;
+import de.ovgu.featureide.fm.core.base.impl.Feature;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.featureide.fm.ui.editors.ConstraintContentProposalProvider;
 import de.ovgu.featureide.fm.ui.editors.ConstraintProposalLabelProvider;
 import de.ovgu.featureide.fm.ui.editors.SimpleSyntaxHighlightEditor;
 import de.ovgu.featureide.fm.ui.editors.SimpleSyntaxHighlighterConstraintContentAdapter;
 import de.ovgu.featureide.fm.ui.editors.featuremodel.GUIDefaults;
-import de.ovgu.featureide.fm.ui.editors.featuremodel.operations.ConstraintCreateOperation;
-import de.ovgu.featureide.fm.ui.editors.featuremodel.operations.ConstraintEditOperation;
+import de.ovgu.featureide.fm.ui.editors.featuremodel.operations.CreateConstraintOperation;
+import de.ovgu.featureide.fm.ui.editors.featuremodel.operations.EditConstraintOperation;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.ui.controller.ControllerHandler;
 import de.ovgu.variantsync.ui.controller.FeatureController;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationMessage;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
+import de.ovgu.featureide.fm.core.functional.Functional.IConsumer;
 
 /**
  * A simple editor for propositional constraints written below the feature
@@ -605,23 +607,22 @@ public class ConstraintDialog implements GUIDefaults {
 		final String input = constraintText.getText().trim();
 		final FeatureModel featureModel = featureController.getFeatureModel();
 		final Node propNode = nodeReader.stringToNode(input,
-				featureModel.getFeatureNames());
+				featureModel.getFeatureOrderList());
 
 		AbstractOperation op = null;
 		if (constraint != null
 				&& featureModel.getConstraints().contains(constraint)) {
 			int index = 0;
-			for (Constraint c : featureModel.getConstraints()) {
+			for (IConstraint c : featureModel.getConstraints()) {
 				if (c == constraint) {
-					op = new ConstraintEditOperation(propNode, featureModel,
-							index);
+					op = new EditConstraintOperation(constraint, propNode);
 					break;
 				}
 				index++;
 			}
 		}
 		if (op == null) {
-			op = new ConstraintCreateOperation(propNode, featureModel);
+			op = new CreateConstraintOperation(propNode, featureModel);
 		}
 		op.addContext((IUndoContext) featureModel.getUndoContext());
 
@@ -639,26 +640,26 @@ public class ConstraintDialog implements GUIDefaults {
 	 * @return List of all dead Features, empty if no feature is caused to be
 	 *         dead
 	 */
-	public List<Feature> getDeadFeatures(String input, FeatureModel model) {
-		Collection<Feature> deadFeaturesBefore = null;
+	public List<IFeature> getDeadFeatures(String input, FeatureModel model) {
+		Collection<IFeature> deadFeaturesBefore = null;
 		FeatureModel clonedModel = model.clone();
 
 		NodeReader nodeReader = new NodeReader();
 
 		Node propNode = nodeReader.stringToNode(input,
-				clonedModel.getFeatureNames());
+				clonedModel.getFeatureOrderList());
 
 		if (propNode != null) {
 			if (constraint != null) {
 				clonedModel.removeConstraint(constraint);
 			}
 			deadFeaturesBefore = clonedModel.getAnalyser().getDeadFeatures();
-			clonedModel.addPropositionalNode(propNode);
+			clonedModel.addConstraint(new Constraint(clonedModel, (propNode)));
 			clonedModel.handleModelDataChanged();
 		}
 
-		List<Feature> deadFeaturesAfter = new ArrayList<Feature>();
-		for (Feature l : clonedModel.getAnalyser().getDeadFeatures()) {
+		List<IFeature> deadFeaturesAfter = new ArrayList<IFeature>();
+		for (IFeature l : clonedModel.getAnalyser().getDeadFeatures()) {
 			if (!deadFeaturesBefore.contains(l)) {
 				deadFeaturesAfter.add(l);
 

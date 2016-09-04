@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import de.ovgu.featureide.fm.core.Feature;
+import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
@@ -74,10 +74,10 @@ public class Util {
 		for (IProject p : projects) {
 			if (p.getName().equals(projectName)) {
 				Collection<String> features = new HashSet<String>();
-				Iterator<Feature> it = ModuleFactory.getFeatureOperations().getConfiguredFeaturesOfProject(p)
+				Iterator<IFeature> it = ModuleFactory.getFeatureOperations().getConfiguredFeaturesOfProject(p)
 						.iterator();
 				while (it.hasNext()) {
-					Feature f = it.next();
+					IFeature f = it.next();
 					features.add(f.getName());
 				}
 				return features;

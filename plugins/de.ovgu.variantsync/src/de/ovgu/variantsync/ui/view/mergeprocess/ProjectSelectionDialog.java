@@ -33,7 +33,7 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 
-import de.ovgu.featureide.fm.core.Feature;
+import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.ui.controller.ControllerHandler;
 import de.ovgu.variantsync.ui.controller.FeatureController;
@@ -64,7 +64,7 @@ public class ProjectSelectionDialog extends SelectionDialog implements
 	private String unifiedDiff;
 	private FeatureController featureController = ControllerHandler.getInstance()
 			.getFeatureController();
-	private Map<IProject, Set<Feature>> featureMap;
+	private Map<IProject, Set<IFeature>> featureMap;
 
 	public ProjectSelectionDialog(Shell parentShell, Object input,
 			IStructuredContentProvider contentProvider,
@@ -274,7 +274,7 @@ public class ProjectSelectionDialog extends SelectionDialog implements
 	 * @param project
 	 * @return set of features
 	 */
-	public Set<Feature> getFeatures(IProject project) {
+	public Set<IFeature> getFeatures(IProject project) {
 		if (featureMap == null) {
 			featureMap = featureController.getFeaturesDirectly(VariantSyncPlugin
 					.getDefault().getSupportProjectList());

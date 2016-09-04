@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.FeatureExpressions;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException;
@@ -45,7 +45,7 @@ public interface FeatureOperations {
 	 *             configuration object could not be created and features could
 	 *             not be read
 	 */
-	Map<IProject, Set<Feature>> getFeatures(List<IProject> projects);
+	Map<IProject, Set<IFeature>> getFeatures(List<IProject> projects);
 
 	FeatureExpressions getFeatureExpressions();
 
@@ -63,7 +63,7 @@ public interface FeatureOperations {
 
 	void deleteFeatureExpression(String expr);
 
-	Set<Feature> getConfiguredFeaturesOfProject(IProject project);
+	Set<IFeature> getConfiguredFeaturesOfProject(IProject project);
 
 	void addCodeFragment(MappingElement mapping, Boolean markerUpdate);
 }

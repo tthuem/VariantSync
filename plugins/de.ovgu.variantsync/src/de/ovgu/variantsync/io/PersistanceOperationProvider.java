@@ -61,7 +61,7 @@ public class PersistanceOperationProvider implements Persistable {
 	public void deldir(IFolder folder, File f) throws FolderOperationException {
 		folderOperations.deldir(folder, f);
 	}
-	
+
 	@Override
 	public void addLinesToFile(Collection<String> lines, File file) throws FileOperationException {
 		fileOperations.addLinesToFile(new ArrayList<String>(lines), file);
@@ -104,6 +104,9 @@ public class PersistanceOperationProvider implements Persistable {
 
 	@Override
 	public Context loadContext(String path) {
+		if (path.contains("changes")) {
+			return null;
+		}
 		return JaxbOperations.loadContext(path);
 	}
 
@@ -139,6 +142,15 @@ public class PersistanceOperationProvider implements Persistable {
 		}
 		try {
 			fileOperations.writeFile(lines, file);
+		} catch (FileOperationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void writeFile(Collection<String> lines, File file) {
+		try {
+			fileOperations.writeFile(new ArrayList<String>(lines), file);
 		} catch (FileOperationException e) {
 			e.printStackTrace();
 		}

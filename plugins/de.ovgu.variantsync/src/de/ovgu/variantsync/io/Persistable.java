@@ -174,4 +174,6 @@ public interface Persistable {
 	void saveNewVersion(Collection<String> lines, long timestamp);
 
 	void deldir(IFolder folder, File f) throws FolderOperationException;
+
+	void writeFile(Collection<String> lines, File file);
 }

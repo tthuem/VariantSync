@@ -1,6 +1,8 @@
 package de.ovgu.variantsync.applicationlayer.context;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -713,5 +715,38 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			Collection<String> codeWC, Collection<String> syncCode) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void setManualMergeResult(Delta rightDelta, File mergeResult, File file) {
+		// TODO: replace new lines with existing ones in target
+		// (right file) - chunk+1
+
+		List<String> mergedLines = null;
+		List<String> orgLines = null;
+		try {
+			mergedLines = new ArrayList<String>(persistanceOperations.readFile(new FileInputStream(mergeResult)));
+			orgLines = new ArrayList<String>(persistanceOperations.readFile(new FileInputStream(file)));
+		} catch (FileNotFoundException | FileOperationException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Insert Merge Result");
+		System.out.println(orgLines.toString());
+		int i = 0;
+		Iterator<?> it = rightDelta.getRevised().getLines().iterator();
+		while (it.hasNext()) {
+			it.next();
+			System.out.println("Removed: " + orgLines.get(rightDelta.getRevised().getPosition() + i));
+			orgLines.remove(rightDelta.getRevised().getPosition() + i);
+		}
+		System.out.println(orgLines.toString());
+		i = 0;
+		for (String line : mergedLines) {
+			orgLines.add(rightDelta.getRevised().getPosition() + i, line);
+			i++;
+		}
+		System.out.println(orgLines.toString());
+
+		persistanceOperations.writeFile(orgLines, file);
 	}
 }

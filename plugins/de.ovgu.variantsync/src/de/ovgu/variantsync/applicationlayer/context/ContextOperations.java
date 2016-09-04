@@ -122,4 +122,6 @@ public interface ContextOperations {
 	Collection<Delta> getConflictingDeltas(Collection<String> ancestor, Collection<String> left,
 			Collection<String> right);
 
+	void setManualMergeResult(Delta rightDelta, File fRightVersion, File file);
+
 }

@@ -10,7 +10,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
-import de.ovgu.featureide.fm.core.base.impl.Feature;
 import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;

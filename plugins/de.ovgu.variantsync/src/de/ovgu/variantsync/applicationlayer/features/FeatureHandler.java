@@ -196,7 +196,8 @@ class FeatureHandler {
 			String path = configFile.getLocationURI().getPath();
 			path = path.substring(path.indexOf(":") + 1);
 			ConfigurationManager cm = ConfigurationManager.getInstance(config, path);
-			cm.read();
+			boolean isRead = cm.read();
+			config = cm.getObject();
 			// ConfigurationReader reader = new ConfigurationReader(config);
 			// reader.readFromFile(configFile);
 		} catch (IOException | UnsupportedModelException e) {

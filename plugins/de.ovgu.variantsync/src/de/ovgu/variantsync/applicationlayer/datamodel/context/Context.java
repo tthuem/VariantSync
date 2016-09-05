@@ -33,7 +33,7 @@ public class Context {
 		this.featureExpression = featureExpression;
 		this.variants = new HashMap<String, Variant>();
 		if (featureExpression.equals(VariantSyncConstants.DEFAULT_CONTEXT)) {
-			this.color = CodeHighlighting.DEFAULTCONTEXT;
+			this.color = CodeHighlighting.GREY_BRIGHT;
 		} else {
 			this.color = CodeHighlighting.YELLOW;
 		}

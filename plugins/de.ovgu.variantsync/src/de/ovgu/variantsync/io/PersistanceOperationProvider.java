@@ -129,6 +129,9 @@ public class PersistanceOperationProvider implements Persistable {
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
+		if (!fe.getFeatureExpressionsAsSet().contains(VariantSyncConstants.DEFAULT_CONTEXT)) {
+			fe.addFeatureExpression(VariantSyncConstants.DEFAULT_CONTEXT);
+		}
 		if (fe != null && fe.getFeatureExpressions() != null) {
 			JaxbOperations.writeFeatureExpression(fe, path);
 		}

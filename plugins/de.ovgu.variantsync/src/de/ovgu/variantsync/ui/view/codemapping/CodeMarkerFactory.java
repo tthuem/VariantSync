@@ -42,6 +42,7 @@ public class CodeMarkerFactory {
 	private static final String MARKER_RED = "de.ckc.pfofe.variantsync.codehighlightmarkerRed";
 	private static final String MARKER_ORANGE = "de.ckc.pfofe.variantsync.codehighlightmarkerOrange";
 	private static final String MARKER_GREENBRIGHT = "de.ckc.pfofe.variantsync.codehighlightmarkerGreenBright";
+	private static final String MARKER_GREYBRIGHT = "de.ckc.pfofe.variantsync.codehighlightmarkerGreyBright";
 	private static final String MARKER_DEFAULTCONTEXT = "de.ckc.pfofe.variantsync.codehighlightmarkerDefaultContext";
 
 	// Annotation ID
@@ -66,6 +67,7 @@ public class CodeMarkerFactory {
 			markers.add(MARKER_RED);
 			markers.add(MARKER_ORANGE);
 			markers.add(MARKER_GREENBRIGHT);
+			markers.add(MARKER_GREYBRIGHT);
 			markers.add(MARKER_BLUEBRIGHT);
 			markers.add(MARKER_DEFAULTCONTEXT);
 		}
@@ -82,12 +84,10 @@ public class CodeMarkerFactory {
 	/*
 	 * Creates a Marker
 	 */
-	public static void createMarker(String id, IResource res, int start,
-			int end, String feature, CodeHighlighting color)
-			throws CoreException {
+	public static void createMarker(String id, IResource res, int start, int end, String feature,
+			CodeHighlighting color) throws CoreException {
 		try {
-			Job job = new CreateMarkerJob(feature + "§" + id, res, start, end,
-					feature, getMarker(color));
+			Job job = new CreateMarkerJob(feature + "§" + id, res, start, end, feature, getMarker(color));
 			job.setPriority(Job.SHORT);
 			job.schedule();
 		} catch (Exception e) {
@@ -103,8 +103,7 @@ public class CodeMarkerFactory {
 		List<IMarker> returnList = new ArrayList<IMarker>();
 		for (String marker : markers) {
 			try {
-				returnList.addAll(Arrays.asList(resource.findMarkers(marker,
-						true, IResource.DEPTH_INFINITE)));
+				returnList.addAll(Arrays.asList(resource.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -121,6 +120,8 @@ public class CodeMarkerFactory {
 			marker = MARKER_YELLOW;
 		} else if (color.equals(CodeHighlighting.GREEN_BRIGHT)) {
 			marker = MARKER_GREENBRIGHT;
+		} else if (color.equals(CodeHighlighting.GREY_BRIGHT)) {
+			marker = MARKER_GREYBRIGHT;
 		} else if (color.equals(CodeHighlighting.GREEN)) {
 			marker = MARKER_GREEN;
 		} else if (color.equals(CodeHighlighting.ORANGE)) {
@@ -137,6 +138,8 @@ public class CodeMarkerFactory {
 			marker = MARKER_PURPLE;
 		} else if (color.equals(CodeHighlighting.DEFAULTCONTEXT)) {
 			marker = MARKER_DEFAULTCONTEXT;
+		} else if (color.equals(CodeHighlighting.GREY_BRIGHT)) {
+			marker = MARKER_GREYBRIGHT;
 		}
 		return marker;
 	}
@@ -150,8 +153,7 @@ public class CodeMarkerFactory {
 		List<IMarker> returnList = new ArrayList<IMarker>();
 		for (String marker : markers) {
 			try {
-				returnList.addAll(Arrays.asList(resource.findMarkers(marker,
-						true, IResource.DEPTH_INFINITE)));
+				returnList.addAll(Arrays.asList(resource.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -164,8 +166,7 @@ public class CodeMarkerFactory {
 	 */
 	public static TreeSelection getTreeSelection() {
 
-		ISelection selection = VariantSyncPlugin.getActiveWorkbenchWindow()
-				.getSelectionService().getSelection();
+		ISelection selection = VariantSyncPlugin.getActiveWorkbenchWindow().getSelectionService().getSelection();
 		if (selection instanceof TreeSelection) {
 			return (TreeSelection) selection;
 		}
@@ -177,16 +178,14 @@ public class CodeMarkerFactory {
 	 */
 	public static TextSelection getTextSelection() {
 
-		ISelection selection = VariantSyncPlugin.getActiveWorkbenchWindow()
-				.getSelectionService().getSelection();
+		ISelection selection = VariantSyncPlugin.getActiveWorkbenchWindow().getSelectionService().getSelection();
 		if (selection instanceof TextSelection) {
 			return (TextSelection) selection;
 		}
 		return null;
 	}
 
-	public static void addAnnotation(IMarker marker, ITextEditor editor,
-			String annotation, int offset, int length) {
+	public static void addAnnotation(IMarker marker, ITextEditor editor, String annotation, int offset, int length) {
 		// The DocumentProvider enables to get the document currently loaded in
 		// the editor
 		IDocumentProvider idp = editor.getDocumentProvider();

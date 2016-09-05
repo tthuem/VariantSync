@@ -499,6 +499,28 @@
           textStylePreferenceValue="BOX">
      </specification>
    </extension>
+   
+   <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
+     id="de.ovgu.pfofe.variantsync.codehighlightannotationGreyBright"
+     name="CodeHighlightGreyBright">
+     <specification
+          annotationType="codehighlightannotationGreyBright"
+          label="GreyBrightAnnotation"
+          icon="icons/VariantSyncSupport.png"
+          overviewRulerPreferenceKey="clruler"
+          overviewRulerPreferenceValue="true"
+          colorPreferenceKey="clcolor10"
+          colorPreferenceValue="200,200,200"
+          highlightPreferenceKey="codeHighligthing"
+          highlightPreferenceValue="true"
+          textPreferenceKey="cltext"
+          textPreferenceValue="true"
+          verticalRulerPreferenceKey="clvertical"
+          verticalRulerPreferenceValue="true"
+          textStylePreferenceKey="clstyle"
+          textStylePreferenceValue="BOX">
+     </specification>
+   </extension>
 
    <!--
    <extension point="org.eclipse.ui.editors.markerAnnotationSpecification"
@@ -587,6 +609,13 @@
             super="org.eclipse.ui.workbench.texteditor.info"
             name="codehighlightannotationGreenBright"
             markerType="de.ckc.pfofe.variantsync.codehighlightmarkerGreenBright"/>
+   </extension>
+   <extension point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerSeverity="0"
+            super="org.eclipse.ui.workbench.texteditor.info"
+            name="codehighlightannotationGreyBright"
+            markerType="de.ckc.pfofe.variantsync.codehighlightmarkerGreyBright"/>
    </extension>
    <!--
    <extension point="org.eclipse.ui.editors.annotationTypes">

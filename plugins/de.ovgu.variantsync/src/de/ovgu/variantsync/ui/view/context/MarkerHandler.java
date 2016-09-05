@@ -121,8 +121,8 @@ public class MarkerHandler {
 	}
 
 	public void updateMarker(String projectName, String packageName, String className, Context activeContext) {
-		if (activeContext.getFeatureExpression().equals("Default_Context"))
-			return;
+		// if (activeContext.getFeatureExpression().equals("Default_Context"))
+		// return;
 		String file = "/src/" + packageName + "/" + className;
 		file = file.replace(".", "/");
 		file = file.replace("/java", ".java");
@@ -148,8 +148,8 @@ public class MarkerHandler {
 	}
 
 	private List<MarkerInformation> initMarker(Context context, String projectName, String className) {
-		if (context.getFeatureExpression().equals("Default_Context"))
-			return new ArrayList<MarkerInformation>();
+		// if (context.getFeatureExpression().equals("Default_Context"))
+		// return new ArrayList<MarkerInformation>();
 		Set<MarkerInformation> markers = new HashSet<MarkerInformation>();
 		Map<String, List<Class>> classes = ModuleFactory.getContextOperations().findJavaClass(projectName, className);
 		Set<Entry<String, List<Class>>> set = classes.entrySet();
@@ -245,7 +245,7 @@ public class MarkerHandler {
 									tmp.get(tmp.size() - 1).getLine(), 0, 0);
 							mi.setFeature(entry.getKey());
 							mi.setColor(contextOp.findColor(entry.getKey()));
-							if (mi.getFeature() != null && !"Default_Context".equals(mi.getFeature())) {
+							if (mi.getFeature() != null /*&& !"Default_Context".equals(mi.getFeature())*/) {
 								markers.add(mi);
 							}
 							tmp.clear();

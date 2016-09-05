@@ -166,7 +166,8 @@ public class SourceFocusedView extends ViewPart {
 					newCode.removeAll();
 				selectedFeatureExpression = combo.getText();
 				projects.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
-				// list_batchVariants.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
+				// list_batchVariants.setItems(cc.getProjects(combo.getText()).toArray(new
+				// String[] {}));
 				contextOperations.activateContext(selectedFeatureExpression, true);
 				cc.setFeatureView(true);
 			}
@@ -643,18 +644,17 @@ public class SourceFocusedView extends ViewPart {
 
 		// Editor
 		org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
-		compconf.setLeftLabel(projectName + ": " + className + " - changed version");
-		compconf.setRightLabel(projectNameRight + ": " + classNameRight);
-		compconf.setAncestorLabel(projectName + ": " + className + " - version without change");
+		compconf.setLeftLabel(projectName + ": " + className + " - changed version (left)");
+		compconf.setRightLabel(projectNameRight + ": " + classNameRight + "");
+		compconf.setAncestorLabel(projectName + ": " + className + " - version without change (ancestor)");
 		compconf.setLeftEditable(false);
 		compconf.setRightEditable(true);
 
 		CompareEditorInput rci = new ResourceCompareInput(compconf, base, left, rightMerge);
+		rci.setDirty(true);
 		try {
 			System.out.println(persOp.readFile(new FileInputStream(base.getLocationURI().getPath())));
 			System.out.println(persOp.readFile(new FileInputStream(left.getLocationURI().getPath())));
-
-			// TODO: test if order is correct to solve a conflict
 			System.out.println(persOp.readFile(new FileInputStream(rightMerge.getLocationURI().getPath())).toString());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

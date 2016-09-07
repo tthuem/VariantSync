@@ -8,8 +8,8 @@ of changes between variants. As a side effect, using VariantSync for a while may
 * JDK 1.7 or higher
 * Eclipse IDE with the following plug-ins:
   * Plug-in Development Environment (PDE - minimum version is Luna)
-  * Feature IDE (version 2.7.4 required)
-	* Eclipse Update-Site for version 2.7.4: http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide/deploy/
+  * Feature IDE (version 3.1.0 required)
+	* Eclipse Update-Site for version v3.x: http://featureide.cs.ovgu.de/update/v3/
 	* see http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide for more informations about FeatureIDE
 	
 ## Installation

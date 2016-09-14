@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.compare.core;bundle-version="3.5.400",
  org.eclipse.jdt.ui;bundle-version="3.10.2",
  org.eclipse.team.ui;bundle-version="3.7.100",
- org.apache.commons.io;bundle-version="2.2.0",
+ org.apache.commons.io;bundle-version="2.0.1",
  de.ovgu.featureide.core;bundle-version="3.1.0",
  de.ovgu.featureide.fm.core;bundle-version="3.1.0",
  de.ovgu.featureide.fm.ui;bundle-version="3.1.0"

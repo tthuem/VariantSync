@@ -50,7 +50,6 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
-import de.ovgu.variantsync.applicationlayer.features.mapping.UtilOperations;
 import de.ovgu.variantsync.applicationlayer.merging.ResourceCompareInput;
 import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.controller.ContextController;
@@ -89,11 +88,7 @@ public class SourceFocusedView extends ViewPart {
 	private String classNameTarget;
 	private Button btnSynchronize;
 	private Button btnManualSync;
-	private String leftClass;
-	private String rightClass;
-	private SourceFocusedView reference;
 	private Button btnRemoveChangeEntry;
-	private java.util.List<String> codeWC;
 	private CCombo combo;
 	private Label lblMergeConflict;
 	private List manualSyncTargets;
@@ -103,7 +98,6 @@ public class SourceFocusedView extends ViewPart {
 	private String autoSelection;
 	private String manualSelection;
 	private long timestamp;
-	private List list_batchVariants;
 	private GridData gd_list_2;
 	private CodeChange currentChange;
 
@@ -133,7 +127,6 @@ public class SourceFocusedView extends ViewPart {
 	@Override
 	public void createPartControl(final Composite arg0) {
 		isManSynced = false;
-		reference = this;
 		featureExpressions = fc.getFeatureExpressions().getFeatureExpressions().toArray(new String[] {});
 		arg0.setLayout(new GridLayout(5, false));
 
@@ -166,8 +159,6 @@ public class SourceFocusedView extends ViewPart {
 					newCode.removeAll();
 				selectedFeatureExpression = combo.getText();
 				projects.setItems(cc.getProjects(combo.getText()).toArray(new String[] {}));
-				// list_batchVariants.setItems(cc.getProjects(combo.getText()).toArray(new
-				// String[] {}));
 				contextOperations.activateContext(selectedFeatureExpression, true);
 				cc.setFeatureView(true);
 			}
@@ -259,7 +250,6 @@ public class SourceFocusedView extends ViewPart {
 				if (newCode != null)
 					newCode.removeAll();
 				selectedClass = classes.getSelection()[0];
-				leftClass = selectedProject + " - " + selectedClass;
 				setChanges();
 			}
 
@@ -299,7 +289,7 @@ public class SourceFocusedView extends ViewPart {
 						left = cc.getNewCode(currentChange);
 						base = cc.getBaseCode(currentChange);
 
-						refreshSyncTargets();
+						refreshSyncTargets(selectedFeatureExpression, selectedProject, selectedClass, base, left);
 						break;
 					}
 					i++;
@@ -327,7 +317,6 @@ public class SourceFocusedView extends ViewPart {
 				String[] tmp = autoSelection.split(":");
 				projectNameTarget = tmp[0].trim();
 				classNameTarget = tmp[1].trim();
-				rightClass = projectNameTarget + " - " + classNameTarget;
 
 				syncCode = sc.doAutoSync(left, base,
 						cc.getTargetFile(selectedFeatureExpression, projectNameTarget, classNameTarget));
@@ -424,32 +413,8 @@ public class SourceFocusedView extends ViewPart {
 					} catch (FileOperationException | CoreException ex) {
 						ex.printStackTrace();
 					}
-					if (isManSynced) {
-
-						contextOperations.activateContext(selectedFeatureExpression, true);
-						contextOperations.setManualMergeResult(rightDelta, fRightVersion,
-								new File(right.getLocationURI().getPath()));
-						try {
-							right.refreshLocal(IResource.DEPTH_INFINITE, null);
-						} catch (CoreException e1) {
-							e1.printStackTrace();
-						}
-						contextOperations.stopRecording();
-
-						cc.addSynchronizedChange(selectedFeatureExpression, timestamp, selectedProject,
-								manualSelection);
-						refreshSyncTargets();
-						setChanges();
-
-						if (newCode != null)
-							newCode.removeAll();
-						if (autoSyncTargets != null)
-							autoSyncTargets.removeAll();
-						if (manualSyncTargets != null)
-							manualSyncTargets.removeAll();
-
-						isManSynced = false;
-					}
+					tagManualSyncedCode(selectedFeatureExpression, timestamp, selectedProject, selectedClass, base,
+							left, manualSelection);
 					break;
 				}
 			}
@@ -494,6 +459,36 @@ public class SourceFocusedView extends ViewPart {
 		new Label(arg0, SWT.NONE);
 	}
 
+	private void tagManualSyncedCode(String fe, long timestamp, String project, String clazz, Collection<String> base,
+			Collection<String> left, String manualSelection) {
+		if (isManSynced) {
+
+			contextOperations.activateContext(selectedFeatureExpression, true);
+			contextOperations.setManualMergeResult(rightDelta, fRightVersion,
+					new File(right.getLocationURI().getPath()));
+			try {
+				right.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e1) {
+				e1.printStackTrace();
+			}
+			contextOperations.stopRecording();
+
+			cc.addSynchronizedChange(selectedFeatureExpression, timestamp, selectedProject, manualSelection);
+
+			refreshSyncTargets(fe, project, clazz, base, left);
+			setChanges();
+
+			if (newCode != null)
+				newCode.removeAll();
+			if (autoSyncTargets != null)
+				autoSyncTargets.removeAll();
+			if (manualSyncTargets != null)
+				manualSyncTargets.removeAll();
+
+			isManSynced = false;
+		}
+	}
+
 	// TODO
 	private void startBatchSync(String[] variantBatchSelection) {
 		for (String s : variantBatchSelection) {
@@ -504,8 +499,12 @@ public class SourceFocusedView extends ViewPart {
 				while (it.hasNext()) {
 					CodeChange ch = it.next();
 					long timestamp = ch.getTimestamp();
-					String[] autoItems = cc.getAutoSyncTargets(selectedFeatureExpression, s, c,
-							cc.getBaseCode(currentChange), cc.getNewCode(currentChange)).toArray(new String[] {});
+
+					left = cc.getNewCode(ch);
+					base = cc.getBaseCode(ch);
+
+					String[] autoItems = cc.getAutoSyncTargets(selectedFeatureExpression, s, c, base, left)
+							.toArray(new String[] {});
 					java.util.List<String> checkedItems = new ArrayList<String>();
 					for (String target : autoItems) {
 						if (!contextOperations.isAlreadySynchronized(selectedFeatureExpression, timestamp,
@@ -513,6 +512,7 @@ public class SourceFocusedView extends ViewPart {
 							checkedItems.add(target);
 						}
 					}
+
 					for (String target : checkedItems) {
 						String t[] = target.split(":");
 						String targetProject = t[0].trim();
@@ -528,8 +528,7 @@ public class SourceFocusedView extends ViewPart {
 
 					// manueller Anteil
 					java.util.Collection<String> manualSyncTargetsAsList = cc.getConflictedSyncTargets(
-							selectedFeatureExpression, s, c, cc.getBaseCode(currentChange),
-							cc.getNewCode(currentChange));
+							selectedFeatureExpression, s, c, cc.getBaseCode(ch), cc.getNewCode(ch));
 					String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 					checkedItems = new ArrayList<String>();
 					for (String target : manualItems) {
@@ -543,12 +542,15 @@ public class SourceFocusedView extends ViewPart {
 						String targetProject = t[0].trim();
 						String targetClass = t[1].trim();
 						try {
-							syncWithEclipse(cc.getBaseCode(currentChange), cc.getNewCode(currentChange), s, c,
-									targetProject, targetClass);
+							Collection<String> baseCode = cc.getBaseCode(ch);
+							Collection<String> newCode = cc.getNewCode(ch);
+
+							syncWithEclipse(cc.getBaseCode(ch), cc.getNewCode(ch), s, c, targetProject, targetClass);
+							tagManualSyncedCode(selectedFeatureExpression, timestamp, s, c, baseCode, newCode, target);
 						} catch (FileOperationException | CoreException e1) {
 							e1.printStackTrace();
 						}
-						cc.addSynchronizedChange(selectedFeatureExpression, timestamp, selectedProject, targetProject);
+						cc.addSynchronizedChange(selectedFeatureExpression, timestamp, s, targetProject);
 					}
 				}
 			}
@@ -591,11 +593,6 @@ public class SourceFocusedView extends ViewPart {
 			}
 			i++;
 		}
-
-		System.out.println(d1.getOriginal().getPosition() + ": " + d1.getOriginal().getLines());
-		System.out.println(d1.getRevised().getPosition() + ": " + d1.getRevised().getLines());
-		System.out.println(rightDelta.getOriginal().getPosition() + ": " + rightDelta.getOriginal().getLines());
-		System.out.println(rightDelta.getRevised().getPosition() + ": " + rightDelta.getRevised().getLines());
 
 		// Base Version
 		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
@@ -652,13 +649,6 @@ public class SourceFocusedView extends ViewPart {
 
 		CompareEditorInput rci = new ResourceCompareInput(compconf, base, left, rightMerge);
 		rci.setDirty(true);
-		try {
-			System.out.println(persOp.readFile(new FileInputStream(base.getLocationURI().getPath())));
-			System.out.println(persOp.readFile(new FileInputStream(left.getLocationURI().getPath())));
-			System.out.println(persOp.readFile(new FileInputStream(rightMerge.getLocationURI().getPath())).toString());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 
 		CompareUI.openCompareDialog(rci);
 	}
@@ -701,15 +691,14 @@ public class SourceFocusedView extends ViewPart {
 				timestamp);
 
 		if (refreshGUI)
-			refreshSyncTargets();
+			refreshSyncTargets(selectedFeatureExpression, selectedProject, selectedClass, base, left);
 	}
 
-	private void refreshSyncTargets() {
+	private void refreshSyncTargets(String fe, String project, String clazz, Collection<String> base,
+			Collection<String> left) {
 
 		boolean isAutoSyncPossible = false;
-		String[] autoItems = cc
-				.getAutoSyncTargets(selectedFeatureExpression, selectedProject, selectedClass, base, left)
-				.toArray(new String[] {});
+		String[] autoItems = cc.getAutoSyncTargets(fe, project, clazz, base, left).toArray(new String[] {});
 		java.util.List<String> checkedItems = new ArrayList<String>();
 		for (String target : autoItems) {
 			if (!contextOperations.isAlreadySynchronized(selectedFeatureExpression, timestamp, selectedProject,
@@ -753,25 +742,4 @@ public class SourceFocusedView extends ViewPart {
 		changes.setItems(timestamps.toArray(new String[] {}));
 	}
 
-	public void checkManualMerge(java.util.List<String> mergeResult) {
-		boolean manualMergeIsNeeded = false;
-		for (String cl : mergeResult) {
-			if (cl.contains("<<<<<<<")) {
-				manualMergeIsNeeded = true;
-				break;
-			}
-		}
-		if (manualMergeIsNeeded) {
-			UtilOperations.getInstance().printLines(mergeResult);
-			ManualMerge m = new ManualMerge(reference, mergeResult, leftClass, mergeResult, rightClass, syncCode);
-			m.open();
-		} else {
-			btnManualSync.setEnabled(false);
-			if (newCode != null)
-				newCode.removeAll();
-			cc.refreshContext(false, selectedFeatureExpression, projectNameTarget, classNameTarget, codeWC, syncCode);
-			solveChange(mergeResult, selectedFeatureExpression, projectNameTarget, classNameTarget, true);
-			setChanges();
-		}
-	}
 }

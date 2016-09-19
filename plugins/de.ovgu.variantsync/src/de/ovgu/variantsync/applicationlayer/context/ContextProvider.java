@@ -731,6 +731,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			e.printStackTrace();
 		}
 		System.out.println("Insert Merge Result");
+		System.out.println(mergedLines.toString());
 		System.out.println(orgLines.toString());
 		int i = 0;
 		Iterator<?> it = rightDelta.getRevised().getLines().iterator();
@@ -743,10 +744,46 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 		i = 0;
 		for (String line : mergedLines) {
 			orgLines.add(rightDelta.getRevised().getPosition() + i, line);
+			System.out.println("Added: " + orgLines.get(rightDelta.getRevised().getPosition() + i));
 			i++;
 		}
 		System.out.println(orgLines.toString());
 
 		persistanceOperations.writeFile(orgLines, file);
 	}
+
+	@Override
+	public boolean hasProjectChanges(String fe, String project) {
+		return !getClazzesWithChanges(fe, project).isEmpty();
+	}
+
+	@Override
+	public boolean hasClassChanges(String fe, String project, String clazz) {
+		return !getChanges(fe, project, clazz).isEmpty();
+	}
+
+	@Override
+	public Collection<String> getProjectsWithChanges(String fe) {
+		Collection<String> projects = getProjects(fe);
+		Collection<String> projectsWithChanges = new ArrayList<String>();
+		for (String project : projects) {
+			if (!getClazzesWithChanges(fe, project).isEmpty()) {
+				projectsWithChanges.add(project);
+			}
+		}
+		return projectsWithChanges;
+	}
+
+	@Override
+	public Collection<String> getClazzesWithChanges(String fe, String project) {
+		Collection<String> clazzes = getClasses(fe, project);
+		Collection<String> clazzesWithChanges = new ArrayList<String>();
+		for (String clazz : clazzes) {
+			if (hasClassChanges(fe, project, clazz)) {
+				clazzesWithChanges.add(clazz);
+			}
+		}
+		return clazzesWithChanges;
+	}
+
 }

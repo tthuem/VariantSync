@@ -124,4 +124,11 @@ public interface ContextOperations {
 
 	void setManualMergeResult(Delta rightDelta, File fRightVersion, File file);
 
+	boolean hasClassChanges(String fe, String project, String clazz);
+
+	boolean hasProjectChanges(String fe, String project);
+
+	Collection<String> getProjectsWithChanges(String fe);
+
+	Collection<String> getClazzesWithChanges(String fe, String project);
 }

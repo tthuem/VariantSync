@@ -749,4 +749,39 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 
 		persistanceOperations.writeFile(orgLines, file);
 	}
+
+	@Override
+	public boolean hasProjectChanges(String fe, String project) {
+		return !getClazzesWithChanges(fe, project).isEmpty();
+	}
+
+	@Override
+	public boolean hasClassChanges(String fe, String project, String clazz) {
+		return !getChanges(fe, project, clazz).isEmpty();
+	}
+
+	@Override
+	public Collection<String> getProjectsWithChanges(String fe) {
+		Collection<String> projects = getProjects(fe);
+		Collection<String> projectsWithChanges = new ArrayList<String>();
+		for (String project : projects) {
+			if (!getClazzesWithChanges(fe, project).isEmpty()) {
+				projectsWithChanges.add(project);
+			}
+		}
+		return projectsWithChanges;
+	}
+
+	@Override
+	public Collection<String> getClazzesWithChanges(String fe, String project) {
+		Collection<String> clazzes = getClasses(fe, project);
+		Collection<String> clazzesWithChanges = new ArrayList<String>();
+		for (String clazz : clazzes) {
+			if (hasClassChanges(fe, project, clazz)) {
+				clazzesWithChanges.add(clazz);
+			}
+		}
+		return clazzesWithChanges;
+	}
+
 }

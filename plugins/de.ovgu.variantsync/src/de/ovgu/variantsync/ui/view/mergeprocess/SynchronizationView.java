@@ -44,14 +44,10 @@ import difflib.Delta;
 
 public abstract class SynchronizationView extends ViewPart {
 
-	protected ContextController cc = ControllerHandler.getInstance()
-			.getContextController();
-	protected SynchronizationController sc = ControllerHandler.getInstance()
-			.getSynchronizationController();
-	protected FeatureController fc = ControllerHandler.getInstance()
-			.getFeatureController();
-	protected ContextOperations contextOperations = ModuleFactory
-			.getContextOperations();
+	protected ContextController cc = ControllerHandler.getInstance().getContextController();
+	protected SynchronizationController sc = ControllerHandler.getInstance().getSynchronizationController();
+	protected FeatureController fc = ControllerHandler.getInstance().getFeatureController();
+	protected ContextOperations contextOperations = ModuleFactory.getContextOperations();
 	protected Persistable persOp = ModuleFactory.getPersistanceOperations();
 
 	public static boolean isManSynced;
@@ -59,6 +55,8 @@ public abstract class SynchronizationView extends ViewPart {
 	protected Collection<String> base;
 	protected Collection<String> left;
 
+	protected List projects;
+	protected List classes;
 	protected Delta rightDelta;
 	protected File fRightVersion;
 	protected IResource right;
@@ -78,8 +76,7 @@ public abstract class SynchronizationView extends ViewPart {
 
 	abstract protected void setChanges();
 
-	protected void tagManualSyncedCode(String fe, long timestamp,
-			String project, String clazz, Collection<String> base,
+	protected void tagManualSyncedCode(String fe, long timestamp, String project, String clazz, Collection<String> base,
 			Collection<String> left, String manualSelection) {
 		if (isManSynced) {
 
@@ -93,8 +90,7 @@ public abstract class SynchronizationView extends ViewPart {
 			}
 			contextOperations.stopRecording();
 
-			cc.addSynchronizedChange(fe, timestamp, selectedProject,
-					manualSelection);
+			cc.addSynchronizedChange(fe, timestamp, selectedProject, manualSelection);
 
 			if (newCode != null)
 				newCode.removeAll();
@@ -105,16 +101,14 @@ public abstract class SynchronizationView extends ViewPart {
 		}
 	}
 
-	protected void refreshSyncTargets(String fe, String project, String clazz,
-			Collection<String> base, Collection<String> left) {
+	protected void refreshSyncTargets(String fe, String project, String clazz, Collection<String> base,
+			Collection<String> left) {
 
 		boolean isAutoSyncPossible = false;
-		String[] autoItems = cc.getAutoSyncTargets(fe, project, clazz, base,
-				left).toArray(new String[] {});
+		String[] autoItems = cc.getAutoSyncTargets(fe, project, clazz, base, left).toArray(new String[] {});
 		java.util.List<String> checkedItems = new ArrayList<String>();
 		for (String target : autoItems) {
-			if (!contextOperations.isAlreadySynchronized(fe, timestamp,
-					selectedProject, target)) {
+			if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
 				checkedItems.add(target);
 			}
 		}
@@ -123,13 +117,11 @@ public abstract class SynchronizationView extends ViewPart {
 			isAutoSyncPossible = true;
 
 		boolean isManualSyncPossible = false;
-		manualSyncTargetsAsList = cc.getConflictedSyncTargets(fe,
-				selectedProject, selectedClass, base, left);
+		manualSyncTargetsAsList = cc.getConflictedSyncTargets(fe, selectedProject, selectedClass, base, left);
 		String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 		checkedItems = new ArrayList<String>();
 		for (String target : manualItems) {
-			if (!contextOperations.isAlreadySynchronized(fe, timestamp,
-					selectedProject, target)) {
+			if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
 				checkedItems.add(target);
 			}
 		}
@@ -139,8 +131,7 @@ public abstract class SynchronizationView extends ViewPart {
 			isManualSyncPossible = true;
 
 		if (!isAutoSyncPossible && !isManualSyncPossible) {
-			contextOperations.removeChange(fe, selectedProject, selectedClass,
-					selectedChange, timestamp);
+			contextOperations.removeChange(fe, selectedProject, selectedClass, selectedChange, timestamp);
 		}
 	}
 
@@ -173,16 +164,14 @@ public abstract class SynchronizationView extends ViewPart {
 				for (CodeLine cl : ch.getNewVersion()) {
 					TableItem item = new TableItem(newCode, SWT.NONE);
 					item.setText(cl.getLine() + ": " + cl.getCode());
-					Color color = new Color(getSite().getShell().getDisplay(),
-							ccolor.getRGB());
+					Color color = new Color(getSite().getShell().getDisplay(), ccolor.getRGB());
 					item.setBackground(color);
 				}
 
 				left = cc.getNewCode(ch);
 				base = cc.getBaseCode(ch);
 
-				refreshSyncTargets(fe, selectedProject, selectedClass, base,
-						left);
+				refreshSyncTargets(fe, selectedProject, selectedClass, base, left);
 				return ch;
 			}
 			i++;
@@ -190,9 +179,8 @@ public abstract class SynchronizationView extends ViewPart {
 		return null;
 	}
 
-	protected void processAutoSync(String fe, String projectNameTarget,
-			String classNameTarget, Collection<String> syncCode,
-			String autoSelection, int selectionIndex) {
+	protected void processAutoSync(String fe, String projectNameTarget, String classNameTarget,
+			Collection<String> syncCode, String autoSelection, int selectionIndex) {
 		ModuleFactory.getContextOperations().activateContext(fe);
 		contextOperations.activateContext(fe, true);
 		solveChange(syncCode, fe, projectNameTarget, classNameTarget, true);
@@ -205,61 +193,53 @@ public abstract class SynchronizationView extends ViewPart {
 			autoSyncTargets.remove(selectionIndex);
 		}
 
-		removeChange(fe, selectedProject, selectedClass, selectedChange,
-				timestamp);
+		removeChange(fe, selectedProject, selectedClass, selectedChange, timestamp);
 
 		setChanges();
 	}
 
-	private void removeChange(String fe, String project, String clazz,
-			int change, long timestamp) {
+	private void removeChange(String fe, String project, String clazz, int change, long timestamp) {
 		if ((autoSyncTargets == null && manualSyncTargets == null)
-				|| (autoSyncTargets.getItems() != null && manualSyncTargets
-						.getItems() != null)
-				|| (autoSyncTargets.getItems().length == 0 && manualSyncTargets
-						.getItems().length == 0)) {
-			contextOperations.removeChange(fe, project, clazz, change,
-					timestamp);
+				|| ((autoSyncTargets.getItems() != null && manualSyncTargets.getItems() != null)
+						&& (autoSyncTargets.getItems().length == 0 && manualSyncTargets.getItems().length == 0))) {
+			contextOperations.removeChange(fe, project, clazz, change, timestamp);
 			if (newCode != null) {
 				newCode.removeAll();
 			}
-			// TODO: prüfen, ob klasse noch änderungen enthält und ggf.
-			// entfernen
-			// TODO: prüfen, ob variante noch änderungen enthält und ggf.
-			// entfernen
+			if (!contextOperations.hasClassChanges(fe, project, clazz) && classes != null) {
+				classes.remove(clazz);
+			}
+			if (!contextOperations.hasProjectChanges(fe, project) && projects != null) {
+				projects.remove(project);
+			}
 		}
 	}
 
-	protected void processManualSync(String fe, String projectName,
-			String className, String manualSelection, int selectionIndex) {
+	protected void processManualSync(String fe, String projectName, String className, String manualSelection,
+			int selectionIndex) {
 		btnManualSync.setEnabled(false);
 
 		try {
-			syncWithEclipse(base, left, selectedProject, selectedClass,
-					projectName, className);
+			syncWithEclipse(base, left, selectedProject, selectedClass, projectName, className);
 		} catch (FileOperationException | CoreException ex) {
 			ex.printStackTrace();
 		}
-		tagManualSyncedCode(fe, timestamp, selectedProject, selectedClass,
-				base, left, manualSelection);
+		tagManualSyncedCode(fe, timestamp, selectedProject, selectedClass, base, left, manualSelection);
 
 		if (manualSyncTargets != null)
 			manualSyncTargets.remove(selectionIndex);
 
-		removeChange(fe, selectedProject, selectedClass, selectedChange,
-				timestamp);
+		removeChange(fe, selectedProject, selectedClass, selectedChange, timestamp);
 
 		setChanges();
 	}
 
-	protected void syncWithEclipse(Collection<String> base2,
-			Collection<String> left2, String projectName, String className,
-			String projectNameRight, String classNameRight)
+	protected void syncWithEclipse(Collection<String> base2, Collection<String> left2, String projectName,
+			String className, String projectNameRight, String classNameRight)
 			throws FileOperationException, CoreException {
 
 		// Right Version
-		java.util.List<IProject> supportedProjects = VariantSyncPlugin
-				.getDefault().getSupportProjectList();
+		java.util.List<IProject> supportedProjects = VariantSyncPlugin.getDefault().getSupportProjectList();
 		right = null;
 		for (IProject p : supportedProjects) {
 			String name = p.getName();
@@ -274,9 +254,8 @@ public abstract class SynchronizationView extends ViewPart {
 		}
 		Collection<Delta> deltas = null;
 		try {
-			deltas = cc.getConflictingDeltas(base2, left2, persOp
-					.readFile(new FileInputStream(new File(right
-							.getLocationURI().getPath()))));
+			deltas = cc.getConflictingDeltas(base2, left2,
+					persOp.readFile(new FileInputStream(new File(right.getLocationURI().getPath()))));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -293,8 +272,7 @@ public abstract class SynchronizationView extends ViewPart {
 		}
 
 		// Base Version
-		File f = new File(ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toString()
+		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
 		if (!f.exists())
 			try {
@@ -302,23 +280,19 @@ public abstract class SynchronizationView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(
-				(Collection<String>) d1.getOriginal().getLines(), f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getOriginal().getLines(), f);
 
-		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation()
-				.toString()
-				+ VariantSyncConstants.MERGE_PATH + "/LeftVersion.java");
+		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
+				+ "/LeftVersion.java");
 		if (!f.exists())
 			try {
 				f.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(
-				(Collection<String>) d1.getRevised().getLines(), f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getRevised().getLines(), f);
 
-		fRightVersion = new File(ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toString()
+		fRightVersion = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ VariantSyncConstants.MERGE_PATH + "/RightVersion.java");
 		if (!fRightVersion.exists())
 			try {
@@ -326,14 +300,12 @@ public abstract class SynchronizationView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile(
-				(Collection<String>) rightDelta.getRevised().getLines(),
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) rightDelta.getRevised().getLines(),
 				fRightVersion);
 
 		IResource base = null;
 		IProject p = null;
-		for (IProject project : ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects()) {
+		for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 			if (project.getName().equals("variantsyncFeatureInfo")) {
 				p = project;
 				base = cc.findFileRecursively(project, "BaseVersion");
@@ -342,31 +314,25 @@ public abstract class SynchronizationView extends ViewPart {
 		base = p.getFolder("merge").getFile("BaseVersion.java");
 
 		final IResource left = p.getFolder("merge").getFile("LeftVersion.java");
-		final IResource rightMerge = p.getFolder("merge").getFile(
-				"RightVersion.java");
+		final IResource rightMerge = p.getFolder("merge").getFile("RightVersion.java");
 
 		// Editor
 		org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
-		compconf.setLeftLabel(projectName + ": " + className
-				+ " - changed version (left)");
+		compconf.setLeftLabel(projectName + ": " + className + " - changed version (left)");
 		compconf.setRightLabel(projectNameRight + ": " + classNameRight + "");
-		compconf.setAncestorLabel(projectName + ": " + className
-				+ " - version without change (ancestor)");
+		compconf.setAncestorLabel(projectName + ": " + className + " - version without change (ancestor)");
 		compconf.setLeftEditable(false);
 		compconf.setRightEditable(true);
 
-		CompareEditorInput rci = new ResourceCompareInput(compconf, base, left,
-				rightMerge);
+		CompareEditorInput rci = new ResourceCompareInput(compconf, base, left, rightMerge);
 		rci.setDirty(true);
 
 		CompareUI.openCompareDialog(rci);
 	}
 
-	protected void solveChange(Collection<String> syncCode2,
-			String selectedFeatureExpression, String projectName,
+	protected void solveChange(Collection<String> syncCode2, String selectedFeatureExpression, String projectName,
 			String className, boolean refreshGUI) {
-		IResource res = contextOperations.getResource(
-				selectedFeatureExpression, projectName, className);
+		IResource res = contextOperations.getResource(selectedFeatureExpression, projectName, className);
 		IFile f = (IFile) res;
 		try {
 			f.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -400,8 +366,8 @@ public abstract class SynchronizationView extends ViewPart {
 		}
 	}
 
-	protected void processBatchSynchronization(String fe, String variant,
-			String clazz, Collection<CodeChange> collChanges) {
+	protected void processBatchSynchronization(String fe, String variant, String clazz,
+			Collection<CodeChange> collChanges) {
 		Iterator<CodeChange> it = collChanges.iterator();
 		while (it.hasNext()) {
 			CodeChange ch = it.next();
@@ -410,12 +376,10 @@ public abstract class SynchronizationView extends ViewPart {
 			left = cc.getNewCode(ch);
 			base = cc.getBaseCode(ch);
 
-			String[] autoItems = cc.getAutoSyncTargets(fe, variant, clazz,
-					base, left).toArray(new String[] {});
+			String[] autoItems = cc.getAutoSyncTargets(fe, variant, clazz, base, left).toArray(new String[] {});
 			java.util.List<String> checkedItems = new ArrayList<String>();
 			for (String target : autoItems) {
-				if (!contextOperations.isAlreadySynchronized(fe, timestamp,
-						selectedProject, target)) {
+				if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
 					checkedItems.add(target);
 				}
 			}
@@ -424,26 +388,21 @@ public abstract class SynchronizationView extends ViewPart {
 				String t[] = target.split(":");
 				String targetProject = t[0].trim();
 				String targetClass = t[1].trim();
-				java.util.List<String> codeWC = cc.getTargetFile(fe,
-						targetProject, targetClass);
+				java.util.List<String> codeWC = cc.getTargetFile(fe, targetProject, targetClass);
 
 				ModuleFactory.getContextOperations().activateContext(fe);
-				Collection<String> syncCode = sc.doAutoSync(cc.getNewCode(ch),
-						cc.getBaseCode(ch), codeWC);
+				Collection<String> syncCode = sc.doAutoSync(cc.getNewCode(ch), cc.getBaseCode(ch), codeWC);
 				solveChange(syncCode, fe, targetProject, targetClass, false);
 				cc.addSynchronizedChange(fe, timestamp, selectedProject, target);
 			}
 
 			// manueller Anteil
-			java.util.Collection<String> manualSyncTargetsAsList = cc
-					.getConflictedSyncTargets(fe, variant, clazz,
-							cc.getBaseCode(ch), cc.getNewCode(ch));
-			String[] manualItems = manualSyncTargetsAsList
-					.toArray(new String[] {});
+			java.util.Collection<String> manualSyncTargetsAsList = cc.getConflictedSyncTargets(fe, variant, clazz,
+					cc.getBaseCode(ch), cc.getNewCode(ch));
+			String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
 			checkedItems = new ArrayList<String>();
 			for (String target : manualItems) {
-				if (!contextOperations.isAlreadySynchronized(fe, timestamp,
-						selectedProject, target)) {
+				if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
 					checkedItems.add(target);
 				}
 			}
@@ -455,10 +414,8 @@ public abstract class SynchronizationView extends ViewPart {
 					Collection<String> baseCode = cc.getBaseCode(ch);
 					Collection<String> newCode = cc.getNewCode(ch);
 
-					syncWithEclipse(cc.getBaseCode(ch), cc.getNewCode(ch),
-							variant, clazz, targetProject, targetClass);
-					tagManualSyncedCode(fe, timestamp, variant, clazz,
-							baseCode, newCode, target);
+					syncWithEclipse(cc.getBaseCode(ch), cc.getNewCode(ch), variant, clazz, targetProject, targetClass);
+					tagManualSyncedCode(fe, timestamp, variant, clazz, baseCode, newCode, target);
 
 					setChanges();
 				} catch (FileOperationException | CoreException e1) {

@@ -57,6 +57,7 @@ public abstract class SynchronizationView extends ViewPart {
 
 	protected List projects;
 	protected List classes;
+	protected Delta leftDelta;
 	protected Delta rightDelta;
 	protected File fRightVersion;
 	protected IResource right;
@@ -259,12 +260,12 @@ public abstract class SynchronizationView extends ViewPart {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		Delta d1 = null;
+		leftDelta = null;
 		rightDelta = null;
 		int i = 0;
 		for (Delta d : deltas) {
 			if (i == 0) {
-				d1 = d;
+				leftDelta = d;
 			} else if (i == 1) {
 				rightDelta = d;
 			}
@@ -280,7 +281,7 @@ public abstract class SynchronizationView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getOriginal().getLines(), f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) leftDelta.getOriginal().getLines(), f);
 
 		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
 				+ "/LeftVersion.java");
@@ -290,7 +291,7 @@ public abstract class SynchronizationView extends ViewPart {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) d1.getRevised().getLines(), f);
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) leftDelta.getRevised().getLines(), f);
 
 		fRightVersion = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
 				+ VariantSyncConstants.MERGE_PATH + "/RightVersion.java");

@@ -731,6 +731,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 			e.printStackTrace();
 		}
 		System.out.println("Insert Merge Result");
+		System.out.println(mergedLines.toString());
 		System.out.println(orgLines.toString());
 		int i = 0;
 		Iterator<?> it = rightDelta.getRevised().getLines().iterator();
@@ -743,6 +744,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 		i = 0;
 		for (String line : mergedLines) {
 			orgLines.add(rightDelta.getRevised().getPosition() + i, line);
+			System.out.println("Added: " + orgLines.get(rightDelta.getRevised().getPosition() + i));
 			i++;
 		}
 		System.out.println(orgLines.toString());

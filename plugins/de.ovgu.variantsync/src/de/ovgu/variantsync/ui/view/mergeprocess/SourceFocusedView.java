@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.MenuAdapter;
@@ -25,9 +24,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 
-import de.ovgu.variantsync.applicationlayer.ModuleFactory;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
-import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 
 /**
  * 
@@ -51,6 +48,8 @@ public class SourceFocusedView extends SynchronizationView {
 	private String manualSelection;
 	private GridData gd_list_2;
 	private String selectedFeatureExpression;
+
+	private int selectionIndex;
 
 	public SourceFocusedView() {
 	}
@@ -234,6 +233,7 @@ public class SourceFocusedView extends SynchronizationView {
 		autoSyncTargets.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent event) {
+				selectionIndex = autoSyncTargets.getSelectionIndex();
 				autoSelection = autoSyncTargets.getSelection()[0];
 				String[] tmp = autoSelection.split(":");
 				projectNameTarget = tmp[0].trim();
@@ -265,7 +265,7 @@ public class SourceFocusedView extends SynchronizationView {
 				case SWT.Selection: {
 					processAutoSync(selectedFeatureExpression,
 							projectNameTarget, classNameTarget, syncCode,
-							autoSelection);
+							autoSelection, selectionIndex);
 					break;
 				}
 				}
@@ -284,10 +284,10 @@ public class SourceFocusedView extends SynchronizationView {
 		manualSyncTargets.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent event) {
-				int selectedTargetIndex = manualSyncTargets.getSelectionIndex();
+				selectionIndex = manualSyncTargets.getSelectionIndex();
 				int i = 0;
 				for (String target : manualSyncTargetsAsList) {
-					if (i == selectedTargetIndex) {
+					if (i == selectionIndex) {
 						btnManualSync.setEnabled(true);
 						String[] targetInfo = target.split(":");
 						projectNameTarget = targetInfo[0].trim();
@@ -319,7 +319,8 @@ public class SourceFocusedView extends SynchronizationView {
 				switch (e.type) {
 				case SWT.Selection:
 					processManualSync(selectedFeatureExpression,
-							projectNameTarget, classNameTarget, manualSelection);
+							projectNameTarget, classNameTarget,
+							manualSelection, selectionIndex);
 					break;
 				}
 			}

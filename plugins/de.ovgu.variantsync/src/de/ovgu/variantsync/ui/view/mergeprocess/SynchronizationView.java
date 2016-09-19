@@ -96,15 +96,10 @@ public abstract class SynchronizationView extends ViewPart {
 			cc.addSynchronizedChange(fe, timestamp, selectedProject,
 					manualSelection);
 
-			refreshSyncTargets(fe, project, clazz, base, left);
-			setChanges();
-
 			if (newCode != null)
 				newCode.removeAll();
-			if (autoSyncTargets != null)
-				autoSyncTargets.removeAll();
-			if (manualSyncTargets != null)
-				manualSyncTargets.removeAll();
+
+			// refreshSyncTargets(fe, project, clazz, base, left);
 
 			isManSynced = false;
 		}
@@ -197,7 +192,7 @@ public abstract class SynchronizationView extends ViewPart {
 
 	protected void processAutoSync(String fe, String projectNameTarget,
 			String classNameTarget, Collection<String> syncCode,
-			String autoSelection) {
+			String autoSelection, int selectionIndex) {
 		ModuleFactory.getContextOperations().activateContext(fe);
 		contextOperations.activateContext(fe, true);
 		solveChange(syncCode, fe, projectNameTarget, classNameTarget, true);
@@ -205,18 +200,38 @@ public abstract class SynchronizationView extends ViewPart {
 		btnSynchronize.setEnabled(false);
 
 		cc.addSynchronizedChange(fe, timestamp, selectedProject, autoSelection);
-		setChanges();
 
-		if (newCode != null)
-			newCode.removeAll();
-		if (autoSyncTargets != null)
-			autoSyncTargets.removeAll();
-		if (manualSyncTargets != null)
-			manualSyncTargets.removeAll();
+		if (autoSyncTargets != null) {
+			autoSyncTargets.remove(selectionIndex);
+		}
+
+		removeChange(fe, selectedProject, selectedClass, selectedChange,
+				timestamp);
+
+		setChanges();
+	}
+
+	private void removeChange(String fe, String project, String clazz,
+			int change, long timestamp) {
+		if ((autoSyncTargets == null && manualSyncTargets == null)
+				|| (autoSyncTargets.getItems() != null && manualSyncTargets
+						.getItems() != null)
+				|| (autoSyncTargets.getItems().length == 0 && manualSyncTargets
+						.getItems().length == 0)) {
+			contextOperations.removeChange(fe, project, clazz, change,
+					timestamp);
+			if (newCode != null) {
+				newCode.removeAll();
+			}
+			// TODO: prüfen, ob klasse noch änderungen enthält und ggf.
+			// entfernen
+			// TODO: prüfen, ob variante noch änderungen enthält und ggf.
+			// entfernen
+		}
 	}
 
 	protected void processManualSync(String fe, String projectName,
-			String className, String manualSelection) {
+			String className, String manualSelection, int selectionIndex) {
 		btnManualSync.setEnabled(false);
 
 		try {
@@ -227,6 +242,14 @@ public abstract class SynchronizationView extends ViewPart {
 		}
 		tagManualSyncedCode(fe, timestamp, selectedProject, selectedClass,
 				base, left, manualSelection);
+
+		if (manualSyncTargets != null)
+			manualSyncTargets.remove(selectionIndex);
+
+		removeChange(fe, selectedProject, selectedClass, selectedChange,
+				timestamp);
+
+		setChanges();
 	}
 
 	protected void syncWithEclipse(Collection<String> base2,
@@ -375,12 +398,6 @@ public abstract class SynchronizationView extends ViewPart {
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-		contextOperations.removeChange(selectedFeatureExpression,
-				selectedProject, selectedClass, selectedChange, timestamp);
-
-		if (refreshGUI)
-			refreshSyncTargets(selectedFeatureExpression, selectedProject,
-					selectedClass, base, left);
 	}
 
 	protected void processBatchSynchronization(String fe, String variant,
@@ -442,6 +459,8 @@ public abstract class SynchronizationView extends ViewPart {
 							variant, clazz, targetProject, targetClass);
 					tagManualSyncedCode(fe, timestamp, variant, clazz,
 							baseCode, newCode, target);
+
+					setChanges();
 				} catch (FileOperationException | CoreException e1) {
 					e1.printStackTrace();
 				}

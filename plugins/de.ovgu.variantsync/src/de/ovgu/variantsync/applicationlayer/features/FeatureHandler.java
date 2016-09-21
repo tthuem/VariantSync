@@ -32,12 +32,12 @@ import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException
  * @version 1.0
  * @since 20.05.2015
  */
-class FeatureHandler {
+public class FeatureHandler {
 
 	private static FeatureHandler instance;
 	private FeatureExpressions featureExpressions;
 
-	private FeatureHandler() {
+	public FeatureHandler() {
 		featureExpressions = new FeatureExpressions();
 	}
 

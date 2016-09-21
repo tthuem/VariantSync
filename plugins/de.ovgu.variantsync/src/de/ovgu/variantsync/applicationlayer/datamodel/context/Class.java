@@ -97,7 +97,8 @@ public class Class extends Element {
 		}
 	}
 
-	public void addChange(Collection<CodeLine> collection, String projectName, String className, long modificationTime) {
+	public void addChange(Collection<CodeLine> collection, String projectName, String className,
+			long modificationTime) {
 		if (logChange) {
 			List<CodeLine> newVersion = new ArrayList<CodeLine>();
 			for (CodeLine cl : collection) {
@@ -271,8 +272,10 @@ public class Class extends Element {
 		return clonedChanges;
 	}
 
-	public Object removeChange(int selectedChange) {
-		changes.remove(selectedChange);
+	public Object removeChange(int selectedChange, long timestamp) {
+		if (selectedChange < changes.size() && changes.get(selectedChange).getTimestamp() == timestamp) {
+			changes.remove(selectedChange);
+		}
 		return null;
 	}
 

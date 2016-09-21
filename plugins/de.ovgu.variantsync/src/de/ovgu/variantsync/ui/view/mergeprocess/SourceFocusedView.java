@@ -188,7 +188,8 @@ public class SourceFocusedView extends SynchronizationView {
 		classes.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent event) {
-				processClassSelection(classes.getSelection()[0]);
+				if (classes != null && classes.getSelection() != null && classes.getSelection().length > 0)
+					processClassSelection(classes.getSelection()[0]);
 			}
 
 			public void widgetDefaultSelected(SelectionEvent event) {

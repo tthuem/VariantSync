@@ -20,10 +20,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.variantsync.VariantSyncConstants;
 import de.ovgu.variantsync.VariantSyncPlugin;
 import de.ovgu.variantsync.applicationlayer.AbstractModel;
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
+import de.ovgu.variantsync.applicationlayer.datamodel.context.ChangeLogMap;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Class;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeChange;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeHighlighting;
@@ -31,8 +33,10 @@ import de.ovgu.variantsync.applicationlayer.datamodel.context.CodeLine;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Context;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Element;
 import de.ovgu.variantsync.applicationlayer.datamodel.context.Variant;
+import de.ovgu.variantsync.applicationlayer.datamodel.exception.FeatureException;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FileOperationException;
 import de.ovgu.variantsync.applicationlayer.datamodel.exception.FolderOperationException;
+import de.ovgu.variantsync.applicationlayer.features.FeatureHandler;
 import de.ovgu.variantsync.io.Persistable;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator;
 import de.ovgu.variantsync.ui.view.context.ConstraintTextValidator.ValidationResult;
@@ -252,13 +256,39 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 
 	@Override
 	public Collection<CodeChange> getChanges(String fe, String projectName, String className) {
+		Collection<String> projectsToCheck = new ArrayList<String>();
+		Collection<IProject> projects = VariantSyncPlugin.getDefault().getSupportProjectList();
+		for (IProject p : projects) {
+			Set<IFeature> features = null;
+			try {
+				features = new FeatureHandler().getConfiguredFeaturesOfProject(p);
+			} catch (FeatureException e1) {
+				e1.printStackTrace();
+			}
+			for (IFeature f : features) {
+				if (f.getName().equals(fe)) {
+					projectsToCheck.add(p.getName());
+				}
+			}
+		}
+
 		Context c = ContextHandler.getInstance().getContext(fe);
 		Variant jp = c.getJavaProjects().get(projectName);
 		List<Element> classes = new ArrayList<Element>();
 		ContextUtils.iterateElements(jp.getChildren(), classes);
 		for (Element e : classes) {
 			if (e.getName().equals(className)) {
-				return ((Class) e).getClonedChanges();
+				Collection<CodeChange> returnValue = new HashSet<CodeChange>();
+				Collection<CodeChange> changes = ((Class) e).getClonedChanges();
+				for (CodeChange ch : changes) {
+					ChangeLogMap clm = c.getChangeLog();
+					for (String project : projectsToCheck) {
+						if (!projectName.equals(project) && !clm.contains(ch.getTimestamp(), projectName, project)) {
+							returnValue.add(ch);
+						}
+					}
+				}
+				return returnValue;
 			}
 		}
 		return null;
@@ -597,7 +627,7 @@ public class ContextProvider extends AbstractModel implements ContextOperations 
 		ContextUtils.iterateElements(jp.getChildren(), classes);
 		for (Element e : classes) {
 			if (e.getName().equals(selectedClass)) {
-				((Class) e).removeChange(selectedChange);
+				((Class) e).removeChange(selectedChange, timestamp);
 				break;
 			}
 		}

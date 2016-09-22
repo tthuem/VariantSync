@@ -322,40 +322,45 @@ public abstract class SynchronizationView extends ViewPart {
 			}
 			i++;
 		}
+		System.out.println(base2);
+		System.out.println(left2);
+		try {
+			System.out.println(persOp.readFile(new FileInputStream(new File(right.getLocationURI().getPath()))));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		System.out.println(leftDelta.getOriginal().getPosition() + ": " + leftDelta.getOriginal().getLines());
+		System.out.println(leftDelta.getRevised().getPosition() + ": " + leftDelta.getRevised().getLines());
+		System.out.println(rightDelta.getOriginal().getPosition() + ": " + rightDelta.getOriginal().getLines());
+		System.out.println(rightDelta.getRevised().getPosition() + ": " + rightDelta.getRevised().getLines());
 
-		// Base Version
-		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
-				+ VariantSyncConstants.MERGE_PATH + "/BaseVersion.java");
-		if (!f.exists())
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) leftDelta.getOriginal().getLines(),
-				f);
+		boolean isLeftSide = true;
+		if (!hasCodeRevisedLines(left2, (Collection<String>) leftDelta.getRevised().getLines())) {
+			isLeftSide = false;
+		}
 
-		f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() + VariantSyncConstants.MERGE_PATH
-				+ "/LeftVersion.java");
-		if (!f.exists())
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) leftDelta.getRevised().getLines(),
-				f);
+		if (isLeftSide)
+			writeFile("/BaseVersion.java", leftDelta.getOriginal().getLines());
+		else {
+			writeFile("/BaseVersion.java", rightDelta.getOriginal().getLines());
+		}
 
-		fRightVersion = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
-				+ VariantSyncConstants.MERGE_PATH + "/RightVersion.java");
-		if (!fRightVersion.exists())
-			try {
-				fRightVersion.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) rightDelta.getRevised().getLines(),
-				fRightVersion);
+		java.util.List leftLines = leftDelta.getRevised().getLines();
+		java.util.List rightLines = rightDelta.getRevised().getLines();
+
+		if (isLeftSide)
+			writeFile("/LeftVersion.java", leftLines);
+		else
+			writeFile("/LeftVersion.java", rightLines);
+
+		if (isLeftSide)
+			fRightVersion = writeFile("/RightVersion.java", rightLines);
+		else
+			fRightVersion = writeFile("/RightVersion.java", leftLines);
+
+		if (!isLeftSide) {
+			rightDelta = leftDelta;
+		}
 
 		IResource base = null;
 		IProject p = null;
@@ -382,6 +387,28 @@ public abstract class SynchronizationView extends ViewPart {
 		rci.setDirty(true);
 
 		CompareUI.openCompareDialog(rci);
+	}
+
+	private boolean hasCodeRevisedLines(Collection<String> lines, Collection<String> delta) {
+		for (String d : delta) {
+			if (!lines.contains(d)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private File writeFile(String s, java.util.List<?> linesToWrite) throws FileOperationException {
+		File f = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()
+				+ VariantSyncConstants.MERGE_PATH + s);
+		if (!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		ModuleFactory.getPersistanceOperations().addLinesToFile((Collection<String>) linesToWrite, f);
+		return f;
 	}
 
 	protected void solveChange(Collection<String> syncCode2, String selectedFeatureExpression, String projectName,

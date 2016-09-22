@@ -45,7 +45,7 @@ public class TestXMLOutput {
 			diff.add(s);
 		}
 		co.addCode(PROJECT_NAME, "mainpackage", "Main.java", diff, context,
-				new ArrayList<String>());
+				new ArrayList<String>(), 0);
 	}
 
 	@Test
@@ -65,19 +65,19 @@ public class TestXMLOutput {
 		assertEquals(5, cl.getLine());
 		cl = codeLines.get(1);
 		assertEquals("public Main(int g) {", cl.getCode());
-		assertEquals(7, cl.getLine());
+		assertEquals(6, cl.getLine());
 		cl = codeLines.get(6);
 		assertEquals("return a;", cl.getCode());
-		assertEquals(12, cl.getLine());
+		assertEquals(11, cl.getLine());
 		cl = codeLines.get(9);
 		assertEquals("public void setA(int a) {", cl.getCode());
-		assertEquals(15, cl.getLine());
+		assertEquals(14, cl.getLine());
 		cl = codeLines.get(10);
 		assertEquals("this.a = a;", cl.getCode());
-		assertEquals(16, cl.getLine());
+		assertEquals(15, cl.getLine());
 		cl = codeLines.get(11);
 		assertEquals("}", cl.getCode());
-		assertEquals(17, cl.getLine());
+		assertEquals(16, cl.getLine());
 		assertEquals(12, codeLines.size());
 
 		Class jc = (Class) jp.getChildren().get(0).getChildren().get(0);

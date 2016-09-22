@@ -13,110 +13,83 @@
                     <member xsi:type="class">
                         <changes>
                             <change>
-<newVersion code="private int a;" line="5">
+<filename>arbitraryPathToProject/src/mainpackage/Main.java</filename>
+<newVersion code="public Main(int g) {" line="6">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="public Main(int g) {" line="7">
+<newVersion code="a = g;" line="7">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="a = g;" line="8">
+<newVersion code="}" line="8">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="}" line="9">
+<newVersion code="" line="9">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="" line="10">
+<newVersion code="public int getA() {" line="10">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="public int getA() {" line="11">
+<newVersion code="return a;" line="11">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="return a;" line="12">
+<newVersion code="}" line="12">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="}" line="13">
+<newVersion code="" line="13">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="" line="14">
+<newVersion code="public void setA(int a) {" line="14">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="public void setA(int a) {" line="15">
+<newVersion code="this.a = a;" line="15">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="this.a = a;" line="16">
+<newVersion code="}" line="16">
     <mapped>true</mapped>
-    <new>true</new>
 </newVersion>
-<newVersion code="}" line="17">
-    <mapped>true</mapped>
-    <new>true</new>
-</newVersion>
-<timestamp>1471896346251</timestamp>
+<timestamp>0</timestamp>
                             </change>
                         </changes>
                         <code>
                             <codeline code="private int a;" line="5">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="public Main(int g) {" line="7">
+                            <codeline code="public Main(int g) {" line="6">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="a = g;" line="8">
+                            <codeline code="a = g;" line="7">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="}" line="9">
+                            <codeline code="}" line="8">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="" line="10">
+                            <codeline code="" line="9">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="public int getA() {" line="11">
+                            <codeline code="public int getA() {" line="10">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="return a;" line="12">
+                            <codeline code="return a;" line="11">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="}" line="13">
+                            <codeline code="}" line="12">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="" line="14">
+                            <codeline code="" line="13">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="public void setA(int a) {" line="15">
+                            <codeline code="public void setA(int a) {" line="14">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="this.a = a;" line="16">
+                            <codeline code="this.a = a;" line="15">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
-                            <codeline code="}" line="17">
+                            <codeline code="}" line="16">
 <mapped>true</mapped>
-<new>true</new>
                             </codeline>
                         </code>
                         <name>Main.java</name>
                         <path>arbitraryPathToProject/src/mainpackage/Main.java</path>
-                        <wholeClass/>
                     </member>
                     <name>mainpackage</name>
                     <path>arbitraryPathToProject/src/mainpackage</path>

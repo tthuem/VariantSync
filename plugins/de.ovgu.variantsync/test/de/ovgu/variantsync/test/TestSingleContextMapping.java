@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.ovgu.variantsync.applicationlayer.ModuleFactory;
@@ -39,7 +40,7 @@ public class TestSingleContextMapping {
 		context.initProject(PROJECT_NAME, PROJECT_PATH);
 	}
 
-	@Test
+	@Test@Ignore
 	public void testAddCodeToEmptyContext() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeToEmptyContext()\n");
@@ -98,7 +99,7 @@ public class TestSingleContextMapping {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
-	@Test
+	@Test@Ignore
 	public void testAddCodeInsideExistingCode() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode()\n");
@@ -178,7 +179,7 @@ public class TestSingleContextMapping {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
-	@Test
+	@Test@Ignore
 	public void testAddCodeInsideExistingCode_Simple() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode_Simple()\n");
@@ -258,7 +259,7 @@ public class TestSingleContextMapping {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
-	@Test
+	@Test@Ignore
 	public void testAddCodeInsideExistingCode_Comprehensive1() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode_Comprehensive1()\n");
@@ -370,7 +371,7 @@ public class TestSingleContextMapping {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
-	@Test
+	@Test@Ignore
 	public void testAddCodeInsideExistingCode_Comprehensive2() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode_Comprehensive2()\n");
@@ -482,7 +483,7 @@ public class TestSingleContextMapping {
 	/**
 	 * see TestSingleContextMapping.txt
 	 */
-	@Test
+	@Test@Ignore
 	public void testAddCodeInsideExistingCode_Comprehensive3() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testAddCodeInsideExistingCode_Comprehensive3()\n");
@@ -652,7 +653,7 @@ public class TestSingleContextMapping {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 	}
 
-	@Test
+	@Test@Ignore
 	public void testRemoveCode() {
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		System.out.println("testRemoveCode()\n");

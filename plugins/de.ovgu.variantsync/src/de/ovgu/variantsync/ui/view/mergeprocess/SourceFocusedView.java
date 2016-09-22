@@ -330,6 +330,40 @@ public class SourceFocusedView extends SynchronizationView {
 		new Label(arg0, SWT.NONE);
 	}
 
+	protected void refreshSyncTargets(String fe, String project, String clazz, Collection<String> base,
+			Collection<String> left) {
+
+		boolean isAutoSyncPossible = false;
+		String[] autoItems = cc.getAutoSyncTargets(fe, project, clazz, base, left).toArray(new String[] {});
+		java.util.List<String> checkedItems = new ArrayList<String>();
+		for (String target : autoItems) {
+			if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
+				checkedItems.add(target);
+			}
+		}
+		autoSyncTargets.setItems(checkedItems.toArray(new String[] {}));
+		if (!checkedItems.isEmpty())
+			isAutoSyncPossible = true;
+
+		boolean isManualSyncPossible = false;
+		manualSyncTargetsAsList = cc.getConflictedSyncTargets(fe, selectedProject, selectedClass, base, left);
+		String[] manualItems = manualSyncTargetsAsList.toArray(new String[] {});
+		checkedItems = new ArrayList<String>();
+		for (String target : manualItems) {
+			if (!contextOperations.isAlreadySynchronized(fe, timestamp, selectedProject, target)) {
+				checkedItems.add(target);
+			}
+		}
+		manualSyncTargets.setItems(checkedItems.toArray(new String[] {}));
+		manualSyncTargetsAsList = checkedItems;
+		if (!checkedItems.isEmpty())
+			isManualSyncPossible = true;
+
+		if (!isAutoSyncPossible && !isManualSyncPossible) {
+			contextOperations.removeChange(fe, selectedProject, selectedClass, selectedChange, timestamp);
+		}
+	}
+
 	private void startBatchSync(String[] variantBatchSelection) {
 		for (String variant : variantBatchSelection) {
 			String[] classes = cc.getClasses(selectedFeatureExpression, variant).toArray(new String[] {});

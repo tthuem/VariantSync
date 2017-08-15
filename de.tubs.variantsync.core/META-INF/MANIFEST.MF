@@ -1,10 +1,20 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VariantSync Core
-Bundle-SymbolicName: de.tubs.variantsync.core
+Bundle-SymbolicName: de.tubs.variantsync.core;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: de.tubs.variantsync.core.CorePlugin
+Bundle-Activator: de.tubs.variantsync.core.VariantSyncPlugin
 Require-Bundle: org.eclipse.ui,
-  org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ de.ovgu.featureide.core,
+ de.ovgu.featureide.fm.core,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.text,
+ de.ovgu.featureide.fm.ui,
+ de.ovgu.featureide.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.jdt.launching
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

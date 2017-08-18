@@ -10,8 +10,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+
+import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
+import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.data.interfaces.IContext;
+import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
@@ -39,9 +45,9 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		if (!filterResource(project, res)) {
 			return false;
 		}
-//		if (!checkMembers(delta, project)) {
-//			return false;
-//		}
+		// if (!checkMembers(delta, project)) {
+		// return false;
+		// }
 		analyseDeltaType(delta);
 		return true;
 	}
@@ -79,22 +85,37 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @param flag
 	 */
 	private void handleAddedResource(IResourceDelta delta) {
-//		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
-//			ContextOperations contextOperations = ModuleFactory.getContextOperations();
-//			contextOperations.recordFileAdded(res.getProject().getName(), res.getProject().getLocation().toString(),
-//					Util.parsePackageNameFromResource(res), ((IFile) res).getName(), Util.getFileLines(res),
-//					res.getModificationStamp());
-//			if (contextOperations.getActiveFeatureContext() != null
-//					&& !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
-//				contextOperations.setBaseVersion((IFile) res);
-//			try {
-//				persistanceOperations.addAdminResource(res);
-//			} catch (FileOperationException e) {
-//				LogOperations.logError("Change file could not be created in admin folder.", e);
-//			}
-			LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-			//update();
-//		}
+		int flag = delta.getFlags();
+		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
+			IContext context = VariantSyncPlugin.getContext();
+			if (context.isActive() && context.isDefaultContextSelected()) {
+				// TODO: Add complete file to active context
+			}
+		}
+		LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(),
+				getFlagText(delta.getFlags())));
+		// if ((flag & IResourceDelta.MARKERS) == 0 || (flag &
+		// IResourceDelta.MOVED_FROM) != 0) {
+		// ContextOperations contextOperations = ModuleFactory.getContextOperations();
+		// contextOperations.recordFileAdded(res.getProject().getName(),
+		// res.getProject().getLocation().toString(),
+		// Util.parsePackageNameFromResource(res), ((IFile) res).getName(),
+		// Util.getFileLines(res),
+		// res.getModificationStamp());
+		// if (contextOperations.getActiveFeatureContext() != null
+		// &&
+		// !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
+		// contextOperations.setBaseVersion((IFile) res);
+		// try {
+		// persistanceOperations.addAdminResource(res);
+		// } catch (FileOperationException e) {
+		// LogOperations.logError("Change file could not be created in admin folder.",
+		// e);
+		// }
+		// LogOperations.logInfo(String.format("Resource %s was added with flag %s",
+		// delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
+		// update();
+		// }
 	}
 
 	/**
@@ -106,20 +127,32 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 *            resource delta
 	 */
 	private void handleRemovedResource(IResourceDelta delta) {
-		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-//		ContextOperations contextOperations = ModuleFactory.getContextOperations();
-//		contextOperations.recordFileRemoved(res.getProject().getName(), res.getProject().getLocation().toString(),
-//				Util.parsePackageNameFromResource(res), ((IFile) res).getName(), Util.getFileLines(res),
-//				res.getModificationStamp());
-//		if (contextOperations.getActiveFeatureContext() != null
-//				&& !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
-//			contextOperations.setBaseVersion((IFile) res);
-//		try {
-//			persistanceOperations.removeAdminFile(res);
-//		} catch (FileOperationException e) {
-//			LogOperations.logError("Change file could not be removed from admin folder.", e);
-//		}
-//		update();
+		int flag = delta.getFlags();
+		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
+			IContext context = VariantSyncPlugin.getContext();
+			if (context.isActive() && context.isDefaultContextSelected()) {
+				// TODO: Remove complete file to active context
+			}
+		}
+		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(),
+				getFlagText(delta.getFlags())));
+		// ContextOperations contextOperations = ModuleFactory.getContextOperations();
+		// contextOperations.recordFileRemoved(res.getProject().getName(),
+		// res.getProject().getLocation().toString(),
+		// Util.parsePackageNameFromResource(res), ((IFile) res).getName(),
+		// Util.getFileLines(res),
+		// res.getModificationStamp());
+		// if (contextOperations.getActiveFeatureContext() != null
+		// &&
+		// !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
+		// contextOperations.setBaseVersion((IFile) res);
+		// try {
+		// persistanceOperations.removeAdminFile(res);
+		// } catch (FileOperationException e) {
+		// LogOperations.logError("Change file could not be removed from admin folder.",
+		// e);
+		// }
+		// update();
 	}
 
 	/**
@@ -141,14 +174,30 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					Date d = new Date(t);
 					LogOperations
 							.logInfo(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(d) + "");
-					//deltaOperations.createPatch(res);
-					//update();
+					IContext context = VariantSyncPlugin.getContext();
+					try {
+						IPatch<?> patch;
+
+						if (context.isActive() && !context.isDefaultContextSelected()
+								&& context.getActualContextPatch() == null) {
+							patch = PatchFactoryManager.getInstance().getFactory().createPatch(file);
+						} else {
+							patch = PatchFactoryManager.getInstance().getFactory().createPatch(file, states[0]);
+						}
+						//TODO: Add patch to context
+						
+					} catch (PatchException ex) {
+						LogOperations.logError("Patch could not be created", ex);
+					} catch (NoSuchExtensionException ex) {
+						LogOperations.logError("PatchFactory Extension does not exist!", ex);
+					}
 				}
 			} catch (CoreException e) {
 				LogOperations.logError("File states could not be retrieved.", e);
 			}
-			LogOperations.logInfo(String.format("Resource %s was changed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-			//update();
+			LogOperations.logInfo(String.format("Resource %s was changed with flag %s",
+					delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
+			// update();
 		}
 	}
 
@@ -182,57 +231,31 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		return !(res.isDerived() || name.startsWith("."));
 	}
 
-//	/**
-//	 * Checks that delta does not result of adding or changing a file.
-//	 * 
-//	 * @param delta
-//	 *            the resource delta to check
-//	 * @param project
-//	 *            the project of delta
-//	 * @return true if delta does not result of adding or changing a file, otherwise
-//	 *         false
-//	 * @throws CoreException
-//	 *             project nature could not be proofed
-//	 */
-//	private boolean checkMembers(IResourceDelta delta, IProject project) throws CoreException {
-//		IResourceDelta openDelta = delta.findMember(new Path(".project"));
-//		if (openDelta != null
-//				&& (openDelta.getKind() == IResourceDelta.ADDED || openDelta.getKind() == IResourceDelta.CHANGED)) {
-//			if (project != null && project.hasNature(Variant.NATURE_ID)) {
-//				//update();
-//			}
-//			return false;
-//		}
-//		return true;
-//	}
-
 	// /**
-	// * Updates registered listeners that synchronize informations have changed.
+	// * Checks that delta does not result of adding or changing a file.
+	// *
+	// * @param delta
+	// * the resource delta to check
+	// * @param project
+	// * the project of delta
+	// * @return true if delta does not result of adding or changing a file,
+	// otherwise
+	// * false
+	// * @throws CoreException
+	// * project nature could not be proofed
 	// */
-	// private void update() {
-	// VariantSyncPlugin.getDefault().updateSynchroInfo();
-	// MonitorNotifier.getInstance().notifyViews();
-	// Display display = VariantSyncPlugin.getStandardDisplay();
-	// if (!display.isDisposed()) {
-	// display.asyncExec(new Runnable() {
-	// public void run() {
-	// IWorkbenchWindow window = PlatformUI.getWorkbench()
-	// .getActiveWorkbenchWindow();
-	// if (window == null) {
-	// return;
+	// private boolean checkMembers(IResourceDelta delta, IProject project) throws
+	// CoreException {
+	// IResourceDelta openDelta = delta.findMember(new Path(".project"));
+	// if (openDelta != null
+	// && (openDelta.getKind() == IResourceDelta.ADDED || openDelta.getKind() ==
+	// IResourceDelta.CHANGED)) {
+	// if (project != null && project.hasNature(Variant.NATURE_ID)) {
+	// //update();
 	// }
-	// IWorkbenchPage page = window.getActivePage();
-	// if (page == null) {
-	// return;
+	// return false;
 	// }
-	// if (page.findView(ResourceChangesView.ID) != null) {
-	// ((ResourceChangesView) page
-	// .findView(ResourceChangesView.ID))
-	// .refreshTree();
-	// }
-	// }
-	// });
-	// }
+	// return true;
 	// }
 
 	/**

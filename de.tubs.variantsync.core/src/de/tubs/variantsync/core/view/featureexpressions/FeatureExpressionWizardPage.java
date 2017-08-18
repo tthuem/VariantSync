@@ -180,10 +180,12 @@ public class FeatureExpressionWizardPage extends WizardPage {
 				Operator.NAMES);
 
 		expressionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		expressionText.setText(featureExpression.name);
+		if (featureExpression != null)
+			expressionText.setText(featureExpression.name);
 		expressionText.setMargins(10, 5, 3, 5);
 		expressionText.setPossibleWords(Functional.toSet(FeatureUtils.extractFeatureNames(features)));
-		expressionText.setBackground(ColorPalette.toSwtColor(featureExpression.highlighter));
+		if (featureExpression != null)
+			expressionText.setBackground(ColorPalette.toSwtColor(featureExpression.highlighter));
 
 		expressionText.addModifyListener(new ModifyListener() {
 			@Override
@@ -200,7 +202,8 @@ public class FeatureExpressionWizardPage extends WizardPage {
 			colors.add(color.getColorName());
 		}
 		colorBox.setItems(colors.toArray(new String[]{}));
-		colorBox.select(featureExpression.highlighter.ordinal());
+		if (featureExpression != null)
+			colorBox.select(featureExpression.highlighter.ordinal());
 		
 		colorBox.addSelectionListener(new SelectionListener() {
 			
@@ -215,7 +218,6 @@ public class FeatureExpressionWizardPage extends WizardPage {
 		});
 
 		setControl(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl(), "VariantSync.FeatureExpressionManager");
 	}
 	
 	public String getFeatureExpression() {

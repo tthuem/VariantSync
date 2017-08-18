@@ -13,6 +13,11 @@ import de.tubs.variantsync.core.data.interfaces.IContext;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.utilities.IEventListener;
+import de.tubs.variantsync.core.utilities.IEventManager;
+import de.tubs.variantsync.core.utilities.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
 
 public class Context implements IContext {
 
@@ -28,16 +33,22 @@ public class Context implements IContext {
 
 	private boolean isActive;
 
+	private IPatch<?> actualPatch = null;
+	
+	private List<IEventListener> listeners = new ArrayList<>(); 
+
 	public String getActualContext() {
 		return actualContext;
 	}
 
 	public void setActualContext(String actualContext) {
 		this.actualContext = actualContext;
+		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED));
 	}
 
 	public void setDefaultContext() {
 		this.actualContext = DEFAULT_CONTEXT_NAME;
+		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED));
 	}
 
 	public IFeatureProject getConfigurationProject() {
@@ -80,10 +91,12 @@ public class Context implements IContext {
 
 	public void addFeatureExpression(String featureExpression) {
 		this.featureExpressions.add(new FeatureExpression(featureExpression, FeatureColor.Yellow));
+		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED));
 	}
 
 	public void addFeatureExpression(String featureExpression, FeatureColor color) {
 		this.featureExpressions.add(new FeatureExpression(featureExpression, color));
+		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED));
 	}
 
 	public Iterable<IFeature> getFeatures() {
@@ -108,6 +121,11 @@ public class Context implements IContext {
 	@Override
 	public void setActive(boolean status) {
 		this.isActive = status;
+		if (isActive) {
+			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_START, null, getActualContext()));
+		} else {
+			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_STOP, getActualContext(), null));
+		}
 	}
 
 	@Override
@@ -120,8 +138,37 @@ public class Context implements IContext {
 	}
 
 	@Override
-	public boolean isDefaultContextActive() {
+	public boolean isDefaultContextSelected() {
 		return getActualContext().equals(DEFAULT_CONTEXT_NAME);
+	}
+
+	@Override
+	public IPatch<?> getActualContextPatch() {
+		return this.actualPatch;
+	}
+
+	@Override
+	public void setActualContextPatch(IPatch<?> patch) {
+		this.actualPatch = patch;
+	}
+
+	@Override
+	public void addListener(IEventListener listener) {
+		this.listeners.add(listener);
+		
+	}
+
+	@Override
+	public void fireEvent(VariantSyncEvent event) {
+		System.out.println(event);
+		for (IEventListener listener : listeners) {
+			listener.propertyChange(event);
+		}
+	}
+
+	@Override
+	public void removeListener(IEventListener listener) {
+		this.listeners.remove(listener);
 	}
 
 }

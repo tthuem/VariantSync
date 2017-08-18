@@ -18,11 +18,16 @@ import org.osgi.framework.BundleContext;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.core.internal.FeatureProject;
+import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
+import de.ovgu.featureide.fm.core.base.impl.EclipseFactoryWorkspaceProvider;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.interfaces.IContext;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
@@ -63,6 +68,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 		reinit();
 		
 		initResourceChangeListener();
+		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
 	}
 
 	/*

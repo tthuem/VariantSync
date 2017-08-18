@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="de.tubs.variantsync.patcher" name="Patcher" schema="schema/de.tubs.variantsync.patcher.exsd"/>
+   <extension-point id="de.tubs.variantsync.core.PatchFactory" name="PatchFactory" schema="schema/de.tubs.variantsync.core.patchfactory.exsd"/>
    <extension
          point="de.ovgu.featureide.core.composers">
       <composer
@@ -298,6 +298,20 @@
       <super
             type="de.ovgu.featureide.core.configurationProblemMarker">
       </super>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.tubs.variantsync.core.preferences.VariantSyncPerferencePage"
+            id="de.tubs.variantsync.core.preferences.VariantSyncPerferencePage"
+            name="VariantSync">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.tubs.variantsync.core.preferences.PreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

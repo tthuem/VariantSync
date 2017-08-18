@@ -8,8 +8,10 @@ import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.utilities.IEventManager;
 
-public interface IContext {
+public interface IContext extends IEventManager {
 	
 	public String getActualContext();
 
@@ -17,7 +19,7 @@ public interface IContext {
 	
 	public void setDefaultContext();
 	
-	public boolean isDefaultContextActive();
+	public boolean isDefaultContextSelected();
 	
 	public IFeatureProject getConfigurationProject();
 	
@@ -44,4 +46,8 @@ public interface IContext {
 	public void setActive(boolean status);
 	
 	public void reset();
+	
+	public IPatch<?> getActualContextPatch();
+	
+	public void setActualContextPatch(IPatch<?> patch);
 }

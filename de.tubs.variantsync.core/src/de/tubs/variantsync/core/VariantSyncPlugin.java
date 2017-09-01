@@ -1,33 +1,32 @@
 package de.tubs.variantsync.core;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IChangeListener;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.core.internal.FeatureProject;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
-import de.ovgu.featureide.fm.core.base.impl.EclipseFactoryWorkspaceProvider;
 import de.tubs.variantsync.core.data.Context;
-import de.tubs.variantsync.core.data.interfaces.IContext;
+import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
-import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
@@ -47,7 +46,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static VariantSyncPlugin plugin;
-	private static IContext context = null;
+	private static Context context = null;
 
 	/**
 	 * The constructor
@@ -64,8 +63,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	public void start(BundleContext ctxt) throws Exception {
 		super.start(ctxt);
 		plugin = this;
-		context = new Context();
-		reinit();
+		context = Persistence.loadContext(getConfigurationProject());
+		init();
 		
 		initResourceChangeListener();
 		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
@@ -79,6 +78,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		Persistence.writeContext(getContext());
+		Persistence.writeFeatureExpressions(getContext().getFeatureExpressions());
 		super.stop(context);
 	}
 
@@ -99,7 +100,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 		return PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
 	}
 
-	public static IContext getContext() {
+	public static Context getContext() {
 		if (context == null)
 			throw new NullPointerException("Context is not initialized!");
 		return context;
@@ -108,14 +109,14 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	/**
 	 * Loads all contexts which are saved in a XML-file.
 	 */
-	private void getConfigurationProject() {
+	private IFeatureProject getConfigurationProject() {
 		for (IProject project : getWorkspace().getProjects()) {
 			try {
 				if (project.hasNature("de.ovgu.featureide.core.featureProjectNature")) {
 					IFeatureProject featureProject = new FeatureProject(project);
 					if (featureProject.getComposerID().equals("de.tubs.variantsync.core.composer")) {
-						context.setConfigurationProject(featureProject);
 						LogOperations.logInfo("Found configuration project with name: " + project.getName());
+						return featureProject;
 					}
 					break;
 				}
@@ -123,6 +124,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 				e.printStackTrace();
 			}
 		}
+		return null;
 	}
 
 	public void loadVariants() {
@@ -151,13 +153,19 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	public void loadFeatureExpressions() {
 		if (context.getConfigurationProject() != null) {
-			if (context.getFeatureExpressions().isEmpty()) {
+			List<FeatureExpression> expressions = Persistence.loadFeatureExpressions();
+			if (expressions.isEmpty()) {
 				try {
 					context.importFeaturesFromModel();
+					LogOperations.logInfo("Loaded feature expressions from feature model");
 				} catch (ProjectNotFoundException e) {
 					System.out.println(e.toString());
 				}
+			} else {
+				context.setFeatureExpressions(expressions);
 			}
+			
+			
 			// TODO
 			// context.setFeatureExpressions(Persistence.loadFeatureExpression(
 			// configurationProject.getProject().getFile(FEATUREEXPRESSION_PATH).getFullPath().toOSString()));
@@ -175,11 +183,15 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 		}
 	}
 
-	public void reinit() {
-		getContext().reset();
+	public void init() {
 		getConfigurationProject();
 		loadVariants();
 		loadFeatureExpressions();
+	}
+	
+	public void reinit() {
+		getContext().reset();
+		init();
 	}
 
 	public static void addNature(IProject project) {

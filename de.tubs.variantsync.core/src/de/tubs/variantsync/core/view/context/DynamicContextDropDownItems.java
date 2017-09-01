@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;

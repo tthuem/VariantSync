@@ -40,6 +40,7 @@ public class VariantSyncPerferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
+	@SuppressWarnings("rawtypes")
 	public void createFieldEditors() {
 		List<IPatchFactory> factories = PatchFactoryManager.getInstance().getExtensions();
 		String[][] strings = new String[factories.size()][2];

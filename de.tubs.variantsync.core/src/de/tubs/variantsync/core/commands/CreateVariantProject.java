@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -19,7 +20,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class CreateVariantProject extends AbstractHandler {
 
@@ -42,12 +46,21 @@ public class CreateVariantProject extends AbstractHandler {
 				projectName = projectName.substring(0, projectName.lastIndexOf("."));
 
 				createJavaProjectWithVariantNature(projectName);
+				
+				// Remove all markers from the configuration project
+				try {
+					MarkerHandler.getInstance().cleanProject(resource.getProject());
+				} catch (CoreException e) {
+					LogOperations.logError("Cleaning project "+ resource.getProject().getName() + " was not possible", e);
+				}
+				// Reinitalize All
+				VariantSyncPlugin.getDefault().reinit();
 			}
 		}
 		return null;
 	}
 
-	private void createJavaProjectWithVariantNature(String projectName) {
+	private IProject createJavaProjectWithVariantNature(String projectName) {
 		// create project
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(projectName);
@@ -80,6 +93,7 @@ public class CreateVariantProject extends AbstractHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return project;
 	}
 	
 }

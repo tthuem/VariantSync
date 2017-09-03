@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.interfaces.IContext;
+import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
@@ -87,7 +87,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	private void handleAddedResource(IResourceDelta delta) {
 		int flag = delta.getFlags();
 		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
-			IContext context = VariantSyncPlugin.getContext();
+			Context context = VariantSyncPlugin.getContext();
 			if (context.isActive() && context.isDefaultContextSelected()) {
 				// TODO: Add complete file to active context
 			}
@@ -129,7 +129,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	private void handleRemovedResource(IResourceDelta delta) {
 		int flag = delta.getFlags();
 		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
-			IContext context = VariantSyncPlugin.getContext();
+			Context context = VariantSyncPlugin.getContext();
 			if (context.isActive() && context.isDefaultContextSelected()) {
 				// TODO: Remove complete file to active context
 			}
@@ -174,7 +174,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					Date d = new Date(t);
 					LogOperations
 							.logInfo(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(d) + "");
-					IContext context = VariantSyncPlugin.getContext();
+					Context context = VariantSyncPlugin.getContext();
 					try {
 						IPatch<?> patch;
 

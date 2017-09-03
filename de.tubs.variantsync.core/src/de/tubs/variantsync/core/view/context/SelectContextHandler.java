@@ -1,27 +1,11 @@
 package de.tubs.variantsync.core.view.context;
 
-import java.util.Map;
-
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.AbstractHandlerWithState;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.INamedHandleStateIds;
-import org.eclipse.core.commands.State;
-import org.eclipse.jdt.core.eval.IEvaluationContext;
-import org.eclipse.jdt.internal.compiler.ast.ExpressionContext;
 import org.eclipse.jface.menus.IMenuStateIds;
 import org.eclipse.jface.menus.TextState;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.commands.IElementUpdater;
-import org.eclipse.ui.contexts.IContext;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.menus.UIElement;
-import org.eclipse.ui.services.IServiceScopes;
-
 import de.tubs.variantsync.core.VariantSyncPlugin;
 
 /**

@@ -9,17 +9,15 @@ import org.eclipse.core.runtime.CoreException;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
-import de.tubs.variantsync.core.data.interfaces.IContext;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.IEventListener;
-import de.tubs.variantsync.core.utilities.IEventManager;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
 
-public class Context implements IContext {
+public class Context {
 
 	public static final String DEFAULT_CONTEXT_NAME = "Default";
 
@@ -103,7 +101,6 @@ public class Context implements IContext {
 		return configurationProject.getFeatureModel().getFeatures();
 	}
 
-	@Override
 	public void importFeaturesFromModel() throws ProjectNotFoundException {
 		if (configurationProject != null) {
 			for (IFeature feature : getFeatures()) {
@@ -113,12 +110,10 @@ public class Context implements IContext {
 			throw new ProjectNotFoundException(Type.CONFIGURATION);
 	}
 
-	@Override
 	public boolean isActive() {
 		return this.isActive;
 	}
 
-	@Override
 	public void setActive(boolean status) {
 		this.isActive = status;
 		if (isActive) {
@@ -128,7 +123,6 @@ public class Context implements IContext {
 		}
 	}
 
-	@Override
 	public void reset() {
 		actualContext = DEFAULT_CONTEXT_NAME;
 		configurationProject = null;
@@ -137,28 +131,23 @@ public class Context implements IContext {
 		isActive = false;
 	}
 
-	@Override
 	public boolean isDefaultContextSelected() {
 		return getActualContext().equals(DEFAULT_CONTEXT_NAME);
 	}
 
-	@Override
 	public IPatch<?> getActualContextPatch() {
 		return this.actualPatch;
 	}
 
-	@Override
 	public void setActualContextPatch(IPatch<?> patch) {
 		this.actualPatch = patch;
 	}
 
-	@Override
 	public void addListener(IEventListener listener) {
 		this.listeners.add(listener);
 		
 	}
 
-	@Override
 	public void fireEvent(VariantSyncEvent event) {
 		System.out.println(event);
 		for (IEventListener listener : listeners) {
@@ -166,7 +155,6 @@ public class Context implements IContext {
 		}
 	}
 
-	@Override
 	public void removeListener(IEventListener listener) {
 		this.listeners.remove(listener);
 	}

@@ -5,7 +5,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
-import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 
 /**
  * Class used to initialize default preference values.

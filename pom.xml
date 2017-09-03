@@ -180,7 +180,8 @@
 		</repository>
 		<repository>
 			<id>featureide</id>
-			<url>http://featureide.cs.ovgu.de/update/v3/</url>
+			<url>http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide/nightly/p2-updateSite/</url>
+			<!-- <url>http://featureide.cs.ovgu.de/update/v3/</url> -->
 			<layout>p2</layout>
 		</repository>
 	</repositories>

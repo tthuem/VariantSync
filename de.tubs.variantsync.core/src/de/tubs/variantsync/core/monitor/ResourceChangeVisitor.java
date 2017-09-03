@@ -177,7 +177,6 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					Context context = VariantSyncPlugin.getContext();
 					try {
 						IPatch<?> patch;
-
 						if (context.isActive() && !context.isDefaultContextSelected()
 								&& context.getActualContextPatch() == null) {
 							patch = PatchFactoryManager.getInstance().getFactory().createPatch(file);

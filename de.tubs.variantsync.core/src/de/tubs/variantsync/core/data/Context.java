@@ -1,6 +1,7 @@
 package de.tubs.variantsync.core.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -16,6 +17,7 @@ import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.IEventListener;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
+import guidsl.pattern;
 
 public class Context {
 
@@ -55,6 +57,7 @@ public class Context {
 
 	public void setConfigurationProject(IFeatureProject configurationProject) {
 		this.configurationProject = configurationProject;
+		fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_SET));
 	}
 
 	public List<IProject> getProjects() {
@@ -157,6 +160,14 @@ public class Context {
 
 	public void removeListener(IEventListener listener) {
 		this.listeners.remove(listener);
+	}
+
+	public HashMap<IProject,List<IPatch<?>>> getPatches() {
+		HashMap<IProject,List<IPatch<?>>> map = new HashMap<>();
+		List<IPatch<?>> patches = new ArrayList<>();
+		if (configurationProject!=null)
+			map.put(configurationProject.getProject(), patches);
+		return map;
 	}
 
 }

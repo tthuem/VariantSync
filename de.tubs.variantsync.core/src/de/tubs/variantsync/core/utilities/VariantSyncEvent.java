@@ -63,7 +63,23 @@ public class VariantSyncEvent {
 		/**
 		 * Recording was stopped
 		 */
-		CONTEXT_RECORDING_STOP
+		CONTEXT_RECORDING_STOP,
+		/**
+		 * The actual patch was changed
+		 */
+		PATCH_CHANGED,
+		/**
+		 * A new patch has been opened
+		 */
+		PATCH_ADDED,
+		/**
+		 * A patch has been closed
+		 */
+		PATCH_CLOSED,
+		/**
+		 * A configuration project is setted
+		 */
+		CONFIGURATIONPROJECT_SET
 	}
 	
 	static VariantSyncEvent[] defaultEvents = new VariantSyncEvent[EventType.values().length];

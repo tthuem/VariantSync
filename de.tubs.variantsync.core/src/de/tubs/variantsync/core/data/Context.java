@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
@@ -14,6 +15,7 @@ import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.IEventListener;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
@@ -34,30 +36,37 @@ public class Context {
 	private boolean isActive;
 
 	private IPatch<?> actualPatch = null;
-	
-	private List<IEventListener> listeners = new ArrayList<>(); 
+
+	private List<IPatch<?>> patches = new ArrayList<IPatch<?>>();
+
+	private List<IEventListener> listeners = new ArrayList<>();
+
+	private HashMap<IProject, List<SourceFile>> codeMappings = new HashMap<>();
 
 	public String getActualContext() {
 		return actualContext;
 	}
 
 	public void setActualContext(String actualContext) {
+		String oldContext = this.actualContext;
 		this.actualContext = actualContext;
-		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED));
+		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED, oldContext, actualContext));
 	}
 
 	public void setDefaultContext() {
+		String oldContext = this.actualContext;
 		this.actualContext = DEFAULT_CONTEXT_NAME;
-		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED));
+		fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_CHANGED, oldContext, actualContext));
 	}
 
 	public IFeatureProject getConfigurationProject() {
-		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null : null;
+		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null
+				: null;
 	}
 
 	public void setConfigurationProject(IFeatureProject configurationProject) {
 		this.configurationProject = configurationProject;
-		fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_SET));
+		fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_SET, null, configurationProject));
 	}
 
 	public List<IProject> getProjects() {
@@ -91,13 +100,15 @@ public class Context {
 	}
 
 	public void addFeatureExpression(String featureExpression) {
-		this.featureExpressions.add(new FeatureExpression(featureExpression, FeatureColor.Yellow));
-		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED));
+		FeatureExpression fe = new FeatureExpression(featureExpression, FeatureColor.Yellow);
+		this.featureExpressions.add(fe);
+		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED, null, fe));
 	}
 
 	public void addFeatureExpression(String featureExpression, FeatureColor color) {
-		this.featureExpressions.add(new FeatureExpression(featureExpression, color));
-		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED));
+		FeatureExpression fe = new FeatureExpression(featureExpression, color);
+		this.featureExpressions.add(fe);
+		fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED, null, fe));
 	}
 
 	public Iterable<IFeature> getFeatures() {
@@ -107,7 +118,9 @@ public class Context {
 	public void importFeaturesFromModel() throws ProjectNotFoundException {
 		if (configurationProject != null) {
 			for (IFeature feature : getFeatures()) {
-				featureExpressions.add(new FeatureExpression(feature.getName()));
+				FeatureExpression fe = new FeatureExpression(feature.getName());
+				if (!featureExpressions.contains(fe))
+					featureExpressions.add(fe);
 			}
 		} else
 			throw new ProjectNotFoundException(Type.CONFIGURATION);
@@ -148,7 +161,7 @@ public class Context {
 
 	public void addListener(IEventListener listener) {
 		this.listeners.add(listener);
-		
+
 	}
 
 	public void fireEvent(VariantSyncEvent event) {
@@ -162,12 +175,47 @@ public class Context {
 		this.listeners.remove(listener);
 	}
 
-	public HashMap<IProject,List<IPatch<?>>> getPatches() {
-		HashMap<IProject,List<IPatch<?>>> map = new HashMap<>();
-		List<IPatch<?>> patches = new ArrayList<>();
-		if (configurationProject!=null)
-			map.put(configurationProject.getProject(), patches);
-		return map;
+	public List<IPatch<?>> getPatches() {
+		return patches;
+	}
+
+	public List<CodeLine> getMapping(IFile file) {
+		if (codeMappings.containsKey(file.getProject()))
+		for (SourceFile sf : codeMappings.get(file.getProject())) {
+			if (sf.getResource().getFullPath().equals(file.getFullPath())) {
+				return sf.getCodeLines();
+			}
+		}
+		return null;
+	}
+
+	public FeatureExpression getFeatureExpression(String name) {
+		for (FeatureExpression fe : getFeatureExpressions()) {
+			if (fe.name.equals(name)) {
+				return fe;
+			}
+		}
+		return null;
+	}
+
+	public HashMap<IProject, List<SourceFile>> getCodeMappings() {
+		return codeMappings;
+	}
+
+	public void setCodeMappings(HashMap<IProject, List<SourceFile>> codeMappings) {
+		this.codeMappings = codeMappings;
+	}
+
+	public void addCodeMapping(IProject project, List<SourceFile> files) {
+		this.codeMappings.put(project, files);
+	}
+
+	public void addCodeMapping(IFile file, SourceFile sourceFile) {
+		for (SourceFile sf : codeMappings.get(file.getProject())) {
+			if (sf.getResource().getFullPath().equals(file.getFullPath())) {
+				sf = sourceFile;
+			}
+		}
 	}
 
 }

@@ -1,18 +1,13 @@
 package de.tubs.variantsync.core.patch;
 
-import java.util.List;
-
 import de.ovgu.featureide.fm.core.CoreExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
-import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
-import de.ovgu.featureide.fm.core.base.impl.CoreFactoryWorkspaceProvider;
-import de.ovgu.featureide.fm.core.base.impl.FactoryWorkspace;
-import de.ovgu.featureide.fm.core.base.impl.IFactoryWorkspaceProvider;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.preferences.PreferenceConstants;
 
+@SuppressWarnings("rawtypes")
 public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 
 	private static PatchFactoryManager instance = new PatchFactoryManager();

@@ -3,10 +3,13 @@ package de.tubs.variantsync.core.view.context;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.HandlerEvent;
 import org.eclipse.core.commands.INamedHandleStateIds;
 import org.eclipse.jface.menus.IMenuStateIds;
 import org.eclipse.jface.menus.TextState;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.utilities.IEventListener;
+import de.tubs.variantsync.core.utilities.VariantSyncEvent;
 
 /**
  * 

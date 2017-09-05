@@ -5,6 +5,7 @@ import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IResource;
 
 import de.tubs.variantsync.core.exceptions.PatchException;
+import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import difflib.Chunk;
@@ -41,37 +42,47 @@ public class DefaultPatchFactory<Chunk> implements IPatchFactory<Chunk> {
 		return "DefaultPatchFactory [getId()=" + getId() + ", getName()=" + getName() + "]";
 	}
 
+
 	@Override
-	public IFile applyPatch(IFile res, IPatch<Chunk> patch) {
-		
+	public IPatch<Chunk> createPatch(String context) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public IFile reversePatch(IFile res, IPatch<Chunk> patch) {
-		
+	public IDelta<Chunk> createDelta(IResource res, long timestamp) throws PatchException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public boolean verifyPatch(IFile res, IPatch<Chunk> patch) {
-		
+	public IDelta<Chunk> createDelta(IResource res, IFileState oldState, long timestamp) throws PatchException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IFile applyDelta(IFile res, IDelta<Chunk> patch) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public IFile reverseDelta(IFile res, IDelta<Chunk> patch) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean verifyDelta(IFile res, IDelta<Chunk> patch) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 
-	@Override
-	public IPatch<Chunk> createPatch(IResource res) throws PatchException {
-		
-		return null;
-	}
-
-
-	@Override
-	public IPatch<Chunk> createPatch(IResource res, IFileState oldState) throws PatchException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -1,5 +1,11 @@
 package de.tubs.variantsync.core.patch.interfaces;
 
+import java.util.List;
+
+import org.eclipse.core.resources.IResource;
+
+import de.tubs.variantsync.core.data.CodeLine;
+
 /**
  * 
  * 
@@ -23,29 +29,54 @@ public interface IDelta<T> {
         INSERT
     }
     
+    
     /**
      * Returns original delta
      * @return T - original delta
      */
-    T getOriginal();
+    List<CodeLine> getOriginal();
     
     /**
      * Sets orginal delta
      * @param original - original delta
      */
-    void setOriginal(T original);
+    void setOriginal(List<CodeLine> original);
+    
+    /**
+     * Sets orginal delta
+     * @param original - original delta
+     */
+    void setOriginalFromLines(List<String> original);
     
     /**
      * Returns revised delta
      * @return T - revised delta
      */
-    T getRevised();
+    List<CodeLine> getRevised();
     
     /**
      * Sets revised delta
      * @param revised - revised delta
      */
-    void setRevised(T revised);
+    void setRevised(List<CodeLine> revised);
+    
+    /**
+     * Sets revised delta
+     * @param revised - revised delta
+     */
+    void setRevisedFromLines(List<String> revised);
+    
+    /**
+     * 
+     * @return
+     */
+    T getDelta();
+    
+    /**
+     * 
+     * @param delta
+     */
+    void setDelta(T delta);
     
     /**
      * Returns delta type
@@ -58,4 +89,29 @@ public interface IDelta<T> {
      * @param type - type
      */
     void setType(TYPE type);
+    
+    /**
+     * Returns resource
+     */
+    IResource getResource();
+    
+    /**
+     * 
+     * @return
+     */
+    boolean isSynchronized();
+    
+    /**
+     * 
+     * @param isSynchronized
+     */
+    void setSynchronized(boolean isSynchronized);
+    
+    /**
+     * 
+     * @return
+     */
+    long getTimestamp();
+    
+    List<CodeLine> getCodeLines();
 }

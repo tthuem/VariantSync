@@ -13,7 +13,7 @@
       </composer>
    </extension>
    <extension
-         id="de.tubs.variantsync.marker.highlighter"
+         id="de.tubs.variantsync.marker.highlighter.red"
          name="Highlighter"
          point="org.eclipse.core.resources.markers">
       <super
@@ -22,12 +22,149 @@
       <super
             type="org.eclipse.core.resources.marker">
       </super>
-      <attribute
-            name="description">
-      </attribute>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.orange"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.yellow"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.darkgreen"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.lightgreen"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.cyan"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.blue"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.margenta"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.pink"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.highlighter.lightgrey"
+         name="Highlighter"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.textmarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.marker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.marker.error"
+         name="VariantSync Error"
+         point="org.eclipse.core.resources.markers">
       <persistent
             value="false">
       </persistent>
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <super
+            type="de.ovgu.featureide.core.configurationProblemMarker">
+      </super>
    </extension>
    <extension
          id="variant"
@@ -156,6 +293,30 @@
                id="de.tubs.variantsync.core.menu.context.items">
          </dynamic>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="icons/VariantSyncSupport.png"
+               label="Map Selection To Feature">
+            <dynamic
+                  class="de.tubs.variantsync.core.view.context.DynamicContextPopupItems"
+                  id="de.tubs.variantsync.core.menu.context.items.manually">
+            </dynamic>
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.eclipse.jface.text.ITextSelection">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -214,6 +375,12 @@
             defaultHandler="de.tubs.variantsync.core.commands.CreateVariantProject"
             id="de.tubs.variantsync.core.command.create.variant"
             name="Create Variant Project">
+      </command>
+      <command
+            categoryId="de.tubs.variantsync.core.category"
+            defaultHandler="de.tubs.variantsync.core.commands.SetContextManually"
+            id="de.tubs.variantsync.core.command.context.manually"
+            name="Set Feature To ...">
       </command>
    </extension>
    <extension
@@ -286,20 +453,6 @@
       </definition>
    </extension>
    <extension
-         id="de.tubs.variantsync.marker.error"
-         name="VariantSync Error"
-         point="org.eclipse.core.resources.markers">
-      <persistent
-            value="false">
-      </persistent>
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <super
-            type="de.ovgu.featureide.core.configurationProblemMarker">
-      </super>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="de.tubs.variantsync.core.preferences.VariantSyncPerferencePage"
@@ -312,6 +465,253 @@
       <initializer
             class="de.tubs.variantsync.core.preferences.PreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         id="de.tubs.variantsync.core.highlighter.annotation"
+         point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.red"
+        colorPreferenceKey="cpkRED"
+        colorPreferenceValue="255, 175, 177"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkRED"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Red"
+        overviewRulerPreferenceKey="orpkRED"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkRED"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkRED"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkRED"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.orange"
+        colorPreferenceKey="cpkORANGE"
+        colorPreferenceValue="255, 216, 166"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkORANGE"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Orange"
+        overviewRulerPreferenceKey="orpkORANGE"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkORANGE"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkORANGE"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkORANGE"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.yellow"
+        colorPreferenceKey="cpkYELLOW"
+        colorPreferenceValue="237, 255, 166"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkYELLOW"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Yellow"
+        overviewRulerPreferenceKey="orpkYELLOW"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkYELLOW"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkYELLOW"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkYELLOW"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.darkgreen"
+        colorPreferenceKey="cpkDARKGREEN"
+        colorPreferenceValue="164, 228, 148"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkDARKGREEN"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_DarkGreen"
+        overviewRulerPreferenceKey="orpkDARKGREEN"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkDARKGREEN"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkDARKGREEN"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkDARKGREEN"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.lightgreen"
+        colorPreferenceKey="cpkLIGHTGREEN"
+        colorPreferenceValue="166, 255, 201"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkLIGHTGREEN"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_LightGreen"
+        overviewRulerPreferenceKey="orpkLIGHTGREEN"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkLIGHTGREEN"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkLIGHTGREEN"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkLIGHTGREEN"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.cyan"
+        colorPreferenceKey="cpkCYAN"
+        colorPreferenceValue="163, 251, 251"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkCYAN"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Cyan"
+        overviewRulerPreferenceKey="orpkCYAN"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkCYAN"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkCYAN"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkCYAN"
+        verticalRulerPreferenceValue="true">
+		</specification>
+  <specification
+        annotationType="de.tubs.variantsync.marker.annotations.blue"
+        colorPreferenceKey="cpkBLUE"
+        colorPreferenceValue="164, 148, 228"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkBLUE"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Blue"
+        overviewRulerPreferenceKey="orpkBLUE"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkBLUE"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkBLUE"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkBLUE"
+        verticalRulerPreferenceValue="true">
+  </specification>
+  		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.margenta"
+        colorPreferenceKey="cpkMARGENTA"
+        colorPreferenceValue="240, 166, 255"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkMARGENTA"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Margenta"
+        overviewRulerPreferenceKey="orpkMARGENTA"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkMARGENTA"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkMARGENTA"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkMARGENTA"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.pink"
+        colorPreferenceKey="cpkPINK"
+        colorPreferenceValue="228, 148, 194"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkPINK"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_Pink"
+        overviewRulerPreferenceKey="orpkPINK"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkPINK"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkPINK"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkPINK"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		<specification
+        annotationType="de.tubs.variantsync.marker.annotations.lightgrey"
+        colorPreferenceKey="cpkLIGHTGREY"
+        colorPreferenceValue="228, 228, 228"
+        contributesToHeader="false"
+        highlightPreferenceKey="hpkLIGHTGREY"
+        highlightPreferenceValue="true"
+        icon="icons/VariantSyncSupport.png"
+        includeOnPreferencePage="false"
+        label="ColorAnnotation_LightGrey"
+        overviewRulerPreferenceKey="orpkLIGHTGREY"
+        overviewRulerPreferenceValue="true"
+        textPreferenceKey="tpkLIGHTGREY"
+        textPreferenceValue="true"
+        textStylePreferenceKey="tspkLIGHTGREY"
+        textStylePreferenceValue="BOX"
+        verticalRulerPreferenceKey="vrpkLIGHTGREY"
+        verticalRulerPreferenceValue="true">
+		</specification>
+		</extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.red"
+            name="de.tubs.variantsync.marker.annotations.red"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.orange"
+            name="de.tubs.variantsync.marker.annotations.orange"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.yellow"
+            name="de.tubs.variantsync.marker.annotations.yellow"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.darkgreen"
+            name="de.tubs.variantsync.marker.annotations.darkgreen"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.lightgreen"
+            name="de.tubs.variantsync.marker.annotations.lightgreen"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.cyan"
+            name="de.tubs.variantsync.marker.annotations.cyan"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.blue"
+            name="de.tubs.variantsync.marker.annotations.blue"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.margenta"
+            name="de.tubs.variantsync.marker.annotations.margenta"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.pink"
+            name="de.tubs.variantsync.marker.annotations.pink"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
+      <type
+            markerType="de.tubs.variantsync.marker.highlighter.lightgrey"
+            name="de.tubs.variantsync.marker.annotations.lightgrey"
+            super="org.eclipse.ui.workbench.texteditor.info">
+      </type>
    </extension>
 
 </plugin>

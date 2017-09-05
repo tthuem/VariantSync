@@ -4,11 +4,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.io.manager.FileHandler;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.data.SourceFile;
 
 
 /**
@@ -59,6 +62,28 @@ public class Persistence {
 	 */
 	public static void writeContext(Context context) {
 		FileHandler.save(Paths.get(VariantSyncPlugin.getContext().getConfigurationProject().getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context, new ContextFormat());
+	}
+	
+	/**
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public static List<SourceFile> loadCodeMapping(IProject project) {
+		List<SourceFile> sourceFiles = new ArrayList<>();
+		if (project != null) {
+			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat());
+		}
+		return sourceFiles;
+	}
+
+	/**
+	 * Saves all feature expressions
+	 * @param context
+	 * @param filename
+	 */
+	public static void writeCodeMapping(IProject project, List<SourceFile> sourceFiles) {
+		FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat());
 	}
 	
 }

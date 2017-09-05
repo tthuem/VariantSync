@@ -17,8 +17,12 @@ import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
+import de.tubs.variantsync.core.utilities.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
 
 /**
  * Visits given resource delta and reacts on added, removed or changed resource
@@ -32,6 +36,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
  * @version 1.1
  * @since 15.05.2015
  */
+@SuppressWarnings("rawtypes")
 class ResourceChangeVisitor implements IResourceDeltaVisitor {
 
 	/**
@@ -42,6 +47,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource res = delta.getResource();
 		IProject project = res.getProject();
+		
 		if (!filterResource(project, res)) {
 			return false;
 		}
@@ -85,11 +91,25 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @param flag
 	 */
 	private void handleAddedResource(IResourceDelta delta) {
-		int flag = delta.getFlags();
-		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
+		if (delta.getResource().getType() == IResource.FILE && ((delta.getFlags() & IResourceDelta.MARKERS) == 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
+			IFile file = (IFile) delta.getResource();
 			Context context = VariantSyncPlugin.getContext();
-			if (context.isActive() && context.isDefaultContextSelected()) {
-				// TODO: Add complete file to active context
+			try {
+				if (context.isActive() && !context.isDefaultContextSelected()) {
+					IPatchFactory factory = PatchFactoryManager.getInstance().getFactory();
+					IPatch patch;
+					if (context.getActualContextPatch() == null) {
+						patch = factory.createPatch(context.getActualContext());
+					} else {
+						patch = context.getActualContextPatch();
+					}
+					patch.addDelta(factory.createDelta(file, file.getModificationStamp()));
+					context.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+				}
+			} catch (PatchException ex) {
+				LogOperations.logError("Patch could not be created", ex);
+			} catch (NoSuchExtensionException ex) {
+				LogOperations.logError("PatchFactory Extension does not exist!", ex);
 			}
 		}
 		LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(),
@@ -127,11 +147,25 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 *            resource delta
 	 */
 	private void handleRemovedResource(IResourceDelta delta) {
-		int flag = delta.getFlags();
-		if ((flag & IResourceDelta.MARKERS) == 0 || (flag & IResourceDelta.MOVED_FROM) != 0) {
+		if (delta.getResource().getType() == IResource.FILE && ((delta.getFlags() & IResourceDelta.MARKERS) == 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
+			IFile file = (IFile) delta.getResource();
 			Context context = VariantSyncPlugin.getContext();
-			if (context.isActive() && context.isDefaultContextSelected()) {
-				// TODO: Remove complete file to active context
+			try {
+				if (context.isActive() && !context.isDefaultContextSelected()) {
+					IPatchFactory factory = PatchFactoryManager.getInstance().getFactory();
+					IPatch patch;
+					if (context.getActualContextPatch() == null) {
+						patch = factory.createPatch(context.getActualContext());
+					} else {
+						patch = context.getActualContextPatch();
+					}
+					patch.addDelta(factory.createDelta(file, file.getModificationStamp()));
+					context.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+				}
+			} catch (PatchException ex) {
+				LogOperations.logError("Patch could not be created", ex);
+			} catch (NoSuchExtensionException ex) {
+				LogOperations.logError("PatchFactory Extension does not exist!", ex);
 			}
 		}
 		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(),
@@ -171,20 +205,20 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				states = file.getHistory(null);
 				if (states.length > 0) {
 					long t = states[0].getModificationTime();
-					Date d = new Date(t);
-					LogOperations
-							.logInfo(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(d) + "");
+
 					Context context = VariantSyncPlugin.getContext();
 					try {
-						IPatch<?> patch;
-						if (context.isActive() && !context.isDefaultContextSelected()
-								&& context.getActualContextPatch() == null) {
-							patch = PatchFactoryManager.getInstance().getFactory().createPatch(file);
-						} else {
-							patch = PatchFactoryManager.getInstance().getFactory().createPatch(file, states[0]);
+						if (context.isActive() && !context.isDefaultContextSelected()) {
+							IPatchFactory factory = PatchFactoryManager.getInstance().getFactory();
+							IPatch patch;
+							if (context.getActualContextPatch() == null) {
+								patch = factory.createPatch(context.getActualContext());
+							} else {
+								patch = context.getActualContextPatch();
+							}
+							patch.addDelta(factory.createDelta(file, states[0], t));
+							context.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 						}
-						//TODO: Add patch to context
-						
 					} catch (PatchException ex) {
 						LogOperations.logError("Patch could not be created", ex);
 					} catch (NoSuchExtensionException ex) {
@@ -206,6 +240,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * <li>project has nature support</li>
 	 * <li>project is open</li>
 	 * <li>resource still exists</li>
+	 * <li>resource is a file</li>
 	 * <li>resource starts not with \".\"</li>
 	 * </ul>
 	 * 

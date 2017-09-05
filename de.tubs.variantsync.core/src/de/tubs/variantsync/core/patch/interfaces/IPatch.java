@@ -31,9 +31,58 @@ public interface IPatch<T> {
 	List<IDelta<T>> getDeltas();
 	
 	/**
-	 * Returns a visualization for this patch
-	 * @return a string visualization
+	 * Removes the given delta from this patch
+	 * @param delta
+	 * @return true when the element has exist and is now removed
 	 */
-	String toString();
+	boolean removeDelta(IDelta<T> delta);
+	
+	/**
+	 * Returns the number of elements
+	 * @return the number of elements
+	 */
+	int size();
+	
+	/**
+	 * Returns whether the list of deltas is empty
+	 * @return true if the list is empty
+	 */
+	boolean isEmpty();
+	
+	/**
+	 * Returns the timestamp from the start of this patch
+	 * @return timestamp
+	 */
+	long getStartTime();
+	
+	/**
+	 * 
+	 * @param timestamp
+	 */
+	void setStartTime(long timestamp);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	long getEndTime();
+	
+	/**
+	 * 
+	 * @param timestamp
+	 */
+	void setEndTime(long timestamp);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	String getContext();
+	
+	/**
+	 * 
+	 * @param context
+	 */
+	void setContext(String context);
 	
 }

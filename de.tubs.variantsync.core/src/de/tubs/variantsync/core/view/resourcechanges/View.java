@@ -38,7 +38,7 @@ public class View extends ViewPart implements IEventListener {
 		viewer.setContentProvider(new ResourceChangesTreeContentProvider());
 		viewer.setLabelProvider(new ResourceChangesTreeLabelProvider());
 		
-		HashMap<IProject, List<IPatch<?>>> patches = VariantSyncPlugin.getContext().getPatches();
+		List<IPatch<?>> patches = VariantSyncPlugin.getContext().getPatches();
 		
 		//if (patches!=null) viewer.setInput(patches);
 

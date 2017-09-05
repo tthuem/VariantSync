@@ -23,12 +23,14 @@ public interface IPatchFactory<T> extends IExtension {
 	
 	String getName();
 	
+	IPatch<T> createPatch(String context);
+	
 	/**
 	 * Creates a empty patch object for a resource
 	 * 
 	 * @param res - resource
 	 */
-	IPatch<T> createPatch(IResource res) throws PatchException;
+	IDelta<T> createDelta(IResource res, long timestamp) throws PatchException;
 
 	/**
 	 * Creates patch object from a changed resource.
@@ -37,7 +39,7 @@ public interface IPatchFactory<T> extends IExtension {
 	 * @param oldState - last history state
 	 * @return patch object
 	 */
-	IPatch<T> createPatch(IResource res, IFileState oldState) throws PatchException;
+	IDelta<T> createDelta(IResource res, IFileState oldState, long timestamp) throws PatchException;
 	
 	/**
 	 * Patches a resource with a given patch.
@@ -46,7 +48,7 @@ public interface IPatchFactory<T> extends IExtension {
 	 * @param patch - patch
 	 * @return patched temp resource
 	 */
-	IFile applyPatch(IFile res, IPatch<T> patch);
+	IFile applyDelta(IFile res, IDelta<T> patch);
 	
 	/**
 	 * Unpatches a revised resource for a given patch.
@@ -55,7 +57,7 @@ public interface IPatchFactory<T> extends IExtension {
 	 * @param patch - patch
 	 * @return original resource
 	 */
-	IFile reversePatch(IFile res, IPatch<T> patch);
+	IFile reverseDelta(IFile res, IDelta<T> patch);
 	
 	/**
 	 * Verifies that the given patch can be applied to the given resource
@@ -64,6 +66,6 @@ public interface IPatchFactory<T> extends IExtension {
 	 * @param patch - the patch to verify
 	 * @return true if the patch can be applied
 	 */
-	boolean verifyPatch(IFile res, IPatch<T> patch);
+	boolean verifyDelta(IFile res, IDelta<T> patch);
 	
 }

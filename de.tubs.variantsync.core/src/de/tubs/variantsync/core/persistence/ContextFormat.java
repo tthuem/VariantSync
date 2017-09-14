@@ -1,6 +1,7 @@
 package de.tubs.variantsync.core.persistence;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,6 +17,7 @@ public class ContextFormat extends AXMLFormat<Context> {
 	private static final String ID = "Context";
 	private static final String CONTEXT = "context";
 	private static final String CONTEXT_ACTIVE = "active";
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+CONTEXT+"[\\s>]");
 	
 	public static final String FILENAME = ".context.xml";
 
@@ -58,6 +60,11 @@ public class ContextFormat extends AXMLFormat<Context> {
 		root.appendChild(e);
 
 		doc.appendChild(root);
+	}
+
+	@Override
+	public boolean supportsContent(CharSequence content) {
+		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
 }

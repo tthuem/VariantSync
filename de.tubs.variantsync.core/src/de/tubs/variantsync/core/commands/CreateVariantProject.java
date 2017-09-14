@@ -84,11 +84,13 @@ public class CreateVariantProject extends AbstractHandler {
 		 
 		//create src folder
 		IFolder folder = project.getFolder("src");
-		folder.create(true, true, null);
+		if (!folder.exists())
+			folder.create(true, true, null);
 		
 		//create bin folder
 		folder = project.getFolder("bin");
-		folder.create(false, true, null);
+		if (!folder.exists())
+			folder.create(true, true, null);
 		
 		} catch (Exception e) {
 			e.printStackTrace();

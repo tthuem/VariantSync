@@ -117,38 +117,6 @@ public class MarkerHandler {
 		return annotationMarkers.get(color.ordinal());
 	}
 	
-//	/**
-//	 * Adds a annotation to the current file in the editor
-//	 * @param marker
-//	 * @param editor
-//	 * @param annotation
-//	 * @param offset
-//	 * @param length
-//	 */
-//	public static void addAnnotation(IMarker marker, ITextEditor editor, String annotation, int offset, int length) {
-//		// The DocumentProvider enables to get the document currently loaded in
-//		// the editor
-//		IDocumentProvider idp = editor.getDocumentProvider();
-//
-//		// This is the document we want to connect to. This is taken from the
-//		// current editor input.
-//		IDocument document = idp.getDocument(editor.getEditorInput());
-//
-//		// The IannotationModel enables to add/remove/change annotation to a
-//		// Document loaded in an Editor
-//		IAnnotationModel iamf = idp.getAnnotationModel(editor.getEditorInput());
-//
-//		// Note: The annotation type id specify that you want to create one of
-//		// your annotations
-//		String an = "de.tubs.variantsync.marker.annotations.red";
-//		SimpleMarkerAnnotation ma = new SimpleMarkerAnnotation(an, marker);
-//
-//		// Finally add the new annotation to the model
-//		iamf.connect(document);
-//		iamf.addAnnotation(ma, new Position(offset, length));
-//		iamf.disconnect(document);
-//	}
-	
 	/**
 	 * Adds a marker to the resource
 	 * @param res
@@ -164,19 +132,9 @@ public class MarkerHandler {
 			if (res.exists()) {
 				marker = res.createMarker(getMarker(color));
 				marker.setAttribute(IMarker.MESSAGE, "Feature: " + feature);
-				//marker.setAttribute(IMarker.LINE_NUMBER, 5);
 				marker.setAttribute(IMarker.CHAR_START, 20);
 				marker.setAttribute(IMarker.CHAR_END, 40);
 			}
-			//addAnnotation(marker, VariantSyncPlugin.getEditor(), "TTT", 20, 30);
-//			
-//			HashMap<String, Object> attr = new HashMap<>();
-//			attr.put(IMarker.MESSAGE, "Test");
-//			attr.put(IMarker.LINE_NUMBER, 4);
-//			attr.put(IMarker.CHAR_START, 4);
-//			attr.put(IMarker.CHAR_END, 10);
-//			attr.put(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-//			MarkerUtilities.createMarker(res, attr, "de.tubs.variantsync.core.type");
 		
 		} catch (CoreException e) {
 			e.printStackTrace();

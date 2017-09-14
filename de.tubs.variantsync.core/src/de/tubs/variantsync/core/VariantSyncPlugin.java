@@ -35,6 +35,7 @@ import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
+import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
@@ -51,7 +52,8 @@ import de.tubs.variantsync.core.view.editor.PartAdapter;
  * @version 1.0
  * @since 1.0.0.0
  */
-public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListener, de.tubs.variantsync.core.utilities.IEventListener {
+public class VariantSyncPlugin extends AbstractUIPlugin
+		implements IEventListener, de.tubs.variantsync.core.utilities.IEventListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.tubs.variantsync.core"; //$NON-NLS-1$
@@ -81,9 +83,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		context = Persistence.loadContext(getConfigurationProject());
 		context.addListener(this);
 		init();
-		
-		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
-		
+
+		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID,
+				IPatchFactory.extensionID, IPatchFactory.class));
+
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -91,7 +94,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			}
 		});
 		initResourceChangeListener();
-		
+
 	}
 
 	/*
@@ -104,7 +107,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		plugin = null;
 		Persistence.writeContext(getContext());
 		Persistence.writeFeatureExpressions(getContext().getFeatureExpressions());
-		
+
 		HashMap<IProject, List<SourceFile>> codeMappings = getContext().getCodeMappings();
 		for (IProject project : codeMappings.keySet()) {
 			Persistence.writeCodeMapping(project, codeMappings.get(project));
@@ -124,7 +127,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public static IWorkspaceRoot getWorkspace() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
-	
+
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
 		return getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
@@ -132,10 +135,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public static Shell getShell() {
 		return PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
 	}
-	
+
 	/**
-	 * Always good to have this static method as when dealing with IResources
-	 * having a interface to get the editor is very handy
+	 * Always good to have this static method as when dealing with IResources having
+	 * a interface to get the editor is very handy
 	 *
 	 * @return
 	 */
@@ -182,7 +185,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				IProject project = getWorkspace().getProject(projectName);
 				if (project.exists()) {
 					context.addProject(project);
-					context.addCodeMapping(project,Persistence.loadCodeMapping(project));
+					context.addCodeMapping(project, Persistence.loadCodeMapping(project));
 				} else {
 					try {
 						IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
@@ -212,14 +215,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			} else {
 				context.setFeatureExpressions(expressions);
 			}
-			
-			
-			// TODO
-			// context.setFeatureExpressions(Persistence.loadFeatureExpression(
-			// configurationProject.getProject().getFile(FEATUREEXPRESSION_PATH).getFullPath().toOSString()));
 		}
 	}
-	
 
 	private void initResourceChangeListener() {
 		ResourceChangeHandler listener = new ResourceChangeHandler();
@@ -236,12 +233,21 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		loadVariants();
 		loadFeatureExpressions();
 	}
-	
+
 	public void reinit() {
-		getContext().reset();
+		if (getContext() != null && getContext().getConfigurationProject() != null) {
+			Persistence.writeContext(getContext());
+			Persistence.writeFeatureExpressions(getContext().getFeatureExpressions());
+
+			HashMap<IProject, List<SourceFile>> codeMappings = getContext().getCodeMappings();
+			for (IProject project : codeMappings.keySet()) {
+				Persistence.writeCodeMapping(project, codeMappings.get(project));
+			}
+			getContext().reset();
+		}
 		init();
 	}
-	
+
 	/**
 	 * Listen whether the active file in the java editor changes.
 	 */
@@ -283,7 +289,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			break;
 		default:
 			break;
-		
+
 		}
 	}
 
@@ -291,9 +297,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void propertyChange(VariantSyncEvent event) {
 		switch (event.getEventType()) {
 		case CONFIGURATIONPROJECT_SET:
-			if (context.getConfigurationProject()!=null) {
+			if (context.getConfigurationProject() != null) {
 				context.getConfigurationProject().getFeatureModelManager().addListener(this);
-				context.getConfigurationProject().getFeatureModel().addListener(this);		
+				context.getConfigurationProject().getFeatureModel().addListener(this);
 			}
 			break;
 		default:

@@ -1,6 +1,7 @@
 package de.tubs.variantsync.core.persistence;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -18,9 +19,10 @@ import de.tubs.variantsync.core.data.SourceFile;
 public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 	private static final String ID = "CodeMapping";
-	private static final String MAPPING = "Mappings";
+	private static final String MAPPINGS = "Mappings";
 	private static final String SOURCEFILE = "SourceFile";
 	private static final String CODELINE = "CodeLine";
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+MAPPINGS+"[\\s>]");
 	
 	public static final String FILENAME = ".mapping.xml";
 
@@ -63,7 +65,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 	@Override
 	protected void writeDocument(Document doc) {
-		final Element root = doc.createElement(MAPPING);
+		final Element root = doc.createElement(MAPPINGS);
 		
 		for (SourceFile sf : object) {
 			Element file = doc.createElement(SOURCEFILE);
@@ -80,6 +82,11 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		}
 
 		doc.appendChild(root);
+	}
+
+	@Override
+	public boolean supportsContent(CharSequence content) {
+		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
 }

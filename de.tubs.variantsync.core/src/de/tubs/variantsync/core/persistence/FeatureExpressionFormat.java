@@ -1,6 +1,7 @@
 package de.tubs.variantsync.core.persistence;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,6 +18,7 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 	private static final String ID = "FeatureExpressions";
 	private static final String FEATURE_EXPRESSIONS = "featureExpressions";
 	private static final String FEATURE_EXPRESSION = "featureExpression";
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+FEATURE_EXPRESSIONS+"[\\s>]");
 	
 	public static final String FILENAME = ".featureExpressions.xml";
 
@@ -62,6 +64,11 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 			root.appendChild(e);
 		}
 		doc.appendChild(root);
+	}
+
+	@Override
+	public boolean supportsContent(CharSequence content) {
+		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
 }

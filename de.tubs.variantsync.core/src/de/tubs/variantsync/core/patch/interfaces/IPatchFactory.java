@@ -1,11 +1,13 @@
 package de.tubs.variantsync.core.patch.interfaces;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IResource;
-
 import de.ovgu.featureide.fm.core.IExtension;
 import de.tubs.variantsync.core.exceptions.PatchException;
+import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 
 /**
  * Factory to create patches from files
@@ -23,23 +25,27 @@ public interface IPatchFactory<T> extends IExtension {
 	
 	String getName();
 	
-	IPatch<T> createPatch(String context);
+	IPatch<IDelta<T>> createPatch(String context);
 	
 	/**
 	 * Creates a empty patch object for a resource
 	 * 
 	 * @param res - resource
+	 * @param timestamp - timestamp
+	 * @param kind - type of change
+	 * @return patch object
 	 */
-	IDelta<T> createDelta(IResource res, long timestamp) throws PatchException;
+	List<IDelta<T>> createDeltas(IResource res, long timestamp, DELTATYPE kind) throws PatchException;
 
 	/**
 	 * Creates patch object from a changed resource.
 	 * 
 	 * @param res - resource
 	 * @param oldState - last history state
+	 * @param kind - type of change
 	 * @return patch object
 	 */
-	IDelta<T> createDelta(IResource res, IFileState oldState, long timestamp) throws PatchException;
+	List<IDelta<T>> createDeltas(IResource res, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException;
 	
 	/**
 	 * Patches a resource with a given patch.
@@ -67,5 +73,12 @@ public interface IPatchFactory<T> extends IExtension {
 	 * @return true if the patch can be applied
 	 */
 	boolean verifyDelta(IFile res, IDelta<T> patch);
+	
+	/**
+	 * Checks whether the file is supported
+	 * @param file
+	 * @return true if the file is supported
+	 */
+	boolean isSupported(IFile file);
 	
 }

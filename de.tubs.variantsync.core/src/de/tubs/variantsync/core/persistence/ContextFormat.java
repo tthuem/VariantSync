@@ -44,7 +44,6 @@ public class ContextFormat extends AXMLFormat<Context> {
 	@Override
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		for (final Element e : getElements(doc.getDocumentElement().getChildNodes())) {
-			object.setActive(Boolean.valueOf(e.getAttribute("active")));
 			object.setActualContext(e.getAttribute("context"));
 		}
 		
@@ -56,7 +55,6 @@ public class ContextFormat extends AXMLFormat<Context> {
 		
 		Element e = doc.createElement(CONTEXT_ACTIVE);
 		e.setAttribute("context", object.getActualContext());
-		e.setAttribute("active", String.valueOf(object.isActive()));
 		root.appendChild(e);
 
 		doc.appendChild(root);

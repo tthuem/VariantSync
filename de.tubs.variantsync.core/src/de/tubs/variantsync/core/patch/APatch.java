@@ -10,16 +10,22 @@ public class APatch<T> implements IPatch<T> {
 
 	private List<IDelta<T>> deltas = new ArrayList<>();
 	private long startTime,endTime;
-	private String context;
+	private String feature;
 	
 	@Override
 	public void addDelta(IDelta<T> delta) {
+		delta.setPatch(this);
+		delta.setFeature(feature);
 		deltas.add(delta);
 	}
 
 	@Override
-	public void addAll(List<IDelta<T>> deltas) {
-		deltas.addAll(deltas);
+	public void addDeltas(List<IDelta<T>> deltas) {
+		for (IDelta<T> delta : deltas) {
+			delta.setPatch(this);
+			delta.setFeature(feature);
+		}
+		this.deltas.addAll(deltas);
 	}
 
 	@Override
@@ -72,12 +78,12 @@ public class APatch<T> implements IPatch<T> {
 	}
 
 	@Override
-	public String getContext() {
-		return context;
+	public String getFeature() {
+		return feature;
 	}
 
 	@Override
-	public void setContext(String context) {
-		this.context = context;
+	public void setFeature(String feature) {
+		this.feature = feature;
 	}
 }

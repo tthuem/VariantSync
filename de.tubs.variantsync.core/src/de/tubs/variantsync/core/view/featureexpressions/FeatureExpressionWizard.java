@@ -2,7 +2,10 @@ package de.tubs.variantsync.core.view.featureexpressions;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.tubs.variantsync.core.VariantSyncPlugin;
@@ -22,10 +25,12 @@ public class FeatureExpressionWizard extends Wizard {
 
 	private FeatureExpressionWizardPage page;
 
+	private IProject project;
+
 	public FeatureExpressionWizard(FeatureExpression featureExpression) {
 		super();
 		setWindowTitle("Feature Expression Wizard");
-		this.features = VariantSyncPlugin.getContext().getConfigurationProject().getFeatureModel().getFeatures();
+		this.features = VariantSyncPlugin.getDefault().getActiveEditorContext().getConfigurationProject().getFeatureModel().getFeatures();
 		this.featureExpression = featureExpression;
 		
 	}
@@ -38,12 +43,12 @@ public class FeatureExpressionWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		VariantSyncPlugin.getDefault();
-		List<FeatureExpression> expressions = VariantSyncPlugin.getContext().getFeatureExpressions();
+		List<FeatureExpression> expressions = VariantSyncPlugin.getDefault().getContext(project).getFeatureExpressions();
 		if (featureExpression != null) {
 			expressions.remove(featureExpression);
 		}
 		expressions.add(new FeatureExpression(page.getFeatureExpression(), page.getColor()));
-		VariantSyncPlugin.getContext().setFeatureExpressions(expressions);
+		VariantSyncPlugin.getDefault().getContext(project).setFeatureExpressions(expressions);
 		return true;
 	}
 

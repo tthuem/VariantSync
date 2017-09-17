@@ -1,11 +1,11 @@
 package de.tubs.variantsync.core.patch;
 
+import org.eclipse.core.resources.IFile;
+
 import de.ovgu.featureide.fm.core.CoreExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
-import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
-import de.tubs.variantsync.core.preferences.PreferenceConstants;
 
 @SuppressWarnings("rawtypes")
 public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
@@ -13,7 +13,7 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	private static PatchFactoryManager instance = new PatchFactoryManager();
 	
 	public PatchFactoryManager() {
-		setExtensionLoaderInternal(new CoreExtensionLoader<>(getDefaultFactory()));
+		setExtensionLoaderInternal(new CoreExtensionLoader<>());
 	}
 
 	public static PatchFactoryManager getInstance() {
@@ -22,22 +22,38 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	
 	public static void setExtensionLoader(IExtensionLoader<IPatchFactory> extensionLoader) {
 		instance.setExtensionLoaderInternal(extensionLoader);
-		instance.addExtension(getDefaultFactory());
 	}
 	
+	/**
+	 * Returns the factory for a given id
+	 * @param id
+	 * @return factory which has the given id
+	 * @throws NoSuchExtensionException
+	 */
 	public static IPatchFactory getFactoryById(String id) throws NoSuchExtensionException {
 		return instance.getExtension(id);
 	}
 	
 	/**
-	 * Returns the Factory choosen by the user in the settings
-	 * @return IPatchFactory - PatchFactory
-	 * @throws NoSuchExtensionException - Default factory is missing as extension
+	 * Returns the specific factory for the given file.
+	 * If no factory supports the file then the default factory is returned
+	 * @param file
+	 * @return factory which supports the file
+	 * @throws NoSuchExtensionException
 	 */
-	public IPatchFactory getFactory() throws NoSuchExtensionException {
-		return getFactoryById(VariantSyncPlugin.getDefault().getPreferenceStore().getString(PreferenceConstants.P_PATCHFACTORY));
+	public IPatchFactory getFactoryByFile(IFile file) throws NoSuchExtensionException {
+		for (IPatchFactory factory : instance.getExtensions()) {
+			if (factory.isSupported(file)) {
+				return factory;
+			}
+		}
+		return getDefaultFactory();
 	}
 	
+	/**
+	 * Returns the default factory (line-based diffs)
+	 * @return factory for line-based diffs
+	 */
 	public static IPatchFactory getDefaultFactory() {
 		return DefaultPatchFactory.getInstance();
 	}

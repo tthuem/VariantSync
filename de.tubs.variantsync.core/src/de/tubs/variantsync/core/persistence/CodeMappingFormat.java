@@ -3,6 +3,7 @@ package de.tubs.variantsync.core.persistence;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
@@ -25,10 +26,20 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+MAPPINGS+"[\\s>]");
 	
 	public static final String FILENAME = ".mapping.xml";
+	
+	public IProject project;
+
+	public CodeMappingFormat(IProject project) {
+		this.project = project;
+	}
 
 	@Override
 	public IPersistentFormat<List<SourceFile>> getInstance() {
-		return new CodeMappingFormat();
+		return new CodeMappingFormat(null);
+	}
+	
+	public IPersistentFormat<List<SourceFile>> getInstance(IProject project) {
+		return new CodeMappingFormat(project);
 	}
 
 	@Override
@@ -38,7 +49,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 	@Override
 	public boolean supportsWrite() {
-		return true;
+		return project != null;
 	}
 
 	@Override
@@ -55,7 +66,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 			for (final Element eCL : getElements(eSF.getChildNodes())) {
 				CodeLine cl = new CodeLine();
 				cl.setCode(eCL.getAttribute("code"));
-				cl.setFeatureExpression(VariantSyncPlugin.getContext().getFeatureExpression(eCL.getAttribute("feature")));
+				cl.setFeatureExpression(VariantSyncPlugin.getDefault().getContext(project).getFeatureExpression(eCL.getAttribute("feature")));
 				cl.setLine(Integer.parseInt(eCL.getAttribute("line")));
 			}
 			object.add(sf);

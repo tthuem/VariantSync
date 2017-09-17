@@ -1,10 +1,12 @@
 package de.tubs.variantsync.core.patch.interfaces;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 
 import de.tubs.variantsync.core.data.CodeLine;
+import de.tubs.variantsync.core.data.FeatureExpression;
 
 /**
  * 
@@ -20,13 +22,13 @@ public interface IDelta<T> {
      * Specifies the type of the delta.
      *
      */
-    public enum TYPE {
-    	/** A change in the original. */
-        CHANGE, 
-        /** A delete from the original. */
-        DELETE, 
-        /** An insert into the original. */
-        INSERT
+    public enum DELTATYPE {
+    	/** An addition was made */
+    	ADDED, 
+        /** An deletion was made */
+        REMOVED, 
+        /** A change was made */
+        CHANGED
     }
     
     
@@ -34,66 +36,58 @@ public interface IDelta<T> {
      * Returns original delta
      * @return T - original delta
      */
-    List<CodeLine> getOriginal();
+    T getOriginal();
     
     /**
      * Sets orginal delta
      * @param original - original delta
      */
-    void setOriginal(List<CodeLine> original);
-    
-    /**
-     * Sets orginal delta
-     * @param original - original delta
-     */
-    void setOriginalFromLines(List<String> original);
+    void setOriginal(T original);
     
     /**
      * Returns revised delta
      * @return T - revised delta
      */
-    List<CodeLine> getRevised();
+    T getRevised();
     
     /**
      * Sets revised delta
      * @param revised - revised delta
      */
-    void setRevised(List<CodeLine> revised);
-    
-    /**
-     * Sets revised delta
-     * @param revised - revised delta
-     */
-    void setRevisedFromLines(List<String> revised);
-    
-    /**
-     * 
-     * @return
-     */
-    T getDelta();
-    
-    /**
-     * 
-     * @param delta
-     */
-    void setDelta(T delta);
+    void setRevised(T revised);
     
     /**
      * Returns delta type
      * @return TYPE - type
      */
-    TYPE getType();
+    DELTATYPE getType();
     
     /**
      * Sets type of delta
      * @param type - type
      */
-    void setType(TYPE type);
+    void setType(DELTATYPE type);
+    
+    /**
+     * Returns feature
+     * @return FeatureExpression - feature
+     */
+    String getFeature();
+    
+    /**
+     * Sets feature expression of delta
+     * @param feature - FeatureExpression
+     */
+    void setFeature(String feature);
     
     /**
      * Returns resource
      */
     IResource getResource();
+    
+    IPatch<?> getPatch();
+    
+    void setPatch(IPatch<?> patch);
     
     /**
      * 
@@ -113,5 +107,16 @@ public interface IDelta<T> {
      */
     long getTimestamp();
     
-    List<CodeLine> getCodeLines();
+    Object getProperty(String key);
+    
+    void addProperty(String key, Serializable obj);
+
+	static DELTATYPE DELTATYPE(int i) {
+		switch(i) {
+		case 1: return DELTATYPE.ADDED;
+		case 2: return DELTATYPE.REMOVED;
+		case 4: return DELTATYPE.CHANGED;
+		default: return null;
+		}
+	}
 }

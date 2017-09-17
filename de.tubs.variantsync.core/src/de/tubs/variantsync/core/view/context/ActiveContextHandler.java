@@ -16,7 +16,7 @@ public class ActiveContextHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Command command = event.getCommand();
 	    oldValue = HandlerUtil.toggleCommandState(command);
-	    VariantSyncPlugin.getContext().setActive(!oldValue);
+	    VariantSyncPlugin.getDefault().setActive(!oldValue);
 		
 		return null;
 	}

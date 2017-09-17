@@ -391,8 +391,16 @@
                id="de.tubs.variantsync.core.view.resourcechanges"
                minimized="false"
                moveable="true"
-               relationship="right"
+               relationship="stack"
                relative="org.eclipse.ui.views.ProblemView"
+               visible="true">
+         </view>
+         <view
+               id="de.tubs.variantsync.core.view.featureexpressions"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -430,6 +438,14 @@
             id="de.tubs.variantsync.core.category"
             name="Variant Sync">
       </category>
+      <view
+            category="de.tubs.variantsync.core.category"
+            class="de.tubs.variantsync.core.view.featureexpressions.View"
+            icon="icons/FeatureExpressionSmall.png"
+            id="de.tubs.variantsync.core.view.featureexpressions"
+            name="Feature Expressions"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
@@ -712,6 +728,40 @@
             name="de.tubs.variantsync.marker.annotations.lightgrey"
             super="org.eclipse.ui.workbench.texteditor.info">
       </type>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions=".xml"
+            file-names=".featureExpressions"
+            id="de.tubs.variantsync.core.file.featureexpressions"
+            name="Feature Expressions"
+            priority="high">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            appearsBefore="de.ovgu.featureide.ui.contentID"
+            contentProvider="de.tubs.variantsync.core.navigator.ContentProvider"
+            icon="icons/VariantSyncSupportSmall.png"
+            id="de.tubs.variantsync.core.navigatorContent"
+            labelProvider="de.tubs.variantsync.core.navigator.LabelProvider"
+            name="VariantSync"
+            priority="highest">
+         <triggerPoints>
+            <adapt
+                  type="org.eclipse.core.resources.IFile">
+            </adapt>
+         </triggerPoints>
+      </navigatorContent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+      </viewerContentBinding>
    </extension>
 
 </plugin>

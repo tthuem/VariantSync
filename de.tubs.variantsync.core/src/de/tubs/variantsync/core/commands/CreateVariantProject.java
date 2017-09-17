@@ -18,9 +18,10 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.actions.NewProjectAction;
 import org.eclipse.ui.handlers.HandlerUtil;
-
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.VariantSyncProgressMonitor;
 import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.utilities.LogOperations;
@@ -29,29 +30,32 @@ public class CreateVariantProject extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
+
 		ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
 		if (currentSelection instanceof IStructuredSelection) {
 
 			Object firstElement = ((IStructuredSelection) currentSelection).getFirstElement();
-			
+
 			// Get an IResource as an adapter from the current selection
 			IAdapterManager adapterManager = Platform.getAdapterManager();
 			IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
 
 			if (resourceAdapter != null) {
 				IResource resource = resourceAdapter;
-				
+
 				String projectName = resource.getName();
 				projectName = projectName.substring(0, projectName.lastIndexOf("."));
 
-				createJavaProjectWithVariantNature(projectName);
-				
+				new NewProjectAction(VariantSyncPlugin.getActiveWorkbenchWindow()).run();
+//				createJavaProjectWithVariantNature(projectName);
+
 				// Remove all markers from the configuration project
 				try {
 					MarkerHandler.getInstance().cleanProject(resource.getProject());
 				} catch (CoreException e) {
-					LogOperations.logError("Cleaning project "+ resource.getProject().getName() + " was not possible", e);
+					LogOperations.logError("Cleaning project "
+						+ resource.getProject().getName()
+						+ " was not possible", e);
 				}
 				// Reinitalize All
 				VariantSyncPlugin.getDefault().reinit();
@@ -61,41 +65,55 @@ public class CreateVariantProject extends AbstractHandler {
 	}
 
 	private IProject createJavaProjectWithVariantNature(String projectName) {
+		VariantSyncProgressMonitor progressMonitor =
+			new VariantSyncProgressMonitor("Create Project "
+				+ projectName);
 		// create project
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(projectName);
 		try {
-		project.create(null);
-		project.open(null);
-		 
-		//set natures
-		IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] {Variant.NATURE_ID, JavaCore.NATURE_ID });
-		 
-		//create java project
-		project.setDescription(description, null);
-		IJavaProject javaProject = JavaCore.create(project);
-		 
-		//set build path
-		IClasspathEntry[] buildPath = {
-				JavaCore.newSourceEntry(project.getFullPath().append("src")),JavaRuntime.getDefaultJREContainerEntry() };
-		 
-		javaProject.setRawClasspath(buildPath, project.getFullPath().append("bin"), null);
-		 
-		//create src folder
-		IFolder folder = project.getFolder("src");
-		if (!folder.exists())
-			folder.create(true, true, null);
-		
-		//create bin folder
-		folder = project.getFolder("bin");
-		if (!folder.exists())
-			folder.create(true, true, null);
-		
+			progressMonitor.setSubTaskName("Create and open project");
+			project.create(progressMonitor);
+			project.open(progressMonitor);
+
+			// set natures
+			IProjectDescription description = project.getDescription();
+			description.setNatureIds(new String[] {
+				Variant.NATURE_ID,
+				JavaCore.NATURE_ID });
+
+			// create java project
+			progressMonitor.setSubTaskName("Setting needed natures");
+			project.setDescription(description, progressMonitor);
+			IJavaProject javaProject = JavaCore.create(project);
+
+			// set build path
+			IClasspathEntry[] buildPath =
+				{
+					JavaCore.newSourceEntry(project.getFullPath().append("src")),
+					JavaRuntime.getDefaultJREContainerEntry() };
+
+			progressMonitor.setSubTaskName("Setting build paths of project");
+			javaProject.setRawClasspath(buildPath, project.getFullPath().append("bin"), progressMonitor);
+
+			// create src folder
+			IFolder folder = project.getFolder("src");
+			if (!folder.exists()) {
+				progressMonitor.setSubTaskName("Create src folder");
+				folder.create(true, true, progressMonitor);
+			}
+
+			// create bin folder
+			folder = project.getFolder("bin");
+			if (!folder.exists()) {
+				progressMonitor.setSubTaskName("Create bin folder");
+				folder.create(true, true, progressMonitor);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return project;
 	}
-	
+
 }

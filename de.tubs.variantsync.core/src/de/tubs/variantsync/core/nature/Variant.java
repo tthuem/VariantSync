@@ -4,8 +4,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-import de.tubs.variantsync.core.monitor.ProjectHistoryManager;
-
 public class Variant implements IProjectNature {
 
 	public static final String NATURE_ID = "de.tubs.variantsync.core.variant";
@@ -16,7 +14,6 @@ public class Variant implements IProjectNature {
         // only called once the nature has been set
     	
     	//TODO: Create .variantHistory file
-    	ProjectHistoryManager.getInstance(getProject()).createIfNotExists();
 
         // configure the project...
     }

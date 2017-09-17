@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
+import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
@@ -21,7 +22,15 @@ import de.tubs.variantsync.core.utilities.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
 import guidsl.pattern;
 
-public class Context {
+/**
+ * 
+ * A class for managing all informations about the product line for one configuration project
+ * 
+ * @author Christopher Sontag
+ * @since 1.1
+ * @TODO When switching between projects from different configuration projects the context should switch and the record should stop
+ */
+public class Context implements IEventListener {
 
 	public static final String DEFAULT_CONTEXT_NAME = "Default";
 
@@ -33,13 +42,9 @@ public class Context {
 
 	private List<FeatureExpression> featureExpressions = new ArrayList<>();
 
-	private boolean isActive;
-
 	private IPatch<?> actualPatch = null;
 
 	private List<IPatch<?>> patches = new ArrayList<IPatch<?>>();
-
-	private List<IEventListener> listeners = new ArrayList<>();
 
 	private HashMap<IProject, List<SourceFile>> codeMappings = new HashMap<>();
 
@@ -60,8 +65,7 @@ public class Context {
 	}
 
 	public IFeatureProject getConfigurationProject() {
-		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null
-				: null;
+		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null : null;
 	}
 
 	public void setConfigurationProject(IFeatureProject configurationProject) {
@@ -119,32 +123,15 @@ public class Context {
 		if (configurationProject != null) {
 			for (IFeature feature : getFeatures()) {
 				FeatureExpression fe = new FeatureExpression(feature.getName());
-				if (!featureExpressions.contains(fe))
-					featureExpressions.add(fe);
+				if (!featureExpressions.contains(fe)) featureExpressions.add(fe);
 			}
-		} else
-			throw new ProjectNotFoundException(Type.CONFIGURATION);
-	}
-
-	public boolean isActive() {
-		return this.isActive;
-	}
-
-	public void setActive(boolean status) {
-		this.isActive = status;
-		if (isActive) {
-			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_START, null, getActualContext()));
-		} else {
-			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_STOP, getActualContext(), null));
-		}
+		} else throw new ProjectNotFoundException(Type.CONFIGURATION);
 	}
 
 	public void reset() {
-		actualContext = DEFAULT_CONTEXT_NAME;
-		configurationProject = null;
 		projectList.clear();
 		featureExpressions.clear();
-		isActive = false;
+		codeMappings.clear();
 	}
 
 	public boolean isDefaultContextSelected() {
@@ -152,6 +139,12 @@ public class Context {
 	}
 
 	public IPatch<?> getActualContextPatch() {
+		if (actualPatch == null) return null;
+		if (!actualPatch.getFeature().equals(getActualContext())) {
+			patches.add(actualPatch);
+			actualPatch = null;
+			return null;
+		}
 		return this.actualPatch;
 	}
 
@@ -159,29 +152,16 @@ public class Context {
 		this.actualPatch = patch;
 	}
 
-	public void addListener(IEventListener listener) {
-		this.listeners.add(listener);
-
-	}
-
-	public void fireEvent(VariantSyncEvent event) {
-		System.out.println(event);
-		for (IEventListener listener : listeners) {
-			listener.propertyChange(event);
-		}
-	}
-
-	public void removeListener(IEventListener listener) {
-		this.listeners.remove(listener);
-	}
-
 	public List<IPatch<?>> getPatches() {
 		return patches;
 	}
 
+	public void addPatch(IPatch<?> patch) {
+		patches.add(patch);
+	}
+
 	public List<CodeLine> getMapping(IFile file) {
-		if (codeMappings.containsKey(file.getProject()))
-		for (SourceFile sf : codeMappings.get(file.getProject())) {
+		if (codeMappings.containsKey(file.getProject())) for (SourceFile sf : codeMappings.get(file.getProject())) {
 			if (sf.getResource().getFullPath().equals(file.getFullPath())) {
 				return sf.getCodeLines();
 			}
@@ -217,5 +197,48 @@ public class Context {
 			}
 		}
 	}
+	
+	public void closeActualPatch() {
+		if (actualPatch != null) {
+			actualPatch.setEndTime(System.currentTimeMillis());
+			if (!actualPatch.isEmpty()) patches.add(actualPatch);
+			fireEvent(new VariantSyncEvent(this, EventType.PATCH_CLOSED, actualPatch, null));
+			actualPatch = null;
+		}
+	}
 
+	/**
+	 * Wrapper for {@link VariantSyncPlugin#fireEvent(VariantSyncEvent)}
+	 * 
+	 * @param variantSyncEvent
+	 */
+	private void fireEvent(VariantSyncEvent variantSyncEvent) {
+		VariantSyncPlugin.getDefault().fireEvent(variantSyncEvent);
+	}
+
+	@Override
+	public void propertyChange(VariantSyncEvent event) {
+		switch (event.getEventType()) {
+		case CONFIGURATIONPROJECT_SET:
+			break;
+		case CONTEXT_CHANGED:
+			closeActualPatch();
+			break;
+		case CONTEXT_RECORDING_START:
+			break;
+		case CONTEXT_RECORDING_STOP:
+			closeActualPatch();
+			break;
+		case FEATUREEXPRESSION_ADDED:
+			break;
+		case PATCH_ADDED:
+			break;
+		case PATCH_CHANGED:
+			break;
+		case PATCH_CLOSED:
+			break;
+		default:
+			break;
+		}
+	}
 }

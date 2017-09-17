@@ -8,10 +8,13 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -48,6 +51,34 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		featureExpressionTable = new Table(composite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.V_SCROLL);
 		featureExpressionTable.setHeaderVisible(false);
 		featureExpressionTable.setLinesVisible(true);
+		featureExpressionTable.addListener(SWT.Resize, new Listener() {
+
+	          @Override
+	          public void handleEvent(Event event) {
+
+
+	            Table table = (Table)event.widget;
+	            int columnCount = table.getColumnCount();
+	            if(columnCount == 0)
+	              return;
+	            Rectangle area = table.getClientArea();
+	            int totalAreaWdith = area.width;
+	            int lineWidth = table.getGridLineWidth();
+	            int totalGridLineWidth = (columnCount-1)*lineWidth; 
+	            int totalColumnWidth = 0;
+	            for(TableColumn column: table.getColumns())
+	            {
+	              totalColumnWidth = totalColumnWidth+column.getWidth();
+	            }
+	            int diff = totalAreaWdith-(totalColumnWidth+totalGridLineWidth);
+
+	            TableColumn lastCol = table.getColumns()[columnCount-1];
+
+	            //check diff is valid or not. setting negetive width doesnt make sense.
+	            lastCol.setWidth(diff+lastCol.getWidth());
+
+	          }
+	        });
 		
 	    TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
 	    featureExpressionTableColumn.setText("Name");

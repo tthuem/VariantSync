@@ -5,8 +5,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.HandlerEvent;
 import org.eclipse.core.commands.INamedHandleStateIds;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.menus.IMenuStateIds;
 import org.eclipse.jface.menus.TextState;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.utilities.IEventListener;
 import de.tubs.variantsync.core.utilities.VariantSyncEvent;
@@ -32,7 +36,7 @@ public class SelectContextHandler extends AbstractHandler {
 			event.getCommand().getState(IMenuStateIds.NAME).setValue("Test");
 		}
 		if (msg != null) {
-			VariantSyncPlugin.getContext().setActualContext(msg);
+			VariantSyncPlugin.getDefault().getActiveEditorContext().setActualContext(msg);
 			System.out.println("Setting context to: " + msg);
 			TextState state = (TextState) event.getCommand().getState(IMenuStateIds.NAME);
 			state.setShouldPersist(true);

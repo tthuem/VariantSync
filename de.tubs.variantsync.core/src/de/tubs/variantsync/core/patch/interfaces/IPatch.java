@@ -22,7 +22,7 @@ public interface IPatch<T> {
 	 * Add the given deltas to this patch
 	 * @param deltas - the given deltas
 	 */
-	void addAll(List<IDelta<T>> deltas);
+	void addDeltas(List<IDelta<T>> deltas);
 	
 	/**
 	 * Returns the list of all deltas
@@ -77,12 +77,12 @@ public interface IPatch<T> {
 	 * 
 	 * @return
 	 */
-	String getContext();
+	String getFeature();
 	
 	/**
 	 * 
 	 * @param context
 	 */
-	void setContext(String context);
+	void setFeature(String feature);
 	
 }

@@ -18,6 +18,7 @@ import de.tubs.variantsync.core.data.SourceFile;
  * Loads and saves objects
  * @author Christopher Sontag (c.sontag@tu-bs.de)
  * @since 1.0.0.0
+ * @TODO Update DOC
  */
 public class Persistence {
 	
@@ -26,9 +27,9 @@ public class Persistence {
 	 * @param filename
 	 * @return
 	 */
-	public static List<FeatureExpression> loadFeatureExpressions() {
+	public static List<FeatureExpression> loadFeatureExpressions(IFeatureProject iFeatureProject) {
 		List<FeatureExpression> featureExpressions = new ArrayList<>();
-		FileHandler.load(Paths.get(VariantSyncPlugin.getContext().getConfigurationProject().getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), featureExpressions, new FeatureExpressionFormat());
+		FileHandler.load(Paths.get(iFeatureProject.getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), featureExpressions, new FeatureExpressionFormat());
 		return featureExpressions;
 	}
 
@@ -37,8 +38,8 @@ public class Persistence {
 	 * @param context
 	 * @param filename
 	 */
-	public static void writeFeatureExpressions(List<FeatureExpression> list) {
-		FileHandler.save(Paths.get(VariantSyncPlugin.getContext().getConfigurationProject().getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), list, new FeatureExpressionFormat());
+	public static void writeFeatureExpressions(Context context) {
+		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), context.getFeatureExpressions(), new FeatureExpressionFormat());
 	}
 
 	/**
@@ -49,7 +50,6 @@ public class Persistence {
 	public static Context loadContext(IFeatureProject iFeatureProject) {
 		Context context = new Context();
 		if (iFeatureProject != null) {
-			context.setConfigurationProject(iFeatureProject);
 			FileHandler.load(Paths.get(iFeatureProject.getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context, new ContextFormat());
 		}
 		return context;
@@ -61,7 +61,7 @@ public class Persistence {
 	 * @param filename
 	 */
 	public static void writeContext(Context context) {
-		FileHandler.save(Paths.get(VariantSyncPlugin.getContext().getConfigurationProject().getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context, new ContextFormat());
+		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context, new ContextFormat());
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class Persistence {
 	public static List<SourceFile> loadCodeMapping(IProject project) {
 		List<SourceFile> sourceFiles = new ArrayList<>();
 		if (project != null) {
-			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat());
+			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(null));
 		}
 		return sourceFiles;
 	}
@@ -83,7 +83,8 @@ public class Persistence {
 	 * @param filename
 	 */
 	public static void writeCodeMapping(IProject project, List<SourceFile> sourceFiles) {
-		FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat());
+		if (project != null)
+			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
 	}
 	
 }

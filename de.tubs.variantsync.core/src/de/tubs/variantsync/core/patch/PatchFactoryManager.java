@@ -13,7 +13,7 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	private static PatchFactoryManager instance = new PatchFactoryManager();
 	
 	public PatchFactoryManager() {
-		setExtensionLoaderInternal(new CoreExtensionLoader<>());
+		setExtensionLoaderInternal(new CoreExtensionLoader<>(DefaultPatchFactory.getInstance()));
 	}
 
 	public static PatchFactoryManager getInstance() {

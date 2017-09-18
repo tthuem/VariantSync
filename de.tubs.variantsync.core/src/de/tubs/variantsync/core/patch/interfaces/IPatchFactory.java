@@ -28,7 +28,14 @@ public interface IPatchFactory<T> extends IExtension {
 	IPatch<IDelta<T>> createPatch(String context);
 	
 	/**
-	 * Creates a empty patch object for a resource
+	 * Creates a empty delta object
+	 * @param res
+	 * @return
+	 */
+	IDelta<T> createDelta(IResource res);
+	
+	/**
+	 * Creates a delta object for a resource
 	 * 
 	 * @param res - resource
 	 * @param timestamp - timestamp

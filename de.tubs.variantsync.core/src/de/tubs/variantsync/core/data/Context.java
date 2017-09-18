@@ -159,6 +159,10 @@ public class Context implements IEventListener {
 	public void addPatch(IPatch<?> patch) {
 		patches.add(patch);
 	}
+	
+	public void setPatches(List<IPatch<?>> patches) {
+		this.patches = patches;
+	}
 
 	public List<CodeLine> getMapping(IFile file) {
 		if (codeMappings.containsKey(file.getProject())) for (SourceFile sf : codeMappings.get(file.getProject())) {

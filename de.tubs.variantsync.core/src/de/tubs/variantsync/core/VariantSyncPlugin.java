@@ -42,6 +42,7 @@ import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.IEventListener;
@@ -114,6 +115,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			for (IProject project : codeMappings.keySet()) {
 				Persistence.writeCodeMapping(project, codeMappings.get(project));
 			}
+			Persistence.writePatches(c.getConfigurationProject(), c.getPatches());
 		}
 		super.stop(context);
 	}
@@ -268,6 +270,18 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			}
 		}
 	}
+	
+	public void loadPatches() {
+		for (Context context : INSTANCES.values()) {
+			if (context.getConfigurationProject() != null) {
+				List<IPatch<?>> patches = Persistence.loadPatches(context.getConfigurationProject());
+				if (!patches.isEmpty()) {
+					context.setPatches(patches);
+				}
+			}
+		}
+	}
+
 
 	private void initResourceChangeListener() {
 		ResourceChangeHandler listener = new ResourceChangeHandler();
@@ -285,6 +299,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		}
 		loadVariants();
 		loadFeatureExpressions();
+		loadPatches();
 	}
 
 	public void reinit() {
@@ -296,6 +311,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			for (IProject project : codeMappings.keySet()) {
 				Persistence.writeCodeMapping(project, codeMappings.get(project));
 			}
+			Persistence.writePatches(context.getConfigurationProject(), context.getPatches());
 			context.reset();
 		}
 		init();

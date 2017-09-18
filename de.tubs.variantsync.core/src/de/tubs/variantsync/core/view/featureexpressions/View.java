@@ -33,6 +33,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.ovgu.featureide.fm.core.color.ColorPalette;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 
 public class View extends ViewPart {
@@ -54,12 +55,10 @@ public class View extends ViewPart {
 		}
 
 		@Override
-		public void partClosed(IWorkbenchPart part) {
-		}
+		public void partClosed(IWorkbenchPart part) {}
 
 		@Override
-		public void partDeactivated(IWorkbenchPart part) {
-		}
+		public void partDeactivated(IWorkbenchPart part) {}
 
 		@Override
 		public void partOpened(IWorkbenchPart part) {
@@ -129,7 +128,7 @@ public class View extends ViewPart {
 		featureExpressionTableColumn.setResizable(true);
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "VariantSync.FeatureExpressionManager");
-		
+
 		IWorkbenchPage page = getSite().getPage();
 		page.addPartListener(editorListener);
 
@@ -195,13 +194,16 @@ public class View extends ViewPart {
 	private void updateFeatureExpressionList() {
 		TableItem tableItem = null;
 		featureExpressionTable.removeAll();
-		expressions = VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressions();
-		if (!expressions.isEmpty()) {
-			for (FeatureExpression fe : expressions) {
-				tableItem = new TableItem(featureExpressionTable, SWT.NONE);
-				tableItem.setText(fe.name);
-				tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
-				tableItem.setData(fe);
+		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+		if (context != null) {
+			expressions = context.getFeatureExpressions();
+			if (!expressions.isEmpty()) {
+				for (FeatureExpression fe : expressions) {
+					tableItem = new TableItem(featureExpressionTable, SWT.NONE);
+					tableItem.setText(fe.name);
+					tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
+					tableItem.setData(fe);
+				}
 			}
 		}
 	}

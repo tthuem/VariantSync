@@ -12,6 +12,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
 
 
 /**
@@ -72,7 +73,7 @@ public class Persistence {
 	public static List<SourceFile> loadCodeMapping(IProject project) {
 		List<SourceFile> sourceFiles = new ArrayList<>();
 		if (project != null) {
-			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(null));
+			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
 		}
 		return sourceFiles;
 	}
@@ -85,6 +86,29 @@ public class Persistence {
 	public static void writeCodeMapping(IProject project, List<SourceFile> sourceFiles) {
 		if (project != null)
 			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
+	}
+	
+	/**
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public static List<IPatch<?>> loadPatches(IFeatureProject iFeatureProject) {
+		List<IPatch<?>> patches = new ArrayList<>();
+		if (iFeatureProject != null) {
+			FileHandler.load(Paths.get(iFeatureProject.getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches, new PatchFormat(iFeatureProject));
+		}
+		return patches;
+	}
+
+	/**
+	 * Saves all feature expressions
+	 * @param context
+	 * @param filename
+	 */
+	public static void writePatches(IFeatureProject iFeatureProject, List<IPatch<?>> patches) {
+		if (iFeatureProject != null)
+			FileHandler.save(Paths.get(iFeatureProject.getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches, new PatchFormat(iFeatureProject));
 	}
 	
 }

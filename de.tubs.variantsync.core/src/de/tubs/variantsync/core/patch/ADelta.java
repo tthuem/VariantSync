@@ -1,29 +1,21 @@
 package de.tubs.variantsync.core.patch;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.sql.rowset.serial.SerialArray;
-
 import org.eclipse.core.resources.IResource;
-
-import de.tubs.variantsync.core.data.CodeLine;
-import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 
-public class ADelta<T> implements IDelta<T> {
+public abstract class ADelta<T> implements IDelta<T> {
 
-	private IResource resource;
-	private T original;
-	private T revised;
-	private IDelta.DELTATYPE type;
-	private boolean isSynchronized = false;
-	private long timestamp;
-	private HashMap<String, Object> properties = new HashMap<>();
-	private IPatch<?> parent = null;
-	private String feature = "";
+	protected IResource resource;
+	protected T original;
+	protected T revised;
+	protected IDelta.DELTATYPE type;
+	protected boolean isSynchronized = false;
+	protected long timestamp;
+	protected HashMap<String, String> properties = new HashMap<>();
+	protected IPatch<?> parent = null;
+	protected String feature = "";
 	
 	public ADelta(IResource res) {
 		this.resource = res;
@@ -66,6 +58,11 @@ public class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	@Override
 	public T getOriginal() {
 		return original;
 	}
@@ -86,7 +83,7 @@ public class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
-	public Object getProperty(String key) {
+	public String getProperty(String key) {
 		if (properties.containsKey(key)) {
 			return properties.get(key);
 		}
@@ -94,7 +91,12 @@ public class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
-	public void addProperty(String key, Serializable obj) {
+	public HashMap<String, String> getProperties() {
+		return properties;
+	}
+
+	@Override
+	public void addProperty(String key, String obj) {
 		properties.put(key, obj);
 	}
 
@@ -117,5 +119,17 @@ public class ADelta<T> implements IDelta<T> {
 	public void setPatch(IPatch<?> patch) {
 		this.parent = patch;
 	}
+
+	@Override
+	public abstract String getOriginalAsString();
+
+	@Override
+	public abstract void setOriginalFromString(String original);
+
+	@Override
+	public abstract String getRevisedAsString();
+
+	@Override
+	public abstract void setRevisedFromString(String revised);
 	
 }

@@ -85,4 +85,10 @@ public interface IPatch<T> {
 	 */
 	void setFeature(String feature);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	String getFactoryID();
+	
 }

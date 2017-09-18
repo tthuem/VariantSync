@@ -61,7 +61,7 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 
 	@Override
 	public IPatch<IDelta<Chunk>> createPatch(String feature) {
-		IPatch<IDelta<Chunk>> patch = new APatch<IDelta<Chunk>>();
+		IPatch<IDelta<Chunk>> patch = new APatch<IDelta<Chunk>>(getId());
 		patch.setFeature(feature);
 		patch.setStartTime(System.currentTimeMillis());
 		return patch;
@@ -102,10 +102,8 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 			List<IDelta<Chunk>> deltas = new ArrayList<>();
 			for (Delta<String> originalDelta : patch.getDeltas()) {
 
-				IDelta<Chunk> delta = new ADelta<Chunk>(res);
+				IDelta<Chunk> delta = new DefaultDelta(res);
 				delta.setType(kind);
-				delta.addProperty("posOriginal", originalDelta.getOriginal().getPosition());
-				delta.addProperty("posRevised", originalDelta.getRevised().getPosition());
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
 				
@@ -216,6 +214,11 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 	@Override
 	public boolean isSupported(IFile file) {
 		return true;
+	}
+
+	@Override
+	public IDelta<Chunk> createDelta(IResource res) {
+		return new DefaultDelta(res);
 	}
 
 }

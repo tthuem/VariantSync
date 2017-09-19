@@ -11,11 +11,3 @@ script:
 - sed -i'' -e "s/\$DATE/$(date +%Y-%m-%d)/" descriptor.json
 notifications:
   webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
-deploy:
-  provider: bintray
-  file: "descriptor.json"
-  user: "kogoro"
-  key:
-    secure: HQkwFeV4hY8ytpID3TX0IXg4hE6HvI+0iIuoDipT2shFbaD12sByzUhL6KizX32DIHkBzWExqw19kjeH3vyHjc6fPouFCSXi/WIp0JGYlbw8uZvqnQIGMdjsWyUpjXpCNcdJ3mW80CSJfA4qKIBagBkuaJW80UNZnE7HjNDEoGIOKk3o2ZR3eLNsVosalcFRDgpoArqaQDe2lXededacuPNZEElj6nLP4PTfB5p4qIIoWc8/nQ6nPNcIyz9hgR63ymPtAYCQxfm3RugvuRau1Txr3ndK4NplNclhz92QRVzqXg9ZkSgtVKREBsCxA3l4S6JC58LQFwaEU8I8UWCVf1Vye6yvLC2NjuS1z9vHRp7OTN/cT+06iHfaGxTnFRB+n5SN3GjqpdeaOGE+tkkLg54gGqpCreDlBxTT4H7DZG5y/Lt8hBl23oNtz4uESvrezGLXn+hB+xoGa1uI40zSdkmCDErDBuRETxy3cWZYshTG8F5GSSo0mwYgPGKNUf4QpvTtU3eRQPt2uBRQdoE0WA0jgAgJ3PFPJnzuDBLhVG+xHkYT13II/lykksVQgeW3+exjTrEeHbNbwcjMbNZCJvFDM4kMYYNom/L2taIWKFCLqzzJyR8QQiZnLcLPl5fDChrz6nleuCzvl20Zx4NU7ogqVQrocK4uIFmKLYfgSRI=
-  on:
-    tags: true

@@ -13,6 +13,9 @@ of changes between variants. As a side effect, using VariantSync for a while may
 	* see http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide for more information about FeatureIDE
 	
 ## Installation
+### Update Site:
+[Bintray Update Site](https://dl.bintray.com/kogoro/VariantSync)
+### Manually:
 * Import the VariantSync as existing project in an eclipse workspace/clone VariantSync as git project in an eclipse workspace
 * Run MANIFEST.MF in folder META-INF as eclipse application with the following run configuration:
   * Program arguments:

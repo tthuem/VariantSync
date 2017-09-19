@@ -24,7 +24,7 @@
     },
 
     "files": [
-        { "includePattern": "de.tubs.variantsync.update/target/repository/(.*)", "uploadPattern": "$1" }
+        { "includePattern": "de.tubs.variantsync.update/target/de.tubs.variantsync.update-(.*)", "uploadPattern": "de.tubs.variantsync.update-$1" }
     ],
     "publish": true
 }

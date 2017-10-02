@@ -59,7 +59,8 @@ import de.tubs.variantsync.core.view.editor.PartAdapter;
  * @version 1.0
  * @since 1.0.0.0
  */
-public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
+public class VariantSyncPlugin extends AbstractUIPlugin
+		implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.tubs.variantsync.core"; //$NON-NLS-1$
@@ -76,11 +77,14 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	/**
 	 * The constructor
 	 */
-	public VariantSyncPlugin() {}
+	public VariantSyncPlugin() {
+	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void start(BundleContext ctxt) throws Exception {
 		super.start(ctxt);
@@ -88,8 +92,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		addListener(this);
 		init();
 
-		PatchFactoryManager
-				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
+		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID,
+				IPatchFactory.extensionID, IPatchFactory.class));
 
 		Display.getDefault().asyncExec(new Runnable() {
 
@@ -104,7 +108,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -143,9 +149,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 * Returns an image descriptor for the image file at the given plug-in relative
+	 * path.
 	 * 
-	 * @param path the path
+	 * @param path
+	 *            the path
 	 * @return the image descriptor
 	 */
 	public ImageDescriptor getImageDescriptor(String path) {
@@ -153,7 +161,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	}
 
 	/**
-	 * Always good to have this static method as when dealing with IResources having a interface to get the editor is very handy
+	 * Always good to have this static method as when dealing with IResources having
+	 * a interface to get the editor is very handy
 	 *
 	 * @return
 	 */
@@ -164,28 +173,33 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			return null;
 		}
 	}
-	
+
 	public static IFile getEditorInput() {
 		IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if (editorPart == null)
+			return null;
 		return ((IFileEditorInput) editorPart.getEditorInput()).getFile();
 	}
-	
+
 	public Context getActiveEditorContext() {
 		return getContext(getEditorInput().getProject());
 	}
 
 	public Context getContext(IFeatureProject project) {
-		for (IFeatureProject featureProject : INSTANCES.keySet()) {
-			if (featureProject.getProjectName().equals(project.getProjectName()))
-			return INSTANCES.get(featureProject);
+		if (project != null) {
+			for (IFeatureProject featureProject : INSTANCES.keySet()) {
+				if (featureProject.getProjectName().equals(project.getProjectName()))
+					return INSTANCES.get(featureProject);
+			}
+			Context context = Persistence.loadContext(project);
+			context.setConfigurationProject(project);
+			addListener(context);
+			INSTANCES.put(project, context);
+			return context;
 		}
-		Context context = Persistence.loadContext(project);
-		context.setConfigurationProject(project);
-		addListener(context);
-		INSTANCES.put(project, context);
-		return context;
+		return null;
 	}
-	
+
 	public IFeatureProject getFeatureProject(IProject project) {
 		for (IFeatureProject featureProject : INSTANCES.keySet()) {
 			if (project.getName().equals(featureProject.getProjectName()))
@@ -195,11 +209,13 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		}
 		return null;
 	}
-	
+
 	public Context getContext(IProject project) {
-		IFeatureProject featureProject = getFeatureProject(project);
-		if (featureProject != null) {
-			return getContext(featureProject);
+		if (project != null) {
+			IFeatureProject featureProject = getFeatureProject(project);
+			if (featureProject != null) {
+				return getContext(featureProject);
+			}
 		}
 		return null;
 	}
@@ -214,8 +230,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				if (project.hasNature("de.ovgu.featureide.core.featureProjectNature")) {
 					IFeatureProject featureProject = CorePlugin.getFeatureProject(project);
 					if (featureProject.getComposerID().equals("de.tubs.variantsync.core.composer")) {
-						LogOperations.logInfo("Found configuration project with name: "
-							+ project.getName());
+						LogOperations.logInfo("Found configuration project with name: " + project.getName());
 						projects.add(featureProject);
 					}
 				}
@@ -229,8 +244,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void loadVariants() {
 		for (Context context : INSTANCES.values()) {
 			for (IFile file : context.getConfigurationProject().getAllConfigurations()) {
-				System.out.println("Variant:"
-					+ file.getName());
+				System.out.println("Variant:" + file.getName());
 				String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
 				IProject project = getWorkspace().getProject(projectName);
 				if (project.exists()) {
@@ -239,9 +253,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				} else {
 					try {
 						IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
-						m.setAttribute(IMarker.MESSAGE, "Project "
-							+ projectName
-							+ " is missing in the workspace");
+						m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
 						m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 						m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 						m.setAttribute(IMarker.LINE_NUMBER, 0);
@@ -257,7 +269,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void loadFeatureExpressions() {
 		for (Context context : INSTANCES.values()) {
 			if (context.getConfigurationProject() != null) {
-				List<FeatureExpression> expressions = Persistence.loadFeatureExpressions(context.getConfigurationProject());
+				List<FeatureExpression> expressions = Persistence
+						.loadFeatureExpressions(context.getConfigurationProject());
 				if (expressions.isEmpty()) {
 					try {
 						context.importFeaturesFromModel();
@@ -271,7 +284,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			}
 		}
 	}
-	
+
 	public void loadPatches() {
 		for (Context context : INSTANCES.values()) {
 			if (context.getConfigurationProject() != null) {
@@ -282,7 +295,6 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			}
 		}
 	}
-
 
 	private void initResourceChangeListener() {
 		ResourceChangeHandler listener = new ResourceChangeHandler();
@@ -325,21 +337,19 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IWorkbenchWindow ww = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = ww.getActivePage();
-		if (page == null) return;
+		if (page == null)
+			return;
 		page.addPartListener(new PartAdapter());
 	}
 
 	public static void addNature(IProject project) {
-		VariantSyncProgressMonitor progressMonitor =
-			new VariantSyncProgressMonitor("Adding VariantSync nature to "
-				+ project.getName());
+		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(
+				"Adding VariantSync nature to " + project.getName());
 		try {
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();
 
-			String[] newNatures =
-				new String[natures.length
-					+ 1];
+			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 1, natures.length);
 
 			newNatures[0] = Variant.NATURE_ID;
@@ -358,13 +368,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void propertyChange(FeatureIDEEvent event) {
 		switch (event.getEventType()) {
 		case FEATURE_ADD:
-			LogOperations.logInfo("Feature added: "
-				+ event);
+			LogOperations.logInfo("Feature added: " + event);
 		case MODEL_DATA_SAVED:
-			LogOperations.logInfo("Model Event"
-				+ event);
-			
-//			context.importFeaturesFromModel();
+			LogOperations.logInfo("Model Event" + event);
+
+			// context.importFeaturesFromModel();
 			break;
 		default:
 			break;
@@ -388,7 +396,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			break;
 		}
 	}
-	
+
 	public boolean isActive() {
 		return this.isActive;
 	}

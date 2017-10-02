@@ -194,7 +194,7 @@
             </command>
             <command
                   commandId="de.tubs.variantsync.core.command.context.active"
-                  icon="icons/start_task.png"
+                  icon="icons/nav_go.gif"
                   style="toggle">
             </command>
             <command
@@ -411,7 +411,7 @@
             allowMultiple="false"
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.resourcechanges.View"
-            icon="icons/VariantSyncSupport.png"
+            icon="icons/change_obj.gif"
             id="de.tubs.variantsync.core.view.resourcechanges"
             name="Resource Changes"
             restorable="true">
@@ -420,7 +420,7 @@
             allowMultiple="false"
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.sourcefocus.View"
-            icon="icons/VariantSyncSupport.png"
+            icon="icons/method-draw-image.png"
             id="de.tubs.variantsync.core.view.sourcefocus"
             name="Source-Focused View"
             restorable="true">

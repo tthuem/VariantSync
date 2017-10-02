@@ -260,13 +260,11 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @throws CoreException
 	 */
 	private boolean filterResource(IProject project, IResource res) throws CoreException {
-		if (project != null
-			&& project.isOpen()
-			&& !project.hasNature(Variant.NATURE_ID)) {
+		if (project != null && project.isOpen()
+				&& !project.hasNature(Variant.NATURE_ID)) {
 			return false;
 		}
-		if (project != null
-			&& !project.isOpen()) {
+		if (project != null && !project.isOpen()) {
 			return false;
 		}
 		String name = res.getName();

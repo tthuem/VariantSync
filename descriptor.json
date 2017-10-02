@@ -16,15 +16,15 @@
     },
 
     "version": {
-        "name": "$VERSION",
-        "desc": "Release $VERSION",
-        "released": "$DATE",
-        "vcs_tag": "$VERSION",
+        "name": "alpha1",
+        "desc": "alpha1",
+        "released": "2017/09/20",
+        "vcs_tag": "alpha1",
         "gpgSign": false
     },
 
     "files": [
-        { "includePattern": "de.tubs.variantsync.update/target/de.tubs.variantsync.update-(.*)", "uploadPattern": "de.tubs.variantsync.update-$1" }
+        { "includePattern": "de.tubs.variantsync.update/target/(.*\\.zip)", "uploadPattern": "$1" }
     ],
     "publish": true
 }

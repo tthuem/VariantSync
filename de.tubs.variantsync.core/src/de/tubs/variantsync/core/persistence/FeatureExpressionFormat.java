@@ -71,4 +71,9 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
+	@Override
+	public String getName() {
+		return "FeatureExpression";
+	}
+
 }

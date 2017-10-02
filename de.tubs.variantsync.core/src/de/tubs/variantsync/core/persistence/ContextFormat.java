@@ -65,4 +65,9 @@ public class ContextFormat extends AXMLFormat<Context> {
 		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
+	@Override
+	public String getName() {
+		return "Context";
+	}
+
 }

@@ -100,4 +100,9 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		return supportsRead() && CONTENT_REGEX.matcher(content).find();
 	}
 
+	@Override
+	public String getName() {
+		return "CodeMapping";
+	}
+
 }

@@ -163,4 +163,9 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 			&& CONTENT_REGEX.matcher(content).find();
 	}
 
+	@Override
+	public String getName() {
+		return "Patch";
+	}
+
 }

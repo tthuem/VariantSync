@@ -26,6 +26,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.framework.BundleContext;
 
+import de.ovgu.featureide.core.CorePlugin;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.core.internal.FeatureProject;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
@@ -211,7 +212,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		for (IProject project : getWorkspace().getProjects()) {
 			try {
 				if (project.hasNature("de.ovgu.featureide.core.featureProjectNature")) {
-					IFeatureProject featureProject = new FeatureProject(project);
+					IFeatureProject featureProject = CorePlugin.getFeatureProject(project);
 					if (featureProject.getComposerID().equals("de.tubs.variantsync.core.composer")) {
 						LogOperations.logInfo("Found configuration project with name: "
 							+ project.getName());

@@ -21,7 +21,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 public class View extends ViewPart implements IEventListener {
 
 	public static final String ID = "de.tubs.variantsync.core.view.resourcechanges";
-	private TreeViewer viewer;
+	private TreeViewer tvResourceChanges;
 
 	public View() {
 		super();
@@ -30,10 +30,10 @@ public class View extends ViewPart implements IEventListener {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
-		setupTreeViewer(viewer.getTree());
+		tvResourceChanges = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		setupTreeViewer(tvResourceChanges.getTree());
 
-		viewer.setContentProvider(new ResourceChangesTreeContentProvider());
+		tvResourceChanges.setContentProvider(new ResourceChangesTreeContentProvider());
 		
 		update();
 //		synchroFilter = new SynchroFilter();
@@ -54,35 +54,35 @@ public class View extends ViewPart implements IEventListener {
 		TreeColumn col = new TreeColumn(tree, SWT.None, 0);
 		col.setText("Resource");
 		col.setResizable(true);
-		TreeViewerColumn tvCol = new TreeViewerColumn(viewer, col);
+		TreeViewerColumn tvCol = new TreeViewerColumn(tvResourceChanges, col);
 		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(0));
 		layout.addColumnData(new ColumnWeightData(2));
 
 		col = new TreeColumn(tree, SWT.None, 1);
 		col.setText("Project");
 		col.setResizable(true);
-		tvCol = new TreeViewerColumn(viewer, col);
+		tvCol = new TreeViewerColumn(tvResourceChanges, col);
 		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(1));
 		layout.addColumnData(new ColumnWeightData(1));
 
 		col = new TreeColumn(tree, SWT.None, 2);
 		col.setText("Possible Target");
 		col.setResizable(true);
-		tvCol = new TreeViewerColumn(viewer, col);
+		tvCol = new TreeViewerColumn(tvResourceChanges, col);
 		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(2));
 		layout.addColumnData(new ColumnWeightData(1));
 
 		col = new TreeColumn(tree, SWT.None, 3);
 		col.setText("Targets");
 		col.setResizable(true);
-		tvCol = new TreeViewerColumn(viewer, col);
+		tvCol = new TreeViewerColumn(tvResourceChanges, col);
 		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(3));
 		layout.addColumnData(new ColumnWeightData(1));
 
 		col = new TreeColumn(tree, SWT.None, 4);
 		col.setText("Time");
 		col.setResizable(true);
-		tvCol = new TreeViewerColumn(viewer, col);
+		tvCol = new TreeViewerColumn(tvResourceChanges, col);
 		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(4));
 		layout.addColumnData(new ColumnWeightData(1));
 	}
@@ -94,14 +94,14 @@ public class View extends ViewPart implements IEventListener {
 			IPatch<?> actualPatch = context.getActualContextPatch();
 			if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
-			if (patches != null && !patches.isEmpty()) viewer.setInput(PatchTree.construct(patches));
-			viewer.expandToLevel(3);
+			if (patches != null && !patches.isEmpty()) tvResourceChanges.setInput(PatchTree.construct(patches));
+			tvResourceChanges.expandToLevel(3);
 		}
 	}
 
 	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		tvResourceChanges.getControl().setFocus();
 	}
 
 	@Override

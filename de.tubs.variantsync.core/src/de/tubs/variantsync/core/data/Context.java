@@ -98,6 +98,14 @@ public class Context implements IEventListener {
 	public List<FeatureExpression> getFeatureExpressions() {
 		return featureExpressions;
 	}
+	
+	public List<String> getFeatureExpressionsAsStrings() {
+		List<String> featureExpressions = new ArrayList<>();
+		for (FeatureExpression fe : this.featureExpressions) {
+			featureExpressions.add(fe.name);
+		}
+		return featureExpressions;
+	}
 
 	public void setFeatureExpressions(List<FeatureExpression> featureExpressions) {
 		this.featureExpressions = featureExpressions;

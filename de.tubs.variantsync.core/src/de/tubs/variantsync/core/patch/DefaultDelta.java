@@ -47,4 +47,9 @@ public class DefaultDelta extends ADelta<Chunk> {
 		this.revised = new Chunk<String>(pos, elements);
 	}
 
+	@Override
+	public String getRepresentation() {
+		return "--- ("+this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ ("+this.revised.getPosition() + ") " +this.revised.getLines();
+	}
+
 }

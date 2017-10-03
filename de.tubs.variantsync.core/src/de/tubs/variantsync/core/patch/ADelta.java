@@ -141,6 +141,9 @@ public abstract class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
+	public abstract String getRepresentation();
+
+	@Override
 	public abstract String getOriginalAsString();
 
 	@Override

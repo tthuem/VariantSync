@@ -1,16 +1,11 @@
 package de.tubs.variantsync.core.persistence;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.URIUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -20,11 +15,11 @@ import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
-import de.tubs.variantsync.core.patch.DeltaFactoryManager;
+import de.tubs.variantsync.core.patch.PatchFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
-import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
+import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
@@ -75,9 +70,9 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 		object.clear();
 		if (doc.getDocumentElement().getChildNodes().getLength()!=0)
 		for (final Element ePatch : getElements(doc.getDocumentElement().getChildNodes())) {
-			IDeltaFactory factory;
+			IPatchFactory factory;
 			try {
-				factory = DeltaFactoryManager.getFactoryById(ePatch.getAttribute("factoryId"));
+				factory = PatchFactoryManager.getFactoryById(ePatch.getAttribute("factoryId"));
 			} catch (NoSuchExtensionException e) {
 				LogOperations.logInfo("Could not find extension point for factoryId: " + ePatch.getAttribute("factoryId"));
 				continue;

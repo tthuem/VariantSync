@@ -154,6 +154,8 @@ public interface IDelta<T> extends Serializable {
 	HashMap<String, String> getProperties();
 
 	void addProperty(String key, String obj);
+	
+	String getRepresentation();
 
 	static DELTATYPE DELTATYPE(int i) {
 		switch (i) {

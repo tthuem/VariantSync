@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.utilities;
+package de.tubs.variantsync.core.utilities.event;
 
 /**
  * Interface for components listening to events fired by other components.

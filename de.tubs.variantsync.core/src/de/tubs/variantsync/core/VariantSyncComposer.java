@@ -44,10 +44,10 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 		return false;
 	}
 	
-//	@Override
-//	public boolean hasBuildFolder() {
-//		return false;
-//	}
+	@Override
+	public boolean hasBuildFolder() {
+		return false;
+	}
 	
 	@Override
 	public boolean createFolderForFeatures() {

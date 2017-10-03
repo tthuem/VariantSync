@@ -20,11 +20,11 @@ import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
-import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
-import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
@@ -75,9 +75,9 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 		object.clear();
 		if (doc.getDocumentElement().getChildNodes().getLength()!=0)
 		for (final Element ePatch : getElements(doc.getDocumentElement().getChildNodes())) {
-			IPatchFactory factory;
+			IDeltaFactory factory;
 			try {
-				factory = PatchFactoryManager.getFactoryById(ePatch.getAttribute("factoryId"));
+				factory = DeltaFactoryManager.getFactoryById(ePatch.getAttribute("factoryId"));
 			} catch (NoSuchExtensionException e) {
 				LogOperations.logInfo("Could not find extension point for factoryId: " + ePatch.getAttribute("factoryId"));
 				continue;
@@ -121,7 +121,6 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 			ePatch.setAttribute("start", String.valueOf(patch.getStartTime()));
 			ePatch.setAttribute("end", String.valueOf(patch.getEndTime()));
 			ePatch.setAttribute("feature", patch.getFeature());
-			ePatch.setAttribute("factoryId", patch.getFactoryID());
 
 			if (patch.getDeltas().get(0) instanceof IDelta<?>) {
 				for (IDelta delta : ((List<IDelta<?>>) patch.getDeltas())) {
@@ -131,6 +130,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 					eDelta.setAttribute("timestamp", String.valueOf(delta.getTimestamp()));
 					eDelta.setAttribute("type", String.valueOf(delta.getType()));
 					eDelta.setAttribute("isSynchronized", String.valueOf(delta.isSynchronized()));
+					ePatch.setAttribute("factoryId", delta.getFactoryId());
 					
 					Element eProperties = doc.createElement("Properties");
 					HashMap<String,String> properties = delta.getProperties();

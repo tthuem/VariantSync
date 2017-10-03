@@ -18,7 +18,7 @@
  *
  * See http://featureide.cs.ovgu.de/ for further information.
  */
-package de.tubs.variantsync.core.utilities;
+package de.tubs.variantsync.core.utilities.event;
 
 /**
  * Event triggered by changes to a feature model or its elements.

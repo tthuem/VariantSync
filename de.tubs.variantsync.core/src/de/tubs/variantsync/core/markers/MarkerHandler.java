@@ -2,7 +2,6 @@ package de.tubs.variantsync.core.markers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -13,14 +12,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.eclipse.ui.texteditor.MarkerUtilities;
-import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
-
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 
@@ -149,7 +140,6 @@ public class MarkerHandler {
 		} catch (NullPointerException e) {
 			return;
 		}
-		int i = 0;
 		for (MarkerInformation mi : markers) {
 			try {
 				IRegion regionStart = document.getLineInformation(mi.getStart());
@@ -164,7 +154,6 @@ public class MarkerHandler {
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
-			i++;
 		}
 	}
 

@@ -17,9 +17,9 @@ import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.persistence.Persistence;
-import de.tubs.variantsync.core.utilities.IEventListener;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 import guidsl.pattern;
 
 /**
@@ -132,6 +132,7 @@ public class Context implements IEventListener {
 		projectList.clear();
 		featureExpressions.clear();
 		codeMappings.clear();
+		patches.clear();
 	}
 
 	public boolean isDefaultContextSelected() {
@@ -140,11 +141,6 @@ public class Context implements IEventListener {
 
 	public IPatch<?> getActualContextPatch() {
 		if (actualPatch == null) return null;
-		if (!actualPatch.getFeature().equals(getActualContext())) {
-			patches.add(actualPatch);
-			actualPatch = null;
-			return null;
-		}
 		return this.actualPatch;
 	}
 
@@ -205,9 +201,9 @@ public class Context implements IEventListener {
 	public void closeActualPatch() {
 		if (actualPatch != null) {
 			actualPatch.setEndTime(System.currentTimeMillis());
-			if (!actualPatch.isEmpty()) patches.add(actualPatch);
-			fireEvent(new VariantSyncEvent(this, EventType.PATCH_CLOSED, actualPatch, null));
+			if (!actualPatch.isEmpty() && !patches.contains(actualPatch)) patches.add(actualPatch);
 			actualPatch = null;
+			fireEvent(new VariantSyncEvent(this, EventType.PATCH_CLOSED, null, null));
 		}
 	}
 

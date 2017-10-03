@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
 /**
@@ -121,6 +122,12 @@ public interface IDelta<T> extends Serializable {
 	IPatch<?> getPatch();
 
 	void setPatch(IPatch<?> patch);
+	
+	IProject getProject();
+	
+	void setProject(IProject project);
+	
+	String getFactoryId();
 
 	/**
 	 * 

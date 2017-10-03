@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.persistence.FeatureExpressionFormat;
-import de.tubs.variantsync.core.persistence.Persistence;
 
 public class ContentProvider implements ITreeContentProvider {
 

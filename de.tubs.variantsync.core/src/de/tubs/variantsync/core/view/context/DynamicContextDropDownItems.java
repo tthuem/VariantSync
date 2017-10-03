@@ -18,8 +18,8 @@ import org.eclipse.ui.services.IServiceLocator;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
-import de.tubs.variantsync.core.utilities.IEventListener;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 public class DynamicContextDropDownItems extends CompoundContributionItem implements IWorkbenchContribution, IEventListener {
 

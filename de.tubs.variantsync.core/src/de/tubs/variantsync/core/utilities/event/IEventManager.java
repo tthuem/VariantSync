@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.utilities;
+package de.tubs.variantsync.core.utilities.event;
 
 /**
  * Broadcasts {@link FeatureIDEEvent Events} to the corresponding {@link IEventListener IFeatureModelListeners}.

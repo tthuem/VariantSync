@@ -9,8 +9,8 @@ import difflib.Chunk;
 
 public class DefaultDelta extends ADelta<Chunk> {
 
-	public DefaultDelta(IResource res) {
-		super(res);
+	public DefaultDelta(IResource res, String factoryId) {
+		super(res, factoryId);
 	}
 
 	@Override

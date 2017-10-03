@@ -1,6 +1,8 @@
 package de.tubs.variantsync.core.patch;
 
 import java.util.HashMap;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
@@ -16,15 +18,18 @@ public abstract class ADelta<T> implements IDelta<T> {
 	protected HashMap<String, String> properties = new HashMap<>();
 	protected IPatch<?> parent = null;
 	protected String feature = "";
+	private IProject project = null;
+	private String factoryId = "";
 	
-	public ADelta(IResource res) {
-		this.resource = res;
-		this.timestamp = res.getLocalTimeStamp()!=IResource.NULL_STAMP?res.getLocalTimeStamp():System.currentTimeMillis();
+	public ADelta(IResource res, String factoryId) {
+		this(res, res.getLocalTimeStamp()!=IResource.NULL_STAMP?res.getLocalTimeStamp():System.currentTimeMillis(), factoryId);	
 	}
 	
-	public ADelta(IResource res, long timestamp) {
+	public ADelta(IResource res, long timestamp, String factoryId) {
 		this.resource = res;
 		this.timestamp = timestamp;
+		this.project = res!=null?res.getProject():null;
+		this.factoryId = factoryId;
 	}
 
 	@Override
@@ -118,6 +123,21 @@ public abstract class ADelta<T> implements IDelta<T> {
 	@Override
 	public void setPatch(IPatch<?> patch) {
 		this.parent = patch;
+	}
+
+	@Override
+	public IProject getProject() {
+		return project ;
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		this.project = project;
+	}
+
+	@Override
+	public String getFactoryId() {
+		return factoryId ;
 	}
 
 	@Override

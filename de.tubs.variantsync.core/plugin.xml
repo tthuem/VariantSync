@@ -278,7 +278,7 @@
                         ifEmpty="false"
                         operator="or">
                      <reference
-                           definitionId="de.ovgu.featureide.ui.expressions.containsConfiguration">
+                           definitionId="de.ovgu.featureide.fm.ui.expressions.isConfiguration">
                      </reference>
                   </iterate>
                </with>
@@ -420,7 +420,7 @@
             allowMultiple="false"
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.sourcefocus.View"
-            icon="icons/method-draw-image.png"
+            icon="icons/VariantSyncSupport.png"
             id="de.tubs.variantsync.core.view.sourcefocus"
             name="Source-Focused View"
             restorable="true">

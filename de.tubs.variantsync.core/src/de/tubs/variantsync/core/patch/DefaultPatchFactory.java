@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IResource;
 
-import de.ovgu.featureide.fm.core.io.manager.FileHandler;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
@@ -61,7 +60,7 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 
 	@Override
 	public IPatch<IDelta<Chunk>> createPatch(String feature) {
-		IPatch<IDelta<Chunk>> patch = new APatch<IDelta<Chunk>>(getId());
+		IPatch<IDelta<Chunk>> patch = new APatch<IDelta<Chunk>>();
 		patch.setFeature(feature);
 		patch.setStartTime(System.currentTimeMillis());
 		return patch;
@@ -102,7 +101,7 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 			List<IDelta<Chunk>> deltas = new ArrayList<>();
 			for (Delta<String> originalDelta : patch.getDeltas()) {
 
-				IDelta<Chunk> delta = new DefaultDelta(res);
+				IDelta<Chunk> delta = new DefaultDelta(res, getId());
 				delta.setType(kind);
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
@@ -218,7 +217,7 @@ public class DefaultPatchFactory implements IPatchFactory<Chunk> {
 
 	@Override
 	public IDelta<Chunk> createDelta(IResource res) {
-		return new DefaultDelta(res);
+		return new DefaultDelta(res, getId());
 	}
 
 }

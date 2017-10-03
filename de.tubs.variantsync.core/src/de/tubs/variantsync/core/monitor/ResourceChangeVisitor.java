@@ -1,7 +1,5 @@
 package de.tubs.variantsync.core.monitor;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -10,13 +8,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
@@ -27,8 +19,8 @@ import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
 /**
  * Visits given resource delta and reacts on added, removed or changed resource deltas. "A resource delta represents changes in the state of a resource tree
@@ -96,6 +88,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				|| (delta.getFlags()
 					& IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
+			System.out.println(VariantSyncPlugin.INSTANCES);
 			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
 			try {
 				if (VariantSyncPlugin.getDefault().isActive()
@@ -120,28 +113,6 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			}
 		}
 		LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-		// if ((flag & IResourceDelta.MARKERS) == 0 || (flag &
-		// IResourceDelta.MOVED_FROM) != 0) {
-		// ContextOperations contextOperations = ModuleFactory.getContextOperations();
-		// contextOperations.recordFileAdded(res.getProject().getName(),
-		// res.getProject().getLocation().toString(),
-		// Util.parsePackageNameFromResource(res), ((IFile) res).getName(),
-		// Util.getFileLines(res),
-		// res.getModificationStamp());
-		// if (contextOperations.getActiveFeatureContext() != null
-		// &&
-		// !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
-		// contextOperations.setBaseVersion((IFile) res);
-		// try {
-		// persistanceOperations.addAdminResource(res);
-		// } catch (FileOperationException e) {
-		// LogOperations.logError("Change file could not be created in admin folder.",
-		// e);
-		// }
-		// LogOperations.logInfo(String.format("Resource %s was added with flag %s",
-		// delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-		// update();
-		// }
 	}
 
 	/**
@@ -182,23 +153,6 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			}
 		}
 		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-		// ContextOperations contextOperations = ModuleFactory.getContextOperations();
-		// contextOperations.recordFileRemoved(res.getProject().getName(),
-		// res.getProject().getLocation().toString(),
-		// Util.parsePackageNameFromResource(res), ((IFile) res).getName(),
-		// Util.getFileLines(res),
-		// res.getModificationStamp());
-		// if (contextOperations.getActiveFeatureContext() != null
-		// &&
-		// !contextOperations.getActiveFeatureContext().equals(VariantSyncConstants.DEFAULT_CONTEXT))
-		// contextOperations.setBaseVersion((IFile) res);
-		// try {
-		// persistanceOperations.removeAdminFile(res);
-		// } catch (FileOperationException e) {
-		// LogOperations.logError("Change file could not be removed from admin folder.",
-		// e);
-		// }
-		// update();
 	}
 
 	/**
@@ -246,7 +200,6 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				LogOperations.logError("File states could not be retrieved.", e);
 			}
 			LogOperations.logInfo(String.format("Resource %s was changed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
-			// update();
 		}
 	}
 

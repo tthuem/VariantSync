@@ -9,7 +9,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -28,28 +27,22 @@ import org.osgi.framework.BundleContext;
 
 import de.ovgu.featureide.core.CorePlugin;
 import de.ovgu.featureide.core.IFeatureProject;
-import de.ovgu.featureide.core.internal.FeatureProject;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
-import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.event.FeatureIDEEvent;
-import de.ovgu.featureide.fm.core.base.impl.Feature;
-import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
-import de.ovgu.featureide.fm.ui.editors.FeatureDiagramEditor;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
-import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.PatchFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 import de.tubs.variantsync.core.persistence.Persistence;
-import de.tubs.variantsync.core.utilities.IEventListener;
 import de.tubs.variantsync.core.utilities.LogOperations;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent.EventType;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 import de.tubs.variantsync.core.view.editor.PartAdapter;
 
 /**
@@ -59,8 +52,7 @@ import de.tubs.variantsync.core.view.editor.PartAdapter;
  * @version 1.0
  * @since 1.0.0.0
  */
-public class VariantSyncPlugin extends AbstractUIPlugin
-		implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
+public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.tubs.variantsync.core"; //$NON-NLS-1$
@@ -77,14 +69,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	/**
 	 * The constructor
 	 */
-	public VariantSyncPlugin() {
-	}
+	public VariantSyncPlugin() {}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-	 * BundleContext)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext)
 	 */
 	public void start(BundleContext ctxt) throws Exception {
 		super.start(ctxt);
@@ -92,8 +81,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 		addListener(this);
 		init();
 
-		PatchFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID,
-				IPatchFactory.extensionID, IPatchFactory.class));
+		PatchFactoryManager
+				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
 
 		Display.getDefault().asyncExec(new Runnable() {
 
@@ -108,9 +97,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-	 * BundleContext)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -149,11 +136,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative
-	 * path.
+	 * Returns an image descriptor for the image file at the given plug-in relative path.
 	 * 
-	 * @param path
-	 *            the path
+	 * @param path the path
 	 * @return the image descriptor
 	 */
 	public ImageDescriptor getImageDescriptor(String path) {
@@ -161,8 +146,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	}
 
 	/**
-	 * Always good to have this static method as when dealing with IResources having
-	 * a interface to get the editor is very handy
+	 * Always good to have this static method as when dealing with IResources having a interface to get the editor is very handy
 	 *
 	 * @return
 	 */
@@ -175,9 +159,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	}
 
 	public static IFile getEditorInput() {
+		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null) return null;
 		IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (editorPart == null)
-			return null;
+		if (editorPart == null) return null;
 		return ((IFileEditorInput) editorPart.getEditorInput()).getFile();
 	}
 
@@ -188,8 +172,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	public Context getContext(IFeatureProject project) {
 		if (project != null) {
 			for (IFeatureProject featureProject : INSTANCES.keySet()) {
-				if (featureProject.getProjectName().equals(project.getProjectName()))
-					return INSTANCES.get(featureProject);
+				if (featureProject.getProjectName().equals(project.getProjectName())) return INSTANCES.get(featureProject);
 			}
 			Context context = Persistence.loadContext(project);
 			context.setConfigurationProject(project);
@@ -202,10 +185,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 
 	public IFeatureProject getFeatureProject(IProject project) {
 		for (IFeatureProject featureProject : INSTANCES.keySet()) {
-			if (project.getName().equals(featureProject.getProjectName()))
-				return featureProject;
-			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getProjects().contains(project))
-				return featureProject;
+			if (project.getName().equals(featureProject.getProjectName())) return featureProject;
+			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getProjects().contains(project)) return featureProject;
 		}
 		return null;
 	}
@@ -225,17 +206,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	 */
 	private List<IFeatureProject> getConfigurationProjects() {
 		List<IFeatureProject> projects = new ArrayList<>();
-		for (IProject project : getWorkspace().getProjects()) {
-			try {
-				if (project.hasNature("de.ovgu.featureide.core.featureProjectNature")) {
-					IFeatureProject featureProject = CorePlugin.getFeatureProject(project);
-					if (featureProject.getComposerID().equals("de.tubs.variantsync.core.composer")) {
-						LogOperations.logInfo("Found configuration project with name: " + project.getName());
-						projects.add(featureProject);
-					}
-				}
-			} catch (CoreException e) {
-				e.printStackTrace();
+		for (IFeatureProject project : CorePlugin.getFeatureProjects()) {
+			if (project.getComposerID().equals("de.tubs.variantsync.core.composer")) {
+				LogOperations.logInfo("Found configuration project with name: " + project.getProjectName());
+				projects.add(project);
 			}
 		}
 		return projects;
@@ -269,8 +243,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 	public void loadFeatureExpressions() {
 		for (Context context : INSTANCES.values()) {
 			if (context.getConfigurationProject() != null) {
-				List<FeatureExpression> expressions = Persistence
-						.loadFeatureExpressions(context.getConfigurationProject());
+				List<FeatureExpression> expressions = Persistence.loadFeatureExpressions(context.getConfigurationProject());
 				if (expressions.isEmpty()) {
 					try {
 						context.importFeaturesFromModel();
@@ -337,14 +310,12 @@ public class VariantSyncPlugin extends AbstractUIPlugin
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IWorkbenchWindow ww = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = ww.getActivePage();
-		if (page == null)
-			return;
+		if (page == null) return;
 		page.addPartListener(new PartAdapter());
 	}
 
 	public static void addNature(IProject project) {
-		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(
-				"Adding VariantSync nature to " + project.getName());
+		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Adding VariantSync nature to " + project.getName());
 		try {
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();

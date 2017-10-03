@@ -11,10 +11,8 @@ public class APatch<T> implements IPatch<T> {
 	private List<IDelta<T>> deltas = new ArrayList<>();
 	private long startTime,endTime;
 	private String feature;
-	private String factoryID;
 	
-	public APatch(String factoryID) {
-		this.factoryID = factoryID;
+	public APatch() {
 	}
 	
 	@Override
@@ -90,10 +88,5 @@ public class APatch<T> implements IPatch<T> {
 	@Override
 	public void setFeature(String feature) {
 		this.feature = feature;
-	}
-
-	@Override
-	public String getFactoryID() {
-		return this.factoryID;
 	}
 }

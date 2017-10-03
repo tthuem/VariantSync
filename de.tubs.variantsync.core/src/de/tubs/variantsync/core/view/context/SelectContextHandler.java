@@ -12,8 +12,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.utilities.IEventListener;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
  * 

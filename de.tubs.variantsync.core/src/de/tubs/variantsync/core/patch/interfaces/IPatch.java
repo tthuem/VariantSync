@@ -81,14 +81,8 @@ public interface IPatch<T> {
 	
 	/**
 	 * 
-	 * @param context
+	 * @param feature
 	 */
 	void setFeature(String feature);
-	
-	/**
-	 * 
-	 * @return
-	 */
-	String getFactoryID();
 	
 }

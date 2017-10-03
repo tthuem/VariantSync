@@ -11,8 +11,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.utilities.IEventListener;
-import de.tubs.variantsync.core.utilities.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 public class ActiveContextHandler extends AbstractHandler implements IElementUpdater {
 

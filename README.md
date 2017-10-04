@@ -8,9 +8,9 @@ of changes between variants. As a side effect, using VariantSync for a while may
 * JDK 1.8 or higher
 * Eclipse IDE with the following plug-ins:
   * Plug-in Development Environment (PDE - minimum version is Luna)
-  * Feature IDE (version 3.1.0 required)
+  * Feature IDE (version 3.4.0 required)
 	* Eclipse Update-Site for version v3.x: http://featureide.cs.ovgu.de/update/v3/
-	* see http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide for more information about FeatureIDE
+	* see [FeatureIDE Homepage](https://featureide.github.io/) for more information about FeatureIDE
 	
 ## Installation
 ### Update Site:
@@ -33,4 +33,4 @@ of changes between variants. As a side effect, using VariantSync for a while may
 
 
 ## Hints
-* Do not use eclipse code formatting function (CTRL + SHIFT + F) wiwhen using line diffs as patch technique.
+* Do not use eclipse code formatting function (CTRL + SHIFT + F) when using line diffs as patch technique.

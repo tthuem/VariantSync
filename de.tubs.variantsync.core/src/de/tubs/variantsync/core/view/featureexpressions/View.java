@@ -35,8 +35,10 @@ import de.ovgu.featureide.fm.core.color.ColorPalette;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
-public class View extends ViewPart {
+public class View extends ViewPart implements IEventListener {
 
 	private List<FeatureExpression> expressions;
 
@@ -69,6 +71,7 @@ public class View extends ViewPart {
 
 	public View() {
 		super();
+		VariantSyncPlugin.getDefault().addListener(this);
 	}
 
 	@Override
@@ -168,7 +171,9 @@ public class View extends ViewPart {
 	}
 
 	@Override
-	public void setFocus() {}
+	public void setFocus() {
+		featureExpressionTable.setFocus();
+	}
 
 	private void editFeatureExpression() {
 		final TableItem[] selection = featureExpressionTable.getSelection();
@@ -213,6 +218,31 @@ public class View extends ViewPart {
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 			this.updateFeatureExpressionList();
+		}
+	}
+
+	@Override
+	public void propertyChange(VariantSyncEvent event) {
+		switch (event.getEventType()) {
+		case CONFIGURATIONPROJECT_SET:
+			break;
+		case CONTEXT_CHANGED:
+			break;
+		case CONTEXT_RECORDING_START:
+			break;
+		case CONTEXT_RECORDING_STOP:
+			break;
+		case FEATUREEXPRESSION_ADDED:
+			updateFeatureExpressionList();
+			break;
+		case PATCH_ADDED:
+			break;
+		case PATCH_CHANGED:
+			break;
+		case PATCH_CLOSED:
+			break;
+		default:
+			break;
 		}
 	}
 

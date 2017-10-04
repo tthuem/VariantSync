@@ -87,17 +87,6 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		tvChanges.getTree().setLayoutData(gridData);
 		setupTreeViewer(tvChanges.getTree());
 		
-//		Composite codeChange = new Composite(parent, SWT.BORDER);
-//		codeChange.setLayout(new GridLayout(1, false));
-//		gridData = new GridData();
-//		gridData.verticalAlignment = SWT.FILL;
-//		gridData.horizontalAlignment = SWT.FILL;
-//		gridData.verticalSpan = 2;
-//		gridData.horizontalSpan = 2;
-//		gridData.grabExcessHorizontalSpace = true;
-//		gridData.grabExcessVerticalSpace = true;
-//		codeChange.setLayoutData(gridData);
-		
 		lbChange = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		gridData = new GridData();
 		gridData.verticalAlignment = SWT.FILL;
@@ -120,6 +109,22 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = false;
 		targets.setLayoutData(gridData);
+		
+		Label lblTargets = new Label(targets, SWT.NONE);
+		lblTargets.setText("Targets:");
+		gridData = new GridData();
+		gridData.horizontalAlignment = SWT.CENTER;
+		gridData.horizontalSpan = 1;
+		gridData.grabExcessHorizontalSpace = false;
+		lblTargets.setLayoutData(gridData);
+		
+		Label lblTargetsPossible = new Label(targets, SWT.NONE);
+		lblTargetsPossible.setText("Targets With Conflicts:");
+		gridData = new GridData();
+		gridData.horizontalAlignment = SWT.CENTER;
+		gridData.horizontalSpan = 1;
+		gridData.grabExcessHorizontalSpace = false;
+		lblTargetsPossible.setLayoutData(gridData);
 		
 		autoSyncTargets = new org.eclipse.swt.widgets.List(targets, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		gridData = new GridData();

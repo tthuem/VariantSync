@@ -28,6 +28,8 @@ import org.osgi.framework.BundleContext;
 import de.ovgu.featureide.core.CorePlugin;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.event.FeatureIDEEvent;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
@@ -166,6 +168,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	}
 
 	public Context getActiveEditorContext() {
+		if (getEditorInput() == null) return null;
 		return getContext(getEditorInput().getProject());
 	}
 
@@ -342,7 +345,15 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			LogOperations.logInfo("Feature added: " + event);
 		case MODEL_DATA_SAVED:
 			LogOperations.logInfo("Model Event" + event);
-
+			if (event.getSource() instanceof IFeatureModel) {
+				IFeatureModel model = (IFeatureModel) event.getSource();
+				List<String> featureExpressions = getActiveEditorContext().getFeatureExpressionsAsStrings();
+				for (IFeature feature : model.getFeatures()) {
+					if (!featureExpressions.contains(feature.getName())) {
+						getActiveEditorContext().addFeatureExpression(feature.getName());
+					}
+				}
+			}
 			// context.importFeaturesFromModel();
 			break;
 		default:

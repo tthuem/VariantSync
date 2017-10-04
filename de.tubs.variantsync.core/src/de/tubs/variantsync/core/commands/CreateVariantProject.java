@@ -46,8 +46,8 @@ public class CreateVariantProject extends AbstractHandler {
 				String projectName = resource.getName();
 				projectName = projectName.substring(0, projectName.lastIndexOf("."));
 
-				new NewProjectAction(VariantSyncPlugin.getActiveWorkbenchWindow()).run();
-//				createJavaProjectWithVariantNature(projectName);
+//				new NewProjectAction(VariantSyncPlugin.getActiveWorkbenchWindow()).run();
+				createJavaProjectWithVariantNature(projectName);
 
 				// Remove all markers from the configuration project
 				try {

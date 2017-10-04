@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.data;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,9 @@ import org.eclipse.core.runtime.CoreException;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
+import de.ovgu.featureide.fm.core.configuration.Configuration;
+import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
+import de.ovgu.featureide.ui.actions.generator.IConfigurationBuilderBasics;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
@@ -73,8 +77,23 @@ public class Context implements IEventListener {
 		fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_SET, null, configurationProject));
 	}
 
+	public List<String> getProjectNames() {
+		List<String> projectNames = new ArrayList<>();
+		for (IProject project : this.projectList) {
+			projectNames.add(project.getName());
+		}
+		return projectNames;
+	}
+	
 	public List<IProject> getProjects() {
 		return projectList;
+	}
+	
+	public IProject getProject(String name) {
+		for (IProject project : this.projectList) {
+			if (project.getName().equals(name)) return project;
+		}
+		return null;
 	}
 
 	public void setProjects(List<IProject> projects) {
@@ -93,6 +112,15 @@ public class Context implements IEventListener {
 			e.printStackTrace();
 		}
 		this.projectList.add(project);
+	}
+	
+	public Configuration getConfigurationForProject(IProject project) {
+		for (IFile config : configurationProject.getAllConfigurations()) {
+			if (config.getName().replace("."+config.getFileExtension(), "").equals(project.getName())) {
+				return ConfigurationManager.getInstance(Paths.get(config.getLocationURI())).getObject();
+			}
+		}
+		return null;
 	}
 
 	public List<FeatureExpression> getFeatureExpressions() {
@@ -244,6 +272,12 @@ public class Context implements IEventListener {
 		case PATCH_CHANGED:
 			break;
 		case PATCH_CLOSED:
+			break;
+		case CONFIGURATIONPROJECT_CHANGED:
+			break;
+		case FEATUREEXPRESSION_CHANGED:
+			break;
+		case FEATUREEXPRESSION_REMOVED:
 			break;
 		default:
 			break;

@@ -91,23 +91,6 @@ public class FileHelper {
 		return fileContent;
 	}
 	
-//	private static void writeFile(IFile res, InputStream in) throws CoreException {
-//		WorkspaceJob job = new WorkspaceJob("Write to file") {
-//			
-//			@Override
-//			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-//				res.setContents(in, true, true, monitor);
-//				return Status.OK_STATUS;
-//			}
-//		};
-//		job.schedule();
-//		try {
-//			job.join(1_000, new VariantSyncProgressMonitor("Write to file"));
-//		} catch (InterruptedException e) {
-//			LogOperations.logError("Job was interrupted", e);
-//		}
-//	}
-	
 	public static void writeFile(IFile res, List<String> lines) throws IOException, CoreException {
 		File file = new File(res.getRawLocationURI());
 		if (file.exists()) {

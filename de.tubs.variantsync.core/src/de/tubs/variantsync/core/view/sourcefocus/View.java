@@ -1,7 +1,9 @@
 package de.tubs.variantsync.core.view.sourcefocus;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,12 +28,16 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider;
 
-public class View extends ViewPart implements SelectionListener, ISelectionChangedListener {
+public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
 	private Combo cbFeature;
 	private TreeViewer tvChanges;
@@ -40,9 +46,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private Button btnSyncManual;
 	private org.eclipse.swt.widgets.List autoSyncTargets;
 	private org.eclipse.swt.widgets.List manualSyncTargets;
+	private TargetsCalculator targetsCalculator = new TargetsCalculator();
+	private String feature = "";
 
 	public View() {
-		// TODO Auto-generated constructor stub
+		VariantSyncPlugin.getDefault().addListener(this);
 	}
 
 	@Override
@@ -58,7 +66,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		selectFeature.setLayoutData(gridData);
 		
 		Label lblFeatureExpression = new Label(selectFeature, SWT.NONE);
-		lblFeatureExpression.setText("Feature Expression");
+		lblFeatureExpression.setText("Feature Expression: ");
 		gridData = new GridData();
 		gridData.horizontalAlignment = SWT.LEFT;
 		gridData.horizontalSpan = 1;
@@ -72,6 +80,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		cbFeature.setLayoutData(gridData);
 		cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
+		cbFeature.select(0);
 		cbFeature.addSelectionListener(this);
 		
 		tvChanges = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -199,7 +208,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		String feature = cbFeature.getItem(cbFeature.getSelectionIndex());
+		clearAll();
+		feature  = cbFeature.getItem(cbFeature.getSelectionIndex());
 		updateTreeViewer(feature);
 	}
 
@@ -215,13 +225,15 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			IPatch<?> actualPatch = context.getActualContextPatch();
 			if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
-			if (patches != null && !patches.isEmpty()) tvChanges.setInput(FeatureTree.construct(feature, patches));
+			if (patches != null && !patches.isEmpty()) tvChanges.setInput(ProjectTree.construct(feature, patches));
 			tvChanges.expandToLevel(3);
 		}
 	}
 
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
+		clearAll();
+		
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		if (selection.size()==1) {
 			Object o = selection.getFirstElement();
@@ -229,6 +241,14 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
 				lbChange.setText(((IDelta<?>) o).getRepresentation());
+					List<IProject> targetsWithoutConflicts = targetsCalculator.getTargetsWithoutConflict((IDelta<?>) o);
+					autoSyncTargets.setItems(getProjectNames(targetsWithoutConflicts).toArray(new String[] {}));
+					if (!targetsWithoutConflicts.isEmpty()) btnSyncAuto.setEnabled(true);
+					
+					List<IProject> targetsWithConflict = targetsCalculator.getTargetsWithConflict((IDelta<?>) o);
+					manualSyncTargets.setItems(getProjectNames(targetsWithConflict).toArray(new String[] {}));
+					if (!targetsWithConflict.isEmpty()) btnSyncManual.setEnabled(true);
+				
 			} else {
 				lbChange.setText("");
 			}
@@ -250,6 +270,40 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			}
 			lbChange.setText(ret);
 		}
+	}
+
+	private void clearAll() {
+		btnSyncAuto.setEnabled(false);
+		btnSyncManual.setEnabled(false);
+		autoSyncTargets.removeAll();
+		manualSyncTargets.removeAll();
+	}
+
+	@Override
+	public void propertyChange(VariantSyncEvent event) {
+		switch(event.getEventType()) {
+		case PATCH_ADDED:
+		case PATCH_CHANGED:
+		case PATCH_CLOSED:
+			updateTreeViewer(feature);
+			break;
+		case FEATUREEXPRESSION_ADDED:
+		case FEATUREEXPRESSION_CHANGED:
+		case FEATUREEXPRESSION_REMOVED:
+			int oldSelection = cbFeature.getSelectionIndex();
+			cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
+			cbFeature.select(oldSelection);
+		default:
+			break;
+		}
+	}
+	
+	private List<String> getProjectNames(List<IProject> projects) {
+		List<String> projectNames = new ArrayList<>();
+		for (IProject project : projects) {
+			projectNames.add(project.getName());
+		}
+		return projectNames;
 	}
 	
 }

@@ -76,10 +76,10 @@ public interface IPatchFactory<T> extends IExtension {
 	 * Verifies that the given patch can be applied to the given resource
 	 * 
 	 * @param res - the resource
-	 * @param patch - the patch to verify
+	 * @param delta - the patch to verify
 	 * @return true if the patch can be applied
 	 */
-	boolean verifyDelta(IFile res, IDelta<T> patch);
+	boolean verifyDelta(IFile res, IDelta<T> delta);
 	
 	/**
 	 * Checks whether the file is supported

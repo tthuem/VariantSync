@@ -12,7 +12,7 @@ import de.tubs.variantsync.core.utilities.TreeNode;
  * 
  * @author Christopher Sontag
  */
-public class PatchTree {
+public class ResourcesTree {
 	
 	public static Tree construct(List<IPatch<?>> patches) {
 		Tree tree = new Tree();

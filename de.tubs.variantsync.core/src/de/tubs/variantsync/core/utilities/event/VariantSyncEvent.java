@@ -57,6 +57,14 @@ public class VariantSyncEvent {
 		 */
 		FEATUREEXPRESSION_ADDED,
 		/**
+		 * A feature expression was changed
+		 */
+		FEATUREEXPRESSION_CHANGED,
+		/**
+		 * A feature expression was removed
+		 */
+		FEATUREEXPRESSION_REMOVED,
+		/**
 		 * Recording was started
 		 */
 		CONTEXT_RECORDING_START,
@@ -79,7 +87,19 @@ public class VariantSyncEvent {
 		/**
 		 * A configuration project is setted
 		 */
-		CONFIGURATIONPROJECT_SET
+		CONFIGURATIONPROJECT_SET,
+		/**
+		 * The configuration project has changed 
+		 */
+		CONFIGURATIONPROJECT_CHANGED,
+		/**
+		 * A variant was added
+		 */
+		VARIANT_ADDED,
+		/**
+		 * A variant was removed
+		 */
+		VARIANT_REMOVED,
 	}
 	
 	static VariantSyncEvent[] defaultEvents = new VariantSyncEvent[EventType.values().length];

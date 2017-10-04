@@ -94,7 +94,7 @@ public class View extends ViewPart implements IEventListener {
 			IPatch<?> actualPatch = context.getActualContextPatch();
 			if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
-			if (patches != null && !patches.isEmpty()) tvResourceChanges.setInput(PatchTree.construct(patches));
+			if (patches != null && !patches.isEmpty()) tvResourceChanges.setInput(ResourcesTree.construct(patches));
 			tvResourceChanges.expandToLevel(3);
 		}
 	}

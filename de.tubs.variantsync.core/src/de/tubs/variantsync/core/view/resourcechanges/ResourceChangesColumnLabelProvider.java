@@ -11,11 +11,13 @@ import org.eclipse.swt.widgets.Display;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
+import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
 public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 
 	private int column;
+	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 
 	public ResourceChangesColumnLabelProvider(int column) {
 		this.column = column;
@@ -64,9 +66,21 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 		}
 		if (column == 2 && o instanceof IDelta) {
 			// TODO: Calculate possible targets
+			String projects = "";
+			for (IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>)o))) {
+				projects += project.getName() + ", ";
+			}
+			projects = projects.lastIndexOf(",") == -1?projects:projects.substring(0, projects.lastIndexOf(","));
+			cell.setText(projects);
 		}
 		if (column == 3 && o instanceof IDelta) {
 			// TODO: Calculate Targets
+			String projects = "";
+			for (IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>)o))) {
+				projects += project.getName() + ", ";
+			}
+			projects = projects.lastIndexOf(",") == -1?projects:projects.substring(0, projects.lastIndexOf(","));
+			cell.setText(projects);
 		}
 		if (column == 4 && o instanceof IDelta) {
 			Timestamp stamp = new Timestamp(((IDelta<?>) o).getTimestamp());

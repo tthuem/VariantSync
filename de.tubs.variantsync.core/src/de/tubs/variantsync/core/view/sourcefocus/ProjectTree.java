@@ -12,7 +12,7 @@ import de.tubs.variantsync.core.utilities.TreeNode;
  * 
  * @author Christopher Sontag
  */
-public class FeatureTree {
+public class ProjectTree {
 
 	public static Tree construct(String feature, List<IPatch<?>> patches) {
 		Tree tree = new Tree();
@@ -22,10 +22,15 @@ public class FeatureTree {
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
 				if (delta.getFeature().equals(feature)) {
-					TreeNode fileNode = tree.find(delta.getResource().getProjectRelativePath());
+					TreeNode projectNode = tree.find(delta.getProject().getName());
+					if (projectNode == null) {
+						projectNode = new TreeNode(delta.getProject().getName());
+						root.addChild(projectNode);
+					}
+					TreeNode fileNode = tree.find(projectNode, delta.getResource().getProjectRelativePath());
 					if (fileNode == null) {
 						fileNode = new TreeNode(delta.getResource().getProjectRelativePath());
-						root.addChild(fileNode);
+						projectNode.addChild(fileNode);
 					}
 					TreeNode deltaNode = tree.find(fileNode, delta);
 					if (deltaNode == null) {

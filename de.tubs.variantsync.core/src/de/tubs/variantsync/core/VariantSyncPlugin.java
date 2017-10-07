@@ -37,9 +37,9 @@ import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
-import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
-import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
@@ -59,12 +59,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	// The plug-in ID
 	public static final String PLUGIN_ID = "de.tubs.variantsync.core"; //$NON-NLS-1$
 
-	// private static final String FEATUREEXPRESSION_PATH =
-	// "/.featureExpression/featureExpressions.xml";
-
 	// The shared instance
 	private static VariantSyncPlugin plugin;
 	public static HashMap<IFeatureProject, Context> INSTANCES = new HashMap<>();
+	private static Context lastRequestedContext = null;
 	private boolean isActive;
 	private List<IEventListener> listeners = new ArrayList<>();
 
@@ -81,10 +79,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		super.start(ctxt);
 		plugin = this;
 		addListener(this);
+		
+		DeltaFactoryManager
+		.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class));
+		
 		init();
-
-		PatchFactoryManager
-				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IPatchFactory.extensionPointID, IPatchFactory.extensionID, IPatchFactory.class));
 
 		Display.getDefault().asyncExec(new Runnable() {
 
@@ -94,7 +93,6 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			}
 		});
 		initResourceChangeListener();
-
 	}
 
 	/*
@@ -103,6 +101,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		
+		if (lastRequestedContext != null)
+			this.getPreferenceStore().setValue("lastRequestedContext", lastRequestedContext.getConfigurationProject().getProjectName());
+		
 		for (Context c : INSTANCES.values()) {
 			Persistence.writeContext(c);
 			Persistence.writeFeatureExpressions(c);
@@ -168,19 +170,30 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	}
 
 	public Context getActiveEditorContext() {
-		if (getEditorInput() == null) return null;
+		if (getEditorInput() == null) return lastRequestedContext;
 		return getContext(getEditorInput().getProject());
 	}
 
 	public Context getContext(IFeatureProject project) {
 		if (project != null) {
 			for (IFeatureProject featureProject : INSTANCES.keySet()) {
-				if (featureProject.getProjectName().equals(project.getProjectName())) return INSTANCES.get(featureProject);
+				if (featureProject.getProjectName().equals(project.getProjectName())) {
+					Context context = INSTANCES.get(featureProject);
+					if (lastRequestedContext != context) {
+						lastRequestedContext = context;
+						fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedContext));
+					}
+					return context;
+				}
 			}
 			Context context = Persistence.loadContext(project);
 			context.setConfigurationProject(project);
 			addListener(context);
 			INSTANCES.put(project, context);
+			if (lastRequestedContext != context) {
+				lastRequestedContext = context;
+				fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedContext));
+			}
 			return context;
 		}
 		return null;
@@ -283,12 +296,22 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	}
 
 	public void init() {
+		Context lastContext = null;
 		for (IFeatureProject project : getConfigurationProjects()) {
-			getContext(project);
+			if (project.getProjectName().equals(this.getPreferenceStore().getString("lastRequestedContext"))) {
+				lastContext = getContext(project);
+			} else {
+				getContext(project);
+			}
+		}
+		if (lastContext != null && lastRequestedContext != lastContext) { 
+			lastRequestedContext = lastContext;
+			fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedContext));
 		}
 		loadVariants();
 		loadFeatureExpressions();
 		loadPatches();
+		fireEvent(new VariantSyncEvent(this, EventType.INITALIZED, null, null));
 	}
 
 	public void reinit() {

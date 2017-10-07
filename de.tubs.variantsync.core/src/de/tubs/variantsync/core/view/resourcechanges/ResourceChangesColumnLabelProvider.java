@@ -6,9 +6,6 @@ import java.util.Date;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;
@@ -16,11 +13,15 @@ import de.tubs.variantsync.core.utilities.TreeNode;
 
 public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 
-	private int column;
+	public enum TYPE {
+		DELTATYPE, SOURCE, TARGETSWITHOUTCONFLICT, TARGETSWITHCONFLICT, TIMESTAMP, TARGETSSYNCHRONIZED
+	}
+
+	private TYPE type;
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 
-	public ResourceChangesColumnLabelProvider(int column) {
-		this.column = column;
+	public ResourceChangesColumnLabelProvider(TYPE type) {
+		this.type = type;
 	}
 
 	@Override
@@ -30,15 +31,10 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			o = ((TreeNode) o).getData();
 		}
 
-		if (o instanceof IDelta && ((IDelta<?>) o).isSynchronized()) {
-			cell.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
-		} else {
-			cell.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-		}
-
-		if (column == 0) {
+		switch (type) {
+		case DELTATYPE:
 			if (o instanceof IDelta) {
-				switch(((IDelta<?>) o).getType()) {
+				switch (((IDelta<?>) o).getType()) {
 				case ADDED:
 					cell.setText("ADDED");
 					cell.setImage(VariantSyncPlugin.getDefault().getImageDescriptor("icons/add_obj.gif").createImage());
@@ -57,36 +53,56 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			} else {
 				cell.setText(o.toString());
 			}
-		}
-		if (column == 1 && o instanceof IDelta) {
-			IProject project = ((IDelta<?>) o).getProject();
-			if (project != null) {
-				cell.setText(project.getName());
+			break;
+		case SOURCE:
+			if (o instanceof IDelta) {
+				IProject project = ((IDelta<?>) o).getProject();
+				if (project != null) {
+					cell.setText(project.getName());
+				}
 			}
-		}
-		if (column == 2 && o instanceof IDelta) {
-			// TODO: Calculate possible targets
-			String projects = "";
-			for (IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>)o))) {
-				projects += project.getName() + ", ";
+			break;
+		case TARGETSSYNCHRONIZED:
+			if (o instanceof IDelta) {
+				String projects = "";
+				for (IProject project : ((IDelta<?>) o).getSynchronizedProjects()) {
+					projects += project.getName() + ", ";
+				}
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				cell.setText(projects);
 			}
-			projects = projects.lastIndexOf(",") == -1?projects:projects.substring(0, projects.lastIndexOf(","));
-			cell.setText(projects);
-		}
-		if (column == 3 && o instanceof IDelta) {
-			// TODO: Calculate Targets
-			String projects = "";
-			for (IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>)o))) {
-				projects += project.getName() + ", ";
+			break;
+		case TARGETSWITHCONFLICT:
+			if (o instanceof IDelta) {
+				String projects = "";
+				for (IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>) o))) {
+					projects += project.getName() + ", ";
+				}
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				cell.setText(projects);
 			}
-			projects = projects.lastIndexOf(",") == -1?projects:projects.substring(0, projects.lastIndexOf(","));
-			cell.setText(projects);
+			break;
+		case TARGETSWITHOUTCONFLICT:
+			if (o instanceof IDelta) {
+				String projects = "";
+				for (IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>) o))) {
+					projects += project.getName() + ", ";
+				}
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				cell.setText(projects);
+			}
+			break;
+		case TIMESTAMP:
+			if (o instanceof IDelta) {
+				Timestamp stamp = new Timestamp(((IDelta<?>) o).getTimestamp());
+				Date date = new Date(stamp.getTime());
+				cell.setText(date.toString());
+			}
+			break;
+		default:
+			break;
 		}
-		if (column == 4 && o instanceof IDelta) {
-			Timestamp stamp = new Timestamp(((IDelta<?>) o).getTimestamp());
-			Date date = new Date(stamp.getTime());
-			cell.setText(date.toString());
-		}
+
 	}
 
 }

@@ -9,6 +9,7 @@ import org.eclipse.ui.IFileEditorInput;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 
 /**
@@ -42,13 +43,13 @@ public class FeatureExpressionWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		VariantSyncPlugin.getDefault();
-		List<FeatureExpression> expressions = VariantSyncPlugin.getDefault().getContext(project).getFeatureExpressions();
+		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+		List<FeatureExpression> expressions = context.getFeatureExpressions();
 		if (featureExpression != null) {
 			expressions.remove(featureExpression);
 		}
 		expressions.add(new FeatureExpression(page.getFeatureExpression(), page.getColor()));
-		VariantSyncPlugin.getDefault().getContext(project).setFeatureExpressions(expressions);
+		context.setFeatureExpressions(expressions);
 		return true;
 	}
 

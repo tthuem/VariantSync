@@ -14,10 +14,12 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.nature.Variant;
-import de.tubs.variantsync.core.patch.PatchFactoryManager;
+import de.tubs.variantsync.core.patch.DefaultPatchFactory;
+import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
@@ -88,15 +90,15 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				|| (delta.getFlags()
 					& IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
-			System.out.println(VariantSyncPlugin.INSTANCES);
 			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
 			try {
 				if (VariantSyncPlugin.getDefault().isActive()
 					&& !context.isDefaultContextSelected()) {
-					IPatchFactory factory = PatchFactoryManager.getInstance().getFactoryByFile(file);
+					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (context.getActualContextPatch() == null) {
-						patch = factory.createPatch(context.getActualContext());
+						IPatchFactory patchFactory = new DefaultPatchFactory();
+						patch = patchFactory.createPatch(context.getActualContext());
 						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
 						patch = context.getActualContextPatch();
@@ -133,10 +135,11 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			try {
 				if (VariantSyncPlugin.getDefault().isActive()
 					&& !context.isDefaultContextSelected()) {
-					IPatchFactory factory = PatchFactoryManager.getInstance().getFactoryByFile(file);
+					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (context.getActualContextPatch() == null) {
-						patch = factory.createPatch(context.getActualContext());
+						IPatchFactory patchFactory = new DefaultPatchFactory();
+						patch = patchFactory.createPatch(context.getActualContext());
 						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
 						patch = context.getActualContextPatch();
@@ -177,10 +180,11 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					try {
 						if (VariantSyncPlugin.getDefault().isActive()
 							&& !context.isDefaultContextSelected()) {
-							IPatchFactory factory = PatchFactoryManager.getInstance().getFactoryByFile(file);
+							IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
 							if (context.getActualContextPatch() == null) {
-								patch = factory.createPatch(context.getActualContext());
+								IPatchFactory patchFactory = new DefaultPatchFactory();
+								patch = patchFactory.createPatch(context.getActualContext());
 								VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 							} else {
 								patch = context.getActualContextPatch();

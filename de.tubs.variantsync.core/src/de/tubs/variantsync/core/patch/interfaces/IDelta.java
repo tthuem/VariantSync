@@ -133,13 +133,13 @@ public interface IDelta<T> extends Serializable {
 	 * 
 	 * @return
 	 */
-	boolean isSynchronized();
+	boolean isSynchronizedProject(IProject project);
 
-	/**
-	 * 
-	 * @param isSynchronized
-	 */
-	void setSynchronized(boolean isSynchronized);
+	void addSynchronizedProject(IProject project);
+	
+	List<IProject> getSynchronizedProjects();
+	
+	void setSynchronizedProjects(List<IProject> projects);
 
 	/**
 	 * 

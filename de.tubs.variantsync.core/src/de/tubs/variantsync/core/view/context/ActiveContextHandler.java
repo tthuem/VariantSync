@@ -19,10 +19,10 @@ public class ActiveContextHandler extends AbstractHandler implements IElementUpd
 	private boolean active = false;
 	private static UIElement updateElement;
 	
-	// @Override
-	// public boolean isEnabled() {
-	// return VariantSyncPlugin.getDefault().getActiveEditorContext() != null;
-	// }
+	 @Override
+	 public boolean isEnabled() {
+		 return VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressions() != null;
+	 }
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {

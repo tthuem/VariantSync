@@ -5,22 +5,23 @@ import org.eclipse.core.resources.IFile;
 import de.ovgu.featureide.fm.core.CoreExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
-import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
 @SuppressWarnings("rawtypes")
-public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
+public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 
-	private static PatchFactoryManager instance = new PatchFactoryManager();
+	private static DeltaFactoryManager instance = new DeltaFactoryManager();
 	
-	public PatchFactoryManager() {
-		setExtensionLoaderInternal(new CoreExtensionLoader<>(DefaultPatchFactory.getInstance()));
+	public DeltaFactoryManager() {
+		setExtensionLoaderInternal(new CoreExtensionLoader<>(DefaultDeltaFactory.getInstance()));
+		addExtension(getDefaultFactory());
 	}
 
-	public static PatchFactoryManager getInstance() {
+	public static DeltaFactoryManager getInstance() {
 		return instance;
 	}
 	
-	public static void setExtensionLoader(IExtensionLoader<IPatchFactory> extensionLoader) {
+	public static void setExtensionLoader(IExtensionLoader<IDeltaFactory> extensionLoader) {
 		instance.setExtensionLoaderInternal(extensionLoader);
 	}
 	
@@ -30,7 +31,7 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	 * @return factory which has the given id
 	 * @throws NoSuchExtensionException
 	 */
-	public static IPatchFactory getFactoryById(String id) throws NoSuchExtensionException {
+	public static IDeltaFactory getFactoryById(String id) throws NoSuchExtensionException {
 		return instance.getExtension(id);
 	}
 	
@@ -41,8 +42,8 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	 * @return factory which supports the file
 	 * @throws NoSuchExtensionException
 	 */
-	public IPatchFactory getFactoryByFile(IFile file) throws NoSuchExtensionException {
-		for (IPatchFactory factory : instance.getExtensions()) {
+	public IDeltaFactory getFactoryByFile(IFile file) throws NoSuchExtensionException {
+		for (IDeltaFactory factory : instance.getExtensions()) {
 			if (factory.isSupported(file)) {
 				return factory;
 			}
@@ -54,8 +55,8 @@ public class PatchFactoryManager extends ExtensionManager<IPatchFactory> {
 	 * Returns the default factory (line-based diffs)
 	 * @return factory for line-based diffs
 	 */
-	public static IPatchFactory getDefaultFactory() {
-		return DefaultPatchFactory.getInstance();
+	public static IDeltaFactory getDefaultFactory() {
+		return DefaultDeltaFactory.getInstance();
 	}
 	
 }

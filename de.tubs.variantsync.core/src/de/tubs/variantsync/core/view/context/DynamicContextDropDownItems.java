@@ -21,6 +21,12 @@ import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
+/**
+ * @deprecated as eclipse can not update the text when an item is selected
+ * @author Christopher Sontag
+ *
+ * TODO: Update the current label of the toolbar button
+ */
 public class DynamicContextDropDownItems extends CompoundContributionItem implements IWorkbenchContribution, IEventListener {
 
 	private IServiceLocator mServiceLocator;

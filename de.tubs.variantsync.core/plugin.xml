@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="de.tubs.variantsync.core.PatchFactory" name="PatchFactory" schema="schema/de.tubs.variantsync.core.patchfactory.exsd"/>
+   <extension-point id="de.tubs.variantsync.core.DeltaFactory" name="DeltaFactory" schema="schema/de.tubs.variantsync.core.deltafactory.exsd"/>
    <extension
          point="de.ovgu.featureide.core.composers">
       <composer
@@ -197,12 +197,10 @@
                   icon="icons/nav_go.gif"
                   style="toggle">
             </command>
-            <command
-                  commandId="de.tubs.variantsync.core.command.context"
-                  id="de.tubs.variantsync.core.menus.context"
-                  mode="FORCE_TEXT"
-                  style="pulldown">
-            </command>
+            <control
+                  class="de.tubs.variantsync.core.view.context.SelectContextContribution"
+                  id="de.tubs.variantsync.core.menus.context">
+            </control>
          </toolbar>
       </menuContribution>
       <menuContribution
@@ -339,7 +337,7 @@
             defaultHandler="de.tubs.variantsync.core.view.context.SelectContextHandler"
             description="Select Context"
             id="de.tubs.variantsync.core.command.context"
-            name="Default context">
+            name="Default Context">
          <commandParameter
                id="de.tubs.variantsync.core.command.context.msg"
                name="Message"

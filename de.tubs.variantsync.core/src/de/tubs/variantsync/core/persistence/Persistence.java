@@ -8,44 +8,48 @@ import org.eclipse.core.resources.IProject;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.io.manager.FileHandler;
-import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 
-
 /**
  * Loads and saves objects
+ * 
  * @author Christopher Sontag (c.sontag@tu-bs.de)
  * @since 1.0.0.0
  * @TODO Update DOC
  */
 public class Persistence {
-	
+
 	/**
 	 * Loads all feature expressions
+	 * 
 	 * @param filename
 	 * @return
 	 */
 	public static List<FeatureExpression> loadFeatureExpressions(IFeatureProject iFeatureProject) {
 		List<FeatureExpression> featureExpressions = new ArrayList<>();
-		FileHandler.load(Paths.get(iFeatureProject.getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), featureExpressions, new FeatureExpressionFormat());
+		FileHandler.load(Paths.get(iFeatureProject.getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), featureExpressions,
+				new FeatureExpressionFormat());
 		return featureExpressions;
 	}
 
 	/**
 	 * Saves all feature expressions
+	 * 
 	 * @param context
 	 * @param filename
 	 */
 	public static void writeFeatureExpressions(Context context) {
-		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()), context.getFeatureExpressions(), new FeatureExpressionFormat());
+		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(FeatureExpressionFormat.FILENAME).getLocationURI()),
+				context.getFeatureExpressions(), new FeatureExpressionFormat());
 	}
 
 	/**
 	 * Loads all feature expressions
-	 * @param iFeatureProject 
+	 * 
+	 * @param iFeatureProject
 	 * @return
 	 */
 	public static Context loadContext(IFeatureProject iFeatureProject) {
@@ -58,13 +62,15 @@ public class Persistence {
 
 	/**
 	 * Saves all feature expressions
+	 * 
 	 * @param context
 	 * @param filename
 	 */
 	public static void writeContext(Context context) {
-		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context, new ContextFormat());
+		FileHandler.save(Paths.get(context.getConfigurationProject().getProject().getFile(ContextFormat.FILENAME).getLocationURI()), context,
+				new ContextFormat());
 	}
-	
+
 	/**
 	 * 
 	 * @param project
@@ -80,6 +86,7 @@ public class Persistence {
 
 	/**
 	 * Saves all feature expressions
+	 * 
 	 * @param context
 	 * @param filename
 	 */
@@ -87,7 +94,7 @@ public class Persistence {
 		if (project != null)
 			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
 	}
-	
+
 	/**
 	 * 
 	 * @param project
@@ -103,6 +110,7 @@ public class Persistence {
 
 	/**
 	 * Saves all feature expressions
+	 * 
 	 * @param context
 	 * @param filename
 	 */
@@ -110,5 +118,5 @@ public class Persistence {
 		if (iFeatureProject != null)
 			FileHandler.save(Paths.get(iFeatureProject.getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches, new PatchFormat(iFeatureProject));
 	}
-	
+
 }

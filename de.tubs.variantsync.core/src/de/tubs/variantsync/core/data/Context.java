@@ -84,11 +84,11 @@ public class Context implements IEventListener {
 		}
 		return projectNames;
 	}
-	
+
 	public List<IProject> getProjects() {
 		return projectList;
 	}
-	
+
 	public IProject getProject(String name) {
 		for (IProject project : this.projectList) {
 			if (project.getName().equals(name)) return project;
@@ -113,11 +113,13 @@ public class Context implements IEventListener {
 		}
 		this.projectList.add(project);
 	}
-	
+
 	public Configuration getConfigurationForProject(IProject project) {
 		for (IFile config : configurationProject.getAllConfigurations()) {
-			if (config.getName().replace("."+config.getFileExtension(), "").equals(project.getName())) {
-				return ConfigurationManager.getInstance(Paths.get(config.getLocationURI())).getObject();
+			if (config.getName().replace("." + config.getFileExtension(), "").equals(project.getName())) {
+				Configuration c = new Configuration(getConfigurationProject().getFeatureModel());
+				ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(config.getLocationURI()),c);
+				if (configurationManager != null) return configurationManager.getObject();
 			}
 		}
 		return null;
@@ -126,7 +128,7 @@ public class Context implements IEventListener {
 	public List<FeatureExpression> getFeatureExpressions() {
 		return featureExpressions;
 	}
-	
+
 	public List<String> getFeatureExpressionsAsStrings() {
 		List<String> featureExpressions = new ArrayList<>();
 		for (FeatureExpression fe : this.featureExpressions) {
@@ -191,7 +193,7 @@ public class Context implements IEventListener {
 	public void addPatch(IPatch<?> patch) {
 		patches.add(patch);
 	}
-	
+
 	public void setPatches(List<IPatch<?>> patches) {
 		this.patches = patches;
 	}
@@ -233,7 +235,7 @@ public class Context implements IEventListener {
 			}
 		}
 	}
-	
+
 	public void closeActualPatch() {
 		if (actualPatch != null) {
 			actualPatch.setEndTime(System.currentTimeMillis());

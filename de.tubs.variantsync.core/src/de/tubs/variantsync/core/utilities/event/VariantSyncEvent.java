@@ -99,7 +99,11 @@ public class VariantSyncEvent {
 		/**
 		 * A variant was removed
 		 */
-		VARIANT_REMOVED,
+		VARIANT_REMOVED, 
+		/**
+		 * Call after all projects are initalized
+		 */
+		INITALIZED
 	}
 	
 	static VariantSyncEvent[] defaultEvents = new VariantSyncEvent[EventType.values().length];

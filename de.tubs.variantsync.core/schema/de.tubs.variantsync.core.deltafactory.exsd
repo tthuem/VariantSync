@@ -3,10 +3,10 @@
 <schema targetNamespace="de.tubs.variantsync.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="de.tubs.variantsync.core" id="de.tubs.variantsync.patcher" name="Patcher"/>
+         <meta.schema plugin="de.tubs.variantsync.core" id="de.tubs.variantsync.core.DeltaFactory" name="DeltaFactory"/>
       </appinfo>
       <documentation>
-         This extension point can be used to add new patch techniques.
+         This extension point can be used to add new delta techniques.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="PatchFactory"/>
+            <element ref="DeltaFactory"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="PatchFactory">
+   <element name="DeltaFactory">
       <complexType>
          <attribute name="id" type="string">
             <annotation>
@@ -69,7 +69,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":de.tubs.variantsync.core.patch.interfaces.IPatchFactory"/>
+                  <meta.attribute kind="java" basedOn=":de.tubs.variantsync.core.patch.interfaces.IDeltaFactory"/>
                </appinfo>
             </annotation>
          </attribute>

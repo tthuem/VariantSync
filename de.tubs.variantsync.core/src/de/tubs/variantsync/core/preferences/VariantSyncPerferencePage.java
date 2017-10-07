@@ -6,9 +6,9 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.patch.DefaultPatchFactory;
-import de.tubs.variantsync.core.patch.PatchFactoryManager;
-import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
+import de.tubs.variantsync.core.patch.DefaultDeltaFactory;
+import de.tubs.variantsync.core.patch.DeltaFactoryManager;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
 /**
  * This class represents a preference page that
@@ -42,10 +42,10 @@ public class VariantSyncPerferencePage
 	 */
 	@SuppressWarnings("rawtypes")
 	public void createFieldEditors() {
-		List<IPatchFactory> factories = PatchFactoryManager.getInstance().getExtensions();
+		List<IDeltaFactory> factories = DeltaFactoryManager.getInstance().getExtensions();
 		String[][] strings = new String[factories.size()][2];
 		for (int i=0; i<factories.size(); i++) {
-			DefaultPatchFactory factory = (DefaultPatchFactory) factories.get(i);
+			DefaultDeltaFactory factory = (DefaultDeltaFactory) factories.get(i);
 			strings[i][0] = factory.getName();
 			strings[i][1] = factory.getId();
 		}

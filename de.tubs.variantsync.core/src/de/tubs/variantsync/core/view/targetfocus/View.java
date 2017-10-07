@@ -21,36 +21,36 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 
+import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
+import de.tubs.variantsync.core.utilities.event.IEventListener;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider;
-import de.tubs.variantsync.core.view.sourcefocus.ProjectTree;
-import de.tubs.variantsync.core.view.sourcefocus.SourceFocusTreeContentProvider;
+import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
-public class View extends ViewPart implements SelectionListener, ISelectionChangedListener {
+public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
-	private Combo cbFeature;
+	private Combo cbVariant;
 	private TreeViewer tvChanges;
 	private Text lbChange;
-	private Button btnSyncAuto;
-	private Button btnSyncManual;
-	private org.eclipse.swt.widgets.List autoSyncTargets;
-	private org.eclipse.swt.widgets.List manualSyncTargets;
+	private Button btnSync;
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String project = "";
 
 	public View() {
-		// TODO Auto-generated constructor stub
+		VariantSyncPlugin.getDefault().addListener(this);
 	}
 
 	@Override
@@ -73,14 +73,15 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = false;
 		lblFeatureExpression.setLayoutData(gridData);
 
-		cbFeature = new Combo(selectFeature, SWT.BORDER);
+		cbVariant = new Combo(selectFeature, SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = SWT.FILL;
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
-		cbFeature.setLayoutData(gridData);
-		cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getProjectNames().toArray(new String[] {}));
-		cbFeature.addSelectionListener(this);
+		cbVariant.setLayoutData(gridData);
+		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+		if (context != null) cbVariant.setItems(context.getProjectNames().toArray(new String[] {}));
+		cbVariant.addSelectionListener(this);
 
 		tvChanges = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		gridData = new GridData();
@@ -118,7 +119,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessVerticalSpace = false;
 		targets.setLayoutData(gridData);
 
-		btnSyncAuto = new Button(targets, SWT.NONE);
+		btnSync = new Button(targets, SWT.NONE);
 		gridData = new GridData();
 		gridData.verticalAlignment = SWT.BOTTOM;
 		gridData.horizontalAlignment = SWT.CENTER;
@@ -126,23 +127,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.horizontalSpan = 1;
 		gridData.grabExcessHorizontalSpace = false;
 		gridData.grabExcessVerticalSpace = false;
-		btnSyncAuto.setLayoutData(gridData);
-		btnSyncAuto.setText("Auto Sync");
-		btnSyncAuto.setEnabled(false);
-		btnSyncAuto.addSelectionListener(this);
+		btnSync.setLayoutData(gridData);
+		btnSync.setText("Synchronize");
+		btnSync.setEnabled(false);
+		btnSync.addSelectionListener(this);
 
-		btnSyncManual = new Button(targets, SWT.NONE);
-		gridData = new GridData();
-		gridData.verticalAlignment = SWT.BOTTOM;
-		gridData.horizontalAlignment = SWT.CENTER;
-		gridData.verticalSpan = 1;
-		gridData.horizontalSpan = 1;
-		gridData.grabExcessHorizontalSpace = false;
-		gridData.grabExcessVerticalSpace = false;
-		btnSyncManual.setLayoutData(gridData);
-		btnSyncManual.setText("Manual Sync");
-		btnSyncManual.setEnabled(false);
-		btnSyncManual.addSelectionListener(this);
 	}
 
 	protected void setupTreeViewer(final Tree tree) {
@@ -156,30 +145,28 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		TreeColumn col = new TreeColumn(tree, SWT.None, 0);
 		col.setText("Resource");
 		TreeViewerColumn tvCol = new TreeViewerColumn(tvChanges, col);
-		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(0));
+		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(TYPE.DELTATYPE));
 		layout.addColumnData(new ColumnWeightData(1, 300, true));
 
 		col = new TreeColumn(tree, SWT.None, 1);
 		col.setText("Time");
 		tvCol = new TreeViewerColumn(tvChanges, col);
-		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(4));
+		tvCol.setLabelProvider(new ResourceChangesColumnLabelProvider(TYPE.TIMESTAMP));
 		layout.addColumnData(new ColumnWeightData(1, 250, true));
 	}
 
 	@Override
 	public void setFocus() {
-		cbFeature.setFocus();
+		cbVariant.setFocus();
 	}
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		if (e.getSource().equals(cbFeature)) {
-			project = cbFeature.getItem(cbFeature.getSelectionIndex());
+		if (e.getSource().equals(cbVariant)) {
+			project = cbVariant.getItem(cbVariant.getSelectionIndex());
 			updateTreeViewer(project);
-		} else if (e.getSource().equals(btnSyncAuto)) {
-			System.out.println("Auto Sync");
-		} else if (e.getSource().equals(btnSyncManual)) {
-			System.out.println("Manual Sync");
+		} else if (e.getSource().equals(btnSync)) {
+			System.out.println("Sync");
 		}
 	}
 
@@ -189,28 +176,34 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	}
 
 	protected void updateTreeViewer(String project) {
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) {
-			List<IPatch<?>> patches = context.getPatches();
-			IPatch<?> actualPatch = context.getActualContextPatch();
-			if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
+		Display.getDefault().asyncExec(new Runnable() {
 
-			Set<String> selectedFeatures = context.getConfigurationForProject(context.getProject(project)).getSelectedFeatureNames();
-			List<IPatch<?>> checkedPatches = new ArrayList<>();
-			for (IPatch<?> patch : patches) {
-				if (selectedFeatures.contains(patch.getFeature()))
-					checkedPatches.add(patch);
+			public void run() {
+				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+				if (context != null) {
+					List<IPatch<?>> patches = context.getPatches();
+					IPatch<?> actualPatch = context.getActualContextPatch();
+					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
+
+					Configuration config = context.getConfigurationForProject(context.getProject(project));
+					if (config != null) {
+						Set<String> selectedFeatures = config.getSelectedFeatureNames();
+						List<IPatch<?>> checkedPatches = new ArrayList<>();
+						for (IPatch<?> patch : patches) {
+							if (selectedFeatures.contains(patch.getFeature())) checkedPatches.add(patch);
+						}
+
+						if (patches != null && !patches.isEmpty()) tvChanges.setInput(FeatureTree.construct(project, checkedPatches));
+						tvChanges.expandToLevel(3);
+					}
+				}
 			}
-
-			if (patches != null && !patches.isEmpty()) tvChanges.setInput(FeatureTree.construct(project, checkedPatches));
-			tvChanges.expandToLevel(3);
-		}
+		});
 	}
 
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		btnSyncAuto.setEnabled(false);
-		btnSyncManual.setEnabled(false);
+		btnSync.setEnabled(false);
 
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		// Only one element selected
@@ -221,12 +214,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				lbChange.setText(((IDelta<?>) o).getRepresentation());
 				IProject targetProject = VariantSyncPlugin.getDefault().getActiveEditorContext().getProject(project);
 				if (targetProject != null) {
-					if (targetsCalculator.isTargetWithoutConflict(targetProject, (IDelta<?>) o)) {
-						btnSyncAuto.setEnabled(true);
-					}
-					if (targetsCalculator.isTargetWithConflict(targetProject, (IDelta<?>) o)) {
-						btnSyncManual.setEnabled(true);
-					}
+					btnSync.setEnabled(true);
 				}
 			} else {
 				lbChange.setText("");
@@ -247,6 +235,26 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				}
 			}
 			lbChange.setText(ret);
+		}
+	}
+
+	@Override
+	public void propertyChange(VariantSyncEvent event) {
+		switch (event.getEventType()) {
+		case PATCH_ADDED:
+		case PATCH_CHANGED:
+		case PATCH_CLOSED:
+		case CONTEXT_CHANGED:
+		case INITALIZED:
+			updateTreeViewer(project);
+			break;
+		case VARIANT_ADDED:
+		case VARIANT_REMOVED:
+			int oldSelection = cbVariant.getSelectionIndex();
+			cbVariant.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
+			cbVariant.select(oldSelection);
+		default:
+			break;
 		}
 	}
 }

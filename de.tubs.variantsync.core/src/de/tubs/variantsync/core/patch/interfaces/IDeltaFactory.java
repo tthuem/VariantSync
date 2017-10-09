@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
-import org.eclipse.core.resources.IResource;
 import de.ovgu.featureide.fm.core.IExtension;
 import de.tubs.variantsync.core.exceptions.PatchException;
+import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 
 /**
@@ -30,7 +30,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param res
 	 * @return
 	 */
-	IDelta<T> createDelta(IResource res);
+	IDelta<T> createDelta(IFile file);
 	
 	/**
 	 * Creates a delta object for a resource
@@ -40,7 +40,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param kind - type of change
 	 * @return patch object
 	 */
-	List<IDelta<T>> createDeltas(IResource res, long timestamp, DELTATYPE kind) throws PatchException;
+	List<IDelta<T>> createDeltas(IFile file, long timestamp, DELTATYPE kind) throws PatchException;
 
 	/**
 	 * Creates patch object from a changed resource.
@@ -50,7 +50,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param kind - type of change
 	 * @return patch object
 	 */
-	List<IDelta<T>> createDeltas(IResource res, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException;
+	List<IDelta<T>> createDeltas(IFile file, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException;
 	
 	/**
 	 * Patches a resource with a given patch.
@@ -59,7 +59,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param patch - patch
 	 * @return patched temp resource
 	 */
-	IFile applyDelta(IFile res, IDelta<T> patch);
+	IFile applyDelta(IFile file, IDelta<T> patch);
 	
 	/**
 	 * Unpatches a revised resource for a given patch.
@@ -68,7 +68,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param patch - patch
 	 * @return original resource
 	 */
-	IFile reverseDelta(IFile res, IDelta<T> patch);
+	IFile reverseDelta(IFile file, IDelta<T> patch);
 	
 	/**
 	 * Verifies that the given patch can be applied to the given resource
@@ -77,7 +77,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param delta - the patch to verify
 	 * @return true if the patch can be applied
 	 */
-	boolean verifyDelta(IFile res, IDelta<T> delta);
+	boolean verifyDelta(IFile file, IDelta<T> delta);
 	
 	/**
 	 * Checks whether the file is supported
@@ -85,5 +85,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return true if the file is supported
 	 */
 	boolean isSupported(IFile file);
+	
+	List<IMarkerInformation> getMarkerInformations(IFile file, IDelta<T> delta);
 	
 }

@@ -107,6 +107,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					context.setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (PatchException ex) {
 				LogOperations.logError("Patch could not be created", ex);
@@ -148,6 +149,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					context.setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (PatchException ex) {
 				LogOperations.logError("Patch could not be created", ex);
@@ -193,6 +195,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 							patch.addDeltas(deltas);
 							context.setActualContextPatch(patch);
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
 					} catch (PatchException ex) {
 						LogOperations.logError("Patch could not be created", ex);

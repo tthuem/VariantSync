@@ -13,8 +13,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
- * Listener which notifies resource changes in workspace that have already
- * happened.
+ * Listener which notifies resource changes in workspace that have already happened.
  *
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
@@ -24,8 +23,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class ResourceChangeHandler implements IResourceChangeListener, ISaveParticipant {
 
 	/**
-	 * Notifies ResourceDeltaListener that some resource changes have already
-	 * happened.
+	 * Notifies ResourceDeltaListener that some resource changes have already happened.
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -39,11 +37,9 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 	}
 
 	/**
-	 * Ensures that resource monitoring is active even if variantsync plugin is
-	 * not active in eclipse.
+	 * Ensures that resource monitoring is active even if variantsync plugin is not active in eclipse.
 	 * 
-	 * @throws CoreException
-	 *             resources could not be monitored
+	 * @throws CoreException resources could not be monitored
 	 */
 	public void registerSaveParticipant() throws CoreException {
 		IWorkspace ws = ResourcesPlugin.getWorkspace();
@@ -51,8 +47,7 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 		// Registers the given plug-in's workspace save participant, and returns
 		// an object describing the workspace state at the time of the last save
 		// in which the bundle participated.
-		ISavedState ss = ws.addSaveParticipant(VariantSyncPlugin.PLUGIN_ID,
-				this);
+		ISavedState ss = ws.addSaveParticipant(VariantSyncPlugin.PLUGIN_ID, this);
 		if (ss != null) {
 
 			// used to receive notification of changes that might have happened
@@ -65,25 +60,25 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 	@Override
 	public void doneSaving(ISaveContext context) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void prepareToSave(ISaveContext context) throws CoreException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void rollback(ISaveContext context) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void saving(ISaveContext context) throws CoreException {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

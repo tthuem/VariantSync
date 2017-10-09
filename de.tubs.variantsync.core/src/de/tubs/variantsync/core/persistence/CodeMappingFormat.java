@@ -14,15 +14,17 @@ import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.CodeLine;
+import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.SourceFile;
+import de.tubs.variantsync.core.markers.MarkerInformation;
+import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 
 public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 	private static final String ID = "CodeMapping";
 	private static final String MAPPINGS = "Mappings";
 	private static final String SOURCEFILE = "SourceFile";
-	private static final String CODELINE = "CodeLine";
+	private static final String CODEMAPPINGS = "CodeMapping";
 	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+MAPPINGS+"[\\s>]");
 	
 	public static final String FILENAME = ".mapping.xml";
@@ -61,15 +63,14 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
-			SourceFile sf = new SourceFile();
-			sf.setResource(ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(eSF.getAttribute("path"))));
-			for (final Element eCL : getElements(eSF.getChildNodes())) {
-				CodeLine cl = new CodeLine();
-				cl.setCode(eCL.getAttribute("code"));
-				cl.setFeatureExpression(VariantSyncPlugin.getDefault().getContext(project).getFeatureExpression(eCL.getAttribute("feature")));
-				cl.setLine(Integer.parseInt(eCL.getAttribute("line")));
+			SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
+			for (final Element eCM : getElements(eSF.getChildNodes())) {
+				IMarkerInformation markerInformation = new MarkerInformation(Integer.parseInt(eCM.getAttribute("offset")), Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
+				markerInformation.setFeatureExpression(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpression(eCM.getAttribute("feature")));
+				CodeMapping codeMapping = new CodeMapping(eCM.getAttribute("code"), markerInformation);
+				sourceFile.addMapping(codeMapping);
 			}
-			object.add(sf);
+			object.add(sourceFile);
 		}
 		
 	}
@@ -80,13 +81,15 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		
 		for (SourceFile sf : object) {
 			Element file = doc.createElement(SOURCEFILE);
-			file.setAttribute("path", String.valueOf(sf.getResource().getFullPath()));
+			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));
 			
-			for (CodeLine cl : sf.getCodeLines()) {
-				Element line = doc.createElement(CODELINE);
-				line.setAttribute("feature", cl.getFeatureExpression().name);
-				line.setAttribute("line", String.valueOf(cl.getLine()));
-				line.setAttribute("code", cl.getCode());
+			for (CodeMapping cm : sf.getMappings()) {
+				Element line = doc.createElement(CODEMAPPINGS);
+				line.setAttribute("feature", cm.getMarkerInformation().getFeatureExpression().name);
+				line.setAttribute("offset", String.valueOf(cm.getMarkerInformation().getOffset()));
+				line.setAttribute("length", String.valueOf(cm.getMarkerInformation().getLength()));
+				line.setAttribute("isLine", String.valueOf(cm.getMarkerInformation().isLine()));
+				line.setTextContent(cm.getCode());
 			}
 			
 			root.appendChild(file);

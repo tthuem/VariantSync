@@ -14,17 +14,14 @@ import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
-import de.ovgu.featureide.ui.actions.generator.IConfigurationBuilderBasics;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
-import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
-import guidsl.pattern;
 
 /**
  * 
@@ -116,10 +113,12 @@ public class Context implements IEventListener {
 
 	public Configuration getConfigurationForProject(IProject project) {
 		for (IFile config : configurationProject.getAllConfigurations()) {
-			if (config.getName().replace("." + config.getFileExtension(), "").equals(project.getName())) {
-				Configuration c = new Configuration(getConfigurationProject().getFeatureModel());
-				ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(config.getLocationURI()),c);
-				if (configurationManager != null) return configurationManager.getObject();
+			if (project != null) {
+				if (config.getName().replace("." + config.getFileExtension(), "").equals(project.getName())) {
+					Configuration c = new Configuration(getConfigurationProject().getFeatureModel());
+					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(config.getLocationURI()), c);
+					if (configurationManager != null) return configurationManager.getObject();
+				}
 			}
 		}
 		return null;
@@ -198,19 +197,21 @@ public class Context implements IEventListener {
 		this.patches = patches;
 	}
 
-	public List<CodeLine> getMapping(IFile file) {
-		if (codeMappings.containsKey(file.getProject())) for (SourceFile sf : codeMappings.get(file.getProject())) {
-			if (sf.getResource().getFullPath().equals(file.getFullPath())) {
-				return sf.getCodeLines();
+	public FeatureExpression getFeatureExpression(String name) {
+		for (FeatureExpression fe : getFeatureExpressions()) {
+			if (fe.name.equals(name)) {
+				return fe;
 			}
 		}
 		return null;
 	}
 
-	public FeatureExpression getFeatureExpression(String name) {
-		for (FeatureExpression fe : getFeatureExpressions()) {
-			if (fe.name.equals(name)) {
-				return fe;
+	public SourceFile getMapping(IFile file) {
+		if (codeMappings.containsKey(file.getProject())) {
+			for (SourceFile sourceFile : codeMappings.get(file.getProject())) {
+				if (sourceFile.getFile().getFullPath().equals(file.getFullPath())) {
+					return sourceFile;
+				}
 			}
 		}
 		return null;
@@ -229,11 +230,14 @@ public class Context implements IEventListener {
 	}
 
 	public void addCodeMapping(IFile file, SourceFile sourceFile) {
-		for (SourceFile sf : codeMappings.get(file.getProject())) {
-			if (sf.getResource().getFullPath().equals(file.getFullPath())) {
+		List<SourceFile> sourceFiles = codeMappings.get(file.getProject());
+		for (SourceFile sf : sourceFiles) {
+			if (sf.getFile().getFullPath().equals(file.getFullPath())) {
 				sf = sourceFile;
+				return;
 			}
 		}
+		sourceFiles.add(sourceFile);
 	}
 
 	public void closeActualPatch() {

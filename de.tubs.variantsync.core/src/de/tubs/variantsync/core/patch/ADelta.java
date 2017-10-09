@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 
 public abstract class ADelta<T> implements IDelta<T> {
 
-	protected IResource resource;
+	protected IFile resource;
 	protected T original;
 	protected T revised;
 	protected IDelta.DELTATYPE type;
@@ -23,11 +25,11 @@ public abstract class ADelta<T> implements IDelta<T> {
 	protected IProject project = null;
 	protected String factoryId = "";
 	
-	public ADelta(IResource res, String factoryId) {
+	public ADelta(IFile res, String factoryId) {
 		this(res, System.currentTimeMillis(), factoryId);	
 	}
 	
-	public ADelta(IResource res, long timestamp, String factoryId) {
+	public ADelta(IFile res, long timestamp, String factoryId) {
 		this.resource = res;
 		if (res != null && res.getLocalTimeStamp()!=IResource.NULL_STAMP) {
 			timestamp = res.getLocalTimeStamp();
@@ -48,7 +50,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
-	public IResource getResource() {
+	public IFile getResource() {
 		return this.resource;
 	}
 
@@ -169,5 +171,11 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public abstract void setRevisedFromString(String revised);
+
+	@Override
+	public String toString() {
+		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, feature=%s, factoryId=%s]", resource, revised, type, timestamp, feature,
+				factoryId);
+	}
 	
 }

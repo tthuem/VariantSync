@@ -35,11 +35,12 @@ import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
+import de.tubs.variantsync.core.markers.MarkerUpdateJob;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
-import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
+import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
@@ -79,10 +80,10 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		super.start(ctxt);
 		plugin = this;
 		addListener(this);
-		
+
 		DeltaFactoryManager
-		.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class));
-		
+				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class));
+
 		init();
 
 		Display.getDefault().asyncExec(new Runnable() {
@@ -99,23 +100,25 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext ctxt) throws Exception {
 		plugin = null;
-		
-		if (lastRequestedContext != null)
-			this.getPreferenceStore().setValue("lastRequestedContext", lastRequestedContext.getConfigurationProject().getProjectName());
-		
-		for (Context c : INSTANCES.values()) {
-			Persistence.writeContext(c);
-			Persistence.writeFeatureExpressions(c);
 
-			HashMap<IProject, List<SourceFile>> codeMappings = c.getCodeMappings();
-			for (IProject project : codeMappings.keySet()) {
-				Persistence.writeCodeMapping(project, codeMappings.get(project));
+		if (lastRequestedContext != null && lastRequestedContext.getConfigurationProject() != null)
+			this.getPreferenceStore().setValue("lastRequestedContext", lastRequestedContext.getConfigurationProject().getProjectName());
+
+		for (Context context : INSTANCES.values()) {
+			if (context != null) {
+				Persistence.writeContext(context);
+				Persistence.writeFeatureExpressions(context);
+
+				HashMap<IProject, List<SourceFile>> codeMappings = context.getCodeMappings();
+				for (IProject project : codeMappings.keySet()) {
+					Persistence.writeCodeMapping(project, codeMappings.get(project));
+				}
+				Persistence.writePatches(context.getConfigurationProject(), context.getPatches());
 			}
-			Persistence.writePatches(c.getConfigurationProject(), c.getPatches());
 		}
-		super.stop(context);
+		super.stop(ctxt);
 	}
 
 	/**
@@ -285,6 +288,17 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		}
 	}
 
+	public void loadCodeMappings() {
+		for (Context context : INSTANCES.values()) {
+			for (IProject project : context.getProjects()) {
+				List<SourceFile> sourceFiles = Persistence.loadCodeMapping(project);
+				if (!sourceFiles.isEmpty()) {
+					context.addCodeMapping(project, sourceFiles);
+				}
+			}
+		}
+	}
+
 	private void initResourceChangeListener() {
 		ResourceChangeHandler listener = new ResourceChangeHandler();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
@@ -304,27 +318,30 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				getContext(project);
 			}
 		}
-		if (lastContext != null && lastRequestedContext != lastContext) { 
+		if (lastContext != null && lastRequestedContext != lastContext) {
 			lastRequestedContext = lastContext;
 			fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedContext));
 		}
 		loadVariants();
 		loadFeatureExpressions();
 		loadPatches();
+		loadCodeMappings();
 		fireEvent(new VariantSyncEvent(this, EventType.INITALIZED, null, null));
 	}
 
 	public void reinit() {
 		for (Context context : INSTANCES.values()) {
-			Persistence.writeContext(context);
-			Persistence.writeFeatureExpressions(context);
+			if (context != null) {
+				Persistence.writeContext(context);
+				Persistence.writeFeatureExpressions(context);
 
-			HashMap<IProject, List<SourceFile>> codeMappings = context.getCodeMappings();
-			for (IProject project : codeMappings.keySet()) {
-				Persistence.writeCodeMapping(project, codeMappings.get(project));
+				HashMap<IProject, List<SourceFile>> codeMappings = context.getCodeMappings();
+				for (IProject project : codeMappings.keySet()) {
+					Persistence.writeCodeMapping(project, codeMappings.get(project));
+				}
+				Persistence.writePatches(context.getConfigurationProject(), context.getPatches());
+				context.reset();
 			}
-			Persistence.writePatches(context.getConfigurationProject(), context.getPatches());
-			context.reset();
 		}
 		init();
 	}
@@ -397,6 +414,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				}
 			}
 			break;
+		case PATCH_CHANGED:
+			if (event.getSource() instanceof IFile) {
+				MarkerUpdateJob job = new MarkerUpdateJob((IFile) event.getSource());
+				job.schedule();
+			}
 		default:
 			break;
 		}

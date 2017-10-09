@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 
 /**
  * 
@@ -117,16 +117,16 @@ public interface IDelta<T> extends Serializable {
 	/**
 	 * Returns resource
 	 */
-	IResource getResource();
+	IFile getResource();
 
 	IPatch<?> getPatch();
 
 	void setPatch(IPatch<?> patch);
-	
+
 	IProject getProject();
-	
+
 	void setProject(IProject project);
-	
+
 	String getFactoryId();
 
 	/**
@@ -136,9 +136,9 @@ public interface IDelta<T> extends Serializable {
 	boolean isSynchronizedProject(IProject project);
 
 	void addSynchronizedProject(IProject project);
-	
+
 	List<IProject> getSynchronizedProjects();
-	
+
 	void setSynchronizedProjects(List<IProject> projects);
 
 	/**
@@ -146,7 +146,7 @@ public interface IDelta<T> extends Serializable {
 	 * @return
 	 */
 	long getTimestamp();
-	
+
 	void setTimestamp(long timestamp);
 
 	String getProperty(String key);
@@ -154,7 +154,7 @@ public interface IDelta<T> extends Serializable {
 	HashMap<String, String> getProperties();
 
 	void addProperty(String key, String obj);
-	
+
 	String getRepresentation();
 
 	static DELTATYPE DELTATYPE(int i) {

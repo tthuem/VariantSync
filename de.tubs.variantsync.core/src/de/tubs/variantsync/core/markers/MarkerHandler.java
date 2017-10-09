@@ -12,16 +12,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 
 public class MarkerHandler {
-	
+
 	private static MarkerHandler instance = null;
 	private static List<String> annotationMarkers = new ArrayList<>();
-	//private static final String defaultAnnoationMarker = "de.tubs.variantsync.core.annotations.lightgrey1";
-	//private static final String markerId = "de.tubs.variantsync.marker";
-	
+
 	private MarkerHandler() {
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgrey");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.red");
@@ -36,13 +37,13 @@ public class MarkerHandler {
 	}
 
 	public static MarkerHandler getInstance() {
-		if (instance == null)
-			instance = new MarkerHandler();
+		if (instance == null) instance = new MarkerHandler();
 		return instance;
 	}
 
 	/**
 	 * Removes all markers for all projects in the list
+	 * 
 	 * @param projectList
 	 * @throws CoreException
 	 */
@@ -53,6 +54,7 @@ public class MarkerHandler {
 
 	/**
 	 * Removes all markers for the project
+	 * 
 	 * @param project
 	 * @throws CoreException
 	 */
@@ -66,7 +68,7 @@ public class MarkerHandler {
 			}
 		}
 	}
-	
+
 	public void clearResource(IResource res) throws CoreException {
 		List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
 		for (IMarker marker : markers) {
@@ -80,6 +82,7 @@ public class MarkerHandler {
 
 	/**
 	 * Returns all markers for the given resource
+	 * 
 	 * @param res
 	 * @return List<IMarker> - All markers of the resource with DEPTH_INFINITE
 	 * @throws CoreException
@@ -88,16 +91,17 @@ public class MarkerHandler {
 		List<IMarker> returnList = new ArrayList<IMarker>();
 		for (String marker : annotationMarkers) {
 			try {
-					returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
+				returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 		}
 		return returnList;
 	}
-	
+
 	/**
 	 * Returns the id of a code highlighting annotation
+	 * 
 	 * @param color
 	 * @return String - The id of the annotation highlighter
 	 */
@@ -107,52 +111,56 @@ public class MarkerHandler {
 		}
 		return annotationMarkers.get(color.ordinal());
 	}
-	
+
 	/**
 	 * Adds a marker to the resource
+	 * 
 	 * @param res
 	 * @param start - Starting line
 	 * @param end - Ending line
 	 * @param feature
 	 * @param color
 	 */
-	public static void addMarker(IResource res, int line, int endOffset,
-			String feature, FeatureColor color) {
+	public static void addMarker(IResource res, int offset, int length, FeatureExpression featureExpression) {
 		try {
 			IMarker marker = null;
 			if (res.exists()) {
-				marker = res.createMarker(getMarker(color));
-				marker.setAttribute(IMarker.MESSAGE, "Feature: " + feature);
-				marker.setAttribute(IMarker.CHAR_START, 20);
-				marker.setAttribute(IMarker.CHAR_END, 40);
+				marker = res.createMarker(getMarker(featureExpression.highlighter));
+				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
+				marker.setAttribute(IMarker.CHAR_START, offset);
+				marker.setAttribute(IMarker.CHAR_END, length);
 			}
-		
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void setMarker(IFile file, List<MarkerInformation> markers) {
-		IDocument document = null;
-		try {
-			document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider()
-					.getDocument(VariantSyncPlugin.getEditor().getEditorInput());
-		} catch (NullPointerException e) {
-			return;
-		}
-		for (MarkerInformation mi : markers) {
-			try {
-				IRegion regionStart = document.getLineInformation(mi.getStart());
-				IRegion regionEnd = document.getLineInformation(mi.getEnd());
-				int start = regionStart.getOffset();
-				int end = regionEnd.getOffset() + 2;
-				if (regionStart.getLength() == regionEnd.getLength()
-						&& regionStart.getOffset() == regionEnd.getOffset()) {
-					end = regionStart.getOffset() + regionEnd.getLength();
+
+	public void setMarker(IFile file, List<IMarkerInformation> markers) {
+		for (IMarkerInformation mi : markers) {
+			if (mi.isLine()) {
+				try {
+					IDocument document = null;
+					try {
+						document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider().getDocument(VariantSyncPlugin.getEditor().getEditorInput());
+					} catch (NullPointerException e) {
+						return;
+					}
+
+					for (int i = mi.getOffset(); i <= (mi.getOffset() + mi.getLength() - 1); i++) {
+						IRegion regionStart = document.getLineInformation(i - 1);
+						int start = regionStart.getOffset();
+						int end = regionStart.getOffset() + regionStart.getLength();
+//				if (regionStart.getLength() == regionEnd.getLength()
+//						&& regionStart.getOffset() == regionEnd.getOffset()) {
+//					end = regionStart.getOffset() + regionEnd.getLength();
+//				}
+						addMarker(file, start, end, mi.getFeatureExpression());
+					}
+				} catch (BadLocationException e) {
+					e.printStackTrace();
 				}
-				addMarker(file, start, end, mi.getFeatureExpression().name, mi.getFeatureExpression().highlighter);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
+			} else {
+				addMarker(file, mi.getOffset(), mi.getLength(), mi.getFeatureExpression());
 			}
 		}
 	}

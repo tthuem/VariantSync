@@ -3,13 +3,14 @@ package de.tubs.variantsync.core.patch;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
 import difflib.Chunk;
 
 public class DefaultDelta extends ADelta<Chunk> {
 
-	public DefaultDelta(IResource res, String factoryId) {
+	public DefaultDelta(IFile res, String factoryId) {
 		super(res, factoryId);
 	}
 

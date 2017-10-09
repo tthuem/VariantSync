@@ -23,6 +23,7 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
@@ -43,7 +44,7 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 	protected Control createControl(Composite parent) {
 		// Should solve Eclipse Bug 471313 and can be only used with FillLayout
 		parent.getParent().setRedraw(true);
-		
+
 		Composite composite = new Composite(parent, SWT.FILL);
 		composite.setLayout(new FillLayout());
 
@@ -51,7 +52,7 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		featureExpressionSelection.setText(Context.DEFAULT_CONTEXT_NAME);
 		featureExpressionSelection.addSelectionListener(this);
 		updateCCombo();
-		
+
 		return composite;
 	}
 
@@ -62,16 +63,25 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 	}
 
 	private void updateCCombo() {
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) {
-			int curSel = featureExpressionSelection.getSelectionIndex();
-			featureExpressionSelection.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
-			if (curSel != -1) {
-				featureExpressionSelection.select(curSel);
-			} else {
-				featureExpressionSelection.setText(context.getActualContext());
+		Display.getDefault().asyncExec(new Runnable() {
+
+			public void run() {
+				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+				if (context != null) {
+					try {
+						int curSel = featureExpressionSelection.getSelectionIndex();
+						featureExpressionSelection.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
+						if (curSel != -1) {
+							featureExpressionSelection.select(curSel);
+						} else {
+							featureExpressionSelection.setText(context.getActualContext());
+						}
+					} catch (Exception e) {
+						LogOperations.logError("Cannot update selection combo box in toolbar", e);
+					}
+				}
 			}
-		}
+		});
 	}
 
 	@Override

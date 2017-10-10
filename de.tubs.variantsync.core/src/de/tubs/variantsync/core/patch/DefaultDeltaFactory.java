@@ -6,8 +6,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
-import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.markers.MarkerInformation;
 import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
@@ -215,11 +213,10 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 	public List<IMarkerInformation> getMarkerInformations(IFile file, IDelta<Chunk> delta) {
 		List<IMarkerInformation> markerInformations = new ArrayList<>();
 		Chunk revised = delta.getRevised();
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 		for (int i = 0; i <= revised.getLines().size() - 1; i++) {
 			if (!((String) revised.getLines().get(i)).replaceAll(" ", "").replaceAll("\t", "").isEmpty()) {
 				IMarkerInformation markerInformation = new MarkerInformation(revised.getPosition() + i);
-				markerInformation.setFeatureExpression(context.getFeatureExpression(delta.getFeature()));
+				markerInformation.setFeatureExpression(delta.getFeature());
 				System.out.println("Created marker information: " + markerInformation);
 				markerInformations.add(markerInformation);
 			}

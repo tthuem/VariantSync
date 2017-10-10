@@ -13,7 +13,6 @@ import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
-import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.markers.MarkerInformation;
@@ -25,10 +24,10 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	private static final String MAPPINGS = "Mappings";
 	private static final String SOURCEFILE = "SourceFile";
 	private static final String CODEMAPPINGS = "CodeMapping";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+MAPPINGS+"[\\s>]");
-	
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + MAPPINGS + "[\\s>]");
+
 	public static final String FILENAME = ".mapping.xml";
-	
+
 	public IProject project;
 
 	public CodeMappingFormat(IProject project) {
@@ -39,7 +38,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	public IPersistentFormat<List<SourceFile>> getInstance() {
 		return new CodeMappingFormat(null);
 	}
-	
+
 	public IPersistentFormat<List<SourceFile>> getInstance(IProject project) {
 		return new CodeMappingFormat(project);
 	}
@@ -65,33 +64,35 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
 			SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
 			for (final Element eCM : getElements(eSF.getChildNodes())) {
-				IMarkerInformation markerInformation = new MarkerInformation(Integer.parseInt(eCM.getAttribute("offset")), Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
-				markerInformation.setFeatureExpression(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpression(eCM.getAttribute("feature")));
+				IMarkerInformation markerInformation = new MarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
+						Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
+				markerInformation.setFeatureExpression(eCM.getAttribute("feature"));
 				CodeMapping codeMapping = new CodeMapping(eCM.getAttribute("code"), markerInformation);
 				sourceFile.addMapping(codeMapping);
 			}
 			object.add(sourceFile);
 		}
-		
+
 	}
 
 	@Override
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(MAPPINGS);
-		
+
 		for (SourceFile sf : object) {
 			Element file = doc.createElement(SOURCEFILE);
 			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));
-			
+
 			for (CodeMapping cm : sf.getMappings()) {
 				Element line = doc.createElement(CODEMAPPINGS);
-				line.setAttribute("feature", cm.getMarkerInformation().getFeatureExpression().name);
+				line.setAttribute("feature", cm.getMarkerInformation().getFeatureExpression());
 				line.setAttribute("offset", String.valueOf(cm.getMarkerInformation().getOffset()));
 				line.setAttribute("length", String.valueOf(cm.getMarkerInformation().getLength()));
 				line.setAttribute("isLine", String.valueOf(cm.getMarkerInformation().isLine()));
 				line.setTextContent(cm.getCode());
+				file.appendChild(line);
 			}
-			
+
 			root.appendChild(file);
 		}
 

@@ -3,9 +3,8 @@ package de.tubs.variantsync.core.view.context;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.menus.IMenuStateIds;
-import org.eclipse.jface.menus.TextState;
 import org.eclipse.ui.menus.UIElement;
+
 import de.tubs.variantsync.core.VariantSyncPlugin;
 
 /**

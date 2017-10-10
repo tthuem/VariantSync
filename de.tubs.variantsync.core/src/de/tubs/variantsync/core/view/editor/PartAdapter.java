@@ -23,9 +23,9 @@ public class PartAdapter implements IPartListener {
 		if (part instanceof IEditorPart) {
 			if (((IEditorPart) part).getEditorInput() instanceof IFileEditorInput) {
 				IFile file = ((IFileEditorInput) ((EditorPart) part).getEditorInput()).getFile();
-////				System.out.println("\n====== LOCATION OF ACTIVE FILE IN EDITOR (PART BROUGHT TO TOP) ======");
-////				System.out.println(file.getLocation());
-////				System.out.println("===============================================");
+//				System.out.println("\n====== LOCATION OF ACTIVE FILE IN EDITOR (PART BROUGHT TO TOP) ======");
+//				System.out.println(file.getLocation());
+//				System.out.println("===============================================");
 				MarkerUpdateJob job = new MarkerUpdateJob(file);
 				job.schedule();
 			}

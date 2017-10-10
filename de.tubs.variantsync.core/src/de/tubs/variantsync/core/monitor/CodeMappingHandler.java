@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.monitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
@@ -12,9 +13,9 @@ import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CodeMappingHandler {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void addCodeMappingsForDeltas(List<IDelta> deltas) {
 		for (IDelta delta : deltas) {
 			try {
@@ -24,7 +25,7 @@ public class CodeMappingHandler {
 				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 				if (context != null) {
 					for (IMarkerInformation markerInformation : markerInformations) {
-						markerInformation.setFeatureExpression(context.getFeatureExpression(delta.getFeature()));
+						markerInformation.setFeatureExpression(delta.getFeature());
 						SourceFile sourceFile = context.getMapping(delta.getResource());
 						if (sourceFile == null) {
 							sourceFile = new SourceFile(delta.getResource());
@@ -37,6 +38,37 @@ public class CodeMappingHandler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static CodeMapping getCodeMapping(SourceFile sourceFile, IMarkerInformation markerInformation) {
+		for (CodeMapping mapping : sourceFile.getMappings()) {
+			if (!mapping.getMarkerInformation().equals(markerInformation)) {
+				return mapping;
+			}
+		}
+		return null;
+	}
+
+	public static boolean contains(SourceFile sourceFile, int line) {
+		for (CodeMapping mapping : sourceFile.getMappings()) {
+			IMarkerInformation markerInformation = mapping.getMarkerInformation();
+			if (markerInformation.isLine() && markerInformation.getOffset() == line) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean remove(SourceFile sourceFile, IMarkerInformation markerInformation) {
+		List<CodeMapping> mappings = new ArrayList<>();
+		List<CodeMapping> oldMappings = sourceFile.getMappings();
+		for (CodeMapping mapping : oldMappings) {
+			if (!mapping.getMarkerInformation().equals(markerInformation)) {
+				mappings.add(mapping);
+			}
+		}
+		sourceFile.setMapping(mappings);
+		return oldMappings.size() == mappings.size();
 	}
 
 	public static void updateCodeMappingsForDelta(SourceFile sourceFile, IDelta delta) {

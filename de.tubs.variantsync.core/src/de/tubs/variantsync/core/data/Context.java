@@ -18,6 +18,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
 import de.tubs.variantsync.core.markers.MarkerHandler;
+import de.tubs.variantsync.core.markers.MarkerUpdateJob;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
@@ -207,7 +208,7 @@ public class Context implements IEventListener {
 	}
 
 	public SourceFile getMapping(IFile file) {
-		if (codeMappings.containsKey(file.getProject())) {
+		if (file != null && codeMappings.containsKey(file.getProject())) {
 			for (SourceFile sourceFile : codeMappings.get(file.getProject())) {
 				if (sourceFile.getFile().getFullPath().equals(file.getFullPath())) {
 					return sourceFile;
@@ -271,8 +272,6 @@ public class Context implements IEventListener {
 		case CONTEXT_RECORDING_STOP:
 			closeActualPatch();
 			break;
-		case FEATUREEXPRESSION_ADDED:
-			break;
 		case PATCH_ADDED:
 			break;
 		case PATCH_CHANGED:
@@ -281,9 +280,11 @@ public class Context implements IEventListener {
 			break;
 		case CONFIGURATIONPROJECT_CHANGED:
 			break;
+		case FEATUREEXPRESSION_ADDED:
 		case FEATUREEXPRESSION_CHANGED:
-			break;
 		case FEATUREEXPRESSION_REMOVED:
+			MarkerUpdateJob markerUpdateJob = new MarkerUpdateJob(VariantSyncPlugin.getDefault().getEditorInput());
+			markerUpdateJob.schedule();
 			break;
 		default:
 			break;

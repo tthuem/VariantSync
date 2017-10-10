@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.tubs.variantsync.core.VariantSyncPlugin;

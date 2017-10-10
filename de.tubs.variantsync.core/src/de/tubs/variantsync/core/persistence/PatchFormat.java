@@ -1,6 +1,5 @@
 package de.tubs.variantsync.core.persistence;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -8,7 +7,6 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,9 +21,9 @@ import de.tubs.variantsync.core.patch.DefaultPatchFactory;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
+import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
-import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {

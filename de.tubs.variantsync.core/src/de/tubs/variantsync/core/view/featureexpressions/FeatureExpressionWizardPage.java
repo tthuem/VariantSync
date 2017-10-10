@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
+
 import de.ovgu.featureide.fm.core.Operator;
 import de.ovgu.featureide.fm.core.base.FeatureUtils;
 import de.ovgu.featureide.fm.core.base.IFeature;
@@ -56,7 +57,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 	protected FeatureExpressionWizardPage(Iterable<IFeature> features, FeatureExpression featureExpression) {
 		super("FeatureExpressionManager");
 		this.features = features;
-		this.featureExpression  = featureExpression;
+		this.featureExpression = featureExpression;
 		setTitle("Create Feature Expressions");
 		setDescription("Create Feature Expressions");
 	}
@@ -93,6 +94,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 		featureTableColumn.getColumn().setWidth(600);
 		featureTableColumn.getColumn().setText("Name");
 		featureTableColumn.setLabelProvider(new CellLabelProvider() {
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(((IFeature) cell.getElement()).getName());
@@ -101,14 +103,15 @@ public class FeatureExpressionWizardPage extends WizardPage {
 
 		// Feature Search Listener
 		searchFeatureText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				if (!FILTERTEXT.equalsIgnoreCase(searchFeatureText.getText())) {
 					ViewerFilter searchFilter = new ViewerFilter() {
+
 						@Override
 						public boolean select(Viewer viewer, Object parentElement, Object element) {
-							return ((IFeature) element).getName().toLowerCase(Locale.ENGLISH)
-									.contains(searchFeatureText.getText().toLowerCase(Locale.ENGLISH));
+							return ((IFeature) element).getName().toLowerCase(Locale.ENGLISH).contains(searchFeatureText.getText().toLowerCase(Locale.ENGLISH));
 						}
 					};
 					featureTable.addFilter(searchFilter);
@@ -116,6 +119,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 			}
 		});
 		searchFeatureText.addListener(SWT.FocusOut, new Listener() {
+
 			@Override
 			public void handleEvent(Event event) {
 				if (searchFeatureText.getText().isEmpty()) {
@@ -124,6 +128,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 			}
 		});
 		searchFeatureText.addListener(SWT.FocusIn, new Listener() {
+
 			@Override
 			public void handleEvent(Event event) {
 				if (FILTERTEXT.equals(searchFeatureText.getText())) {
@@ -134,6 +139,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 
 		// Feature Table Listener
 		featureTable.getTable().addListener(SWT.MouseDoubleClick, new Listener() {
+
 			@Override
 			public void handleEvent(Event event) {
 				TableItem[] selectedItem = featureTable.getTable().getSelection();
@@ -167,6 +173,7 @@ public class FeatureExpressionWizardPage extends WizardPage {
 			button.setText(Operator.NAMES[i]);
 			button.setLayoutData(new GridData(SWT.WRAP, SWT.WRAP, false, false));
 			button.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+
 				public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
 					expressionText.copyIn(button.getText().toLowerCase(Locale.ENGLISH));
 				}
@@ -174,24 +181,22 @@ public class FeatureExpressionWizardPage extends WizardPage {
 		}
 
 		// Input Text
-		expressionText = new SimpleSyntaxHighlightEditor(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.BORDER,
-				Operator.NAMES);
+		expressionText = new SimpleSyntaxHighlightEditor(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.BORDER, Operator.NAMES);
 
 		expressionText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		if (featureExpression != null)
-			expressionText.setText(featureExpression.name);
+		if (featureExpression != null) expressionText.setText(featureExpression.name);
 		expressionText.setMargins(10, 5, 3, 5);
 		expressionText.setPossibleWords(Functional.toSet(FeatureUtils.extractFeatureNames(features)));
-		if (featureExpression != null)
-			expressionText.setBackground(ColorPalette.toSwtColor(featureExpression.highlighter));
+		if (featureExpression != null) expressionText.setBackground(ColorPalette.toSwtColor(featureExpression.highlighter));
 
 		expressionText.addModifyListener(new ModifyListener() {
+
 			@Override
 			public void modifyText(ModifyEvent e) {
 				// validate();
 			}
 		});
-		
+
 		// Color Selector
 		colorBox = new Combo(composite, SWT.READ_ONLY);
 		colorBox.setLayoutData(new GridData(SWT.FILL, SWT.WRAP, true, false));
@@ -199,29 +204,27 @@ public class FeatureExpressionWizardPage extends WizardPage {
 		for (FeatureColor color : FeatureColor.values()) {
 			colors.add(color.getColorName());
 		}
-		colorBox.setItems(colors.toArray(new String[]{}));
-		if (featureExpression != null)
-			colorBox.select(featureExpression.highlighter.ordinal());
-		
+		colorBox.setItems(colors.toArray(new String[] {}));
+		if (featureExpression != null) colorBox.select(featureExpression.highlighter.ordinal());
+
 		colorBox.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				expressionText.setBackground(ColorPalette.toSwtColor(getColor()));
 			}
-			
+
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 
 		setControl(composite);
 	}
-	
+
 	public String getFeatureExpression() {
 		return expressionText.getText();
 	}
-	
+
 	public FeatureColor getColor() {
 		return FeatureColor.getColor(colorBox.getText());
 	}

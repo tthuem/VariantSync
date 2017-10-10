@@ -2,7 +2,6 @@ package de.tubs.variantsync.core.markers;
 
 import java.util.UUID;
 
-import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 
 /**
@@ -17,40 +16,41 @@ public class MarkerInformation implements IMarkerInformation {
 	private long markerId;
 	private int offset;
 	private int length;
-	private FeatureExpression expression;
+	private String expression;
 	private boolean isLine = false;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param markerId - marker id
 	 * @param offset - offset
 	 * @param length - length
 	 * @param line - if true, the offset and length are interpreted as mappings
 	 */
-	public MarkerInformation(long markerId, int offset,
-			int length, boolean line) {
+	public MarkerInformation(long markerId, int offset, int length, boolean line) {
 		this.markerId = markerId;
 		this.offset = offset;
 		this.length = length;
-		this.isLine  = line;
+		this.isLine = line;
 	}
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param offset - offset
 	 * @param length - length
 	 * @param line - if true, the offset and length are interpreted as mappings
 	 */
-	public MarkerInformation(int offset,
-			int length, boolean line) {
+	public MarkerInformation(int offset, int length, boolean line) {
 		this.markerId = UUID.randomUUID().getMostSignificantBits();
 		this.offset = offset;
 		this.length = length;
-		this.isLine  = line;
+		this.isLine = line;
 	}
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param markerId - marker id
 	 * @param line - line
 	 */
@@ -60,9 +60,10 @@ public class MarkerInformation implements IMarkerInformation {
 		this.length = 1;
 		this.isLine = true;
 	}
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param line - line
 	 */
 	public MarkerInformation(int line) {
@@ -74,6 +75,7 @@ public class MarkerInformation implements IMarkerInformation {
 
 	/**
 	 * Returns marker id.
+	 * 
 	 * @return markerId
 	 */
 	@Override
@@ -83,6 +85,7 @@ public class MarkerInformation implements IMarkerInformation {
 
 	/**
 	 * Returns offset.
+	 * 
 	 * @return offset
 	 */
 	@Override
@@ -92,6 +95,7 @@ public class MarkerInformation implements IMarkerInformation {
 
 	/**
 	 * Returns length.
+	 * 
 	 * @return length
 	 */
 	@Override
@@ -101,6 +105,7 @@ public class MarkerInformation implements IMarkerInformation {
 
 	/**
 	 * Sets marker id.
+	 * 
 	 * @param markerId - id of marker
 	 */
 	@Override
@@ -110,24 +115,27 @@ public class MarkerInformation implements IMarkerInformation {
 
 	/**
 	 * Returns feature expression.
+	 * 
 	 * @return feature expression
 	 */
 	@Override
-	public FeatureExpression getFeatureExpression() {
+	public String getFeatureExpression() {
 		return expression;
 	}
 
 	/**
 	 * Sets feature expression.
+	 * 
 	 * @param expression - feature expression
 	 */
 	@Override
-	public void setFeatureExpression(FeatureExpression expression) {
+	public void setFeatureExpression(String expression) {
 		this.expression = expression;
 	}
 
 	/**
 	 * Returns whether offset and length should be interpreted as mappings
+	 * 
 	 * @return true, if offset and length should be interpreted as mappings
 	 */
 	@Override

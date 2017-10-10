@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -86,7 +85,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 
 		init();
 
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().syncExec(new Runnable() {
 
 			@Override
 			public void run() {
@@ -352,9 +351,13 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void listenForActiveClass() {
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IWorkbenchWindow ww = wb.getActiveWorkbenchWindow();
-		IWorkbenchPage page = ww.getActivePage();
-		if (page == null) return;
-		page.addPartListener(new PartAdapter());
+//		IWorkbenchPage page = ww.getActivePage();
+
+		PartAdapter adapter = new PartAdapter();
+		ww.getPartService().addPartListener(adapter);
+//		page.addPartListener(adapter);
+//		if (page == null) return;
+//		page.addPartListener(adapter);
 	}
 
 	public static void addNature(IProject project) {

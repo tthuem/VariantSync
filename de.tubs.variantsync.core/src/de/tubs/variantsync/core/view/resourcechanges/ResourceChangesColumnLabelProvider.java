@@ -6,6 +6,7 @@ import java.util.Date;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;

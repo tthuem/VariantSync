@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
+
 import de.ovgu.featureide.fm.core.IExtension;
 import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;

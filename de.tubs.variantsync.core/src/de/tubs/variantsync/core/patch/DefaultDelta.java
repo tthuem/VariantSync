@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 
 import difflib.Chunk;
 
+@SuppressWarnings("rawtypes")
 public class DefaultDelta extends ADelta<Chunk> {
 
 	public DefaultDelta(IFile res, String factoryId) {
@@ -17,7 +17,7 @@ public class DefaultDelta extends ADelta<Chunk> {
 	@Override
 	public String getOriginalAsString() {
 		String ret = String.valueOf(original.getPosition());
-		for (String line : (List<String>)original.getLines()) {
+		for (String line : (List<String>) original.getLines()) {
 			ret = ret + ":;:" + line;
 		}
 		return ret;
@@ -34,7 +34,7 @@ public class DefaultDelta extends ADelta<Chunk> {
 	@Override
 	public String getRevisedAsString() {
 		String ret = String.valueOf(revised.getPosition());
-		for (String line : (List<String>)revised.getLines()) {
+		for (String line : (List<String>) revised.getLines()) {
 			ret = ret + ":;:" + line;
 		}
 		return ret;
@@ -50,7 +50,8 @@ public class DefaultDelta extends ADelta<Chunk> {
 
 	@Override
 	public String getRepresentation() {
-		return "--- ("+this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ ("+this.revised.getPosition() + ") " +this.revised.getLines();
+		return "--- (" + this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ (" + this.revised.getPosition() + ") "
+			+ this.revised.getLines();
 	}
 
 }

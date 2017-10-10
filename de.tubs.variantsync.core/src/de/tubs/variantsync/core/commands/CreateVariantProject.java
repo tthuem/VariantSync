@@ -18,8 +18,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.actions.NewProjectAction;
 import org.eclipse.ui.handlers.HandlerUtil;
+
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.VariantSyncProgressMonitor;
 import de.tubs.variantsync.core.markers.MarkerHandler;

@@ -15,6 +15,7 @@ import org.eclipse.jface.text.IRegion;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 
@@ -24,13 +25,13 @@ public class MarkerHandler {
 	private static List<String> annotationMarkers = new ArrayList<>();
 
 	private MarkerHandler() {
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgrey");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.red");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.orange");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.yellow");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.darkgreen");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgreen");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.cyan");
+		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgrey");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.blue");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.margenta");
 		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.pink");
@@ -70,12 +71,14 @@ public class MarkerHandler {
 	}
 
 	public void clearResource(IResource res) throws CoreException {
-		List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
-		for (IMarker marker : markers) {
-			try {
-				marker.delete();
-			} catch (CoreException e) {
-				e.printStackTrace();
+		if (res != null) {
+			List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
+			for (IMarker marker : markers) {
+				try {
+					marker.delete();
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -89,11 +92,13 @@ public class MarkerHandler {
 	 */
 	private List<IMarker> getAllMarkers(IResource res) throws CoreException {
 		List<IMarker> returnList = new ArrayList<IMarker>();
-		for (String marker : annotationMarkers) {
-			try {
-				returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
-			} catch (CoreException e) {
-				e.printStackTrace();
+		if (res != null) {
+			for (String marker : annotationMarkers) {
+				try {
+					returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return returnList;
@@ -107,9 +112,9 @@ public class MarkerHandler {
 	 */
 	private static String getMarker(FeatureColor color) {
 		if (color == null) {
-			return annotationMarkers.get(FeatureColor.Yellow.ordinal());
+			return annotationMarkers.get(FeatureColor.Yellow.getValue());
 		}
-		return annotationMarkers.get(color.ordinal());
+		return annotationMarkers.get(color.getValue());
 	}
 
 	/**
@@ -124,6 +129,7 @@ public class MarkerHandler {
 	public static void addMarker(IResource res, int offset, int length, FeatureExpression featureExpression) {
 		try {
 			IMarker marker = null;
+			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 			if (res.exists()) {
 				marker = res.createMarker(getMarker(featureExpression.highlighter));
 				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
@@ -136,6 +142,7 @@ public class MarkerHandler {
 	}
 
 	public void setMarker(IFile file, List<IMarkerInformation> markers) {
+		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 		for (IMarkerInformation mi : markers) {
 			if (mi.isLine()) {
 				try {
@@ -154,13 +161,13 @@ public class MarkerHandler {
 //						&& regionStart.getOffset() == regionEnd.getOffset()) {
 //					end = regionStart.getOffset() + regionEnd.getLength();
 //				}
-						addMarker(file, start, end, mi.getFeatureExpression());
+						addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
 					}
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 			} else {
-				addMarker(file, mi.getOffset(), mi.getLength(), mi.getFeatureExpression());
+				addMarker(file, mi.getOffset(), mi.getLength(), context.getFeatureExpression(mi.getFeatureExpression()));
 			}
 		}
 	}

@@ -15,8 +15,8 @@ import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
 import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.SourceFile;
-import de.tubs.variantsync.core.markers.MarkerInformation;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.patch.AMarkerInformation;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
 public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
@@ -64,7 +64,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
 			SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
 			for (final Element eCM : getElements(eSF.getChildNodes())) {
-				IMarkerInformation markerInformation = new MarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
+				IMarkerInformation markerInformation = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
 						Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
 				markerInformation.setFeatureExpression(eCM.getAttribute("feature"));
 				CodeMapping codeMapping = new CodeMapping(eCM.getAttribute("code"), markerInformation);

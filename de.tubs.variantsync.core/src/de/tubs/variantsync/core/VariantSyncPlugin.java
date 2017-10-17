@@ -34,7 +34,7 @@ import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
-import de.tubs.variantsync.core.markers.MarkerUpdateJob;
+import de.tubs.variantsync.core.jobs.MarkerUpdateJob;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
@@ -167,7 +167,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public static IFile getEditorInput() {
 		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null) return null;
 		IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (editorPart == null) return null;
+		if (editorPart == null || !(editorPart instanceof IFileEditorInput)) return null;
 		return ((IFileEditorInput) editorPart.getEditorInput()).getFile();
 	}
 
@@ -250,8 +250,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 						m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 						m.setAttribute(IMarker.LINE_NUMBER, 0);
 					} catch (CoreException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LogOperations.logError("Marker cannot be created!", e);
 					}
 				}
 			}

@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.markers;
+package de.tubs.variantsync.core.utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,30 +17,21 @@ import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
-public class MarkerHandler {
+/**
+ * Utilities for markers
+ * 
+ * @author Christopher Sontag
+ * @since 15.08.2017
+ */
+public class MarkerUtils {
 
-	private static MarkerHandler instance = null;
-	private static List<String> annotationMarkers = new ArrayList<>();
-
-	private MarkerHandler() {
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.red");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.orange");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.yellow");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.darkgreen");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgreen");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.cyan");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.lightgrey");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.blue");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.margenta");
-		annotationMarkers.add("de.tubs.variantsync.marker.highlighter.pink");
-	}
-
-	public static MarkerHandler getInstance() {
-		if (instance == null) instance = new MarkerHandler();
-		return instance;
-	}
+	private static List<String> annotationMarkers = Arrays.asList("de.tubs.variantsync.marker.highlighter.red", "de.tubs.variantsync.marker.highlighter.orange",
+			"de.tubs.variantsync.marker.highlighter.yellow", "de.tubs.variantsync.marker.highlighter.darkgreen",
+			"de.tubs.variantsync.marker.highlighter.lightgreen", "de.tubs.variantsync.marker.highlighter.cyan",
+			"de.tubs.variantsync.marker.highlighter.lightgrey", "de.tubs.variantsync.marker.highlighter.blue",
+			"de.tubs.variantsync.marker.highlighter.margenta", "de.tubs.variantsync.marker.highlighter.pink");
 
 	/**
 	 * Removes all markers for all projects in the list
@@ -48,7 +39,7 @@ public class MarkerHandler {
 	 * @param projectList
 	 * @throws CoreException
 	 */
-	public void cleanProjects(List<IProject> projectList) throws CoreException {
+	public static void cleanProjects(List<IProject> projectList) throws CoreException {
 		for (IProject p : projectList)
 			cleanProject(p);
 	}
@@ -59,8 +50,8 @@ public class MarkerHandler {
 	 * @param project
 	 * @throws CoreException
 	 */
-	public void cleanProject(IProject project) throws CoreException {
-		List<IMarker> markers = getAllMarkers(project);
+	public static void cleanProject(IProject project) throws CoreException {
+		List<IMarker> markers = getMarkers(project);
 		for (IMarker marker : markers) {
 			try {
 				marker.delete();
@@ -70,7 +61,13 @@ public class MarkerHandler {
 		}
 	}
 
-	public void clearResource(IResource res) throws CoreException {
+	/**
+	 * Removes all markers from the given resource
+	 * 
+	 * @param res
+	 * @throws CoreException
+	 */
+	public static void cleanResource(IResource res) throws CoreException {
 		if (res != null) {
 			List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
 			for (IMarker marker : markers) {
@@ -90,7 +87,7 @@ public class MarkerHandler {
 	 * @return List<IMarker> - All markers of the resource with DEPTH_INFINITE
 	 * @throws CoreException
 	 */
-	private List<IMarker> getAllMarkers(IResource res) throws CoreException {
+	private static List<IMarker> getMarkers(IResource res) throws CoreException {
 		List<IMarker> returnList = new ArrayList<IMarker>();
 		if (res != null) {
 			for (String marker : annotationMarkers) {
@@ -126,10 +123,9 @@ public class MarkerHandler {
 	 * @param feature
 	 * @param color
 	 */
-	public static void addMarker(IResource res, int offset, int length, FeatureExpression featureExpression) {
+	private static void addMarker(IResource res, int offset, int length, FeatureExpression featureExpression) {
 		try {
 			IMarker marker = null;
-			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 			if (res.exists()) {
 				marker = res.createMarker(getMarker(featureExpression.highlighter));
 				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
@@ -141,7 +137,13 @@ public class MarkerHandler {
 		}
 	}
 
-	public void setMarker(IFile file, List<IMarkerInformation> markers) {
+	/**
+	 * Adds the given markers to the given file
+	 * 
+	 * @param file
+	 * @param markers
+	 */
+	public static void setMarker(IFile file, List<IMarkerInformation> markers) {
 		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 		for (IMarkerInformation mi : markers) {
 			if (mi.isLine()) {
@@ -153,16 +155,12 @@ public class MarkerHandler {
 						return;
 					}
 
-					for (int i = mi.getOffset(); i <= (mi.getOffset() + mi.getLength() - 1); i++) {
-						IRegion regionStart = document.getLineInformation(i - 1);
-						int start = regionStart.getOffset();
-						int end = regionStart.getOffset() + regionStart.getLength();
-//				if (regionStart.getLength() == regionEnd.getLength()
-//						&& regionStart.getOffset() == regionEnd.getOffset()) {
-//					end = regionStart.getOffset() + regionEnd.getLength();
-//				}
-						addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
-					}
+					IRegion regionStart = document.getLineInformation(mi.getOffset());
+					IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
+					int start = regionStart.getOffset();
+					int end = regionEnd.getOffset() + regionEnd.getLength();
+
+					addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}

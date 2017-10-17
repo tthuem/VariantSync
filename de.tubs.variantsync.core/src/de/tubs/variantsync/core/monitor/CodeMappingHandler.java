@@ -8,10 +8,10 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.SourceFile;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class CodeMappingHandler {
@@ -20,7 +20,7 @@ public class CodeMappingHandler {
 		for (IDelta delta : deltas) {
 			try {
 				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
-				List<IMarkerInformation> markerInformations = deltaFactory.getMarkerInformations(delta.getResource(), delta);
+				List<IMarkerInformation> markerInformations = deltaFactory.getMarkerHandler().getMarkersForDelta(delta.getResource(), delta);
 
 				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 				if (context != null) {
@@ -75,7 +75,7 @@ public class CodeMappingHandler {
 		if (sourceFile.getFile().getFullPath().equals(delta.getResource().getFullPath())) {
 			try {
 				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
-				List<IMarkerInformation> markerInformations = deltaFactory.getMarkerInformations(delta.getResource(), delta);
+				List<IMarkerInformation> markerInformations = deltaFactory.getMarkerHandler().getMarkersForDelta(delta.getResource(), delta);
 
 				switch (delta.getType()) {
 				case ADDED:

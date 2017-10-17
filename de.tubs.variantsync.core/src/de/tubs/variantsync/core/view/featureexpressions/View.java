@@ -73,11 +73,7 @@ public class View extends ViewPart implements IEventListener {
 		composite.setLayout(new GridLayout(2, false));
 
 		// Existing Feature Expressions
-		featureExpressionTable =
-			new Table(composite, SWT.MULTI
-				| SWT.H_SCROLL
-				| SWT.V_SCROLL
-				| SWT.FULL_SELECTION);
+		featureExpressionTable = new Table(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 		featureExpressionTable.setHeaderVisible(false);
 		featureExpressionTable.setLinesVisible(true);
 		featureExpressionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -92,28 +88,17 @@ public class View extends ViewPart implements IEventListener {
 				Rectangle area = table.getClientArea();
 				int totalAreaWdith = area.width;
 				int lineWidth = table.getGridLineWidth();
-				int totalGridLineWidth =
-					(columnCount
-						- 1)
-						* lineWidth;
+				int totalGridLineWidth = (columnCount - 1) * lineWidth;
 				int totalColumnWidth = 0;
 				for (TableColumn column : table.getColumns()) {
-					totalColumnWidth =
-						totalColumnWidth
-							+ column.getWidth();
+					totalColumnWidth = totalColumnWidth + column.getWidth();
 				}
-				int diff =
-					totalAreaWdith
-						- (totalColumnWidth
-							+ totalGridLineWidth);
+				int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
 
-				TableColumn lastCol =
-					table.getColumns()[columnCount
-						- 1];
+				TableColumn lastCol = table.getColumns()[columnCount - 1];
 
 				// check diff is valid or not. setting negetive width doesnt make sense.
-				lastCol.setWidth(diff
-					+ lastCol.getWidth());
+				lastCol.setWidth(diff + lastCol.getWidth());
 
 			}
 		});
@@ -165,42 +150,50 @@ public class View extends ViewPart implements IEventListener {
 
 	@Override
 	public void setFocus() {
-		featureExpressionTable.setFocus();
+		if (!featureExpressionTable.isDisposed()) {
+			featureExpressionTable.setFocus();
+		}
 	}
 
 	private void editFeatureExpression() {
-		final TableItem[] selection = featureExpressionTable.getSelection();
-		if (selection.length == 1) {
-			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression) selection[0].getData()));
-			dialog.create();
-			if (dialog.open() == Window.OK) {
-				this.updateFeatureExpressionList();
+		if (!featureExpressionTable.isDisposed()) {
+			final TableItem[] selection = featureExpressionTable.getSelection();
+			if (selection.length == 1) {
+				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression) selection[0].getData()));
+				dialog.create();
+				if (dialog.open() == Window.OK) {
+					this.updateFeatureExpressionList();
+				}
 			}
 		}
 	}
 
 	private void deleteFeatureExpression() {
-		final TableItem[] selection = featureExpressionTable.getSelection();
-		if (selection.length > 0) {
-			for (TableItem ti : selection) {
-				expressions.remove((FeatureExpression) ti.getData());
+		if (!featureExpressionTable.isDisposed()) {
+			final TableItem[] selection = featureExpressionTable.getSelection();
+			if (selection.length > 0) {
+				for (TableItem ti : selection) {
+					expressions.remove((FeatureExpression) ti.getData());
+				}
+				this.updateFeatureExpressionList();
 			}
-			this.updateFeatureExpressionList();
 		}
 	}
 
 	private void updateFeatureExpressionList() {
 		TableItem tableItem = null;
-		featureExpressionTable.removeAll();
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) {
-			expressions = context.getFeatureExpressions();
-			if (!expressions.isEmpty()) {
-				for (FeatureExpression fe : expressions) {
-					tableItem = new TableItem(featureExpressionTable, SWT.NONE);
-					tableItem.setText(fe.name);
-					tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
-					tableItem.setData(fe);
+		if (!featureExpressionTable.isDisposed()) {
+			featureExpressionTable.removeAll();
+			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+			if (context != null) {
+				expressions = context.getFeatureExpressions();
+				if (!expressions.isEmpty()) {
+					for (FeatureExpression fe : expressions) {
+						tableItem = new TableItem(featureExpressionTable, SWT.NONE);
+						tableItem.setText(fe.name);
+						tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
+						tableItem.setData(fe);
+					}
 				}
 			}
 		}

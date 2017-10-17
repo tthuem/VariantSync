@@ -1,10 +1,11 @@
-package de.tubs.variantsync.core.patch;
+package de.tubs.variantsync.core.patch.base;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 
+import de.tubs.variantsync.core.patch.ADelta;
 import difflib.Chunk;
 
 @SuppressWarnings("rawtypes")

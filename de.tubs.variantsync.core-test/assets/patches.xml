@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<Patches>
+		<Patch end="1507671805863" feature="Test" start="1507671804403">
+			<Delta factoryId="de.tubs.variantsync.core.diff" feature="Base" res="Test.java" timestamp="1507671804390" type="CHANGED">
+				<SynchronizedProjects/>
+				<Properties/>
+				<Original>1</Original>
+				<Revised>1:;:package de.variant;</Revised>
+			</Delta>
+		</Patch>
+	</Patches>

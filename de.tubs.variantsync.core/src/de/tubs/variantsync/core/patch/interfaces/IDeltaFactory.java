@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IFileState;
 
 import de.ovgu.featureide.fm.core.IExtension;
 import de.tubs.variantsync.core.exceptions.PatchException;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 
 /**
@@ -23,16 +22,17 @@ public interface IDeltaFactory<T> extends IExtension {
 	public static String extensionPointID = "DeltaFactory";
 
 	public static String extensionID = "deltaFactory";
-	
+
 	String getName();
-	
+
 	/**
 	 * Creates a empty delta object
+	 * 
 	 * @param res
 	 * @return
 	 */
 	IDelta<T> createDelta(IFile file);
-	
+
 	/**
 	 * Creates a delta object for a resource
 	 * 
@@ -52,7 +52,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return patch object
 	 */
 	List<IDelta<T>> createDeltas(IFile file, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException;
-	
+
 	/**
 	 * Patches a resource with a given patch.
 	 * 
@@ -61,7 +61,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return patched temp resource
 	 */
 	IFile applyDelta(IFile file, IDelta<T> patch);
-	
+
 	/**
 	 * Unpatches a revised resource for a given patch.
 	 * 
@@ -70,7 +70,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return original resource
 	 */
 	IFile reverseDelta(IFile file, IDelta<T> patch);
-	
+
 	/**
 	 * Verifies that the given patch can be applied to the given resource
 	 * 
@@ -79,14 +79,15 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return true if the patch can be applied
 	 */
 	boolean verifyDelta(IFile file, IDelta<T> delta);
-	
+
 	/**
 	 * Checks whether the file is supported
+	 * 
 	 * @param file
 	 * @return true if the file is supported
 	 */
 	boolean isSupported(IFile file);
-	
-	List<IMarkerInformation> getMarkerInformations(IFile file, IDelta<T> delta);
-	
+
+	IMarkerHandler getMarkerHandler();
+
 }

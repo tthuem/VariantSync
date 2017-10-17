@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -33,6 +35,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.syncronization.SynchronizationHandler;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
@@ -48,6 +51,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private Button btnSync;
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String project = "";
+	private List<IDelta<?>> lastSelections = new ArrayList<>();
+	private IFile lastResource = null;
 
 	public View() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -166,7 +171,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			project = cbVariant.getItem(cbVariant.getSelectionIndex());
 			updateTreeViewer(project);
 		} else if (e.getSource().equals(btnSync)) {
-			System.out.println("Sync");
+			IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
+			boolean status = true;
+
+			for (IDelta<?> delta : lastSelections) {
+				status = SynchronizationHandler.handleSynchronization(iProject, delta);
+			}
+			if (status) {
+				MessageBox msgBox = new MessageBox(Display.getCurrent().getActiveShell());
+				msgBox.setMessage("Success!");
+				msgBox.open();
+			}
+			updateTreeViewer(project);
 		}
 	}
 
@@ -204,6 +220,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		btnSync.setEnabled(false);
+		lastSelections.clear();
 
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		// Only one element selected
@@ -211,7 +228,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			Object o = selection.getFirstElement();
 			if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
-				lbChange.setText(((IDelta<?>) o).getRepresentation());
+				IDelta<?> delta = ((IDelta<?>) o);
+				lastSelections.add(delta);
+				lastResource = delta.getResource();
+				lbChange.setText(delta.getRepresentation());
 				IProject targetProject = VariantSyncPlugin.getDefault().getActiveEditorContext().getProject(project);
 				if (targetProject != null) {
 					btnSync.setEnabled(true);
@@ -221,17 +241,20 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			}
 			// Multiple elements selected
 		} else {
-			IResource res = null;
+			IFile res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
 				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
-					if (res == null) res = ((IDelta<?>) o).getResource();
-					if (!res.equals(((IDelta<?>) o).getResource())) {
+					IDelta<?> delta = ((IDelta<?>) o);
+					if (res == null) res = delta.getResource();
+					if (!res.equals(delta.getResource())) {
 						lbChange.setText("No multiple resources supported");
 						return;
 					}
-					ret += ret.isEmpty() ? ((IDelta<?>) o).getRepresentation() : "\n\n" + ((IDelta<?>) o).getRepresentation();
+					lastSelections.add(delta);
+					lastResource = res;
+					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
 				}
 			}
 			lbChange.setText(ret);

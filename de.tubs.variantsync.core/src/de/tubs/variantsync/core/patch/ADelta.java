@@ -24,18 +24,18 @@ public abstract class ADelta<T> implements IDelta<T> {
 	protected String feature = "";
 	protected IProject project = null;
 	protected String factoryId = "";
-	
+
 	public ADelta(IFile res, String factoryId) {
-		this(res, System.currentTimeMillis(), factoryId);	
+		this(res, System.currentTimeMillis(), factoryId);
 	}
-	
+
 	public ADelta(IFile res, long timestamp, String factoryId) {
 		this.resource = res;
-		if (res != null && res.getLocalTimeStamp()!=IResource.NULL_STAMP) {
+		if (res != null && res.getLocalTimeStamp() != IResource.NULL_STAMP) {
 			timestamp = res.getLocalTimeStamp();
 		}
 		this.timestamp = timestamp;
-		this.project = res!=null?res.getProject():null;
+		this.project = res != null ? res.getProject() : null;
 		this.factoryId = factoryId;
 	}
 
@@ -57,6 +57,14 @@ public abstract class ADelta<T> implements IDelta<T> {
 	@Override
 	public boolean isSynchronizedProject(IProject project) {
 		return syncronizedProjects.contains(project);
+	}
+
+	@Override
+	public boolean isSynchronizedProject(String projectName) {
+		for (IProject project : syncronizedProjects) {
+			if (project.getName().equals(projectName)) return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -124,7 +132,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public String getFeature() {
-		return feature ;
+		return feature;
 	}
 
 	@Override
@@ -144,7 +152,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public IProject getProject() {
-		return project ;
+		return project;
 	}
 
 	@Override
@@ -154,7 +162,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public String getFactoryId() {
-		return factoryId ;
+		return factoryId;
 	}
 
 	@Override
@@ -177,5 +185,5 @@ public abstract class ADelta<T> implements IDelta<T> {
 		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, feature=%s, factoryId=%s]", resource, revised, type, timestamp, feature,
 				factoryId);
 	}
-	
+
 }

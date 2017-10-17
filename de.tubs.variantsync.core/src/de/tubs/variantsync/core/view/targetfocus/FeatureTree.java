@@ -21,13 +21,13 @@ public class FeatureTree {
 
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
-				if (!delta.getProject().getName().equals(projectName)) {
+				if (!delta.getProject().getName().equals(projectName) && !delta.isSynchronizedProject(projectName)) {
 					TreeNode featureNode = tree.find(delta.getFeature());
 					if (featureNode == null) {
 						featureNode = new TreeNode(delta.getFeature());
 						root.addChild(featureNode);
 					}
-					TreeNode fileNode = tree.find(featureNode,delta.getResource().getProjectRelativePath());
+					TreeNode fileNode = tree.find(featureNode, delta.getResource().getProjectRelativePath());
 					if (fileNode == null) {
 						fileNode = new TreeNode(delta.getResource().getProjectRelativePath());
 						featureNode.addChild(fileNode);

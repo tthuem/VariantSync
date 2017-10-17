@@ -9,7 +9,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -22,9 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.VariantSyncProgressMonitor;
-import de.tubs.variantsync.core.markers.MarkerHandler;
 import de.tubs.variantsync.core.nature.Variant;
-import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class CreateVariantProject extends AbstractHandler {
 
@@ -49,14 +46,6 @@ public class CreateVariantProject extends AbstractHandler {
 //				new NewProjectAction(VariantSyncPlugin.getActiveWorkbenchWindow()).run();
 				createJavaProjectWithVariantNature(projectName);
 
-				// Remove all markers from the configuration project
-				try {
-					MarkerHandler.getInstance().cleanProject(resource.getProject());
-				} catch (CoreException e) {
-					LogOperations.logError("Cleaning project "
-						+ resource.getProject().getName()
-						+ " was not possible", e);
-				}
 				// Reinitalize All
 				VariantSyncPlugin.getDefault().reinit();
 			}
@@ -65,9 +54,7 @@ public class CreateVariantProject extends AbstractHandler {
 	}
 
 	private IProject createJavaProjectWithVariantNature(String projectName) {
-		VariantSyncProgressMonitor progressMonitor =
-			new VariantSyncProgressMonitor("Create Project "
-				+ projectName);
+		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Create Project " + projectName);
 		// create project
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = root.getProject(projectName);
@@ -78,9 +65,7 @@ public class CreateVariantProject extends AbstractHandler {
 
 			// set natures
 			IProjectDescription description = project.getDescription();
-			description.setNatureIds(new String[] {
-				Variant.NATURE_ID,
-				JavaCore.NATURE_ID });
+			description.setNatureIds(new String[] { Variant.NATURE_ID, JavaCore.NATURE_ID });
 
 			// create java project
 			progressMonitor.setSubTaskName("Setting needed natures");
@@ -88,10 +73,7 @@ public class CreateVariantProject extends AbstractHandler {
 			IJavaProject javaProject = JavaCore.create(project);
 
 			// set build path
-			IClasspathEntry[] buildPath =
-				{
-					JavaCore.newSourceEntry(project.getFullPath().append("src")),
-					JavaRuntime.getDefaultJREContainerEntry() };
+			IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(project.getFullPath().append("src")), JavaRuntime.getDefaultJREContainerEntry() };
 
 			progressMonitor.setSubTaskName("Setting build paths of project");
 			javaProject.setRawClasspath(buildPath, project.getFullPath().append("bin"), progressMonitor);

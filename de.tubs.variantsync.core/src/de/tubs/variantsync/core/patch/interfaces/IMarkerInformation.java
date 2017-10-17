@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.markers.interfaces;
+package de.tubs.variantsync.core.patch.interfaces;
 
 public interface IMarkerInformation {
 

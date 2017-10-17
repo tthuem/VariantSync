@@ -1,5 +1,6 @@
-package de.tubs.variantsync.core.patch;
+package de.tubs.variantsync.core.patch.base;
 
+import de.tubs.variantsync.core.patch.APatch;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;

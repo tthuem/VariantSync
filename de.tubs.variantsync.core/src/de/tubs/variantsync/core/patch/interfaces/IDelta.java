@@ -135,6 +135,8 @@ public interface IDelta<T> extends Serializable {
 	 */
 	boolean isSynchronizedProject(IProject project);
 
+	boolean isSynchronizedProject(String projectName);
+
 	void addSynchronizedProject(IProject project);
 
 	List<IProject> getSynchronizedProjects();

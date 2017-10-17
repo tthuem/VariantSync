@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.patch;
+package de.tubs.variantsync.core.patch.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
 import de.tubs.variantsync.core.exceptions.PatchException;
-import de.tubs.variantsync.core.markers.MarkerInformation;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.utilities.FileHelper;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import difflib.ChangeDelta;
@@ -210,18 +209,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 	}
 
 	@Override
-	public List<IMarkerInformation> getMarkerInformations(IFile file, IDelta<Chunk> delta) {
-		List<IMarkerInformation> markerInformations = new ArrayList<>();
-		Chunk revised = delta.getRevised();
-		for (int i = 0; i <= revised.getLines().size() - 1; i++) {
-			if (!((String) revised.getLines().get(i)).replaceAll(" ", "").replaceAll("\t", "").isEmpty()) {
-				IMarkerInformation markerInformation = new MarkerInformation(revised.getPosition() + i);
-				markerInformation.setFeatureExpression(delta.getFeature());
-				System.out.println("Created marker information: " + markerInformation);
-				markerInformations.add(markerInformation);
-			}
-		}
-		return markerInformations;
+	public IMarkerHandler getMarkerHandler() {
+		return new DefaultMarkerHandler();
 	}
 
 }

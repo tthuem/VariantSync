@@ -5,6 +5,7 @@ import org.eclipse.core.resources.IFile;
 import de.ovgu.featureide.fm.core.CoreExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
+import de.tubs.variantsync.core.patch.base.DefaultDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
 @SuppressWarnings("rawtypes")

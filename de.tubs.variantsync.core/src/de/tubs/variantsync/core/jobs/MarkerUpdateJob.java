@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.markers;
+package de.tubs.variantsync.core.jobs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,9 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.SourceFile;
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 import de.tubs.variantsync.core.utilities.LogOperations;
+import de.tubs.variantsync.core.utilities.MarkerUtils;
 
 public class MarkerUpdateJob extends UIJob {
 
@@ -29,7 +30,7 @@ public class MarkerUpdateJob extends UIJob {
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		try {
-			MarkerHandler.getInstance().clearResource(file);
+			MarkerUtils.cleanResource(file);
 		} catch (CoreException e) {
 			LogOperations.logError("Cannot clear all markers from: " + file.getFullPath(), e);
 		}
@@ -43,7 +44,7 @@ public class MarkerUpdateJob extends UIJob {
 					markers.add(codeMapping.getMarkerInformation());
 				}
 			}
-			if (!markers.isEmpty()) MarkerHandler.getInstance().setMarker(file, markers);
+			if (!markers.isEmpty()) MarkerUtils.setMarker(file, markers);
 		}
 		return Status.OK_STATUS;
 	}

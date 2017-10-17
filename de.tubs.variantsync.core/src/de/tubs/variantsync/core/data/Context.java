@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
@@ -17,8 +16,7 @@ import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException;
 import de.tubs.variantsync.core.exceptions.ProjectNotFoundException.Type;
-import de.tubs.variantsync.core.markers.MarkerHandler;
-import de.tubs.variantsync.core.markers.MarkerUpdateJob;
+import de.tubs.variantsync.core.jobs.MarkerUpdateJob;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
@@ -95,20 +93,10 @@ public class Context implements IEventListener {
 	}
 
 	public void setProjects(List<IProject> projects) {
-		try {
-			MarkerHandler.getInstance().cleanProjects(projects);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 		this.projectList = projects;
 	}
 
 	public void addProject(IProject project) {
-		try {
-			MarkerHandler.getInstance().cleanProject(project);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
 		this.projectList.add(project);
 	}
 

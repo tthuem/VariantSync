@@ -1,8 +1,8 @@
-package de.tubs.variantsync.core.markers;
+package de.tubs.variantsync.core.patch;
 
 import java.util.UUID;
 
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
 /**
  * Contains all marker relevant informations
@@ -11,7 +11,7 @@ import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
  * @author Christopher Sontag
  * @since 17.06.2016
  */
-public class MarkerInformation implements IMarkerInformation {
+public class AMarkerInformation implements IMarkerInformation {
 
 	private long markerId;
 	private int offset;
@@ -27,7 +27,7 @@ public class MarkerInformation implements IMarkerInformation {
 	 * @param length - length
 	 * @param line - if true, the offset and length are interpreted as mappings
 	 */
-	public MarkerInformation(long markerId, int offset, int length, boolean line) {
+	public AMarkerInformation(long markerId, int offset, int length, boolean line) {
 		this.markerId = markerId;
 		this.offset = offset;
 		this.length = length;
@@ -41,7 +41,7 @@ public class MarkerInformation implements IMarkerInformation {
 	 * @param length - length
 	 * @param line - if true, the offset and length are interpreted as mappings
 	 */
-	public MarkerInformation(int offset, int length, boolean line) {
+	public AMarkerInformation(int offset, int length, boolean line) {
 		this.markerId = UUID.randomUUID().getMostSignificantBits();
 		this.offset = offset;
 		this.length = length;
@@ -54,7 +54,7 @@ public class MarkerInformation implements IMarkerInformation {
 	 * @param markerId - marker id
 	 * @param line - line
 	 */
-	public MarkerInformation(long markerId, int line) {
+	public AMarkerInformation(long markerId, int line) {
 		this.markerId = markerId;
 		this.offset = line;
 		this.length = 1;
@@ -66,7 +66,7 @@ public class MarkerInformation implements IMarkerInformation {
 	 * 
 	 * @param line - line
 	 */
-	public MarkerInformation(int line) {
+	public AMarkerInformation(int line) {
 		this.markerId = UUID.randomUUID().getMostSignificantBits();
 		this.offset = line;
 		this.length = 1;
@@ -145,7 +145,7 @@ public class MarkerInformation implements IMarkerInformation {
 
 	@Override
 	public String toString() {
-		return String.format("MarkerInformation [markerId=%s, offset=%s, length=%s, expression=%s, isLine=%s]", markerId, offset, length, expression, isLine);
+		return String.format("AMarkerInformation [markerId=%s, offset=%s, length=%s, expression=%s, isLine=%s]", markerId, offset, length, expression, isLine);
 	}
 
 }

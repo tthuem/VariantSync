@@ -1,6 +1,6 @@
 package de.tubs.variantsync.core.data;
 
-import de.tubs.variantsync.core.markers.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
 public class CodeMapping {
 

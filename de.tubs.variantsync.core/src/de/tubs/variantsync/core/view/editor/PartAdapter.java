@@ -7,7 +7,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.EditorPart;
 
-import de.tubs.variantsync.core.markers.MarkerUpdateJob;
+import de.tubs.variantsync.core.jobs.MarkerUpdateJob;
 
 /**
  * 

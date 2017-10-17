@@ -8,8 +8,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.patch.DefaultDeltaFactory;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
+import de.tubs.variantsync.core.patch.base.DefaultDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
 /**

@@ -149,7 +149,10 @@ public class Context implements IEventListener {
 		if (configurationProject != null) {
 			for (IFeature feature : getFeatures()) {
 				FeatureExpression fe = new FeatureExpression(feature.getName());
-				if (!featureExpressions.contains(fe)) featureExpressions.add(fe);
+				if (!featureExpressions.contains(fe)) {
+					featureExpressions.add(fe);
+					fireEvent(new VariantSyncEvent(this, EventType.FEATUREEXPRESSION_ADDED, null, fe));
+				}
 			}
 		} else throw new ProjectNotFoundException(Type.CONFIGURATION);
 	}

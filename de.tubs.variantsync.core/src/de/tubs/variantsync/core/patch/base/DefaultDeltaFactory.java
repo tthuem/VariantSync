@@ -6,21 +6,22 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
-import de.tubs.variantsync.core.exceptions.PatchException;
+import com.github.difflib.DiffUtils;
+import com.github.difflib.algorithm.DiffException;
+import com.github.difflib.patch.ChangeDelta;
+import com.github.difflib.patch.Chunk;
+import com.github.difflib.patch.DeleteDelta;
+import com.github.difflib.patch.Delta;
+import com.github.difflib.patch.InsertDelta;
+import com.github.difflib.patch.Patch;
+import com.github.difflib.patch.PatchFailedException;
+
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.utilities.FileHelper;
 import de.tubs.variantsync.core.utilities.LogOperations;
-import difflib.ChangeDelta;
-import difflib.Chunk;
-import difflib.DeleteDelta;
-import difflib.Delta;
-import difflib.DiffUtils;
-import difflib.InsertDelta;
-import difflib.Patch;
-import difflib.PatchFailedException;
 
 /**
  * DefaultDeltaFactory
@@ -53,13 +54,13 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 	}
 
 	@Override
-	public List<IDelta<Chunk>> createDeltas(IFile res, long timestamp, DELTATYPE kind) throws PatchException {
+	public List<IDelta<Chunk>> createDeltas(IFile res, long timestamp, DELTATYPE kind) throws DiffException {
 		IFileState state = FileHelper.getLatestHistory((IFile) res);
 		return createDeltas(res, state, timestamp, kind);
 	}
 
 	@Override
-	public List<IDelta<Chunk>> createDeltas(IFile res, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException {
+	public List<IDelta<Chunk>> createDeltas(IFile res, IFileState oldState, long timestamp, DELTATYPE kind) throws DiffException {
 		// Check for null arguments
 		if (res == null || oldState == null || kind == null) return null;
 
@@ -79,9 +80,9 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 		historyFilelines.add(0, "");
 
 		// Calculate patch
-		Patch<String> patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines));
+		Patch<String> patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
 
-		// If a patch was created wrap it in ADelta
+		// If a patch was created wrap it in Delta
 		if (!patch.getDeltas().isEmpty() && patch.getDeltas().size() > 0) {
 
 			List<IDelta<Chunk>> deltas = new ArrayList<>();
@@ -91,6 +92,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 				delta.setType(kind);
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
+				System.out.println(originalDelta.getOriginal());
 
 				deltas.add(delta);
 			}

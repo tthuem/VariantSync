@@ -5,14 +5,19 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 
+import com.github.difflib.patch.Chunk;
+
 import de.tubs.variantsync.core.patch.ADelta;
-import difflib.Chunk;
 
 @SuppressWarnings("rawtypes")
 public class DefaultDelta extends ADelta<Chunk> {
 
 	public DefaultDelta(IFile res, String factoryId) {
 		super(res, factoryId);
+	}
+
+	public DefaultDelta(IFile res, long timestamp, String factoryId) {
+		super(res, timestamp, factoryId);
 	}
 
 	@Override
@@ -53,6 +58,19 @@ public class DefaultDelta extends ADelta<Chunk> {
 	public String getRepresentation() {
 		return "--- (" + this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ (" + this.revised.getPosition() + ") "
 			+ this.revised.getLines();
+	}
+
+	@Override
+	protected Object clone() {
+		DefaultDelta defaultDelta = new DefaultDelta(this.resource, this.timestamp, this.factoryId);
+		defaultDelta.setFeature(this.feature);
+		defaultDelta.setOriginal(this.original);
+		defaultDelta.setPatch(this.parent);
+		defaultDelta.setProject(this.project);
+		defaultDelta.setRevised(this.revised);
+		defaultDelta.setSynchronizedProjects(this.syncronizedProjects);
+		defaultDelta.setType(this.type);
+		return defaultDelta;
 	}
 
 }

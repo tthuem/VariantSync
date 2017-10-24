@@ -5,8 +5,9 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
+import com.github.difflib.algorithm.DiffException;
+
 import de.ovgu.featureide.fm.core.IExtension;
-import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 
 /**
@@ -41,7 +42,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param kind - type of change
 	 * @return patch object
 	 */
-	List<IDelta<T>> createDeltas(IFile file, long timestamp, DELTATYPE kind) throws PatchException;
+	List<IDelta<T>> createDeltas(IFile file, long timestamp, DELTATYPE kind) throws DiffException;
 
 	/**
 	 * Creates patch object from a changed resource.
@@ -51,7 +52,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @param kind - type of change
 	 * @return patch object
 	 */
-	List<IDelta<T>> createDeltas(IFile file, IFileState oldState, long timestamp, DELTATYPE kind) throws PatchException;
+	List<IDelta<T>> createDeltas(IFile file, IFileState oldState, long timestamp, DELTATYPE kind) throws DiffException;
 
 	/**
 	 * Patches a resource with a given patch.
@@ -89,5 +90,13 @@ public interface IDeltaFactory<T> extends IExtension {
 	boolean isSupported(IFile file);
 
 	IMarkerHandler getMarkerHandler();
+//
+//	public boolean checkConflict(List<IDelta> leftDeltas, List<IDelta> rightDeltas);
+//
+//	public boolean checkConflict(List<String> ancestorLines, List<String> leftLines, List<String> rightLines);
+//
+//	public List<String> performThreeWayMerge(IFile ancestor, IFile left, IFile right);
+//
+//	public List<IDelta> getConflictingDeltas(List<String> ancestorLines, List<String> leftLines, List<String> rightLines);
 
 }

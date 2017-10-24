@@ -6,3 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: TU Braunschweig
 Fragment-Host: de.tubs.variantsync.core;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: de.tubs.variantsync.core

@@ -10,10 +10,11 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
+import com.github.difflib.algorithm.DiffException;
+
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
-import de.tubs.variantsync.core.exceptions.PatchException;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.base.DefaultPatchFactory;
@@ -86,15 +87,11 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	@SuppressWarnings("unchecked")
 	private void handleAddedResource(IResourceDelta delta) {
 		if (delta.getResource().getType() == IResource.FILE
-			&& ((delta.getFlags()
-				& IResourceDelta.MARKERS) == 0
-				|| (delta.getFlags()
-					& IResourceDelta.MOVED_FROM) != 0)) {
+			&& ((delta.getFlags() & IResourceDelta.MARKERS) == 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
 			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
 			try {
-				if (VariantSyncPlugin.getDefault().isActive()
-					&& !context.isDefaultContextSelected()) {
+				if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (context.getActualContextPatch() == null) {
@@ -110,7 +107,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
-			} catch (PatchException ex) {
+			} catch (DiffException ex) {
 				LogOperations.logError("Patch could not be created", ex);
 			} catch (NoSuchExtensionException ex) {
 				LogOperations.logError("PatchFactory Extension does not exist!", ex);
@@ -128,15 +125,11 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	@SuppressWarnings("unchecked")
 	private void handleRemovedResource(IResourceDelta delta) {
 		if (delta.getResource().getType() == IResource.FILE
-			&& ((delta.getFlags()
-				& IResourceDelta.MARKERS) != 0
-				|| (delta.getFlags()
-					& IResourceDelta.MOVED_FROM) != 0)) {
+			&& ((delta.getFlags() & IResourceDelta.MARKERS) != 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
 			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
 			try {
-				if (VariantSyncPlugin.getDefault().isActive()
-					&& !context.isDefaultContextSelected()) {
+				if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (context.getActualContextPatch() == null) {
@@ -152,7 +145,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
-			} catch (PatchException ex) {
+			} catch (DiffException ex) {
 				LogOperations.logError("Patch could not be created", ex);
 			} catch (NoSuchExtensionException ex) {
 				LogOperations.logError("PatchFactory Extension does not exist!", ex);
@@ -169,9 +162,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleChangedResource(IResourceDelta delta) {
-		if (delta.getResource().getType() == IResource.FILE
-			&& (delta.getFlags()
-				& IResourceDelta.CONTENT) != 0) {
+		if (delta.getResource().getType() == IResource.FILE && (delta.getFlags() & IResourceDelta.CONTENT) != 0) {
 			IFile file = (IFile) delta.getResource();
 			final IFileState[] states;
 			try {
@@ -181,8 +172,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 
 					Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
 					try {
-						if (VariantSyncPlugin.getDefault().isActive()
-							&& !context.isDefaultContextSelected()) {
+						if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
 							IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
 							if (context.getActualContextPatch() == null) {
@@ -198,7 +188,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
-					} catch (PatchException ex) {
+					} catch (DiffException ex) {
 						LogOperations.logError("Patch could not be created", ex);
 					} catch (NoSuchExtensionException ex) {
 						LogOperations.logError("PatchFactory Extension does not exist!", ex);
@@ -221,16 +211,14 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @throws CoreException
 	 */
 	private boolean filterResource(IProject project, IResource res) throws CoreException {
-		if (project != null && project.isOpen()
-				&& !project.hasNature(Variant.NATURE_ID)) {
+		if (project != null && project.isOpen() && !project.hasNature(Variant.NATURE_ID)) {
 			return false;
 		}
 		if (project != null && !project.isOpen()) {
 			return false;
 		}
 		String name = res.getName();
-		return !(res.isDerived()
-			|| name.startsWith("."));
+		return !(res.isDerived() || name.startsWith("."));
 	}
 
 	// /**
@@ -268,84 +256,64 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 */
 	private String getFlagText(int flag) {
 		String flags = "F_";
-		if ((flag
-			& IResourceDelta.ADDED) != 0) {
+		if ((flag & IResourceDelta.ADDED) != 0) {
 			flags += "ADDED ";
 		}
-		if ((flag
-			& IResourceDelta.ADDED_PHANTOM) != 0) {
+		if ((flag & IResourceDelta.ADDED_PHANTOM) != 0) {
 			flags += "ADDED_PHANTOM ";
 		}
-		if ((flag
-			& IResourceDelta.ALL_WITH_PHANTOMS) != 0) {
+		if ((flag & IResourceDelta.ALL_WITH_PHANTOMS) != 0) {
 			flags += "ALL_WITH_PHANTOMS ";
 		}
-		if ((flag
-			& IResourceDelta.CHANGED) != 0) {
+		if ((flag & IResourceDelta.CHANGED) != 0) {
 			flags += "CHANGED ";
 		}
-		if ((flag
-			& IResourceDelta.CONTENT) != 0) {
+		if ((flag & IResourceDelta.CONTENT) != 0) {
 			flags += "CONTENT ";
 		}
-		if ((flag
-			& IResourceDelta.COPIED_FROM) != 0) {
+		if ((flag & IResourceDelta.COPIED_FROM) != 0) {
 			flags += "COPIED_FROM ";
 		}
-		if ((flag
-			& IResourceDelta.DERIVED_CHANGED) != 0) {
+		if ((flag & IResourceDelta.DERIVED_CHANGED) != 0) {
 			flags += "DERIVED_CHANGED ";
 		}
-		if ((flag
-			& IResourceDelta.DESCRIPTION) != 0) {
+		if ((flag & IResourceDelta.DESCRIPTION) != 0) {
 			flags += "DESCRIPTION ";
 		}
-		if ((flag
-			& IResourceDelta.ENCODING) != 0) {
+		if ((flag & IResourceDelta.ENCODING) != 0) {
 			flags += "ENCODING ";
 		}
-		if ((flag
-			& IResourceDelta.LOCAL_CHANGED) != 0) {
+		if ((flag & IResourceDelta.LOCAL_CHANGED) != 0) {
 			flags += "LOCAL_CHANGED ";
 		}
-		if ((flag
-			& IResourceDelta.MARKERS) != 0) {
+		if ((flag & IResourceDelta.MARKERS) != 0) {
 			flags += "MARKERS ";
 		}
-		if ((flag
-			& IResourceDelta.MOVED_FROM) != 0) {
+		if ((flag & IResourceDelta.MOVED_FROM) != 0) {
 			flags += "MOVED_FROM ";
 		}
-		if ((flag
-			& IResourceDelta.MOVED_TO) != 0) {
+		if ((flag & IResourceDelta.MOVED_TO) != 0) {
 			flags += "MOVED_TO ";
 		}
-		if ((flag
-			& IResourceDelta.NO_CHANGE) != 0) {
+		if ((flag & IResourceDelta.NO_CHANGE) != 0) {
 			flags += "NO_CHANGE ";
 		}
-		if ((flag
-			& IResourceDelta.OPEN) != 0) {
+		if ((flag & IResourceDelta.OPEN) != 0) {
 			flags += "OPEN ";
 		}
-		if ((flag
-			& IResourceDelta.REMOVED) != 0) {
+		if ((flag & IResourceDelta.REMOVED) != 0) {
 			flags += "REMOVED ";
 		}
-		if ((flag
-			& IResourceDelta.REMOVED_PHANTOM) != 0) {
+		if ((flag & IResourceDelta.REMOVED_PHANTOM) != 0) {
 			flags += "REMOVED_PHANTOM ";
 		}
-		if ((flag
-			& IResourceDelta.REPLACED) != 0) {
+		if ((flag & IResourceDelta.REPLACED) != 0) {
 			flags += "REPLACED ";
 		}
-		if ((flag
-			& IResourceDelta.SYNC) != 0) {
+		if ((flag & IResourceDelta.SYNC) != 0) {
 			flags += "SYNC ";
 		}
-		if ((flag
-			& IResourceDelta.TYPE) != 0) {
+		if ((flag & IResourceDelta.TYPE) != 0) {
 			flags += "TYPE ";
 		}
 		return flags;

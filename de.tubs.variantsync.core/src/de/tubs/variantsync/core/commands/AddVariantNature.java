@@ -21,16 +21,17 @@ public class AddVariantNature extends AbstractHandler {
 		ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
 		if (currentSelection instanceof IStructuredSelection) {
 
-			Object firstElement = ((IStructuredSelection) currentSelection).getFirstElement();
-			
-			// Get an IResource as an adapter from the current selection
-			IAdapterManager adapterManager = Platform.getAdapterManager();
-			IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
+			for (Object firstElement : ((IStructuredSelection) currentSelection).toArray()) {
 
-			if (resourceAdapter != null) {
-				IResource resource = resourceAdapter;
-				IProject project = resource.getProject();
-				VariantSyncPlugin.addNature(project);
+				// Get an IResource as an adapter from the current selection
+				IAdapterManager adapterManager = Platform.getAdapterManager();
+				IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
+
+				if (resourceAdapter != null) {
+					IResource resource = resourceAdapter;
+					IProject project = resource.getProject();
+					VariantSyncPlugin.addNature(project);
+				}
 			}
 		}
 		return null;

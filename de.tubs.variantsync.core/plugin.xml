@@ -401,6 +401,22 @@
                relative="org.eclipse.ui.views.ContentOutline"
                visible="true">
          </view>
+         <view
+               id="de.tubs.variantsync.core.view.sourcefocus"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="de.tubs.variantsync.core.view.resourcechanges"
+               visible="true">
+         </view>
+         <view
+               id="de.tubs.variantsync.core.view.targetfocus"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="de.tubs.variantsync.core.view.sourcefocus"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension

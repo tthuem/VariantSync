@@ -38,7 +38,12 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		composite.setLayout(new FillLayout());
 
 		featureExpressionSelection = new CCombo(composite, SWT.FLAT | SWT.BORDER | SWT.FILL);
-		featureExpressionSelection.setText(Context.DEFAULT_CONTEXT_NAME);
+		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+		if (context != null) {
+			featureExpressionSelection.setText(context.getActualContext());
+		} else {
+			featureExpressionSelection.setText(Context.DEFAULT_CONTEXT_NAME);
+		}
 		featureExpressionSelection.addSelectionListener(this);
 		updateCCombo();
 

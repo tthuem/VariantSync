@@ -1,6 +1,5 @@
 package de.tubs.variantsync.core.patch.interfaces;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,14 +7,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
 /**
- * 
+ * This interface defines delta.<br><b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>
  * 
  * @author Christopher Sontag
  * @version 1.0
  * @since 18.08.2017
  * @param <T> file element, e.g. line, ast element, ...
  */
-public interface IDelta<T> extends Serializable {
+public interface IDelta<T> extends Cloneable {
 
 	/**
 	 * Specifies the type of the delta.

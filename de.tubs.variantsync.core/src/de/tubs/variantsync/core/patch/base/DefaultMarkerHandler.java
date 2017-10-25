@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 
+import com.github.difflib.patch.Chunk;
+
 import de.tubs.variantsync.core.patch.AMarkerHandler;
 import de.tubs.variantsync.core.patch.AMarkerInformation;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
-import difflib.Chunk;
 
 public class DefaultMarkerHandler extends AMarkerHandler<Chunk> {
 

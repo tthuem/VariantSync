@@ -17,9 +17,8 @@ import de.tubs.variantsync.core.data.CodeMapping;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
 import de.tubs.variantsync.core.data.SourceFile;
-import de.tubs.variantsync.core.patch.APatch;
 import de.tubs.variantsync.core.patch.AMarkerInformation;
-import de.tubs.variantsync.core.patch.base.DefaultDelta;
+import de.tubs.variantsync.core.patch.APatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.persistence.CodeMappingFormat;
 import de.tubs.variantsync.core.persistence.ContextFormat;
@@ -99,7 +98,7 @@ public class PersistenceTest {
 	public void testWritePatches() {
 		List<IPatch<?>> patches = new ArrayList<>();
 		IPatch patch = new APatch();
-		patch.addDelta(new DefaultDelta(null, "de.tubs.variantsync.core.diff"));
+//		patch.addDelta(new DefaultDelta(null, "de.tubs.variantsync.core.diff"));
 		patches.add(patch);
 
 		String path = "tmp_" + System.currentTimeMillis() + "_" + PatchFormat.FILENAME;

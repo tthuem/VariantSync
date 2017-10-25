@@ -104,7 +104,7 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
-								<pluginExecution>
+								<!-- <pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
 											org.apache.maven.plugins
@@ -122,7 +122,7 @@
 									<action>
 										<ignore></ignore>
 									</action>
-								</pluginExecution>
+								</pluginExecution> -->
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>

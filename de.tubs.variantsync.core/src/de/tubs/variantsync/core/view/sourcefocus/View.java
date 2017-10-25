@@ -3,8 +3,9 @@ package de.tubs.variantsync.core.view.sourcefocus;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -22,6 +23,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -31,6 +33,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
+import de.tubs.variantsync.core.syncronization.SynchronizationHandler;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
@@ -47,6 +50,9 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private org.eclipse.swt.widgets.List targetsList;
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String feature = "";
+	private List<IDelta<?>> lastSelections = new ArrayList<>();
+	private IFile lastResource = null;
+	private String[] lastTargets;
 
 	public View() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -147,6 +153,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessVerticalSpace = false;
 		btnSync.setLayoutData(gridData);
 		btnSync.setText("Synchronize");
+		btnSync.addSelectionListener(this);
 		btnSync.setEnabled(false);
 	}
 
@@ -200,8 +207,27 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		clearAll();
-		feature = cbFeature.getItem(cbFeature.getSelectionIndex());
-		updateTreeViewer(feature);
+
+		if (e.getSource().equals(cbFeature)) {
+			feature = cbFeature.getItem(cbFeature.getSelectionIndex());
+			updateTreeViewer(feature);
+		} else if (e.getSource().equals(btnSync)) {
+			boolean status = true;
+
+			int i = targetsList.getSelectionCount();
+			for (String project : lastTargets) {
+				IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
+				for (IDelta<?> delta : lastSelections) {
+					status = SynchronizationHandler.handleSynchronization(iProject, delta);
+				}
+			}
+			if (status) {
+				MessageBox msgBox = new MessageBox(Display.getCurrent().getActiveShell());
+				msgBox.setMessage("Success!");
+				msgBox.open();
+			}
+			updateTreeViewer(feature);
+		}
 	}
 
 	@Override
@@ -231,14 +257,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		clearAll();
+		lastSelections.clear();
 
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		if (selection.size() == 1) {
 			Object o = selection.getFirstElement();
 			if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
-				lbChange.setText(((IDelta<?>) o).getRepresentation());
-				List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(((IDelta<?>) o).getFeature());
+				IDelta<?> delta = ((IDelta<?>) o);
+				lastSelections.add(delta);
+				lastResource = delta.getResource();
+				lbChange.setText(delta.getRepresentation());
+				List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(delta.getFeature());
 				if (targets != null) {
 					targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
 					if (!targets.isEmpty()) btnSync.setEnabled(true);
@@ -247,17 +277,20 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				lbChange.setText("");
 			}
 		} else {
-			IResource res = null;
+			IFile res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
 				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
-					if (res == null) res = ((IDelta<?>) o).getResource();
-					if (!res.equals(((IDelta<?>) o).getResource())) {
+					IDelta<?> delta = ((IDelta<?>) o);
+					if (res == null) res = delta.getResource();
+					if (!res.equals(delta.getResource())) {
 						lbChange.setText("No multiple resources supported");
 						return;
 					}
-					ret += ret.isEmpty() ? ((IDelta<?>) o).getRepresentation() : "\n\n" + ((IDelta<?>) o).getRepresentation();
+					lastSelections.add(delta);
+					lastResource = res;
+					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
 				}
 			}
 			lbChange.setText(ret);

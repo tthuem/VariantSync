@@ -406,7 +406,7 @@
                minimized="false"
                moveable="true"
                relationship="stack"
-               relative="org.eclipse.ui.views.ProblemView"
+               relative="de.tubs.variantsync.core.view.resourcechanges"
                visible="true">
          </view>
          <view
@@ -414,7 +414,7 @@
                minimized="false"
                moveable="true"
                relationship="stack"
-               relative="org.eclipse.ui.views.ProblemView"
+               relative="de.tubs.variantsync.core.view.sourcefocus"
                visible="true">
          </view>
       </perspectiveExtension>

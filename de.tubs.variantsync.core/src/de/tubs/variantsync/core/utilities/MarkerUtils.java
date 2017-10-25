@@ -56,7 +56,7 @@ public class MarkerUtils {
 			try {
 				marker.delete();
 			} catch (CoreException e) {
-				e.printStackTrace();
+				throw e;
 			}
 		}
 	}
@@ -68,7 +68,7 @@ public class MarkerUtils {
 	 * @throws CoreException
 	 */
 	public static void cleanResource(IResource res) throws CoreException {
-		if (res != null) {
+		if (res != null && res.exists()) {
 			List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
 			for (IMarker marker : markers) {
 				try {

@@ -42,6 +42,7 @@ import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.persistence.Persistence;
 import de.tubs.variantsync.core.utilities.LogOperations;
+import de.tubs.variantsync.core.utilities.MarkerUtils;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
@@ -106,7 +107,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 			this.getPreferenceStore().setValue("lastRequestedContext", lastRequestedContext.getConfigurationProject().getProjectName());
 
 		for (Context context : INSTANCES.values()) {
-			if (context != null) {
+			if (context != null && context.getConfigurationProject().getProject().exists()) {
 				Persistence.writeContext(context);
 				Persistence.writeFeatureExpressions(context);
 
@@ -310,6 +311,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 	public void init() {
 		Context lastContext = null;
 		for (IFeatureProject project : getConfigurationProjects()) {
+			try {
+				MarkerUtils.cleanProject(project.getProject());
+			} catch (CoreException e) {
+				LogOperations.logError("A marker could not be deleted", e);
+			}
 			if (project.getProjectName().equals(this.getPreferenceStore().getString("lastRequestedContext"))) {
 				lastContext = getContext(project);
 			} else {

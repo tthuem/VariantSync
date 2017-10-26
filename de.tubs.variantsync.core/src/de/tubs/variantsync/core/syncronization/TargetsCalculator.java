@@ -14,6 +14,7 @@ import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
+import de.tubs.variantsync.core.utilities.FileHelper;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class TargetsCalculator {
@@ -26,7 +27,7 @@ public class TargetsCalculator {
 		for (IProject project : context.getProjects()) {
 			Configuration config = context.getConfigurationForProject(project);
 			if (config == null || !config.getSelectedFeatureNames().contains(delta.getFeature())) continue;
-			if (project != delta.getProject() && isTargetWithoutConflict(project, delta)) targets.add(project);
+			if (project != delta.getProject() && isTargetWithoutConflict(project, delta) && !delta.getSynchronizedProjects().contains(project)) targets.add(project);
 		}
 		return targets;
 	}
@@ -37,7 +38,7 @@ public class TargetsCalculator {
 		for (IProject project : context.getProjects()) {
 			Configuration config = context.getConfigurationForProject(project);
 			if (config == null || !config.getSelectedFeatureNames().contains(delta.getFeature())) continue;
-			if (project != delta.getProject() && isTargetWithConflict(project, delta)) targets.add(project);
+			if (project != delta.getProject() && isTargetWithConflict(project, delta)  && !delta.getSynchronizedProjects().contains(project)) targets.add(project);
 		}
 		return targets;
 	}

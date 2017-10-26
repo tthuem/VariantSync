@@ -40,6 +40,7 @@ import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
@@ -168,21 +169,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource().equals(cbVariant)) {
+			
 			project = cbVariant.getItem(cbVariant.getSelectionIndex());
 			updateTreeViewer(project);
+			
 		} else if (e.getSource().equals(btnSync)) {
+			
 			IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
-			boolean status = true;
-
 			for (IDelta<?> delta : lastSelections) {
-				status = SynchronizationHandler.handleSynchronization(iProject, delta);
+				SynchronizationHandler.handleSynchronization(iProject, delta);
 			}
-			if (status) {
-				MessageBox msgBox = new MessageBox(Display.getCurrent().getActiveShell());
-				msgBox.setMessage("Success!");
-				msgBox.open();
-			}
-			updateTreeViewer(project);
+			VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(View.this, EventType.PATCH_CHANGED));
+			
 		}
 	}
 

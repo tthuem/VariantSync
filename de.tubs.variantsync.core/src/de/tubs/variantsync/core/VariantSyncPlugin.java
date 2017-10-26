@@ -62,7 +62,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 
 	// The shared instance
 	private static VariantSyncPlugin plugin;
-	public static HashMap<IFeatureProject, Context> INSTANCES = new HashMap<>();
+	private static ResourceChangeHandler listener = new ResourceChangeHandler();
+	private static HashMap<IFeatureProject, Context> INSTANCES = new HashMap<>();
 	private static Context lastRequestedContext = null;
 	private boolean isActive;
 	private List<IEventListener> listeners = new ArrayList<>();
@@ -93,7 +94,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 				listenForActiveClass();
 			}
 		});
-		initResourceChangeListener();
+		addResourceChangeListener();
 	}
 
 	/*
@@ -298,14 +299,17 @@ public class VariantSyncPlugin extends AbstractUIPlugin implements IEventListene
 		}
 	}
 
-	private void initResourceChangeListener() {
-		ResourceChangeHandler listener = new ResourceChangeHandler();
+	public static void addResourceChangeListener() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 		try {
 			listener.registerSaveParticipant();
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void removeResourceChangeListener() {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
 	}
 
 	public void init() {

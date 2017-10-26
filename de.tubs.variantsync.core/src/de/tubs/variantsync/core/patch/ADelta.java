@@ -230,7 +230,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 		} else if (!original.equals(other.original)) return false;
 		if (parent == null) {
 			if (other.parent != null) return false;
-		} else if (!parent.equals(other.parent)) return false;
+		} //else if (!parent.equals(other.parent)) return false;
 		if (project == null) {
 			if (other.project != null) return false;
 		} else if (!project.equals(other.project)) return false;

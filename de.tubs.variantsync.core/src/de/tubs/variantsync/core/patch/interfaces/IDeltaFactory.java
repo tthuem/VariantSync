@@ -90,6 +90,8 @@ public interface IDeltaFactory<T> extends IExtension {
 	boolean isSupported(IFile file);
 
 	IMarkerHandler getMarkerHandler();
+	
+	
 //
 //	public boolean checkConflict(List<IDelta> leftDeltas, List<IDelta> rightDeltas);
 //

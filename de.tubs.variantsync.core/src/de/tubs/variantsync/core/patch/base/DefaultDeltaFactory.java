@@ -16,6 +16,7 @@ import com.github.difflib.patch.InsertDelta;
 import com.github.difflib.patch.Patch;
 import com.github.difflib.patch.PatchFailedException;
 
+import de.tubs.variantsync.core.patch.HistoryStore;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
@@ -33,6 +34,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 
 	private static IDeltaFactory<?> instance = new DefaultDeltaFactory();
+	private HistoryStore historyStore = new HistoryStore();
 
 	@Override
 	public String getId() {
@@ -92,10 +94,16 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 				delta.setType(kind);
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
-				System.out.println(originalDelta.getOriginal());
 
 				deltas.add(delta);
 			}
+			
+			// Normal files are 1-based
+			historyFilelines.remove(0);
+			
+			// Save original source for merging
+			historyStore.addHistory(res, historyFilelines, timestamp);
+			
 			return deltas;
 		}
 		return null;
@@ -128,8 +136,16 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 
 			List<String> linesOld = FileHelper.getFileLines(res);
 			List<String> linesNew;
+			
+			// DiffUtils are 0-based, Eclipse instead 1-based
+			linesOld.add(0, "");
+			
 			if (linesOld != null) {
 				linesNew = DiffUtils.patch(linesOld, p);
+				
+				// DiffUtils are 0-based, Eclipse instead 1-based
+				linesNew.remove(0);
+				
 				FileHelper.setFileLines(res, linesNew);
 			}
 		} catch (PatchFailedException e) {
@@ -192,8 +208,13 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk> {
 			return false;
 		}
 
+		List<String> lines = FileHelper.getFileLines(res);
+		if (!chunkRevised.getBefore().equals(lines.subList(chunkRevised.getPosition()-chunkRevised.getBefore().size()-1, chunkRevised.getPosition())))
+			return false;
+		if (!chunkRevised.getAfter().equals(lines.subList(chunkRevised.getPosition()+chunkRevised.last()+1, chunkRevised.getPosition()+chunkRevised.getAfter().size()+1)))
+			return false;
 		try {
-			delta.verify(FileHelper.getFileLines(res));
+			delta.verify(lines);
 		} catch (PatchFailedException e) {
 			return false;
 		}

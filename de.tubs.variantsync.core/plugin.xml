@@ -348,10 +348,6 @@
             defaultHandler="de.tubs.variantsync.core.view.context.ActiveContextHandler"
             id="de.tubs.variantsync.core.command.context.active"
             name="Active context">
-         <state
-               class="org.eclipse.ui.handlers.RegistryToggleState:false"
-               id="org.eclipse.ui.commands.toggleState">
-         </state>
       </command>
       <command
             defaultHandler="org.eclipse.ui.handlers.ShowViewHandler"

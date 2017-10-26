@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
+import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
@@ -15,6 +16,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class SynchronizationHandler {
 
 	public static boolean handleSynchronization(IProject project, IDelta<?> delta) {
+		VariantSyncPlugin.removeResourceChangeListener();
 		IFile fileRight = project.getFile(delta.getResource().getProjectRelativePath());
 		IFile fileLeft = delta.getProject().getFile(delta.getResource().getProjectRelativePath());
 
@@ -24,6 +26,7 @@ public class SynchronizationHandler {
 				IFile newFile = factory.applyDelta(fileRight, delta);
 				if (!newFile.getContents().toString().equals(fileRight.getContents().toString())) {
 					delta.addSynchronizedProject(project);
+					VariantSyncPlugin.addResourceChangeListener();
 					return true;
 				}
 			} else {
@@ -40,14 +43,15 @@ public class SynchronizationHandler {
 
 				CompareUI.openCompareDialog(rci);
 				delta.addSynchronizedProject(project);
-				return true;
+				VariantSyncPlugin.addResourceChangeListener();
+				return rci.okPressed();
 			}
 		} catch (NoSuchExtensionException e) {
 			LogOperations.logError("DeltaFactory not found", e);
 		} catch (CoreException e) {
 			LogOperations.logError("File could not be read", e);
 		}
-
+		VariantSyncPlugin.addResourceChangeListener();
 		return false;
 	}
 

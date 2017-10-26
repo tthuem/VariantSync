@@ -14,7 +14,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 
 public class ActiveContextHandler extends AbstractHandler implements IElementUpdater {
 
-	private boolean active = false;
+	boolean active = false;
 	private static UIElement updateElement;
 
 	@Override
@@ -25,10 +25,13 @@ public class ActiveContextHandler extends AbstractHandler implements IElementUpd
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Command command = event.getCommand();
-		boolean oldValue = HandlerUtil.toggleCommandState(command);
+		boolean oldValue = active;
 		VariantSyncPlugin.getDefault().setActive(!oldValue);
-		if (!oldValue) updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
-		else updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		if (!oldValue)
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
+		else
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		active = !oldValue;
 		return null;
 	}
 

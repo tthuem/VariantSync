@@ -55,6 +55,15 @@ public interface IDeltaFactory<T> extends IExtension {
 	List<IDelta<T>> createDeltas(IFile file, IFileState oldState, long timestamp, DELTATYPE kind) throws DiffException;
 
 	/**
+	 * Creates a delta copy with different resource.
+	 * 
+	 * @param res - new file pointer
+	 * @param originalDelta - delta to copy
+	 * @return delta copy with new file pointer
+	 */
+	IDelta<T> createDeltas(IFile res, IDelta<?> originalDelta);
+
+	/**
 	 * Patches a resource with a given patch.
 	 * 
 	 * @param res - resource
@@ -90,8 +99,7 @@ public interface IDeltaFactory<T> extends IExtension {
 	boolean isSupported(IFile file);
 
 	IMarkerHandler getMarkerHandler();
-	
-	
+
 //
 //	public boolean checkConflict(List<IDelta> leftDeltas, List<IDelta> rightDeltas);
 //

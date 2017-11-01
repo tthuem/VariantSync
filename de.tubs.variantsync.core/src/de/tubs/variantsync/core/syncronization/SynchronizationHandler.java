@@ -1,5 +1,7 @@
 package de.tubs.variantsync.core.syncronization;
 
+import java.util.Arrays;
+
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.core.resources.IFile;
@@ -8,13 +10,16 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.monitor.CodeMappingHandler;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
+import de.tubs.variantsync.core.patch.HistoryStore;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class SynchronizationHandler {
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean handleSynchronization(IProject project, IDelta<?> delta) {
 		VariantSyncPlugin.removeResourceChangeListener();
 		IFile fileRight = project.getFile(delta.getResource().getProjectRelativePath());
@@ -26,6 +31,10 @@ public class SynchronizationHandler {
 				IFile newFile = factory.applyDelta(fileRight, delta);
 				if (!newFile.getContents().toString().equals(fileRight.getContents().toString())) {
 					delta.addSynchronizedProject(project);
+
+					IDelta<?> newDelta = factory.createDeltas(newFile, delta);
+					CodeMappingHandler.addCodeMappingsForDeltas(Arrays.asList(newDelta));
+
 					VariantSyncPlugin.addResourceChangeListener();
 					return true;
 				}
@@ -38,7 +47,9 @@ public class SynchronizationHandler {
 				compconf.setLeftEditable(false);
 				compconf.setRightEditable(true);
 
-				CompareEditorInput rci = new ResourceCompareInput(compconf, factory.reverseDelta(fileLeft, delta), fileLeft, fileRight);
+				HistoryStore historyStore = new HistoryStore();
+				IFile fileBase = historyStore.getState(fileLeft, delta.getTimestamp());
+				CompareEditorInput rci = new ResourceCompareInput(compconf, fileBase, fileLeft, fileRight);
 				rci.setDirty(true);
 
 				CompareUI.openCompareDialog(rci);

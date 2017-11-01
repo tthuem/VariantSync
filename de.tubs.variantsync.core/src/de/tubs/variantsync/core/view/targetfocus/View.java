@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -169,18 +168,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource().equals(cbVariant)) {
-			
+
 			project = cbVariant.getItem(cbVariant.getSelectionIndex());
 			updateTreeViewer(project);
-			
+
 		} else if (e.getSource().equals(btnSync)) {
-			
+
 			IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
 			for (IDelta<?> delta : lastSelections) {
 				SynchronizationHandler.handleSynchronization(iProject, delta);
 			}
 			VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(View.this, EventType.PATCH_CHANGED));
-			
+
 		}
 	}
 
@@ -230,10 +229,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				lastSelections.add(delta);
 				lastResource = delta.getResource();
 				lbChange.setText(delta.getRepresentation());
-				IProject targetProject = VariantSyncPlugin.getDefault().getActiveEditorContext().getProject(project);
-				if (targetProject != null) {
-					btnSync.setEnabled(true);
-				}
+				btnSync.setEnabled(true);
 			} else {
 				lbChange.setText("");
 			}
@@ -253,6 +249,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 					lastSelections.add(delta);
 					lastResource = res;
 					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
+					btnSync.setEnabled(true);
 				}
 			}
 			lbChange.setText(ret);

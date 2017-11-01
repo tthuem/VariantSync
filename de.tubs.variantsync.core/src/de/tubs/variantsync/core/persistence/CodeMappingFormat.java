@@ -81,7 +81,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 		for (SourceFile sf : object) {
 			Element file = doc.createElement(SOURCEFILE);
-			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));
+			file.setAttribute("path", String.valueOf(sf.getFile().getProjectRelativePath()));
 
 			for (CodeMapping cm : sf.getMappings()) {
 				Element line = doc.createElement(CODEMAPPINGS);

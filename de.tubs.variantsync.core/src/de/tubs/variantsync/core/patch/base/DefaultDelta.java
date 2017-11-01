@@ -9,8 +9,7 @@ import com.github.difflib.patch.Chunk;
 
 import de.tubs.variantsync.core.patch.ADelta;
 
-@SuppressWarnings("rawtypes")
-public class DefaultDelta extends ADelta<Chunk> {
+public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	public DefaultDelta(IFile res, String factoryId) {
 		super(res, factoryId);
@@ -23,9 +22,25 @@ public class DefaultDelta extends ADelta<Chunk> {
 	@Override
 	public String getOriginalAsString() {
 		String ret = String.valueOf(original.getPosition());
+		ret = ret + ":;:";
+
 		for (String line : (List<String>) original.getLines()) {
-			ret = ret + ":;:" + line;
+			ret = ret + line + "#:#";
 		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		ret = ret + ":;:";
+
+		for (String bLine : original.getBefore()) {
+			ret = ret + bLine + "#:#";
+		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		ret = ret + ":;:";
+
+		for (String aLine : original.getAfter()) {
+			ret = ret + aLine + "#:#";
+		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+
 		return ret;
 	}
 
@@ -33,16 +48,36 @@ public class DefaultDelta extends ADelta<Chunk> {
 	public void setOriginalFromString(String original) {
 		List<String> elements = Arrays.asList(original.split(":;:"));
 		int pos = Integer.valueOf(elements.get(0));
-		elements = elements.subList(1, elements.size());
-		this.original = new Chunk<String>(pos, elements);
+		List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
+		List<String> before = Arrays.asList(elements.get(2).split("#:#"));
+		List<String> after = Arrays.asList(elements.get(3).split("#:#"));
+		this.original = new Chunk<String>(pos, lines);
+		this.original.setBefore(before);
+		this.original.setAfter(after);
 	}
 
 	@Override
 	public String getRevisedAsString() {
 		String ret = String.valueOf(revised.getPosition());
+		ret = ret + ":;:";
+
 		for (String line : (List<String>) revised.getLines()) {
-			ret = ret + ":;:" + line;
+			ret = ret + line + "#:#";
 		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		ret = ret + ":;:";
+
+		for (String bLine : revised.getBefore()) {
+			ret = ret + bLine + "#:#";
+		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		ret = ret + ":;:";
+
+		for (String aLine : revised.getAfter()) {
+			ret = ret + aLine + "#:#";
+		}
+		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+
 		return ret;
 	}
 
@@ -50,8 +85,12 @@ public class DefaultDelta extends ADelta<Chunk> {
 	public void setRevisedFromString(String revised) {
 		List<String> elements = Arrays.asList(revised.split(":;:"));
 		int pos = Integer.valueOf(elements.get(0));
-		elements = elements.subList(1, elements.size());
-		this.revised = new Chunk<String>(pos, elements);
+		List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
+		List<String> before = Arrays.asList(elements.get(2).split("#:#"));
+		List<String> after = Arrays.asList(elements.get(3).split("#:#"));
+		this.original = new Chunk<String>(pos, lines);
+		this.original.setBefore(before);
+		this.original.setAfter(after);
 	}
 
 	@Override

@@ -21,6 +21,12 @@ import org.eclipse.ui.PlatformUI;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.utilities.FileHelper;
 
+/**
+ * Creates a page for editing a file with showing a delta on the right
+ * 
+ * @author Christopher Sontag
+ */
+@Deprecated
 public class DeltaCompareViewerPage extends WizardPage {
 
 	private IFile file;

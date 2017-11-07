@@ -22,4 +22,7 @@ public abstract class AMarkerHandler<T> implements IMarkerHandler<T> {
 	@Override
 	public abstract IMarkerInformation updateMarkerForDelta(IMarkerInformation markerInformation, IDelta<T> delta);
 
+	@Override
+	public abstract List<IMarkerInformation> getMarkers(IFile file, int offset, int length);
+
 }

@@ -6,6 +6,8 @@ import org.eclipse.core.resources.IFile;
 
 public interface IMarkerHandler<T> {
 
+	List<IMarkerInformation> getMarkers(IFile file, int offset, int length);
+
 	List<IMarkerInformation> getMarkersForDelta(IFile file, IDelta<T> delta);
 
 	List<IMarkerInformation> getMarkersForDeltas(IFile file, List<IDelta<T>> deltas);

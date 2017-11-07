@@ -130,7 +130,7 @@ public class MarkerUtils {
 				marker = res.createMarker(getMarker(featureExpression.highlighter));
 				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
 				marker.setAttribute(IMarker.CHAR_START, offset);
-				marker.setAttribute(IMarker.CHAR_END, length);
+				marker.setAttribute(IMarker.CHAR_END, offset + length);
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();

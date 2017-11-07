@@ -21,16 +21,15 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.jobs.MarkerUpdateJob;
+import de.tubs.variantsync.core.monitor.CodeMappingHandler;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
-public class DynamicContextPopupItems extends ContributionItem
-		implements IEventListener {
-	
-	public static Image base = VariantSyncPlugin
-			.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/public_co.gif").createImage();
-	public static Image composed = VariantSyncPlugin
-			.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/protected_co.gif").createImage();
+public class DynamicContextPopupItems extends ContributionItem implements IEventListener {
+
+	public static Image base = VariantSyncPlugin.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/public_co.gif").createImage();
+	public static Image composed = VariantSyncPlugin.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/protected_co.gif").createImage();
 
 	@Override
 	public void fill(final Menu menu, int index) {
@@ -38,10 +37,11 @@ public class DynamicContextPopupItems extends ContributionItem
 		for (final FeatureExpression fe : features) {
 			MenuItem menuItem = new MenuItem(menu, SWT.PUSH, index);
 			menuItem.setText(fe.name);
-			menuItem.setImage(fe.isComposed()?composed:base);
-			
+			menuItem.setImage(fe.isComposed() ? composed : base);
+
 			if (!fe.name.contains(Context.DEFAULT_CONTEXT_NAME)) {
 				menuItem.addSelectionListener(new SelectionAdapter() {
+
 					public void widgetSelected(SelectionEvent e) {
 						handleSelection(fe);
 					}
@@ -51,10 +51,9 @@ public class DynamicContextPopupItems extends ContributionItem
 			}
 		}
 	}
-	
+
 	private void handleSelection(FeatureExpression fe) {
-		IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage().getActiveEditor();
+		IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if (editorPart instanceof AbstractTextEditor) {
 			int startLine = 0;
 			int endLine = 0;
@@ -72,16 +71,17 @@ public class DynamicContextPopupItems extends ContributionItem
 						endLine = ((ITextSelection) iSelection).getEndLine() + 1;
 						offset = ((ITextSelection) iSelection).getOffset();
 						length = ((ITextSelection) iSelection).getLength();
-						
-						
+
 						String title = iEditorSite.getPage().getActiveEditor().getTitle();
 						IFile file = (IFile) editorPart.getEditorInput().getAdapter(IFile.class);
 						IPath path = file.getRawLocation().makeAbsolute();
 						String project = file.getProject().toString();
 
 						if (length > 0) {
-							//TODO: Implement Set Context
-						System.out.println("Selected fe:"+fe+" for'"+selectedText+"' (startLine:"+startLine+",endLine:"+endLine+",offset:"+offset+",length:"+length+") in "+path.toOSString());
+							// Add mapping to file
+							CodeMappingHandler.addCodeMappings(file, fe.name, offset, length, selectedText);
+							MarkerUpdateJob job = new MarkerUpdateJob(file);
+							job.schedule();
 						}
 					}
 				}
@@ -89,7 +89,7 @@ public class DynamicContextPopupItems extends ContributionItem
 
 		}
 	}
-	
+
 	@Override
 	public void propertyChange(VariantSyncEvent event) {
 		switch (event.getEventType()) {
@@ -99,7 +99,7 @@ public class DynamicContextPopupItems extends ContributionItem
 			break;
 		default:
 			break;
-		
+
 		}
 	}
 

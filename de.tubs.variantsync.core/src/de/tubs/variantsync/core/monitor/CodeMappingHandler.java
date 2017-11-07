@@ -3,6 +3,8 @@ package de.tubs.variantsync.core.monitor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.CodeMapping;
@@ -24,19 +26,41 @@ public class CodeMappingHandler {
 
 				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 				if (context != null) {
+					SourceFile sourceFile = context.getMapping(delta.getResource());
+					if (sourceFile == null) {
+						sourceFile = new SourceFile(delta.getResource());
+					}
 					for (IMarkerInformation markerInformation : markerInformations) {
 						markerInformation.setFeatureExpression(delta.getFeature());
-						SourceFile sourceFile = context.getMapping(delta.getResource());
-						if (sourceFile == null) {
-							sourceFile = new SourceFile(delta.getResource());
-						}
 						sourceFile.addMapping(new CodeMapping(delta.getRevisedAsString(), markerInformation));
-						context.addCodeMapping(delta.getResource(), sourceFile);
 					}
+					context.addCodeMapping(delta.getResource(), sourceFile);
 				}
 			} catch (NoSuchExtensionException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
+		try {
+			IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
+			List<IMarkerInformation> markerInformations = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
+
+			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
+			if (context != null) {
+				SourceFile sourceFile = context.getMapping(file);
+				if (sourceFile == null) {
+					sourceFile = new SourceFile(file);
+				}
+				for (IMarkerInformation markerInformation : markerInformations) {
+					markerInformation.setFeatureExpression(feature);
+					sourceFile.addMapping(new CodeMapping(content, markerInformation));
+				}
+				context.addCodeMapping(file, sourceFile);
+			}
+		} catch (NoSuchExtensionException e) {
+			e.printStackTrace();
 		}
 	}
 

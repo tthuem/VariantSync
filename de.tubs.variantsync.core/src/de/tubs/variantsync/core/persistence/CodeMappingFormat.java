@@ -67,12 +67,11 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 				IMarkerInformation markerInformation = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
 						Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
 				markerInformation.setFeatureExpression(eCM.getAttribute("feature"));
-				CodeMapping codeMapping = new CodeMapping(eCM.getAttribute("code"), markerInformation);
+				CodeMapping codeMapping = new CodeMapping(eCM.getTextContent(), markerInformation);
 				sourceFile.addMapping(codeMapping);
 			}
 			object.add(sourceFile);
 		}
-
 	}
 
 	@Override
@@ -81,7 +80,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 		for (SourceFile sf : object) {
 			Element file = doc.createElement(SOURCEFILE);
-			file.setAttribute("path", String.valueOf(sf.getFile().getProjectRelativePath()));
+			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));
 
 			for (CodeMapping cm : sf.getMappings()) {
 				Element line = doc.createElement(CODEMAPPINGS);

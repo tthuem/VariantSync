@@ -12,13 +12,13 @@ import de.tubs.variantsync.core.patch.AMarkerInformation;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
-public class DefaultMarkerHandler extends AMarkerHandler<Chunk> {
+public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<IMarkerInformation> getMarkersForDeltas(IFile file, List<IDelta<Chunk>> deltas) {
+	public List<IMarkerInformation> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
 		List<IMarkerInformation> markerInformations = new ArrayList<>();
-		for (IDelta<Chunk> delta : deltas) {
+		for (IDelta<Chunk<String>> delta : deltas) {
 			Chunk revised = delta.getRevised();
 //			for (int i = 0; i <= revised.getLines().size() - 1; i++) {
 //				if (!((String) revised.getLines().get(i)).replaceAll(" ", "").replaceAll("\t", "").isEmpty()) {
@@ -32,7 +32,7 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk> {
 	}
 
 	@Override
-	public IMarkerInformation updateMarkerForDelta(IMarkerInformation markerInformation, IDelta<Chunk> delta) {
+	public IMarkerInformation updateMarkerForDelta(IMarkerInformation markerInformation, IDelta<Chunk<String>> delta) {
 		// TODO Auto-generated method stub
 		return null;
 	}

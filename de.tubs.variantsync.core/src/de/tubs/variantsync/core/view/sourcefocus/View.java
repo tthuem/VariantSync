@@ -3,9 +3,9 @@ package de.tubs.variantsync.core.view.sourcefocus;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
@@ -56,8 +56,6 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String feature = "";
 	private List<IDelta<?>> lastSelections = new ArrayList<>();
-	private IFile lastResource = null;
-	private String[] lastTargets;
 
 	public View() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -273,34 +271,32 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			if (o instanceof IDelta) {
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
-				lastResource = delta.getResource();
 				lbChange.setDocument(new Document(delta.getRepresentation()));
-				List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(delta.getFeature());
-				if (targets != null) {
-					targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
-					if (!targets.isEmpty()) btnSync.setEnabled(true);
-				}
 			} else {
 				lbChange.setDocument(new Document(""));
 			}
 		} else {
-			IFile res = null;
+			IPath res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
 				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
 					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null) res = delta.getResource();
-					if (!res.equals(delta.getResource())) {
+					if (res == null) res = delta.getResource().getProjectRelativePath();
+					if (!res.equals(delta.getResource().getProjectRelativePath())) {
 						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
 					}
 					lastSelections.add(delta);
-					lastResource = res;
 					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
 				}
 			}
 			lbChange.setDocument(new Document(ret));
+		}
+		List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(lastSelections);
+		if (targets != null) {
+			targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
+			if (!targets.isEmpty()) btnSync.setEnabled(true);
 		}
 	}
 

@@ -93,7 +93,7 @@ public class PersistenceTest {
 		assertTrue("Read Patches", patches.size() > 0);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 //	@Test
 	public void testWritePatches() {
 		List<IPatch<?>> patches = new ArrayList<>();

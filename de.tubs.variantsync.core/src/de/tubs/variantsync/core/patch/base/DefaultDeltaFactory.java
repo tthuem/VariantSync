@@ -125,7 +125,6 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public IFile applyDelta(IFile res, IDelta<Chunk<String>> patch) {
 		try {
@@ -175,7 +174,6 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public IFile reverseDelta(IFile res, IDelta<Chunk<String>> patch) {
 		Patch<String> p = new Patch<String>();
@@ -219,7 +217,6 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean verifyDelta(IFile res, IDelta<Chunk<String>> patch) {
 		Chunk<String> chunkOriginal = patch.getOriginal();

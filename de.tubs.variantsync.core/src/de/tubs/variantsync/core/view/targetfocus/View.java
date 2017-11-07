@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
@@ -38,7 +38,6 @@ import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.syncronization.SynchronizationHandler;
-import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
@@ -54,10 +53,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private TreeViewer tvChanges;
 	private SourceViewer lbChange;
 	private Button btnSync;
-	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String project = "";
 	private List<IDelta<?>> lastSelections = new ArrayList<>();
-	private IFile lastResource = null;
 
 	public View() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -236,7 +233,6 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			if (o instanceof IDelta) {
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
-				lastResource = delta.getResource();
 				lbChange.setDocument(new Document(delta.getRepresentation()));
 				btnSync.setEnabled(true);
 			} else {
@@ -244,19 +240,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			}
 			// Multiple elements selected
 		} else {
-			IFile res = null;
+			IPath res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
 				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
 					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null) res = delta.getResource();
-					if (!res.equals(delta.getResource())) {
+					if (res == null) res = delta.getResource().getProjectRelativePath();
+					if (!res.equals(delta.getResource().getProjectRelativePath())) {
 						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
 					}
 					lastSelections.add(delta);
-					lastResource = res;
 					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
 					btnSync.setEnabled(true);
 				}

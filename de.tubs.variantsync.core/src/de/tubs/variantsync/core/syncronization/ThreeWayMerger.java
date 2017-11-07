@@ -15,13 +15,14 @@ import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.patch.interfaces.IPatchFactory;
 
 /**
- * 
+ * Performes a three-way like merge operation
  * 
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
  * @version 1.1
  * @since 15.05.2015
  */
+@Deprecated
 public class ThreeWayMerger {
 
 	private IPatchFactory factory = new DefaultPatchFactory();

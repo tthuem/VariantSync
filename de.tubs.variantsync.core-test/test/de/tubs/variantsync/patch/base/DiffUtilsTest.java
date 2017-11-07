@@ -12,8 +12,6 @@ import com.github.difflib.DiffUtils;
 import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.patch.Patch;
 
-import de.tubs.variantsync.core.syncronization.ThreeWayMerger;
-
 public class DiffUtilsTest {
 
 	private List<String> lines1, lines2, lines3, lines4;
@@ -62,14 +60,6 @@ public class DiffUtilsTest {
 	public void testPatch2() throws DiffException {
 		Patch<String> patch = DiffUtils.diff(lines1, lines4, 1);
 		assertTrue(patch.getDeltas().size() == 1);
-	}
-
-	@Test
-	public void testPatch3() throws DiffException {
-		Patch<String> patch1 = DiffUtils.diff(lines1, lines3, 1);
-		Patch<String> patch2 = DiffUtils.diff(lines1, lines4, 1);
-
-		ThreeWayMerger merger = new ThreeWayMerger();
 	}
 
 }

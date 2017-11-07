@@ -94,7 +94,7 @@ public class APatch<T> implements IPatch<T> {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		APatch other = (APatch) obj;
+		APatch<?> other = (APatch<?>) obj;
 		if (deltas == null) {
 			if (other.deltas != null) return false;
 		} else if (!deltas.equals(other.deltas)) return false;

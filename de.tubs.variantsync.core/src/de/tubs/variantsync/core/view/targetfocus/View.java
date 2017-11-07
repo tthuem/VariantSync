@@ -7,6 +7,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.source.CompositeRuler;
+import org.eclipse.jface.text.source.LineNumberRulerColumn;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -24,7 +28,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
@@ -49,7 +52,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 
 	private Combo cbVariant;
 	private TreeViewer tvChanges;
-	private Text lbChange;
+	private SourceViewer lbChange;
 	private Button btnSync;
 	private TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String project = "";
@@ -103,7 +106,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		tvChanges.getTree().setLayoutData(gridData);
 		setupTreeViewer(tvChanges.getTree());
 
-		lbChange = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		CompositeRuler ruler = new CompositeRuler();
+		LineNumberRulerColumn lineNumber = new LineNumberRulerColumn();
+		ruler.addDecorator(0, lineNumber);
+
+		lbChange = new SourceViewer(parent, ruler, SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.FLAT);
 		gridData = new GridData();
 		gridData.verticalAlignment = SWT.FILL;
 		gridData.horizontalAlignment = SWT.FILL;
@@ -112,7 +119,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = false;
 		gridData.heightHint = 300;
-		lbChange.setLayoutData(gridData);
+		lbChange.getControl().setLayoutData(gridData);
 		lbChange.setEditable(false);
 
 		Composite targets = new Composite(parent, SWT.NONE);
@@ -230,10 +237,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
 				lastResource = delta.getResource();
-				lbChange.setText(delta.getRepresentation());
+				lbChange.setDocument(new Document(delta.getRepresentation()));
 				btnSync.setEnabled(true);
 			} else {
-				lbChange.setText("");
+				lbChange.setDocument(new Document(""));
 			}
 			// Multiple elements selected
 		} else {
@@ -245,7 +252,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 					IDelta<?> delta = ((IDelta<?>) o);
 					if (res == null) res = delta.getResource();
 					if (!res.equals(delta.getResource())) {
-						lbChange.setText("No multiple resources supported");
+						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
 					}
 					lastSelections.add(delta);
@@ -254,7 +261,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 					btnSync.setEnabled(true);
 				}
 			}
-			lbChange.setText(ret);
+			lbChange.setDocument(new Document(ret));
 		}
 	}
 

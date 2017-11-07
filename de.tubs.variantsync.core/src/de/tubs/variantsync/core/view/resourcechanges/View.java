@@ -22,7 +22,7 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
 
 public class View extends ViewPart implements IEventListener {
 
-	public static final String ID = "de.tubs.variantsync.core.view.resourcechanges";
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.resourcechanges";
 	private TreeViewer tvResourceChanges;
 
 	public View() {

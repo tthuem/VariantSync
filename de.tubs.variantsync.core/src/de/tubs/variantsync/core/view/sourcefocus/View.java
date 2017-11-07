@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -43,6 +42,8 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
+
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.sourcefocus";
 
 	private Combo cbFeature;
 	private TreeViewer tvChanges;
@@ -86,8 +87,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		cbFeature.setLayoutData(gridData);
 		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null)
-			cbFeature.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
+		if (context != null) cbFeature.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
 		cbFeature.select(0);
 		cbFeature.addSelectionListener(this);
 
@@ -210,13 +210,13 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource().equals(cbFeature)) {
-			
+
 			clearAll();
 			feature = cbFeature.getItem(cbFeature.getSelectionIndex());
 			updateTreeViewer(feature);
-			
+
 		} else if (e.getSource().equals(btnSync)) {
-			
+
 			for (String project : targetsList.getSelection()) {
 				IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
 				for (IDelta<?> delta : lastSelections) {
@@ -226,7 +226,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				}
 			}
 			VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(View.this, EventType.PATCH_CHANGED));
-			
+
 		}
 	}
 
@@ -243,8 +243,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				if (context != null) {
 					List<IPatch<?>> patches = context.getPatches();
 					IPatch<?> actualPatch = context.getActualContextPatch();
-					if (actualPatch != null && !patches.contains(actualPatch))
-						patches.add(actualPatch);
+					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
 					if (patches != null && !patches.isEmpty() && !tvChanges.getControl().isDisposed()) {
 						tvChanges.setInput(ProjectTree.construct(feature, patches));
@@ -263,8 +262,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		if (selection.size() == 1) {
 			Object o = selection.getFirstElement();
-			if (o instanceof TreeNode)
-				o = ((TreeNode) o).getData();
+			if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
@@ -273,8 +271,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 				List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(delta.getFeature());
 				if (targets != null) {
 					targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
-					if (!targets.isEmpty())
-						btnSync.setEnabled(true);
+					if (!targets.isEmpty()) btnSync.setEnabled(true);
 				}
 			} else {
 				lbChange.setText("");
@@ -283,12 +280,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			IFile res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
-				if (o instanceof TreeNode)
-					o = ((TreeNode) o).getData();
+				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
 					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null)
-						res = delta.getResource();
+					if (res == null) res = delta.getResource();
 					if (!res.equals(delta.getResource())) {
 						lbChange.setText("No multiple resources supported");
 						return;
@@ -322,8 +317,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case FEATUREEXPRESSION_CHANGED:
 		case FEATUREEXPRESSION_REMOVED:
 			int oldSelection = cbFeature.getSelectionIndex();
-			cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings()
-					.toArray(new String[] {}));
+			cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
 			cbFeature.select(oldSelection);
 		default:
 			break;

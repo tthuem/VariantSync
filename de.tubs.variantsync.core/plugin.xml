@@ -205,19 +205,6 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               label="Variant Sync">
-            <command
-                  commandId="de.tubs.variantsync.core.command.resourcechanges"
-                  icon="icons/VariantSyncSupport.png"
-                  label="Show Resource Changes"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
             locationURI="popup:org.eclipse.ui.projectConfigure">
          <command
                commandId="de.tubs.variantsync.core.command.addNature"
@@ -772,6 +759,16 @@
       <viewerContentBinding
             viewerId="org.eclipse.ui.navigator.ProjectExplorer">
       </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.tubs.variantsync.core.PerspectiveFactory"
+            fixed="false"
+            icon="icons/VariantSyncSupport.png"
+            id="de.tubs.variantsync.core.perspective"
+            name="VariantSync">
+      </perspective>
    </extension>
 
 </plugin>

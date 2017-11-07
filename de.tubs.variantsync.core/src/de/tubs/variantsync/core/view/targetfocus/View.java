@@ -45,6 +45,8 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
 
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.targetfocus";
+
 	private Combo cbVariant;
 	private TreeViewer tvChanges;
 	private Text lbChange;

@@ -33,6 +33,8 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 public class View extends ViewPart implements IEventListener {
 
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.featureexpressions";
+
 	private List<FeatureExpression> expressions;
 
 	private Table featureExpressionTable;

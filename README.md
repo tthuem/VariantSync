@@ -14,7 +14,8 @@ of changes between variants. As a side effect, using VariantSync for a while may
 	
 ## Installation
 ### Update Site:
-[Bintray Update Site](https://dl.bintray.com/kogoro/VariantSync)
+[ ![Download](https://api.bintray.com/packages/kogoro/VariantSync/VariantSync/images/download.svg) ](https://dl.bintray.com/kogoro/VariantSync)
+
 ### Manually:
 * Import the VariantSync as existing project in an eclipse workspace/clone VariantSync as git project in an eclipse workspace
 * Run MANIFEST.MF in folder META-INF as eclipse application with the following run configuration:

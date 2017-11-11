@@ -293,6 +293,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			}
 			lbChange.setDocument(new Document(ret));
 		}
+		updateTargets();
+	}
+
+	private void updateTargets() {
 		List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(lastSelections);
 		if (targets != null) {
 			targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
@@ -315,6 +319,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case CONFIGURATIONPROJECT_CHANGED:
 		case INITALIZED:
 			updateTreeViewer(feature);
+			updateTargets();
 			break;
 		case FEATUREEXPRESSION_ADDED:
 		case FEATUREEXPRESSION_CHANGED:

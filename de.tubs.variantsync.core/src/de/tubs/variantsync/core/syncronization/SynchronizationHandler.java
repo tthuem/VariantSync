@@ -1,6 +1,7 @@
 package de.tubs.variantsync.core.syncronization;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
@@ -10,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
+import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.monitor.CodeMappingHandler;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.HistoryStore;
@@ -49,12 +51,29 @@ public class SynchronizationHandler {
 
 				HistoryStore historyStore = new HistoryStore();
 				IFile fileBase = historyStore.getState(fileLeft, delta.getTimestamp());
+
+				String originalTmpName = String.valueOf(System.currentTimeMillis());
+//				fileRight.copy(fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt").getFullPath(), true, null);
+				if (!fileRight.getProject().getFolder(".tmp").exists()) fileRight.getProject().getFolder(".tmp").create(true, false, null);
+				IFile fileOriginal = fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt");
+				fileOriginal.create(fileRight.getContents(), true, null);
 				CompareEditorInput rci = new ResourceCompareInput(compconf, fileBase, fileLeft, fileRight);
 				rci.setDirty(true);
 
 				CompareUI.openCompareDialog(rci);
 				delta.addSynchronizedProject(project);
 				VariantSyncPlugin.addResourceChangeListener();
+
+				try {
+					List<IDelta<?>> deltas = factory.createDeltas(fileRight, fileOriginal);
+					for (IDelta<?> deltaFile : deltas) {
+						deltaFile.setFeature(delta.getFeature());
+					}
+					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
+				} catch (DiffException e) {
+					return false;
+				}
+
 				return rci.okPressed();
 			}
 		} catch (NoSuchExtensionException e) {

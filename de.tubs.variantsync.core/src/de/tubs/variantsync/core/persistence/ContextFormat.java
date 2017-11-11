@@ -17,8 +17,8 @@ public class ContextFormat extends AXMLFormat<Context> {
 	private static final String ID = "Context";
 	private static final String CONTEXT = "context";
 	private static final String CONTEXT_ACTIVE = "active";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+CONTEXT+"[\\s>]");
-	
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + CONTEXT + "[\\s>]");
+
 	public static final String FILENAME = ".context.xml";
 
 	@Override
@@ -46,13 +46,13 @@ public class ContextFormat extends AXMLFormat<Context> {
 		for (final Element e : getElements(doc.getDocumentElement().getChildNodes())) {
 			object.setActualContext(e.getAttribute("context"));
 		}
-		
+
 	}
 
 	@Override
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(CONTEXT);
-		
+
 		Element e = doc.createElement(CONTEXT_ACTIVE);
 		e.setAttribute("context", object.getActualContext());
 		root.appendChild(e);

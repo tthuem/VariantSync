@@ -96,7 +96,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 						res = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eDelta.getAttribute("res")));
 						System.out.println(res);
 					}
-					
+
 					IDelta delta = deltaFactory.createDelta(res);
 					delta.setFeature(eDelta.getAttribute("feature"));
 					delta.setTimestamp(Long.valueOf(eDelta.getAttribute("timestamp")));

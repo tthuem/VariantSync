@@ -5,10 +5,11 @@
 	<parent>
 		<groupId>de.tubs.variantsync</groupId>
 		<artifactId>de.tubs.variantsync</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.3-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>de.tubs.variantsync.update</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>de.tubs.variantsync.core.update</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
+	<groupId>de.tubs.variantsync.core</groupId>
 </project>

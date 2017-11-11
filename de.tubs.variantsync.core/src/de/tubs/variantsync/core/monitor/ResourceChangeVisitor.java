@@ -10,11 +10,10 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 
-import com.github.difflib.algorithm.DiffException;
-
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.base.DefaultPatchFactory;
@@ -101,7 +100,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					} else {
 						patch = context.getActualContextPatch();
 					}
-					List<IDelta> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
+					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
 					context.setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
@@ -139,7 +138,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					} else {
 						patch = context.getActualContextPatch();
 					}
-					List<IDelta> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
+					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
 					context.setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
@@ -182,7 +181,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 							} else {
 								patch = context.getActualContextPatch();
 							}
-							List<IDelta> deltas = factory.createDeltas(file, states[0], t, IDelta.DELTATYPE(delta.getKind()));
+							List<IDelta<?>> deltas = factory.createDeltas(file, states[0], t, IDelta.DELTATYPE(delta.getKind()));
 							patch.addDeltas(deltas);
 							context.setActualContextPatch(patch);
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));

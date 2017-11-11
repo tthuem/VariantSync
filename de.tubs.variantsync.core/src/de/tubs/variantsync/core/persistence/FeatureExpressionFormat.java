@@ -18,8 +18,8 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 	private static final String ID = "FeatureExpressions";
 	private static final String FEATURE_EXPRESSIONS = "featureExpressions";
 	private static final String FEATURE_EXPRESSION = "featureExpression";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<"+FEATURE_EXPRESSIONS+"[\\s>]");
-	
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_EXPRESSIONS + "[\\s>]");
+
 	public static final String FILENAME = ".featureExpressions.xml";
 
 	@Override
@@ -49,13 +49,13 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 			FeatureExpression fe = new FeatureExpression(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
 			object.add(fe);
 		}
-		
+
 	}
 
 	@Override
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(FEATURE_EXPRESSIONS);
-		
+
 		Element e;
 		for (FeatureExpression fe : object) {
 			e = doc.createElement(FEATURE_EXPRESSION);

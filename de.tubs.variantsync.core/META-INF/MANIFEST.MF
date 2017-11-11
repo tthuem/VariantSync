@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VariantSync Core
 Bundle-SymbolicName: de.tubs.variantsync.core;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 0.0.3.qualifier
 Bundle-Activator: de.tubs.variantsync.core.VariantSyncPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

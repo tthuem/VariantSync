@@ -18,8 +18,6 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class TargetsCalculator {
 
-	ThreeWayMerger merger = new ThreeWayMerger();
-
 	public List<IProject> getTargetsWithoutConflict(IDelta<?> delta) {
 		List<IProject> targets = new ArrayList<>();
 		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
@@ -113,8 +111,8 @@ public class TargetsCalculator {
 				Configuration config = context.getConfigurationForProject(project);
 				if (config != null) {
 					for (IDelta<?> delta : deltas) {
-						if (config.getSelectedFeatureNames().contains(delta.getFeature()) && !targets.contains(project)
-							&& (!delta.getProject().equals(project))) {
+						if (config.getSelectedFeatureNames().contains(delta.getFeature()) && !targets.contains(project) && (!delta.getProject().equals(project))
+							&& !delta.getSynchronizedProjects().contains(project)) {
 							targets.add(project);
 						}
 					}

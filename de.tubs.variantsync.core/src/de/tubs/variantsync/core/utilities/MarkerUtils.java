@@ -158,7 +158,7 @@ public class MarkerUtils {
 					IRegion regionStart = document.getLineInformation(mi.getOffset());
 					IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
 					int start = regionStart.getOffset();
-					int end = regionEnd.getOffset() + regionEnd.getLength();
+					int end = regionEnd.getLength();
 
 					addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
 				} catch (BadLocationException e) {

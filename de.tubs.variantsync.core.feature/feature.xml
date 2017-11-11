@@ -2,7 +2,7 @@
 <feature
       id="de.tubs.variantsync.core.feature"
       label="VariantSync Core"
-      version="0.0.1.qualifier"
+      version="0.0.3.qualifier"
       provider-name="TU Braunschweig, Germany">
 
    <description url="http://www.example.com/description">
@@ -208,7 +208,7 @@ Library.
          id="de.tubs.variantsync.core"
          download-size="0"
          install-size="0"
-         version="0.0.1.qualifier"
+         version="0.0.3.qualifier"
          unpack="false"/>
 
 </feature>

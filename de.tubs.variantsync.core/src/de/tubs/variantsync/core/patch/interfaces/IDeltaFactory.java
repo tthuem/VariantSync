@@ -5,9 +5,8 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
-import com.github.difflib.algorithm.DiffException;
-
 import de.ovgu.featureide.fm.core.IExtension;
+import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 
 /**
@@ -62,6 +61,15 @@ public interface IDeltaFactory<T> extends IExtension {
 	 * @return delta copy with new file pointer
 	 */
 	IDelta<T> createDeltas(IFile res, IDelta<?> originalDelta);
+
+	/**
+	 * Creates a delta copy with different resource.
+	 * 
+	 * @param res - new file pointer
+	 * @param originalDelta - delta to copy
+	 * @return delta copy with new file pointer
+	 */
+	List<IDelta<T>> createDeltas(IFile original, IFile revised) throws DiffException;
 
 	/**
 	 * Patches a resource with a given patch.

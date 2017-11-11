@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.tubs.variantsync.core.feature_0.0.1.qualifier.jar" id="de.tubs.variantsync.core.feature" version="0.0.1.qualifier">
+   <feature url="features/de.tubs.variantsync.core.feature_0.0.3.qualifier.jar" id="de.tubs.variantsync.core.feature" version="0.0.3.qualifier">
       <category name="VariantSync"/>
    </feature>
    <category-def name="VariantSync" label="VariantSync">

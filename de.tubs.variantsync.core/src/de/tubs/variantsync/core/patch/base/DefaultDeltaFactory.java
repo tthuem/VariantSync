@@ -7,7 +7,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 
 import com.github.difflib.DiffUtils;
-import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.patch.ChangeDelta;
 import com.github.difflib.patch.Chunk;
 import com.github.difflib.patch.DeleteDelta;
@@ -16,6 +15,7 @@ import com.github.difflib.patch.InsertDelta;
 import com.github.difflib.patch.Patch;
 import com.github.difflib.patch.PatchFailedException;
 
+import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.patch.HistoryStore;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
@@ -82,7 +82,12 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		historyFilelines.add(0, "");
 
 		// Calculate patch
-		Patch<String> patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
+		Patch<String> patch;
+		try {
+			patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
+		} catch (com.github.difflib.algorithm.DiffException e) {
+			throw new DiffException(e.getMessage());
+		}
 
 		// If a patch was created wrap it in Delta
 		if (!patch.getDeltas().isEmpty() && patch.getDeltas().size() > 0) {
@@ -121,6 +126,54 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 			delta.setFeature(defaultDelta.getFeature());
 
 			return delta;
+		}
+		return null;
+	}
+
+	@Override
+	public List<IDelta<Chunk<String>>> createDeltas(IFile original, IFile revised) throws DiffException {
+		// Check for null arguments
+		if (original == null || revised == null) return null;
+
+		// Get the current mappings
+		List<String> currentFilelines = FileHelper.getFileLines(original);
+
+		// Get the history mappings
+		List<String> historyFilelines = FileHelper.getFileLines(revised);
+
+		// DiffUtils are 0-based, Eclipse instead 1-based
+		currentFilelines.add(0, "");
+		historyFilelines.add(0, "");
+
+		// Calculate patch
+		Patch<String> patch;
+		try {
+			patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
+		} catch (com.github.difflib.algorithm.DiffException e) {
+			throw new DiffException(e.getMessage());
+		}
+
+		// If a patch was created wrap it in Delta
+		if (!patch.getDeltas().isEmpty() && patch.getDeltas().size() > 0) {
+
+			List<IDelta<Chunk<String>>> deltas = new ArrayList<>();
+			for (Delta<String> originalDelta : patch.getDeltas()) {
+
+				IDelta<Chunk<String>> delta = new DefaultDelta(original, getId());
+				delta.setType(DELTATYPE.CHANGED);
+				delta.setOriginal(originalDelta.getOriginal());
+				delta.setRevised(originalDelta.getRevised());
+
+				deltas.add(delta);
+			}
+
+			// Normal files are 1-based
+			historyFilelines.remove(0);
+
+			// Save original source for merging
+			historyStore.addHistory(original, historyFilelines, System.currentTimeMillis());
+
+			return deltas;
 		}
 		return null;
 	}
@@ -267,6 +320,11 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	@Override
 	public IMarkerHandler getMarkerHandler() {
 		return new DefaultMarkerHandler();
+	}
+
+	@Override
+	public boolean initExtension() {
+		return true;
 	}
 
 }

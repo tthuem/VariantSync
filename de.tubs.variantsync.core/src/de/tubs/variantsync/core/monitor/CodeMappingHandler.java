@@ -18,7 +18,7 @@ import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class CodeMappingHandler {
 
-	public static void addCodeMappingsForDeltas(List<IDelta> deltas) {
+	public static void addCodeMappingsForDeltas(List<IDelta<?>> deltas) {
 		for (IDelta delta : deltas) {
 			try {
 				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());

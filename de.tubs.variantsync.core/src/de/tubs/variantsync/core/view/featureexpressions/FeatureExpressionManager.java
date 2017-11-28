@@ -20,7 +20,7 @@ public class FeatureExpressionManager extends Wizard {
 
 	public FeatureExpressionManager() {
 		super();
-		setWindowTitle("Feature Expression Manager");
+		setWindowTitle("Feature Contexts Manager");
 		this.expressions = VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressions();
 	}
 
@@ -37,5 +37,5 @@ public class FeatureExpressionManager extends Wizard {
 	public boolean isHelpAvailable() {
 		return false;
 	}
-	
+
 }

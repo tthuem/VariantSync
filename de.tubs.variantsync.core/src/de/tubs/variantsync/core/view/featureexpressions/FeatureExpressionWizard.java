@@ -28,10 +28,10 @@ public class FeatureExpressionWizard extends Wizard {
 
 	public FeatureExpressionWizard(FeatureExpression featureExpression) {
 		super();
-		setWindowTitle("Feature Expression Wizard");
+		setWindowTitle("Feature Context Wizard");
 		this.features = VariantSyncPlugin.getDefault().getActiveEditorContext().getConfigurationProject().getFeatureModel().getFeatures();
 		this.featureExpression = featureExpression;
-		
+
 	}
 
 	public void addPages() {
@@ -60,5 +60,5 @@ public class FeatureExpressionWizard extends Wizard {
 	public boolean isHelpAvailable() {
 		return false;
 	}
-	
+
 }

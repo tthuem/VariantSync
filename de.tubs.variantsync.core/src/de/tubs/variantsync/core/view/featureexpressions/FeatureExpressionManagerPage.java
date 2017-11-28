@@ -39,8 +39,8 @@ public class FeatureExpressionManagerPage extends WizardPage {
 	protected FeatureExpressionManagerPage(List<FeatureExpression> expressions) {
 		super("FeatureExpressionManager");
 		this.expressions = expressions;
-		setTitle("Feature Expressions");
-		setDescription("Create, Edit or Delete Feature Expressions");
+		setTitle("Feature Contexts");
+		setDescription("Create, Edit or Delete Feature Contexts");
 	}
 
 	@Override
@@ -54,40 +54,37 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		featureExpressionTable.setLinesVisible(true);
 		featureExpressionTable.addListener(SWT.Resize, new Listener() {
 
-	          @Override
-	          public void handleEvent(Event event) {
+			@Override
+			public void handleEvent(Event event) {
 
+				Table table = (Table) event.widget;
+				int columnCount = table.getColumnCount();
+				if (columnCount == 0) return;
+				Rectangle area = table.getClientArea();
+				int totalAreaWdith = area.width;
+				int lineWidth = table.getGridLineWidth();
+				int totalGridLineWidth = (columnCount - 1) * lineWidth;
+				int totalColumnWidth = 0;
+				for (TableColumn column : table.getColumns()) {
+					totalColumnWidth = totalColumnWidth + column.getWidth();
+				}
+				int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
 
-	            Table table = (Table)event.widget;
-	            int columnCount = table.getColumnCount();
-	            if(columnCount == 0)
-	              return;
-	            Rectangle area = table.getClientArea();
-	            int totalAreaWdith = area.width;
-	            int lineWidth = table.getGridLineWidth();
-	            int totalGridLineWidth = (columnCount-1)*lineWidth; 
-	            int totalColumnWidth = 0;
-	            for(TableColumn column: table.getColumns())
-	            {
-	              totalColumnWidth = totalColumnWidth+column.getWidth();
-	            }
-	            int diff = totalAreaWdith-(totalColumnWidth+totalGridLineWidth);
+				TableColumn lastCol = table.getColumns()[columnCount - 1];
 
-	            TableColumn lastCol = table.getColumns()[columnCount-1];
+				// check diff is valid or not. setting negetive width doesnt make sense.
+				lastCol.setWidth(diff + lastCol.getWidth());
 
-	            //check diff is valid or not. setting negetive width doesnt make sense.
-	            lastCol.setWidth(diff+lastCol.getWidth());
+			}
+		});
 
-	          }
-	        });
-		
-	    TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
-	    featureExpressionTableColumn.setText("Name");
-	    featureExpressionTableColumn.setWidth(600);
-	    featureExpressionTableColumn.setResizable(true);
-	    
-	    featureExpressionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+		TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
+		featureExpressionTableColumn.setText("Name");
+		featureExpressionTableColumn.setWidth(600);
+		featureExpressionTableColumn.setResizable(true);
+
+		featureExpressionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		// Buttons
 		final Composite buttonComposite = new Composite(composite, SWT.NULL);
 		final GridLayout buttonLayout = new GridLayout(1, true);
@@ -95,42 +92,42 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		buttonLayout.marginHeight = 0;
 		buttonComposite.setLayout(buttonLayout);
 		buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		
+
 		Button button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
 		button.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				createFeatureExpression();
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_CLEAR));
 		button.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editFeatureExpression();
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
 		button.addSelectionListener(new SelectionListener() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				deleteFeatureExpression();
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 
 		updateFeatureExpressionList();
@@ -141,7 +138,7 @@ public class FeatureExpressionManagerPage extends WizardPage {
 	private void editFeatureExpression() {
 		final TableItem[] selection = featureExpressionTable.getSelection();
 		if (selection.length == 1) {
-			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression)selection[0].getData()));
+			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression) selection[0].getData()));
 			dialog.create();
 			if (dialog.open() == Window.OK) {
 				this.updateFeatureExpressionList();
@@ -153,7 +150,7 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		final TableItem[] selection = featureExpressionTable.getSelection();
 		if (selection.length > 0) {
 			for (TableItem ti : selection) {
-				expressions.remove((FeatureExpression)ti.getData());
+				expressions.remove((FeatureExpression) ti.getData());
 			}
 			this.updateFeatureExpressionList();
 		}
@@ -179,5 +176,5 @@ public class FeatureExpressionManagerPage extends WizardPage {
 			this.updateFeatureExpressionList();
 		}
 	}
-	
+
 }

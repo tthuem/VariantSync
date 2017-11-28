@@ -58,8 +58,12 @@ public class FeatureExpressionWizardPage extends WizardPage {
 		super("FeatureExpressionManager");
 		this.features = features;
 		this.featureExpression = featureExpression;
-		setTitle("Create Feature Expressions");
-		setDescription("Create Feature Expressions");
+		setTitle("Feature Context");
+		if (featureExpression == null) {
+			setDescription("Create Feature Context");
+		} else {
+			setDescription("Edit Feature Context");
+		}
 	}
 
 	@Override

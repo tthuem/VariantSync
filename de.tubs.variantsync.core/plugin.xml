@@ -318,7 +318,7 @@
       <command
             defaultHandler="de.tubs.variantsync.core.view.featureexpressions.FeatureExpressionsHandler"
             id="de.tubs.variantsync.core.command.featureexpression"
-            name="Feature Expressions">
+            name="Feature Contexts">
       </command>
       <command
             defaultHandler="de.tubs.variantsync.core.view.context.SelectContextHandler"
@@ -334,7 +334,7 @@
       <command
             defaultHandler="de.tubs.variantsync.core.view.context.ActiveContextHandler"
             id="de.tubs.variantsync.core.command.context.active"
-            name="Active context">
+            name="Activate Context">
       </command>
       <command
             defaultHandler="org.eclipse.ui.handlers.ShowViewHandler"
@@ -440,7 +440,7 @@
             class="de.tubs.variantsync.core.view.featureexpressions.View"
             icon="icons/FeatureExpressionSmall.png"
             id="de.tubs.variantsync.core.view.featureexpressions"
-            name="Feature Expressions"
+            name="Feature Contexts"
             restorable="true">
       </view>
    </extension>

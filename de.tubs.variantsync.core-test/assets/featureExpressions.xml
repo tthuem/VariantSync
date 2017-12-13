@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureExpressions>
+		<featureExpression highlighter="Yellow" name="Base"/>
+		<featureExpression highlighter="Pink" name="Extended"/>
+		<featureExpression highlighter="Dark Green" name="Test"/>
+	</featureExpressions>

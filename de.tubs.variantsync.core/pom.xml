@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.tubs.variantsync</groupId>
+		<artifactId>de.tubs.variantsync</artifactId>
+		<version>0.0.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>de.tubs.variantsync.core</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<!-- <dependencies>
+		<dependency>
+			<groupId>com.github.java-diff-utils</groupId>
+			<artifactId>diffutils</artifactId>
+			<version>2.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies> -->
+	<groupId>de.tubs.variantsync.core</groupId>
+	<version>0.0.3-SNAPSHOT</version>
+</project>

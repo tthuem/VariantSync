@@ -16,7 +16,7 @@ public class HistoryStore {
 	public void addHistory(IFile file, List<String> content, long timestamp) {
 		IProject project = file.getProject();
 		IFile historyFile = project.getFolder(historyFolder).getFolder(file.getProjectRelativePath().toOSString().replace(".", "_").replace("/", "_"))
-				.getFile(timestamp + ".txt");
+				.getFile(timestamp + ".java");
 		FileHelper.setFileLines(historyFile, content);
 	}
 

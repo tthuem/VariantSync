@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
-import de.ovgu.featureide.fm.core.io.IPersistentFormat;
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
@@ -23,7 +23,7 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 	public static final String FILENAME = ".featureExpressions.xml";
 
 	@Override
-	public IPersistentFormat<List<FeatureExpression>> getInstance() {
+	public APersistentFormat<List<FeatureExpression>> getInstance() {
 		return new FeatureExpressionFormat();
 	}
 

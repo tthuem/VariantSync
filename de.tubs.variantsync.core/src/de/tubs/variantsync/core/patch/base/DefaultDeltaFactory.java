@@ -275,6 +275,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		Chunk<String> chunkOriginal = patch.getOriginal();
 		Chunk<String> chunkRevised = patch.getRevised();
 
+		if (chunkOriginal == null || chunkRevised == null) return false;
+
 		Delta<String> delta = null;
 		switch (patch.getType()) {
 		case ADDED:

@@ -9,33 +9,50 @@ import org.eclipse.core.resources.IProject;
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
+/**
+ * Calculates all target projects for given deltas.
+ * 
+ * @author Christopher Sontag
+ */
 public class TargetsCalculator {
 
+	/**
+	 * Returns target projects without conflicts.
+	 * 
+	 * @param delta
+	 * @return
+	 */
 	public List<IProject> getTargetsWithoutConflict(IDelta<?> delta) {
 		List<IProject> targets = new ArrayList<>();
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		for (IProject project : context.getProjects()) {
-			Configuration config = context.getConfigurationForProject(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getFeature())) continue;
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (IProject project : configurationProject.getVariants()) {
+			Configuration config = configurationProject.getConfigurationForVariant(project);
+			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
 			if (project != delta.getProject() && isTargetWithoutConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
 				targets.add(project);
 		}
 		return targets;
 	}
 
+	/**
+	 * Returns target projects with conflicts.
+	 * 
+	 * @param delta
+	 * @return
+	 */
 	public List<IProject> getTargetsWithConflict(IDelta<?> delta) {
 		List<IProject> targets = new ArrayList<>();
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		for (IProject project : context.getProjects()) {
-			Configuration config = context.getConfigurationForProject(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getFeature())) continue;
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (IProject project : configurationProject.getVariants()) {
+			Configuration config = configurationProject.getConfigurationForVariant(project);
+			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
 			if (project != delta.getProject() && isTargetWithConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
 				targets.add(project);
 		}
@@ -43,6 +60,32 @@ public class TargetsCalculator {
 	}
 
 	/**
+	 * Returns all target projects which have feature context selected in their configuration
+	 * 
+	 * @param deltas
+	 * @return
+	 */
+	public List<IProject> getTargetsForFeatureContext(List<IDelta<?>> deltas) {
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		List<IProject> targets = new ArrayList<>();
+		if (configurationProject != null) {
+			for (IProject project : configurationProject.getVariants()) {
+				Configuration config = configurationProject.getConfigurationForVariant(project);
+				if (config != null) {
+					for (IDelta<?> delta : deltas) {
+						if (config.getSelectedFeatureNames().contains(delta.getContext()) && !targets.contains(project) && (!delta.getProject().equals(project))
+							&& !delta.getSynchronizedProjects().contains(project)) {
+							targets.add(project);
+						}
+					}
+				}
+			}
+		}
+		return targets;
+	}
+
+	/**
+	 * Checks whether the given delta can be applied to the given project without conflicts.
 	 * 
 	 * @param project
 	 * @param delta
@@ -73,6 +116,7 @@ public class TargetsCalculator {
 	}
 
 	/**
+	 * Checks whether the given delta can be applied to the given project with conflicts.
 	 * 
 	 * @param project
 	 * @param delta
@@ -101,24 +145,5 @@ public class TargetsCalculator {
 		if (factory == null) return true;
 		if (factory.verifyDelta(file, delta)) return false;
 		return true;
-	}
-
-	public List<IProject> getTargetsForFeatureExpression(List<IDelta<?>> deltas) {
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		List<IProject> targets = new ArrayList<>();
-		if (context != null) {
-			for (IProject project : context.getProjects()) {
-				Configuration config = context.getConfigurationForProject(project);
-				if (config != null) {
-					for (IDelta<?> delta : deltas) {
-						if (config.getSelectedFeatureNames().contains(delta.getFeature()) && !targets.contains(project) && (!delta.getProject().equals(project))
-							&& !delta.getSynchronizedProjects().contains(project)) {
-							targets.add(project);
-						}
-					}
-				}
-			}
-		}
-		return targets;
 	}
 }

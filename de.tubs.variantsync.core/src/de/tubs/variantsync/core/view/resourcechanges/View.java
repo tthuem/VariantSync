@@ -14,15 +14,22 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.managers.PatchesManager;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
+/**
+ * 
+ * Resource changes view
+ * 
+ * @author Christopher Sontag
+ */
 public class View extends ViewPart implements IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.resourcechanges";
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.resourcechanges";
 	private TreeViewer tvResourceChanges;
 
 	public View() {
@@ -38,11 +45,6 @@ public class View extends ViewPart implements IEventListener {
 		tvResourceChanges.setContentProvider(new ResourceChangesTreeContentProvider());
 
 		updateTreeViewer();
-//		synchroFilter = new SynchroFilter();
-//		viewer.addFilter(synchroFilter);
-//		makeActions();
-//		hookDoubleClickAction();
-//		contributeToActionBars();
 	}
 
 	protected void setupTreeViewer(final Tree tree) {
@@ -100,10 +102,11 @@ public class View extends ViewPart implements IEventListener {
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
-				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-				if (context != null) {
-					List<IPatch<?>> patches = context.getPatches();
-					IPatch<?> actualPatch = context.getActualContextPatch();
+				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				if (configurationProject != null) {
+					PatchesManager patchesManager = configurationProject.getPatchesManager();
+					List<IPatch<?>> patches = patchesManager.getPatches();
+					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
 					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
 					if (patches != null && !patches.isEmpty()) tvResourceChanges.setInput(ResourcesTree.construct(patches));

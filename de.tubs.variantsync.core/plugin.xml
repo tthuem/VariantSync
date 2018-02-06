@@ -316,20 +316,9 @@
             name="Show Target-Focused View">
       </command>
       <command
-            defaultHandler="de.tubs.variantsync.core.view.featureexpressions.FeatureExpressionsHandler"
+            defaultHandler="de.tubs.variantsync.core.view.featurecontext.FeatureContextHandler"
             id="de.tubs.variantsync.core.command.featureexpression"
             name="Feature Contexts">
-      </command>
-      <command
-            defaultHandler="de.tubs.variantsync.core.view.context.SelectContextHandler"
-            description="Select Context"
-            id="de.tubs.variantsync.core.command.context"
-            name="Default Context">
-         <commandParameter
-               id="de.tubs.variantsync.core.command.context.msg"
-               name="Message"
-               optional="true">
-         </commandParameter>
       </command>
       <command
             defaultHandler="de.tubs.variantsync.core.view.context.ActiveContextHandler"
@@ -343,7 +332,7 @@
       </command>
       <command
             categoryId="de.tubs.variantsync.core.category"
-            defaultHandler="de.tubs.variantsync.core.commands.AddVariantNature"
+            defaultHandler="de.tubs.variantsync.core.nature.AddVariantNature"
             id="de.tubs.variantsync.core.command.addNature"
             name="Add Variant">
       </command>
@@ -353,7 +342,7 @@
       </category>
       <command
             categoryId="de.tubs.variantsync.core.category"
-            defaultHandler="de.tubs.variantsync.core.commands.CreateVariantProject"
+            defaultHandler="de.tubs.variantsync.core.nature.CreateVariantProject"
             id="de.tubs.variantsync.core.command.create.variant"
             name="Create Variant Project">
       </command>
@@ -409,7 +398,7 @@
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.resourcechanges.View"
             icon="icons/change_obj.gif"
-            id="de.tubs.variantsync.core.view.resourcechanges"
+            id="de.tubs.variantsync.core.views.resourcechanges"
             name="Resource Changes"
             restorable="true">
       </view>
@@ -418,7 +407,7 @@
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.sourcefocus.View"
             icon="icons/VariantSyncSupport.png"
-            id="de.tubs.variantsync.core.view.sourcefocus"
+            id="de.tubs.variantsync.core.views.sourcefocus"
             name="Source-Focused View"
             restorable="true">
       </view>
@@ -427,7 +416,7 @@
             category="de.tubs.variantsync.core.category"
             class="de.tubs.variantsync.core.view.targetfocus.View"
             icon="icons/VariantSyncSupport.png"
-            id="de.tubs.variantsync.core.view.targetfocus"
+            id="de.tubs.variantsync.core.views.targetfocus"
             name="Target-Focused View"
             restorable="true">
       </view>
@@ -437,9 +426,9 @@
       </category>
       <view
             category="de.tubs.variantsync.core.category"
-            class="de.tubs.variantsync.core.view.featureexpressions.View"
+            class="de.tubs.variantsync.core.view.featurecontext.View"
             icon="icons/FeatureExpressionSmall.png"
-            id="de.tubs.variantsync.core.view.featureexpressions"
+            id="de.tubs.variantsync.core.views.featurecontexts"
             name="Feature Contexts"
             restorable="true">
       </view>
@@ -734,7 +723,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="de.tubs.variantsync.core.PerspectiveFactory"
+            class="de.tubs.variantsync.core.utilities.PerspectiveFactory"
             fixed="false"
             icon="icons/VariantSyncSupport.png"
             id="de.tubs.variantsync.core.perspective"

@@ -7,14 +7,15 @@ import org.eclipse.core.resources.IFile;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.CodeMapping;
-import de.tubs.variantsync.core.data.Context;
-import de.tubs.variantsync.core.data.SourceFile;
+import de.tubs.variantsync.core.managers.MappingManager;
+import de.tubs.variantsync.core.managers.data.CodeMapping;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
+import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
-import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -31,29 +32,30 @@ public class CodeMappingHandler {
 				// Get factory and marker handler for delta
 				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
 				IMarkerHandler markerHandler = deltaFactory.getMarkerHandler();
-				List<IMarkerInformation> markerInformations = markerHandler.getMarkersForDelta(delta.getResource(), delta);
+				List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
 
 				// Get current context
-				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-				if (context != null) {
+				ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+				MappingManager mappingManager = configurationProject.getMappingManager();
+				if (configurationProject != null) {
 					// Get file with current mappings
-					SourceFile sourceFile = context.getMapping(delta.getResource());
+					SourceFile sourceFile = mappingManager.getMapping(delta.getResource());
 					if (sourceFile == null) {
 						sourceFile = new SourceFile(delta.getResource());
 					}
 
 					// Update all other annotations
-					markerHandler.updateMarkerForDelta(sourceFile, delta, markerInformations);
+					markerHandler.updateMarkerForDelta(sourceFile, delta, variantSyncMarkers);
 
 					// Add new code mapping
-					for (IMarkerInformation markerInformation : markerInformations) {
-						markerInformation.setFeatureExpression(delta.getFeature());
-						sourceFile.addMapping(new CodeMapping(delta.getRevisedAsString(), markerInformation));
+					for (IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
+						variantSyncMarker.setContext(delta.getContext());
+						sourceFile.addMapping(new CodeMapping(delta.getRevisedAsString(), variantSyncMarker));
 					}
-					context.addCodeMapping(delta.getResource(), sourceFile);
+					mappingManager.addCodeMapping(delta.getResource(), sourceFile);
 				}
 			} catch (NoSuchExtensionException e) {
-				LogOperations.logError("Could not map the delta to a feature", e);
+				LogOperations.logError("Could not map the delta to a context", e);
 			}
 		}
 	}
@@ -62,7 +64,7 @@ public class CodeMappingHandler {
 	 * Adds manually created mappings
 	 * 
 	 * @param file
-	 * @param feature
+	 * @param context
 	 * @param offset
 	 * @param length
 	 * @param content
@@ -70,19 +72,20 @@ public class CodeMappingHandler {
 	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
 		try {
 			IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
-			List<IMarkerInformation> markerInformations = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
+			List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
 
-			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-			if (context != null) {
-				SourceFile sourceFile = context.getMapping(file);
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+			MappingManager mappingManager = configurationProject.getMappingManager();
+			if (configurationProject != null) {
+				SourceFile sourceFile = mappingManager.getMapping(file);
 				if (sourceFile == null) {
 					sourceFile = new SourceFile(file);
 				}
-				for (IMarkerInformation markerInformation : markerInformations) {
-					markerInformation.setFeatureExpression(feature);
-					sourceFile.addMapping(new CodeMapping(content, markerInformation));
+				for (IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
+					variantSyncMarker.setContext(feature);
+					sourceFile.addMapping(new CodeMapping(content, variantSyncMarker));
 				}
-				context.addCodeMapping(file, sourceFile);
+				mappingManager.addCodeMapping(file, sourceFile);
 			}
 		} catch (NoSuchExtensionException e) {
 			e.printStackTrace();
@@ -93,12 +96,12 @@ public class CodeMappingHandler {
 	 * Returns the mapping for a given source and marker
 	 * 
 	 * @param sourceFile
-	 * @param markerInformation
+	 * @param variantSyncMarker
 	 * @return
 	 */
-	public static CodeMapping getCodeMapping(SourceFile sourceFile, IMarkerInformation markerInformation) {
+	public static CodeMapping getCodeMapping(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
 		for (CodeMapping mapping : sourceFile.getMappings()) {
-			if (!mapping.getMarkerInformation().equals(markerInformation)) {
+			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
 				return mapping;
 			}
 		}
@@ -114,8 +117,8 @@ public class CodeMappingHandler {
 	 */
 	public static boolean contains(SourceFile sourceFile, int line) {
 		for (CodeMapping mapping : sourceFile.getMappings()) {
-			IMarkerInformation markerInformation = mapping.getMarkerInformation();
-			if (markerInformation.isLine() && markerInformation.getOffset() == line) {
+			IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
+			if (variantSyncMarker.isLine() && variantSyncMarker.getOffset() == line) {
 				return true;
 			}
 		}
@@ -126,14 +129,14 @@ public class CodeMappingHandler {
 	 * Removes a given marker information in the given file and returns true, if a mapping was removed
 	 * 
 	 * @param sourceFile
-	 * @param markerInformation
+	 * @param variantSyncMarker
 	 * @return
 	 */
-	public static boolean remove(SourceFile sourceFile, IMarkerInformation markerInformation) {
+	public static boolean remove(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
 		List<CodeMapping> mappings = new ArrayList<>();
 		List<CodeMapping> oldMappings = sourceFile.getMappings();
 		for (CodeMapping mapping : oldMappings) {
-			if (!mapping.getMarkerInformation().equals(markerInformation)) {
+			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
 				mappings.add(mapping);
 			}
 		}

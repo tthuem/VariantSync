@@ -12,6 +12,12 @@ import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
+/**
+ * 
+ * LabelProvider for {@link ResourcesTree}
+ * 
+ * @author Christopher Sontag
+ */
 public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 
 	public enum TYPE {

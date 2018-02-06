@@ -32,7 +32,8 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.managers.PatchesManager;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.syncronization.SynchronizationHandler;
@@ -44,9 +45,15 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
+/**
+ * 
+ * Source-focused view
+ * 
+ * @author Christopher Sontag
+ */
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.sourcefocus";
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.sourcefocus";
 
 	private Combo cbFeature;
 	private TreeViewer tvChanges;
@@ -87,8 +94,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
 		cbFeature.setLayoutData(gridData);
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) cbFeature.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		if (configurationProject != null) cbFeature.setItems(configurationProject.getFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 		cbFeature.select(0);
 		cbFeature.addSelectionListener(this);
 
@@ -244,10 +251,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
-				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-				if (context != null) {
-					List<IPatch<?>> patches = context.getPatches();
-					IPatch<?> actualPatch = context.getActualContextPatch();
+				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				if (configurationProject != null) {
+					PatchesManager patchesManager = configurationProject.getPatchesManager();
+					List<IPatch<?>> patches = patchesManager.getPatches();
+					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
 					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
 					if (patches != null && !patches.isEmpty() && !tvChanges.getControl().isDisposed()) {
@@ -297,8 +305,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	}
 
 	private void updateTargets() {
-		List<IProject> targets = targetsCalculator.getTargetsForFeatureExpression(lastSelections);
-		if (targets != null) {
+		List<IProject> targets = targetsCalculator.getTargetsForFeatureContext(lastSelections);
+		if (targets != null && !targetsList.isDisposed()) {
 			targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
 			if (!targets.isEmpty()) btnSync.setEnabled(true);
 		}
@@ -321,11 +329,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			updateTreeViewer(feature);
 			updateTargets();
 			break;
-		case FEATUREEXPRESSION_ADDED:
-		case FEATUREEXPRESSION_CHANGED:
-		case FEATUREEXPRESSION_REMOVED:
+		case FEATURECONTEXT_ADDED:
+		case FEATURECONTEXT_CHANGED:
+		case FEATURECONTEXT_REMOVED:
 			int oldSelection = cbFeature.getSelectionIndex();
-			cbFeature.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
+			cbFeature.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 			cbFeature.select(oldSelection);
 		default:
 			break;

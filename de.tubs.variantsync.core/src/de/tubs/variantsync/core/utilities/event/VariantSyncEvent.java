@@ -35,7 +35,7 @@ package de.tubs.variantsync.core.utilities.event;
  * This events are intended to be processed by {@link IEventListener} instances.
  * <br/>
  * <br/>
- * For usage to fire <code>VariantSyncEvent</code>s, see {@link Context#fireEvent(VariantSyncEvent)}.
+ * For usage to fire <code>VariantSyncEvent</code>s, see {@link ConfigurationProject#fireEvent(VariantSyncEvent)}.
  * 
  * @author Sebastian Krieter
  * @author Marcus Pinnecke
@@ -55,15 +55,15 @@ public class VariantSyncEvent {
 		/**
 		 * A feature expression was added
 		 */
-		FEATUREEXPRESSION_ADDED,
+		FEATURECONTEXT_ADDED,
 		/**
 		 * A feature expression was changed
 		 */
-		FEATUREEXPRESSION_CHANGED,
+		FEATURECONTEXT_CHANGED,
 		/**
 		 * A feature expression was removed
 		 */
-		FEATUREEXPRESSION_REMOVED,
+		FEATURECONTEXT_REMOVED,
 		/**
 		 * Recording was started
 		 */

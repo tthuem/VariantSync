@@ -21,7 +21,7 @@ public class ProjectTree {
 
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
-				if (delta.getFeature().equals(feature)) {
+				if (delta.getContext().equals(feature)) {
 					TreeNode projectNode = tree.find(delta.getProject().getName());
 					if (projectNode == null) {
 						projectNode = new TreeNode(delta.getProject().getName());

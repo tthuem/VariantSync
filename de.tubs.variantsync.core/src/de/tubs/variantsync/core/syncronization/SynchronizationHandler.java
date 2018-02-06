@@ -19,8 +19,21 @@ import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
+/**
+ * 
+ * This class handles the synchronization between variants
+ * 
+ * @author Christopher Sontag
+ */
 public class SynchronizationHandler {
 
+	/**
+	 * Synchronizes the given delta in the given project. Returns true if the delta is successfully applied.
+	 * 
+	 * @param project
+	 * @param delta
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean handleSynchronization(IProject project, IDelta<?> delta) {
 		VariantSyncPlugin.removeResourceChangeListener();
@@ -29,6 +42,8 @@ public class SynchronizationHandler {
 
 		try {
 			IDeltaFactory factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
+
+			// If delta is synchronisable
 			if (factory.verifyDelta(fileRight, delta)) {
 				IFile newFile = factory.applyDelta(fileRight, delta);
 				if (!newFile.getContents().toString().equals(fileRight.getContents().toString())) {
@@ -40,6 +55,7 @@ public class SynchronizationHandler {
 					VariantSyncPlugin.addResourceChangeListener();
 					return true;
 				}
+				// if manual merge is needed
 			} else {
 				// Editor
 				org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
@@ -67,7 +83,7 @@ public class SynchronizationHandler {
 				try {
 					List<IDelta<?>> deltas = factory.createDeltas(fileRight, fileOriginal);
 					for (IDelta<?> deltaFile : deltas) {
-						deltaFile.setFeature(delta.getFeature());
+						deltaFile.setContext(delta.getContext());
 					}
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				} catch (DiffException e) {

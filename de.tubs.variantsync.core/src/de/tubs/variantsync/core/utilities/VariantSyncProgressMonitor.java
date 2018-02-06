@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core;
+package de.tubs.variantsync.core.utilities;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

@@ -1,6 +1,6 @@
-package de.tubs.variantsync.core.patch.interfaces;
+package de.tubs.variantsync.core.utilities;
 
-public interface IMarkerInformation {
+public interface IVariantSyncMarker {
 
 	/**
 	 * Returns marker id.
@@ -45,18 +45,18 @@ public interface IMarkerInformation {
 	void setLength(int length);
 
 	/**
-	 * Returns feature expression.
+	 * Returns feature context.
 	 * 
-	 * @return feature expression
+	 * @return feature context
 	 */
-	String getFeatureExpression();
+	String getContext();
 
 	/**
 	 * Sets feature expression.
 	 * 
-	 * @param featureExpression - feature expression
+	 * @param context - feature context
 	 */
-	void setFeatureExpression(String featureExpression);
+	void setContext(String context);
 
 	/**
 	 * Returns whether the complete line is annotated

@@ -22,9 +22,9 @@ public class FeatureTree {
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
 				if (!delta.getProject().getName().equals(projectName) && !delta.isSynchronizedProject(projectName)) {
-					TreeNode featureNode = tree.find(delta.getFeature());
+					TreeNode featureNode = tree.find(delta.getContext());
 					if (featureNode == null) {
-						featureNode = new TreeNode(delta.getFeature());
+						featureNode = new TreeNode(delta.getContext());
 						root.addChild(featureNode);
 					}
 					TreeNode fileNode = tree.find(featureNode, delta.getResource().getProjectRelativePath());

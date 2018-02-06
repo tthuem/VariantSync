@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.persistence;
+package de.tubs.variantsync.core.managers.persistence;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -11,20 +11,20 @@ import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
-import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.managers.data.FeatureContext;
 
-public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>> {
+public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 
-	private static final String ID = "FeatureExpressions";
-	private static final String FEATURE_EXPRESSIONS = "featureExpressions";
-	private static final String FEATURE_EXPRESSION = "featureExpression";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_EXPRESSIONS + "[\\s>]");
+	private static final String ID = "FeatureContexts";
+	private static final String FEATURE_CONTEXTS = "contexts";
+	private static final String FEATURE_CONTEXT = "context";
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_CONTEXTS + "[\\s>]");
 
-	public static final String FILENAME = ".featureExpressions.xml";
+	public static final String FILENAME = ".contexts.xml";
 
 	@Override
-	public APersistentFormat<List<FeatureExpression>> getInstance() {
-		return new FeatureExpressionFormat();
+	public APersistentFormat<List<FeatureContext>> getInstance() {
+		return new FeatureContextFormat();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element e : getElements(doc.getDocumentElement().getChildNodes())) {
-			FeatureExpression fe = new FeatureExpression(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
+			FeatureContext fe = new FeatureContext(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
 			object.add(fe);
 		}
 
@@ -54,11 +54,11 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 
 	@Override
 	protected void writeDocument(Document doc) {
-		final Element root = doc.createElement(FEATURE_EXPRESSIONS);
+		final Element root = doc.createElement(FEATURE_CONTEXTS);
 
 		Element e;
-		for (FeatureExpression fe : object) {
-			e = doc.createElement(FEATURE_EXPRESSION);
+		for (FeatureContext fe : object) {
+			e = doc.createElement(FEATURE_CONTEXT);
 			e.setAttribute("name", fe.name);
 			e.setAttribute("highlighter", fe.highlighter.getColorName());
 			root.appendChild(e);
@@ -73,7 +73,7 @@ public class FeatureExpressionFormat extends AXMLFormat<List<FeatureExpression>>
 
 	@Override
 	public String getName() {
-		return "FeatureExpression";
+		return "FeatureContexts";
 	}
 
 }

@@ -1,24 +1,24 @@
-package de.tubs.variantsync.core.data;
+package de.tubs.variantsync.core.managers.data;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 
-public class FeatureExpression {
+public class FeatureContext {
 	
 	public String name;
 	public FeatureColor highlighter;
 	
-	public FeatureExpression() {
+	public FeatureContext() {
 		this.name = "";
 		this.highlighter = FeatureColor.NO_COLOR;
 	}
 	
-	public FeatureExpression(String name) {
+	public FeatureContext(String name) {
 		super();
 		this.name = name;
 		this.highlighter = FeatureColor.Yellow;
 	}
 
-	public FeatureExpression(String name, FeatureColor highlighter) {
+	public FeatureContext(String name, FeatureColor highlighter) {
 		super();
 		this.name = name;
 		this.highlighter = highlighter;
@@ -45,7 +45,7 @@ public class FeatureExpression {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FeatureExpression other = (FeatureExpression) obj;
+		FeatureContext other = (FeatureContext) obj;
 		if (highlighter != other.highlighter)
 			return false;
 		if (name == null) {

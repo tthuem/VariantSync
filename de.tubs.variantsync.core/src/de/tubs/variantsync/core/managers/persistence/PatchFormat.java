@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.persistence;
+package de.tubs.variantsync.core.managers.persistence;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 
 public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 
-	private static final String ID = "Patch";
+	private static final String ID = "Patches";
 	private static final String PATCHES = "Patches";
 	private static final String PATCH = "Patch";
 	private static final String DELTA = "Delta";
@@ -75,7 +75,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 			IPatchFactory patchFactory = new DefaultPatchFactory();
 			for (final Element ePatch : getElements(doc.getDocumentElement().getChildNodes())) {
 
-				IPatch<?> patch = patchFactory.createPatch(ePatch.getAttribute("feature"));
+				IPatch<?> patch = patchFactory.createPatch(ePatch.getAttribute("context"));
 				patch.setStartTime(Long.valueOf(ePatch.getAttribute("start")));
 				patch.setEndTime(Long.valueOf(ePatch.getAttribute("end")));
 
@@ -99,7 +99,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 					}
 
 					IDelta delta = deltaFactory.createDelta(res);
-					delta.setFeature(eDelta.getAttribute("feature"));
+					delta.setContext(eDelta.getAttribute("context"));
 					delta.setTimestamp(Long.valueOf(eDelta.getAttribute("timestamp")));
 					delta.setType(DELTATYPE.valueOf(eDelta.getAttribute("type")));
 
@@ -130,12 +130,12 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 			Element ePatch = doc.createElement(PATCH);
 			ePatch.setAttribute("start", String.valueOf(patch.getStartTime()));
 			ePatch.setAttribute("end", String.valueOf(patch.getEndTime()));
-			ePatch.setAttribute("feature", patch.getFeature());
+			ePatch.setAttribute("context", patch.getContext());
 
 			if (patch.getDeltas().get(0) instanceof IDelta<?>) {
 				for (IDelta<?> delta : patch.getDeltas()) {
 					Element eDelta = doc.createElement(DELTA);
-					eDelta.setAttribute("feature", delta.getFeature());
+					eDelta.setAttribute("context", delta.getContext());
 					eDelta.setAttribute("res", delta.getResource().getFullPath().toOSString());
 					eDelta.setAttribute("timestamp", String.valueOf(delta.getTimestamp()));
 					eDelta.setAttribute("type", String.valueOf(delta.getType()));

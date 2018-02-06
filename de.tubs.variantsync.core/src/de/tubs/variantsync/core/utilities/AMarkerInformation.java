@@ -1,8 +1,6 @@
-package de.tubs.variantsync.core.patch;
+package de.tubs.variantsync.core.utilities;
 
 import java.util.UUID;
-
-import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
 
 /**
  * Contains all marker relevant informations
@@ -11,7 +9,7 @@ import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
  * @author Christopher Sontag
  * @since 17.06.2016
  */
-public class AMarkerInformation implements IMarkerInformation {
+public class AMarkerInformation implements IVariantSyncMarker {
 
 	private long markerId;
 	private int offset;
@@ -139,7 +137,7 @@ public class AMarkerInformation implements IMarkerInformation {
 	 * @return feature expression
 	 */
 	@Override
-	public String getFeatureExpression() {
+	public String getContext() {
 		return expression;
 	}
 
@@ -149,7 +147,7 @@ public class AMarkerInformation implements IMarkerInformation {
 	 * @param expression - feature expression
 	 */
 	@Override
-	public void setFeatureExpression(String expression) {
+	public void setContext(String expression) {
 		this.expression = expression;
 	}
 

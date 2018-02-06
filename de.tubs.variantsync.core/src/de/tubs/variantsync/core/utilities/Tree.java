@@ -1,5 +1,10 @@
 package de.tubs.variantsync.core.utilities;
 
+/**
+ * Utility class for building treeviewer trees, see also {@link TreeNode}
+ * 
+ * @author Christopher Sontag
+ */
 public class Tree {
 
 	private TreeNode root;

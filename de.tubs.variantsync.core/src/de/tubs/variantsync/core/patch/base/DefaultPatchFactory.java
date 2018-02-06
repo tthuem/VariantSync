@@ -14,9 +14,9 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class DefaultPatchFactory implements IPatchFactory {
 
 	@Override
-	public IPatch<IDelta<?>> createPatch(String feature) {
+	public IPatch<IDelta<?>> createPatch(String context) {
 		IPatch<IDelta<?>> patch = new APatch<IDelta<?>>();
-		patch.setFeature(feature);
+		patch.setContext(context);
 		patch.setStartTime(System.currentTimeMillis());
 		return patch;
 	}

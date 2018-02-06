@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.view.featureexpressions;
+package de.tubs.variantsync.core.view.featurecontext;
 
 import java.util.List;
 
@@ -23,22 +23,22 @@ import org.eclipse.ui.PlatformUI;
 
 import de.ovgu.featureide.fm.core.color.ColorPalette;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.managers.data.FeatureContext;
 
 /**
- * Page for {@link FeatureExpressionManager}.
+ * Page for {@link FeatureContextManager}.
  * 
  * @author Christopher Sontag
  */
-public class FeatureExpressionManagerPage extends WizardPage {
+public class FeatureContextManagerPage extends WizardPage {
 
-	private final List<FeatureExpression> expressions;
+	private final List<FeatureContext> contexts;
 
-	private Table featureExpressionTable;
+	private Table tabContexts;
 
-	protected FeatureExpressionManagerPage(List<FeatureExpression> expressions) {
-		super("FeatureExpressionManager");
-		this.expressions = expressions;
+	protected FeatureContextManagerPage(List<FeatureContext> contexts) {
+		super("FeatureContextManager");
+		this.contexts = contexts;
 		setTitle("Feature Contexts");
 		setDescription("Create, Edit or Delete Feature Contexts");
 	}
@@ -49,10 +49,10 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		composite.setLayout(new GridLayout(2, false));
 
 		// Existing Feature Expressions
-		featureExpressionTable = new Table(composite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.V_SCROLL);
-		featureExpressionTable.setHeaderVisible(false);
-		featureExpressionTable.setLinesVisible(true);
-		featureExpressionTable.addListener(SWT.Resize, new Listener() {
+		tabContexts = new Table(composite, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		tabContexts.setHeaderVisible(false);
+		tabContexts.setLinesVisible(true);
+		tabContexts.addListener(SWT.Resize, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
@@ -78,12 +78,12 @@ public class FeatureExpressionManagerPage extends WizardPage {
 			}
 		});
 
-		TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
-		featureExpressionTableColumn.setText("Name");
-		featureExpressionTableColumn.setWidth(600);
-		featureExpressionTableColumn.setResizable(true);
+		TableColumn tcContexts = new TableColumn(tabContexts, SWT.NONE);
+		tcContexts.setText("Name");
+		tcContexts.setWidth(600);
+		tcContexts.setResizable(true);
 
-		featureExpressionTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		tabContexts.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Buttons
 		final Composite buttonComposite = new Composite(composite, SWT.NULL);
@@ -99,7 +99,7 @@ public class FeatureExpressionManagerPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				createFeatureExpression();
+				createFeatureContext();
 			}
 
 			@Override
@@ -111,7 +111,7 @@ public class FeatureExpressionManagerPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				editFeatureExpression();
+				editFeatureContext();
 			}
 
 			@Override
@@ -123,45 +123,45 @@ public class FeatureExpressionManagerPage extends WizardPage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				deleteFeatureExpression();
+				deleteFeatureContext();
 			}
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 
-		updateFeatureExpressionList();
+		updateFeatureContextList();
 		setControl(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl(), "VariantSync.FeatureExpressionManager");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl(), "VariantSync.FeatureContextManager");
 	}
 
-	private void editFeatureExpression() {
-		final TableItem[] selection = featureExpressionTable.getSelection();
+	private void editFeatureContext() {
+		final TableItem[] selection = tabContexts.getSelection();
 		if (selection.length == 1) {
-			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression) selection[0].getData()));
+			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
 			dialog.create();
 			if (dialog.open() == Window.OK) {
-				this.updateFeatureExpressionList();
+				this.updateFeatureContextList();
 			}
 		}
 	}
 
-	private void deleteFeatureExpression() {
-		final TableItem[] selection = featureExpressionTable.getSelection();
+	private void deleteFeatureContext() {
+		final TableItem[] selection = tabContexts.getSelection();
 		if (selection.length > 0) {
 			for (TableItem ti : selection) {
-				expressions.remove((FeatureExpression) ti.getData());
+				contexts.remove((FeatureContext) ti.getData());
 			}
-			this.updateFeatureExpressionList();
+			this.updateFeatureContextList();
 		}
 	}
 
-	private void updateFeatureExpressionList() {
+	private void updateFeatureContextList() {
 		TableItem tableItem = null;
-		featureExpressionTable.removeAll();
-		if (!expressions.isEmpty()) {
-			for (FeatureExpression fe : expressions) {
-				tableItem = new TableItem(featureExpressionTable, NONE);
+		tabContexts.removeAll();
+		if (!contexts.isEmpty()) {
+			for (FeatureContext fe : contexts) {
+				tableItem = new TableItem(tabContexts, NONE);
 				tableItem.setText(fe.name);
 				tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
 				tableItem.setData(fe);
@@ -169,11 +169,11 @@ public class FeatureExpressionManagerPage extends WizardPage {
 		}
 	}
 
-	private void createFeatureExpression() {
-		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard(null));
+	private void createFeatureContext() {
+		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
 		dialog.create();
 		if (dialog.open() == Window.OK) {
-			this.updateFeatureExpressionList();
+			this.updateFeatureContextList();
 		}
 	}
 

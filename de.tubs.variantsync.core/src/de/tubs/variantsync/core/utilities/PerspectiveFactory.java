@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core;
+package de.tubs.variantsync.core.utilities;
 
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -10,6 +10,7 @@ import de.ovgu.featureide.ui.statistics.ui.FeatureStatisticsView;
 import de.ovgu.featureide.ui.views.configMap.ConfigurationMap;
 import de.ovgu.featureide.ui.wizards.NewConfigurationFileWizard;
 import de.ovgu.featureide.ui.wizards.NewFeatureProjectWizard;
+import de.tubs.variantsync.core.VariantSyncPlugin;
 
 /**
  * Provides the variantsync perspective settings
@@ -42,7 +43,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		down.addView(de.tubs.variantsync.core.view.targetfocus.View.ID);
 
 		right.addView(IPageLayout.ID_OUTLINE);
-		right.addView(de.tubs.variantsync.core.view.featureexpressions.View.ID);
+		right.addView(de.tubs.variantsync.core.view.featurecontext.View.ID);
 
 		left.addView("org.eclipse.ui.navigator.ProjectExplorer");
 

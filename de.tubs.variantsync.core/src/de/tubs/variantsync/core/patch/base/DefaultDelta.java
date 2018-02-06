@@ -108,7 +108,7 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 	@Override
 	protected Object clone() {
 		DefaultDelta defaultDelta = new DefaultDelta(this.resource, this.timestamp, this.factoryId);
-		defaultDelta.setFeature(this.feature);
+		defaultDelta.setContext(this.context);
 		defaultDelta.setOriginal(this.original);
 		defaultDelta.setPatch(this.parent);
 		defaultDelta.setProject(this.project);

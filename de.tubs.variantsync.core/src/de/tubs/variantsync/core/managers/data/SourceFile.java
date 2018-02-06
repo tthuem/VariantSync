@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.data;
+package de.tubs.variantsync.core.managers.data;
 
 import java.util.ArrayList;
 import java.util.List;

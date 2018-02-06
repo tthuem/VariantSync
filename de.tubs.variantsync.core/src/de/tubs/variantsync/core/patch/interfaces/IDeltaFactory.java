@@ -106,15 +106,11 @@ public interface IDeltaFactory<T> extends IExtension {
 	 */
 	boolean isSupported(IFile file);
 
-	IMarkerHandler getMarkerHandler();
-
-//
-//	public boolean checkConflict(List<IDelta> leftDeltas, List<IDelta> rightDeltas);
-//
-//	public boolean checkConflict(List<String> ancestorLines, List<String> leftLines, List<String> rightLines);
-//
-//	public List<String> performThreeWayMerge(IFile ancestor, IFile left, IFile right);
-//
-//	public List<IDelta> getConflictingDeltas(List<String> ancestorLines, List<String> leftLines, List<String> rightLines);
+	/**
+	 * Returns the marker handler for deltas of this type
+	 * 
+	 * @return
+	 */
+	IMarkerHandler<T> getMarkerHandler();
 
 }

@@ -29,6 +29,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * Resource compare input for the manual merge dialog
+ * 
+ * TODO Enable difference highlighting and feature context background
+ * 
+ * @author Christopher Sontag
+ */
 public class ResourceCompareInput extends CompareEditorInput {
 
 	private static final boolean NORMALIZE_CASE = true;

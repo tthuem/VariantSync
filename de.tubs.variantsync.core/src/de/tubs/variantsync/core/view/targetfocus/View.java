@@ -34,7 +34,8 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.managers.PatchesManager;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.syncronization.SynchronizationHandler;
@@ -45,9 +46,15 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
+/**
+ * 
+ * Target-focused view
+ * 
+ * @author Christopher Sontag
+ */
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.targetfocus";
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.targetfocus";
 
 	private Combo cbVariant;
 	private TreeViewer tvChanges;
@@ -86,8 +93,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
 		cbVariant.setLayoutData(gridData);
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) cbVariant.setItems(context.getProjectNames().toArray(new String[] {}));
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		if (configurationProject != null) cbVariant.setItems(configurationProject.getVariantNames().toArray(new String[] {}));
 		cbVariant.addSelectionListener(this);
 
 		tvChanges = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -198,18 +205,19 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
-				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-				if (context != null) {
-					List<IPatch<?>> patches = context.getPatches();
-					IPatch<?> actualPatch = context.getActualContextPatch();
+				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				if (configurationProject != null) {
+					PatchesManager patchesManager = configurationProject.getPatchesManager();
+					List<IPatch<?>> patches = patchesManager.getPatches();
+					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
 					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
 
-					Configuration config = context.getConfigurationForProject(context.getProject(project));
+					Configuration config = configurationProject.getConfigurationForVariant(configurationProject.getVariant(project));
 					if (config != null) {
 						Set<String> selectedFeatures = config.getSelectedFeatureNames();
 						List<IPatch<?>> checkedPatches = new ArrayList<>();
 						for (IPatch<?> patch : patches) {
-							if (selectedFeatures.contains(patch.getFeature())) checkedPatches.add(patch);
+							if (selectedFeatures.contains(patch.getContext())) checkedPatches.add(patch);
 						}
 
 						if (patches != null && !patches.isEmpty()) tvChanges.setInput(FeatureTree.construct(project, checkedPatches));
@@ -273,7 +281,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case VARIANT_ADDED:
 		case VARIANT_REMOVED:
 			int oldSelection = cbVariant.getSelectionIndex();
-			cbVariant.setItems(VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressionsAsStrings().toArray(new String[] {}));
+			cbVariant.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 			cbVariant.select(oldSelection);
 		default:
 			break;

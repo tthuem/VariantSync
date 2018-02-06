@@ -12,8 +12,8 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
 import de.tubs.variantsync.core.exceptions.DiffException;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.nature.Variant;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.base.DefaultPatchFactory;
@@ -48,9 +48,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		if (!filterResource(project, res)) {
 			return false;
 		}
-		// if (!checkMembers(delta, project)) {
-		// return false;
-		// }
+
 		analyseDeltaType(delta);
 		return true;
 	}
@@ -88,21 +86,21 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		if (delta.getResource().getType() == IResource.FILE
 			&& ((delta.getFlags() & IResourceDelta.MARKERS) == 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
-			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
+				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
-					if (context.getActualContextPatch() == null) {
+					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 						IPatchFactory patchFactory = new DefaultPatchFactory();
-						patch = patchFactory.createPatch(context.getActualContext());
+						patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
 						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
-						patch = context.getActualContextPatch();
+						patch = configurationProject.getPatchesManager().getActualContextPatch();
 					}
 					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
-					context.setActualContextPatch(patch);
+					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
@@ -126,21 +124,21 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		if (delta.getResource().getType() == IResource.FILE
 			&& ((delta.getFlags() & IResourceDelta.MARKERS) != 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
-			Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
+				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
-					if (context.getActualContextPatch() == null) {
+					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 						IPatchFactory patchFactory = new DefaultPatchFactory();
-						patch = patchFactory.createPatch(context.getActualContext());
+						patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
 						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
-						patch = context.getActualContextPatch();
+						patch = configurationProject.getPatchesManager().getActualContextPatch();
 					}
 					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
-					context.setActualContextPatch(patch);
+					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
@@ -169,21 +167,21 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				if (states.length > 0) {
 					long t = states[0].getModificationTime();
 
-					Context context = VariantSyncPlugin.getDefault().getContext(file.getProject());
+					ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 					try {
-						if (VariantSyncPlugin.getDefault().isActive() && !context.isDefaultContextSelected()) {
+						if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 							IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
-							if (context.getActualContextPatch() == null) {
+							if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 								IPatchFactory patchFactory = new DefaultPatchFactory();
-								patch = patchFactory.createPatch(context.getActualContext());
+								patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
 								VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 							} else {
-								patch = context.getActualContextPatch();
+								patch = configurationProject.getPatchesManager().getActualContextPatch();
 							}
 							List<IDelta<?>> deltas = factory.createDeltas(file, states[0], t, IDelta.DELTATYPE(delta.getKind()));
 							patch.addDeltas(deltas);
-							context.setActualContextPatch(patch);
+							configurationProject.getPatchesManager().setActualContextPatch(patch);
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
@@ -219,33 +217,6 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 		String name = res.getName();
 		return !(res.isDerived() || name.startsWith("."));
 	}
-
-	// /**
-	// * Checks that delta does not result of adding or changing a file.
-	// *
-	// * @param delta
-	// * the resource delta to check
-	// * @param project
-	// * the project of delta
-	// * @return true if delta does not result of adding or changing a file,
-	// otherwise
-	// * false
-	// * @throws CoreException
-	// * project nature could not be proofed
-	// */
-	// private boolean checkMembers(IResourceDelta delta, IProject project) throws
-	// CoreException {
-	// IResourceDelta openDelta = delta.findMember(new Path(".project"));
-	// if (openDelta != null
-	// && (openDelta.getKind() == IResourceDelta.ADDED || openDelta.getKind() ==
-	// IResourceDelta.CHANGED)) {
-	// if (project != null && project.hasNature(Variant.NATURE_ID)) {
-	// //update();
-	// }
-	// return false;
-	// }
-	// return true;
-	// }
 
 	/**
 	 * Adds debug messages.

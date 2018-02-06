@@ -77,12 +77,12 @@ public interface IPatch<T> {
 	 * 
 	 * @return
 	 */
-	String getFeature();
+	String getContext();
 	
 	/**
 	 * 
-	 * @param feature
+	 * @param context
 	 */
-	void setFeature(String feature);
+	void setContext(String context);
 	
 }

@@ -15,12 +15,11 @@ import org.eclipse.jface.text.IRegion;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
-import de.tubs.variantsync.core.data.FeatureExpression;
-import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
+import de.tubs.variantsync.core.managers.data.FeatureContext;
 
 /**
- * Utilities for markers
+ * Utilities for creating specialized VariantSync eclipse resource markers
  * 
  * @author Christopher Sontag
  * @since 15.08.2017
@@ -131,18 +130,17 @@ public class MarkerUtils {
 	 * @param res
 	 * @param start - Starting line
 	 * @param end - Ending line
-	 * @param feature
+	 * @param context
 	 * @param color
 	 */
-	private static long addMarker(IResource res, int posStart, int posEnd, FeatureExpression featureExpression) {
+	private static long addMarker(IResource res, int posStart, int posEnd, FeatureContext featureContext) {
 		try {
 			IMarker marker = null;
 			if (res.exists()) {
-				marker = res.createMarker(getMarker(featureExpression.highlighter));
-				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
+				marker = res.createMarker(getMarker(featureContext.highlighter));
+				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureContext.name);
 				marker.setAttribute(IMarker.CHAR_START, posStart);
 				marker.setAttribute(IMarker.CHAR_END, posEnd);
-				System.out.println("Marker " + marker.getId() + " added at: " + posStart + "  - length: " + (posEnd - posStart));
 				return marker.getId();
 			}
 		} catch (CoreException e) {
@@ -157,9 +155,9 @@ public class MarkerUtils {
 	 * @param file
 	 * @param markers
 	 */
-	public static void setMarker(IFile file, List<IMarkerInformation> markers) {
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		for (IMarkerInformation mi : markers) {
+	public static void setMarker(IFile file, List<IVariantSyncMarker> markers) {
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (IVariantSyncMarker mi : markers) {
 			long markerId = -1;
 			if (mi.isLine()) {
 				try {
@@ -175,12 +173,13 @@ public class MarkerUtils {
 					int start = regionStart.getOffset();
 					int end = regionStart.getOffset() + regionEnd.getLength();
 
-					markerId = addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
+					markerId = addMarker(file, start, end, configurationProject.getFeatureContextManager().getContext(mi.getContext()));
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 			} else {
-				markerId = addMarker(file, mi.getOffset(), mi.getOffset() + mi.getLength(), context.getFeatureExpression(mi.getFeatureExpression()));
+				markerId = addMarker(file, mi.getOffset(), mi.getOffset() + mi.getLength(),
+						configurationProject.getFeatureContextManager().getContext(mi.getContext()));
 			}
 			if (markerId != -1) {
 				mi.setMarkerId(markerId);

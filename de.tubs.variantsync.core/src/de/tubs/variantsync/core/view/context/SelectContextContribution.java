@@ -11,14 +11,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
+import de.tubs.variantsync.core.managers.FeatureContextManager;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
+/**
+ * Contributes the combobox in the menu bar for selecting the current feature context
+ * 
+ * @author Christopher Sontag
+ */
 public class SelectContextContribution extends WorkbenchWindowControlContribution implements SelectionListener, IEventListener {
 
-	private CCombo featureExpressionSelection;
+	private CCombo selContext;
 
 	public SelectContextContribution() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -37,14 +43,14 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		Composite composite = new Composite(parent, SWT.FILL);
 		composite.setLayout(new FillLayout());
 
-		featureExpressionSelection = new CCombo(composite, SWT.FLAT | SWT.BORDER | SWT.FILL);
-		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-		if (context != null) {
-			featureExpressionSelection.setText(context.getActualContext());
+		selContext = new CCombo(composite, SWT.FLAT | SWT.BORDER | SWT.FILL);
+		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		if (configurationProject != null) {
+			selContext.setText(configurationProject.getFeatureContextManager().getActual());
 		} else {
-			featureExpressionSelection.setText(Context.DEFAULT_CONTEXT_NAME);
+			selContext.setText(FeatureContextManager.DEFAULT_CONTEXT_NAME);
 		}
-		featureExpressionSelection.addSelectionListener(this);
+		selContext.addSelectionListener(this);
 		updateCCombo();
 
 		return composite;
@@ -60,15 +66,16 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
-				Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-				if (context != null) {
+				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				if (configurationProject != null) {
 					try {
-						int curSel = featureExpressionSelection.getSelectionIndex();
-						featureExpressionSelection.setItems(context.getFeatureExpressionsAsStrings().toArray(new String[] {}));
+						FeatureContextManager featureContextManager = configurationProject.getFeatureContextManager();
+						int curSel = selContext.getSelectionIndex();
+						selContext.setItems(featureContextManager.getContextsAsStrings().toArray(new String[] {}));
 						if (curSel != -1) {
-							featureExpressionSelection.select(curSel);
+							selContext.select(curSel);
 						} else {
-							featureExpressionSelection.setText(context.getActualContext());
+							selContext.setText(featureContextManager.getActual());
 						}
 					} catch (Exception e) {
 						LogOperations.logError("Cannot update selection combo box in toolbar", e);
@@ -80,10 +87,9 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		String featureExpression = featureExpressionSelection.getItem(featureExpressionSelection.getSelectionIndex());
+		String context = selContext.getItem(selContext.getSelectionIndex());
 
-		VariantSyncPlugin.getDefault().getActiveEditorContext().setActualContext(featureExpression);
-		System.out.println("Setting context to: " + featureExpression);
+		VariantSyncPlugin.getActiveFeatureContextManager().setActual(context);
 	}
 
 	@Override
@@ -97,28 +103,10 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		switch (event.getEventType()) {
 		case CONFIGURATIONPROJECT_CHANGED:
 		case CONFIGURATIONPROJECT_SET:
+		case FEATURECONTEXT_ADDED:
+		case FEATURECONTEXT_CHANGED:
+		case FEATURECONTEXT_REMOVED:
 			updateCCombo();
-			break;
-		case CONTEXT_CHANGED:
-			break;
-		case CONTEXT_RECORDING_START:
-			break;
-		case CONTEXT_RECORDING_STOP:
-			break;
-		case FEATUREEXPRESSION_ADDED:
-		case FEATUREEXPRESSION_CHANGED:
-		case FEATUREEXPRESSION_REMOVED:
-			updateCCombo();
-			break;
-		case PATCH_ADDED:
-			break;
-		case PATCH_CHANGED:
-			break;
-		case PATCH_CLOSED:
-			break;
-		case VARIANT_ADDED:
-			break;
-		case VARIANT_REMOVED:
 			break;
 		default:
 			break;

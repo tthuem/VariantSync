@@ -5,6 +5,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import de.tubs.variantsync.core.utilities.Tree;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
+/**
+ * 
+ * ContentProvider for {@link ResourcesTree}
+ * 
+ * @author Christopher Sontag
+ */
 public class ResourceChangesTreeContentProvider implements ITreeContentProvider {
 
 	@Override

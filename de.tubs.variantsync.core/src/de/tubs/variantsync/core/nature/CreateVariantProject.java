@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.commands;
+package de.tubs.variantsync.core.nature;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -20,8 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.VariantSyncProgressMonitor;
-import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.utilities.VariantSyncProgressMonitor;
 
 public class CreateVariantProject extends AbstractHandler {
 
@@ -47,7 +46,7 @@ public class CreateVariantProject extends AbstractHandler {
 				createJavaProjectWithVariantNature(projectName);
 
 				// Reinitalize All
-				VariantSyncPlugin.getDefault().reinit();
+				VariantSyncPlugin.getConfigurationProjectManager().reinitialize();
 			}
 		}
 		return null;

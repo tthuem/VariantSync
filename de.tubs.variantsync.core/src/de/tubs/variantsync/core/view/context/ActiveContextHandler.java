@@ -3,15 +3,18 @@ package de.tubs.variantsync.core.view.context;
 import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.commands.IElementUpdater;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.UIElement;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
 
+/**
+ * Contributes the start and stop button to the menu bar
+ * 
+ * @author Christopher Sontag
+ */
 public class ActiveContextHandler extends AbstractHandler implements IElementUpdater {
 
 	boolean active = false;
@@ -19,18 +22,15 @@ public class ActiveContextHandler extends AbstractHandler implements IElementUpd
 
 	@Override
 	public boolean isEnabled() {
-		return VariantSyncPlugin.getDefault().getActiveEditorContext().getFeatureExpressions() != null;
+		return VariantSyncPlugin.getActiveFeatureContextManager().getContexts() != null;
 	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Command command = event.getCommand();
 		boolean oldValue = active;
-		VariantSyncPlugin.getDefault().setActive(!oldValue);
-		if (!oldValue)
-			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
-		else
-			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		VariantSyncPlugin.getActiveMappingManager().setActive(!oldValue);
+		if (!oldValue) updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
+		else updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
 		active = !oldValue;
 		return null;
 	}

@@ -4,6 +4,12 @@ import org.eclipse.core.resources.IFile;
 
 public interface IPatchFactory {
 
+	/**
+	 * Create a new patch under the given context
+	 * 
+	 * @param context
+	 * @return
+	 */
 	IPatch<IDelta<?>> createPatch(String context);
 
 	/**

@@ -30,7 +30,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 	protected long timestamp;
 	protected HashMap<String, String> properties = new HashMap<>();
 	protected IPatch<?> parent = null;
-	protected String feature = "";
+	protected String context = "";
 	protected IProject project = null;
 	protected String factoryId = "";
 
@@ -57,7 +57,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 		this.resource = delta.resource;
 		this.timestamp = delta.timestamp;
 		this.factoryId = delta.factoryId;
-		this.feature = delta.feature;
+		this.context = delta.context;
 		this.original = delta.original;
 		this.revised = delta.revised;
 		this.parent = delta.parent;
@@ -158,13 +158,13 @@ public abstract class ADelta<T> implements IDelta<T> {
 	}
 
 	@Override
-	public String getFeature() {
-		return feature;
+	public String getContext() {
+		return context;
 	}
 
 	@Override
-	public void setFeature(String feature) {
-		this.feature = feature;
+	public void setContext(String feature) {
+		this.context = feature;
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public String toString() {
-		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, feature=%s, factoryId=%s]", resource, revised, type, timestamp, feature,
+		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, context=%s, factoryId=%s]", resource, revised, type, timestamp, context,
 				factoryId);
 	}
 
@@ -222,9 +222,9 @@ public abstract class ADelta<T> implements IDelta<T> {
 		if (factoryId == null) {
 			if (other.factoryId != null) return false;
 		} else if (!factoryId.equals(other.factoryId)) return false;
-		if (feature == null) {
-			if (other.feature != null) return false;
-		} else if (!feature.equals(other.feature)) return false;
+		if (context == null) {
+			if (other.context != null) return false;
+		} else if (!context.equals(other.context)) return false;
 		if (original == null) {
 			if (other.original != null) return false;
 		} else if (!original.equals(other.original)) return false;

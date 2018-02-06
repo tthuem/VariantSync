@@ -10,49 +10,46 @@ import org.eclipse.core.resources.IResourceDelta;
 
 import de.ovgu.featureide.core.builder.ComposerExtensionClass;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
-import de.tubs.variantsync.core.persistence.ContextFormat;
-import de.tubs.variantsync.core.persistence.FeatureExpressionFormat;
+import de.tubs.variantsync.core.managers.persistence.FeatureContextFormat;
 
 public class VariantSyncComposer extends ComposerExtensionClass {
-	
+
 	@Override
 	public void performFullBuild(IFile config) {
-		VariantSyncPlugin.getDefault().reinit();
+		VariantSyncPlugin.getConfigurationProjectManager().reinitialize();
 	}
-	
+
 	@Override
 	public void addCompiler(IProject project, String sourcePath, String configPath, String buildPath) {
-			File featureExpressionsFile = new File(project.getFile(FeatureExpressionFormat.FILENAME).getLocationURI());
-			File contextFile = new File(project.getFile(ContextFormat.FILENAME).getLocationURI());
-			try {
-				featureExpressionsFile.createNewFile();
-				contextFile.createNewFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		File featureContextFile = new File(project.getFile(FeatureContextFormat.FILENAME).getLocationURI());
+		try {
+			featureContextFile.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public boolean hasSourceFolder() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean hasFeatureFolder() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean hasBuildFolder() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean createFolderForFeatures() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean showContextFieldsAndMethods() {
 		return false;
@@ -82,15 +79,15 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 	public boolean clean() {
 		return false;
 	}
-	
+
 	@Override
 	public void postCompile(IResourceDelta delta, IFile buildFile) {
 
 	}
-	
+
 	@Override
 	public void copyNotComposedFiles(Configuration config, IFolder destination) {
 
 	}
-	
+
 }

@@ -6,8 +6,11 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
+import de.tubs.variantsync.core.patch.ADelta;
+
 /**
- * This interface defines delta.<br><b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>
+ * This interface defines delta.<br><b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>. For
+ * implementations see also {@link ADelta}
  * 
  * @author Christopher Sontag
  * @version 1.0
@@ -102,16 +105,16 @@ public interface IDelta<T> extends Cloneable {
 	/**
 	 * Returns feature
 	 * 
-	 * @return FeatureExpression - feature
+	 * @return FeatureContext - feature context
 	 */
-	String getFeature();
+	String getContext();
 
 	/**
 	 * Sets feature expression of delta
 	 * 
-	 * @param feature - FeatureExpression
+	 * @param feature - FeatureContext
 	 */
-	void setFeature(String feature);
+	void setContext(String feature);
 
 	/**
 	 * Returns resource

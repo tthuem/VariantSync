@@ -123,7 +123,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 			delta.setType(defaultDelta.getType());
 			delta.setOriginal(defaultDelta.getOriginal());
 			delta.setRevised(defaultDelta.getRevised());
-			delta.setFeature(defaultDelta.getFeature());
+			delta.setContext(defaultDelta.getContext());
 
 			return delta;
 		}

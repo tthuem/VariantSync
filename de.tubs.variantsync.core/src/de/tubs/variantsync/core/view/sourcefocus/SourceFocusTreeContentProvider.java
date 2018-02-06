@@ -5,7 +5,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import de.tubs.variantsync.core.utilities.Tree;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
-
+/**
+ * 
+ * ContentProvider for {@link ProjectTree}
+ * 
+ * @author Christopher Sontag
+ */
 public class SourceFocusTreeContentProvider implements ITreeContentProvider {
 
 	@Override
@@ -36,5 +41,5 @@ public class SourceFocusTreeContentProvider implements ITreeContentProvider {
 		}
 		return false;
 	}
-	
+
 }

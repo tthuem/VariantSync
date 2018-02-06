@@ -17,7 +17,7 @@ public class APatch<T> implements IPatch<T> {
 	@Override
 	public void addDelta(IDelta<T> delta) {
 		if (delta.getPatch() == null) delta.setPatch(this);
-		if (delta.getFeature() == "") delta.setFeature(feature);
+		if (delta.getContext() == "") delta.setContext(feature);
 		deltas.add(delta);
 	}
 
@@ -25,7 +25,7 @@ public class APatch<T> implements IPatch<T> {
 	public void addDeltas(List<IDelta<T>> deltas) {
 		for (IDelta<T> delta : deltas) {
 			if (delta.getPatch() == null) delta.setPatch(this);
-			if (delta.getFeature() == "") delta.setFeature(feature);
+			if (delta.getContext() == "") delta.setContext(feature);
 		}
 		this.deltas.addAll(deltas);
 	}
@@ -80,12 +80,12 @@ public class APatch<T> implements IPatch<T> {
 	}
 
 	@Override
-	public String getFeature() {
+	public String getContext() {
 		return feature;
 	}
 
 	@Override
-	public void setFeature(String feature) {
+	public void setContext(String feature) {
 		this.feature = feature;
 	}
 

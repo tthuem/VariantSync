@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.commands;
+package de.tubs.variantsync.core.nature;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

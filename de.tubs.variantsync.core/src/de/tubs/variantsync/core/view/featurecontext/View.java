@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.view.featureexpressions;
+package de.tubs.variantsync.core.view.featurecontext;
 
 import java.util.List;
 
@@ -26,16 +26,22 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.ovgu.featureide.fm.core.color.ColorPalette;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.data.Context;
-import de.tubs.variantsync.core.data.FeatureExpression;
+import de.tubs.variantsync.core.managers.data.ConfigurationProject;
+import de.tubs.variantsync.core.managers.data.FeatureContext;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
+/**
+ * 
+ * Feature context view
+ * 
+ * @author Christopher Sontag
+ */
 public class View extends ViewPart implements IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".view.featureexpressions";
+	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.featurecontexts";
 
-	private List<FeatureExpression> expressions;
+	private List<FeatureContext> expressions;
 
 	private Table featureExpressionTable;
 
@@ -161,7 +167,7 @@ public class View extends ViewPart implements IEventListener {
 		if (!featureExpressionTable.isDisposed()) {
 			final TableItem[] selection = featureExpressionTable.getSelection();
 			if (selection.length == 1) {
-				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard((FeatureExpression) selection[0].getData()));
+				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
 				dialog.create();
 				if (dialog.open() == Window.OK) {
 					this.updateFeatureExpressionList();
@@ -175,7 +181,7 @@ public class View extends ViewPart implements IEventListener {
 			final TableItem[] selection = featureExpressionTable.getSelection();
 			if (selection.length > 0) {
 				for (TableItem ti : selection) {
-					expressions.remove((FeatureExpression) ti.getData());
+					expressions.remove((FeatureContext) ti.getData());
 				}
 				this.updateFeatureExpressionList();
 			}
@@ -184,13 +190,13 @@ public class View extends ViewPart implements IEventListener {
 
 	private void updateFeatureExpressionList() {
 		TableItem tableItem = null;
-		if (!featureExpressionTable.isDisposed()) {
+		if (!featureExpressionTable.isDisposed() && featureExpressionTable.isVisible()) {
 			featureExpressionTable.removeAll();
-			Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
-			if (context != null) {
-				expressions = context.getFeatureExpressions();
+			ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+			if (configurationProject != null) {
+				expressions = configurationProject.getFeatureContextManager().getContexts();
 				if (!expressions.isEmpty()) {
-					for (FeatureExpression fe : expressions) {
+					for (FeatureContext fe : expressions) {
 						tableItem = new TableItem(featureExpressionTable, SWT.NONE);
 						tableItem.setText(fe.name);
 						tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
@@ -202,7 +208,7 @@ public class View extends ViewPart implements IEventListener {
 	}
 
 	private void createFeatureExpression() {
-		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureExpressionWizard(null));
+		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 			this.updateFeatureExpressionList();
@@ -220,7 +226,7 @@ public class View extends ViewPart implements IEventListener {
 			break;
 		case CONTEXT_RECORDING_STOP:
 			break;
-		case FEATUREEXPRESSION_ADDED:
+		case FEATURECONTEXT_ADDED:
 			updateFeatureExpressionList();
 			break;
 		case PATCH_ADDED:

@@ -21,9 +21,9 @@ public class ResourcesTree {
 		
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
-				TreeNode featureNode = tree.find(delta.getFeature());
+				TreeNode featureNode = tree.find(delta.getContext());
 				if (featureNode == null) {
-					featureNode = new TreeNode(delta.getFeature());
+					featureNode = new TreeNode(delta.getContext());
 					root.addChild(featureNode);
 				}
 				TreeNode fileNode = tree.find(featureNode, delta.getResource().getProjectRelativePath());

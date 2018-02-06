@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 
+import de.tubs.variantsync.core.data.SourceFile;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerInformation;
@@ -20,9 +21,9 @@ public abstract class AMarkerHandler<T> implements IMarkerHandler<T> {
 	public abstract List<IMarkerInformation> getMarkersForDeltas(IFile file, List<IDelta<T>> deltas);
 
 	@Override
-	public abstract IMarkerInformation updateMarkerForDelta(IMarkerInformation markerInformation, IDelta<T> delta);
+	public abstract List<IMarkerInformation> getMarkers(IFile file, int offset, int length);
 
 	@Override
-	public abstract List<IMarkerInformation> getMarkers(IFile file, int offset, int length);
+	public abstract boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta, List<IMarkerInformation> markerInformations);
 
 }

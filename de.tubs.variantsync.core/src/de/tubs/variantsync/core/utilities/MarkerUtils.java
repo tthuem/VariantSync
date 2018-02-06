@@ -87,18 +87,29 @@ public class MarkerUtils {
 	 * @return List<IMarker> - All markers of the resource with DEPTH_INFINITE
 	 * @throws CoreException
 	 */
-	private static List<IMarker> getMarkers(IResource res) throws CoreException {
+	public static List<IMarker> getMarkers(IResource res) {
 		List<IMarker> returnList = new ArrayList<IMarker>();
 		if (res != null) {
 			for (String marker : annotationMarkers) {
 				try {
 					returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
 				} catch (CoreException e) {
-					e.printStackTrace();
+					LogOperations.logError("File does not exists or can not be accessed because the project is closed", e);
 				}
 			}
 		}
 		return returnList;
+	}
+
+	/**
+	 * Wrapper for res.getMarker(id)
+	 * 
+	 * @param res
+	 * @param id
+	 * @return marker with id
+	 */
+	public static IMarker getMarker(IResource res, long id) {
+		return res.getMarker(id);
 	}
 
 	/**
@@ -123,18 +134,21 @@ public class MarkerUtils {
 	 * @param feature
 	 * @param color
 	 */
-	private static void addMarker(IResource res, int offset, int length, FeatureExpression featureExpression) {
+	private static long addMarker(IResource res, int posStart, int posEnd, FeatureExpression featureExpression) {
 		try {
 			IMarker marker = null;
 			if (res.exists()) {
 				marker = res.createMarker(getMarker(featureExpression.highlighter));
 				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureExpression.name);
-				marker.setAttribute(IMarker.CHAR_START, offset);
-				marker.setAttribute(IMarker.CHAR_END, offset + length);
+				marker.setAttribute(IMarker.CHAR_START, posStart);
+				marker.setAttribute(IMarker.CHAR_END, posEnd);
+				System.out.println("Marker " + marker.getId() + " added at: " + posStart + "  - length: " + (posEnd - posStart));
+				return marker.getId();
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
+			LogOperations.logError("Marker can not be created", e);
 		}
+		return -1;
 	}
 
 	/**
@@ -146,26 +160,30 @@ public class MarkerUtils {
 	public static void setMarker(IFile file, List<IMarkerInformation> markers) {
 		Context context = VariantSyncPlugin.getDefault().getActiveEditorContext();
 		for (IMarkerInformation mi : markers) {
+			long markerId = -1;
 			if (mi.isLine()) {
 				try {
 					IDocument document = null;
 					try {
 						document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider().getDocument(VariantSyncPlugin.getEditor().getEditorInput());
 					} catch (NullPointerException e) {
-						return;
+						LogOperations.logError("Marker line is not available in the document", e);
 					}
 
 					IRegion regionStart = document.getLineInformation(mi.getOffset());
 					IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
 					int start = regionStart.getOffset();
-					int end = regionEnd.getLength();
+					int end = regionStart.getOffset() + regionEnd.getLength();
 
-					addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
+					markerId = addMarker(file, start, end, context.getFeatureExpression(mi.getFeatureExpression()));
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 			} else {
-				addMarker(file, mi.getOffset(), mi.getLength(), context.getFeatureExpression(mi.getFeatureExpression()));
+				markerId = addMarker(file, mi.getOffset(), mi.getOffset() + mi.getLength(), context.getFeatureExpression(mi.getFeatureExpression()));
+			}
+			if (markerId != -1) {
+				mi.setMarkerId(markerId);
 			}
 		}
 	}

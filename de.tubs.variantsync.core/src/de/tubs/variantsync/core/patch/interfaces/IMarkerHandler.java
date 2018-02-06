@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 
+import de.tubs.variantsync.core.data.SourceFile;
+
 public interface IMarkerHandler<T> {
 
 	List<IMarkerInformation> getMarkers(IFile file, int offset, int length);
@@ -12,5 +14,5 @@ public interface IMarkerHandler<T> {
 
 	List<IMarkerInformation> getMarkersForDeltas(IFile file, List<IDelta<T>> deltas);
 
-	IMarkerInformation updateMarkerForDelta(IMarkerInformation markerInformation, IDelta<T> delta);
+	boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta, List<IMarkerInformation> markerInformations);
 }

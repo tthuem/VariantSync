@@ -94,6 +94,16 @@ public class AMarkerInformation implements IMarkerInformation {
 	}
 
 	/**
+	 * Sets offset.
+	 * 
+	 * @param offset
+	 */
+	@Override
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	/**
 	 * Returns length.
 	 * 
 	 * @return length
@@ -101,6 +111,16 @@ public class AMarkerInformation implements IMarkerInformation {
 	@Override
 	public int getLength() {
 		return length;
+	}
+
+	/**
+	 * Sets length.
+	 * 
+	 * @param length
+	 */
+	@Override
+	public void setLength(int length) {
+		this.length = length;
 	}
 
 	/**
@@ -141,6 +161,16 @@ public class AMarkerInformation implements IMarkerInformation {
 	@Override
 	public boolean isLine() {
 		return isLine;
+	}
+
+	/**
+	 * Sets whether the complete line is annotated
+	 * 
+	 * @param true, if the complete line is annotated
+	 */
+	@Override
+	public void setLine(boolean isLine) {
+		this.isLine = isLine;
 	}
 
 	@Override

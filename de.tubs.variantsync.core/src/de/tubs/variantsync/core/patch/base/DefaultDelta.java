@@ -64,19 +64,25 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 		for (String line : (List<String>) revised.getLines()) {
 			ret = ret + line + "#:#";
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		if (!((List<String>) revised.getLines()).isEmpty()) {
+			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		}
 		ret = ret + ":;:";
 
 		for (String bLine : revised.getBefore()) {
 			ret = ret + bLine + "#:#";
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		if (!((List<String>) revised.getBefore()).isEmpty()) {
+			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		}
 		ret = ret + ":;:";
 
 		for (String aLine : revised.getAfter()) {
 			ret = ret + aLine + "#:#";
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		if (!((List<String>) revised.getAfter()).isEmpty()) {
+			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+		}
 
 		return ret;
 	}

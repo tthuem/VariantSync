@@ -24,11 +24,25 @@ public interface IMarkerInformation {
 	int getOffset();
 
 	/**
+	 * Sets offset.
+	 * 
+	 * @param offset
+	 */
+	void setOffset(int offset);
+
+	/**
 	 * Returns length.
 	 * 
 	 * @return length
 	 */
 	int getLength();
+
+	/**
+	 * Sets length.
+	 * 
+	 * @param length
+	 */
+	void setLength(int length);
 
 	/**
 	 * Returns feature expression.
@@ -51,4 +65,10 @@ public interface IMarkerInformation {
 	 */
 	boolean isLine();
 
+	/**
+	 * Sets whether the complete line is annotated
+	 * 
+	 * @param true, if the complete line is annotated
+	 */
+	void setLine(boolean isLine);
 }

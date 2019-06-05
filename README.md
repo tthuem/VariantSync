@@ -26,7 +26,7 @@ of changes between variants. As a side effect, using VariantSync for a while may
 2. Create a feature model for your variants (this feature model describes the domain for the variants)
 3. Create a feature configuration in your FeatureIDE project for each variant - the configuration file needs to have the same name as the variant
 4. Import your variants (if they are not already in the workspace)
-5. Right-Click on each project that is a variant and choose VariantSyncTool -> Add VariantSync Support in the context menu. Alternativly you can create projects for each variant by clicking VariantSync -> Create Variant project in the configuration context menu
+5. Right-Click on each project that is a variant and choose "Configure > Add As Variant" in the context menu. Alternatively, you can create projects for each variant by clicking "VariantSync > Create Variant Project" in the configuration context menu
 6. now, VariantSync is ready to support variant development
 
 

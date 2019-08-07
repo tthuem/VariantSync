@@ -28,16 +28,21 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	private static ConfigurationProject lastRequestedConfiguration = null;
 
 	public void initalize() {
+		//System.out.println("[ConfigurationProjectManager.initalize]");
 		ConfigurationProject lastConfiguration = null;
 		for (IFeatureProject project : findConfigurationProjects()) {
 			try {
+				//System.out.println("[ConfigurationProjectManager.initalize] clean markers of " + project.getProjectName());
 				MarkerUtils.cleanProject(project.getProject());
 			} catch (CoreException e) {
 				LogOperations.logError("A marker could not be deleted", e);
 			}
+			//System.out.println("[ConfigurationProjectManager.initalize] check if configuration project name is saved");
 			if (project.getProjectName().equals(VariantSyncPlugin.getDefault().getPreferenceStore().getString("lastRequestedConfiguration"))) {
+				//System.out.println("    was saved");
 				lastConfiguration = getConfigurationProject(project);
 			} else {
+				//System.out.println("    was NOT saved");
 				getConfigurationProject(project);
 			}
 		}
@@ -99,11 +104,16 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	 * Loads all contexts which are saved in a XML-file.
 	 */
 	private List<IFeatureProject> findConfigurationProjects() {
+		//System.out.println("[ConfigurationProjectManager.findConfigurationProjects]");
 		List<IFeatureProject> projects = new ArrayList<>();
 		for (IFeatureProject project : CorePlugin.getFeatureProjects()) {
+			//System.out.print("    project " + project.getProjectName());
 			if (project.getComposerID().equals("de.tubs.variantsync.core.composer")) {
 				LogOperations.logInfo("Found configuration project with name: " + project.getProjectName());
 				projects.add(project);
+				//System.out.println("    is variant composing");
+			} else {
+				//System.out.println("    is NOT variant composing");
 			}
 		}
 		return projects;

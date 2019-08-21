@@ -53,6 +53,20 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
  */
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
+	private static class ComboBoxSelectionDispatcher implements Runnable {
+		private Combo combobox;
+		public int selectionIndex = -1;
+		
+		public ComboBoxSelectionDispatcher(Combo combobox) {
+			this.combobox = combobox;
+		}
+		
+		@Override
+		public void run() {
+			selectionIndex = combobox.getSelectionIndex();
+		}
+	}
+	
 	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.sourcefocus";
 
 	private Combo cbFeature;
@@ -332,9 +346,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case FEATURECONTEXT_ADDED:
 		case FEATURECONTEXT_CHANGED:
 		case FEATURECONTEXT_REMOVED:
-			int oldSelection = cbFeature.getSelectionIndex();
+			ComboBoxSelectionDispatcher dispatcher = new ComboBoxSelectionDispatcher(cbFeature);
+			Display.getDefault().syncExec(dispatcher);
 			cbFeature.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
-			cbFeature.select(oldSelection);
+			cbFeature.select(dispatcher.selectionIndex);
 		default:
 			break;
 		}

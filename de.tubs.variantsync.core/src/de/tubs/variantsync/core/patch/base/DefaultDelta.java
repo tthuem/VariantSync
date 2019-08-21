@@ -94,9 +94,9 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 		List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
 		List<String> before = Arrays.asList(elements.get(2).split("#:#"));
 		List<String> after = Arrays.asList(elements.get(3).split("#:#"));
-		this.original = new Chunk<String>(pos, lines);
-		this.original.setBefore(before);
-		this.original.setAfter(after);
+		this.revised = new Chunk<String>(pos, lines);
+		this.revised.setBefore(before);
+		this.revised.setAfter(after);
 	}
 
 	@Override

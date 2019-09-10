@@ -28,21 +28,16 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	private static ConfigurationProject lastRequestedConfiguration = null;
 
 	public void initalize() {
-		//System.out.println("[ConfigurationProjectManager.initalize]");
 		ConfigurationProject lastConfiguration = null;
 		for (IFeatureProject project : findConfigurationProjects()) {
 			try {
-				//System.out.println("[ConfigurationProjectManager.initalize] clean markers of " + project.getProjectName());
 				MarkerUtils.cleanProject(project.getProject());
 			} catch (CoreException e) {
 				LogOperations.logError("A marker could not be deleted", e);
 			}
-			//System.out.println("[ConfigurationProjectManager.initalize] check if configuration project name is saved");
 			if (project.getProjectName().equals(VariantSyncPlugin.getDefault().getPreferenceStore().getString("lastRequestedConfiguration"))) {
-				//System.out.println("    was saved");
 				lastConfiguration = getConfigurationProject(project);
 			} else {
-				//System.out.println("    was NOT saved");
 				getConfigurationProject(project);
 			}
 		}

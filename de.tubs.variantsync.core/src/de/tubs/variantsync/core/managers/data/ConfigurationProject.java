@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.managers.data;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +74,13 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	}
 
 	public Configuration getConfigurationForVariant(IProject project) {
-		for (IFile config : configurationProject.getAllConfigurations()) {
-			if (project != null) {
-				if (config.getName().replace("." + config.getFileExtension(), "").equals(project.getName())) {
-					Configuration c = new Configuration(getFeatureProject().getFeatureModel());
-					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(config.getLocationURI()), c);
+		if (project != null) {
+			for (IFile configPath : configurationProject.getAllConfigurations()) {
+				String configFileName = configPath.getName();
+				String configName = configFileName.substring(0, configFileName.lastIndexOf('.'));
+				System.out.println("[ConfigurationProject.getConfigurationForVariant] Check name equality Project(" + project.getName() + ") with Config(" + configName + ")");
+				if (configName.equals(project.getName())) {
+					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
 					if (configurationManager != null) return configurationManager.getObject();
 				}
 			}

@@ -14,7 +14,9 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	private static DeltaFactoryManager instance = new DeltaFactoryManager();
 
 	public DeltaFactoryManager() {
-		setExtensionLoaderInternal(new CoreExtensionLoader<>(getDefaultFactory().getClass()));
+		IDeltaFactory[] y = new IDeltaFactory[]{getDefaultFactory()};
+		IExtensionLoader<IDeltaFactory> x = new CoreExtensionLoader<IDeltaFactory>(y);
+		setExtensionLoaderInternal(x);
 		addExtension(getDefaultFactory());
 	}
 

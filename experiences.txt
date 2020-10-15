@@ -1,0 +1,2 @@
+eclipse4.7.1acommitters-featureide3.4.1-win64:
+- APersistentFormat is not part of FeatureIDE 3.4.1 => compilation errors

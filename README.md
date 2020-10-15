@@ -14,12 +14,8 @@ of changes between variants. As a side effect, using VariantSync for a while may
 	
 ## Installation
 ### Manually:
-* Import the VariantSync as existing project in an eclipse workspace/clone VariantSync as git project in an eclipse workspace
-* Run MANIFEST.MF in folder META-INF as eclipse application with the following run configuration:
-  * Program arguments:
-    * -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog
-  * VM arguments (minimum): 
-    * -Dosgi.requiredJavaVersion=1.7 -Xms40m -Xmx512m
+* Import the four nested projects of VariantSync as existing projects into your eclipse workspace.
+* Run de.tubs.variantsync.core/META-INF/MANIFEST.MF as eclipse application.
 
 ## First Steps
 1. Create a FeatureIDE-Project with the VariantSync composer
@@ -27,7 +23,7 @@ of changes between variants. As a side effect, using VariantSync for a while may
 3. Create a feature configuration in your FeatureIDE project for each variant - the configuration file needs to have the same name as the variant
 4. Import your variants (if they are not already in the workspace)
 5. Right-Click on each project that is a variant and choose "Configure > Add As Variant" in the context menu. Alternatively, you can create projects for each variant by clicking "VariantSync > Create Variant Project" in the configuration context menu
-6. now, VariantSync is ready to support variant development
+6. Now, VariantSync is ready to support variant development
 
 
 ## Hints

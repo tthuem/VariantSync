@@ -122,28 +122,7 @@ public class TargetsCalculator {
 	 * @param delta
 	 * @return true, if delta can be applied only with problems
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean isTargetWithConflict(IProject project, IDelta<?> delta) {
-		IFile file = project.getFile(delta.getResource().getProjectRelativePath());
-
-		if (!file.exists() && delta.getType().equals(DELTATYPE.ADDED)) {
-			return false;
-		}
-		if (!file.exists()) {
-			return true;
-		}
-		if (file.exists() && delta.getType().equals(DELTATYPE.ADDED)) {
-			return true;
-		}
-
-		IDeltaFactory factory = null;
-		try {
-			factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
-		} catch (NoSuchExtensionException e) {
-			LogOperations.logError("PatchFactory not found", e);
-		}
-		if (factory == null) return true;
-		if (factory.verifyDelta(file, delta)) return false;
-		return true;
+		return !isTargetWithoutConflict(project, delta);
 	}
 }

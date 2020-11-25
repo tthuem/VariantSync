@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -44,7 +45,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 
 	
 	@Override
-	public IPersistentFormat<List<IPatch<?>>> getInstance() {
+	public APersistentFormat<List<IPatch<?>>> getInstance() {
 		return new PatchFormat(null);
 	}
 	

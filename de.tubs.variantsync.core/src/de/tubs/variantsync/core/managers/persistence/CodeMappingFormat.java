@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -35,7 +36,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	}
 
 	@Override
-	public IPersistentFormat<List<SourceFile>> getInstance() {
+	public APersistentFormat<List<SourceFile>> getInstance() {
 		return new CodeMappingFormat(null);
 	}
 

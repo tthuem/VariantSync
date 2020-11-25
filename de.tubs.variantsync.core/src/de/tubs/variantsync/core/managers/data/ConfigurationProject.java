@@ -75,12 +75,14 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 
 	public Configuration getConfigurationForVariant(IProject project) {
 		if (project != null) {
-			for (IFile configPath : configurationProject.getAllConfigurations()) {
-				String configFileName = configPath.getName();
+			for (Path configPath : configurationProject.getAllConfigurations()) {
+//				for (IFile configPath : configurationProject.getAllConfigurations()) {
+				String configFileName = configPath.getFileName().toString();
 				String configName = configFileName.substring(0, configFileName.lastIndexOf('.'));
 				System.out.println("[ConfigurationProject.getConfigurationForVariant] Check name equality Project(" + project.getName() + ") with Config(" + configName + ")");
 				if (configName.equals(project.getName())) {
-					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
+//					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
+					ConfigurationManager configurationManager = ConfigurationManager.getInstance(configPath);
 					if (configurationManager != null) return configurationManager.getObject();
 				}
 			}

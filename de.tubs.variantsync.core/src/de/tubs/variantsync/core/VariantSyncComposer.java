@@ -2,11 +2,14 @@ package de.tubs.variantsync.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.core.builder.ComposerExtensionClass;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
@@ -15,7 +18,8 @@ import de.tubs.variantsync.core.managers.persistence.FeatureContextFormat;
 public class VariantSyncComposer extends ComposerExtensionClass {
 
 	@Override
-	public void performFullBuild(IFile config) {
+	public void performFullBuild(Path config) {
+//		public void performFullBuild(IFile config) {
 		VariantSyncPlugin.getConfigurationProjectManager().reinitialize();
 	}
 
@@ -88,6 +92,19 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 	@Override
 	public void copyNotComposedFiles(Configuration config, IFolder destination) {
 
+	}
+
+	@Override
+	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures,
+			ArrayList<String> mandatoryFeatures) throws IOException, CoreException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean supportsPartialFeatureProject() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

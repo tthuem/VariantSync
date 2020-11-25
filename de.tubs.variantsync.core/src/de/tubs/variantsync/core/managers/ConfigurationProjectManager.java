@@ -1,5 +1,7 @@
 package de.tubs.variantsync.core.managers;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 import de.ovgu.featureide.core.CorePlugin;
 import de.ovgu.featureide.core.IFeatureProject;
@@ -115,21 +118,23 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	}
 
 	private void findVariants(ConfigurationProject configurationProject) {
-		for (IFile file : configurationProject.getFeatureProject().getAllConfigurations()) {
-			String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
+		for (Path path : configurationProject.getFeatureProject().getAllConfigurations()) {
+			String projectName = path.getFileName().toString().substring(0, path.getFileName().toString().lastIndexOf("."));
+//			for (IFile file : configurationProject.getFeatureProject().getAllConfigurations()) {
+//				String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
 			IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
 			if (project.exists()) {
 				configurationProject.addVariant(project);
 			} else {
-				try {
-					IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
-					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
-					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-					m.setAttribute(IMarker.LINE_NUMBER, 0);
-				} catch (CoreException e) {
-					LogOperations.logError("Marker cannot be created!", e);
-				}
+//				try {
+//					IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
+//					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
+//					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+//					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+//					m.setAttribute(IMarker.LINE_NUMBER, 0);
+//				} catch (CoreException e) {
+//					LogOperations.logError("Marker cannot be created!", e);
+//				}
 			}
 		}
 		configurationProject.getMappingManager().load();

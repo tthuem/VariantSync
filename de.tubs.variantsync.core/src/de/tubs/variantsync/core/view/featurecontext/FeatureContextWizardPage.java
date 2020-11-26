@@ -190,7 +190,6 @@ public class FeatureContextWizardPage extends WizardPage {
 		txtContext.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		if (featureContext != null) txtContext.setText(featureContext.name);
 		txtContext.setMargins(10, 5, 3, 5);
-		txtContext.setPossibleWords(Functional.toSet(FeatureUtils.extractFeatureNames(features)));
 		if (featureContext != null) txtContext.setBackground(ColorPalette.toSwtColor(featureContext.highlighter));
 
 		txtContext.addModifyListener(new ModifyListener() {

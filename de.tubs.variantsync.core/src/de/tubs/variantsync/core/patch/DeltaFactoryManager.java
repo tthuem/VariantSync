@@ -2,7 +2,8 @@ package de.tubs.variantsync.core.patch;
 
 import org.eclipse.core.resources.IFile;
 
-import de.ovgu.featureide.fm.core.CoreExtensionLoader;
+//import de.ovgu.featureide.fm.core.CoreExtensionLoader;
+import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
 import de.tubs.variantsync.core.patch.base.DefaultDeltaFactory;
@@ -15,8 +16,8 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 
 	public DeltaFactoryManager() {
 		IDeltaFactory[] y = new IDeltaFactory[]{getDefaultFactory()};
-		IExtensionLoader<IDeltaFactory> x = new CoreExtensionLoader<IDeltaFactory>(y);
-		setExtensionLoaderInternal(x);
+		//IExtensionLoader<IDeltaFactory> x = new EclipseExtensionLoader<IDeltaFactory>(y);
+		//setExtensionLoader(x);
 		addExtension(getDefaultFactory());
 	}
 
@@ -25,7 +26,7 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	}
 
 	public static void setExtensionLoader(IExtensionLoader<IDeltaFactory> extensionLoader) {
-		instance.setExtensionLoaderInternal(extensionLoader);
+		instance.setExtensionLoader(extensionLoader);
 	}
 
 	/**

@@ -1,11 +1,16 @@
 package de.tubs.variantsync.core.patch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 
 //import de.ovgu.featureide.fm.core.CoreExtensionLoader;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
+import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.base.DefaultDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 
@@ -14,10 +19,13 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 
 	private static DeltaFactoryManager instance = new DeltaFactoryManager();
 
+	private IExtensionLoader<IDeltaFactory> extensionLoader;
+	private final List<IDeltaFactory> extensions = new ArrayList<>();
+	
 	public DeltaFactoryManager() {
 		IDeltaFactory[] y = new IDeltaFactory[]{getDefaultFactory()};
-		//IExtensionLoader<IDeltaFactory> x = new EclipseExtensionLoader<IDeltaFactory>(y);
-		//setExtensionLoader(x);
+		IExtensionLoader<IDeltaFactory> x = new EclipseExtensionLoader<IDeltaFactory>(VariantSyncPlugin.PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class);
+		setExtensionLoaderInternal(x);
 		addExtension(getDefaultFactory());
 	}
 
@@ -26,7 +34,7 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	}
 
 	public static void setExtensionLoader(IExtensionLoader<IDeltaFactory> extensionLoader) {
-		instance.setExtensionLoader(extensionLoader);
+		instance.setExtensionLoaderInternal(extensionLoader);
 	}
 
 	/**
@@ -64,5 +72,22 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	public static IDeltaFactory getDefaultFactory() {
 		return DefaultDeltaFactory.getInstance();
 	}
+	
+	@Override
+	public synchronized List<IDeltaFactory> getExtensions() {
+		if (extensionLoader != null) {
+		synchronized (extensions) {
+		if (extensionLoader != null) {
+		extensionLoader.loadProviders(this);
+		extensionLoader = null;
+		}
+		}
+		}
+		return Collections.unmodifiableList(extensions);
+		}
+	
+	protected void setExtensionLoaderInternal(IExtensionLoader<IDeltaFactory> extensionLoader) {
+		this.extensionLoader = extensionLoader;
+		}
 
 }

@@ -325,10 +325,9 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	}
 
 
-	/*
 	@Override
 	public boolean initExtension() {
 		return true;
-	}**/
+	}
 
 }

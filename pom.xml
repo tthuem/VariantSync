@@ -18,9 +18,13 @@
     </properties>
 
     <modules>
+        <!--main module -->
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
-        <module>de.tubs.variantsync.update</module>    
+        <module>de.tubs.variantsync.update</module>
+
+        <!--test module -->
+        <module>de.tubs.variantsync.core-test</module>    
     </modules>
 
      <repositories>
@@ -38,6 +42,16 @@
 
     <build>
         <plugins>
+            <!-- Force Java 11 usage (dangerous: OSGI does not support java 11 in total)-->
+           <!-- <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin> -->
+
             <!-- Tycho -->  
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -45,7 +59,16 @@
                 <version>${tycho-version}</version>
                 <extensions>true</extensions>
             </plugin>
-
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-surefire-plugin</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <useUIHarness>true</useUIHarness>
+					<!--use JDK: $HOME_JAVA-->
+					<useJDK>SYSTEM</useJDK>
+                </configuration>
+            </plugin>            
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
@@ -71,7 +94,6 @@
                     </environments>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-packaging-plugin</artifactId>
@@ -112,6 +134,11 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-director-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>            
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>

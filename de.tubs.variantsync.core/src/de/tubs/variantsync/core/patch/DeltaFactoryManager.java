@@ -10,6 +10,7 @@ import org.eclipse.core.resources.IFile;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
 import de.ovgu.featureide.fm.core.ExtensionManager;
 import de.ovgu.featureide.fm.core.IExtensionLoader;
+import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.patch.base.DefaultDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
@@ -76,12 +77,12 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	@Override
 	public synchronized List<IDeltaFactory> getExtensions() {
 		if (extensionLoader != null) {
-		synchronized (extensions) {
-		if (extensionLoader != null) {
-		extensionLoader.loadProviders(this);
-		extensionLoader = null;
-		}
-		}
+			synchronized (extensions) {
+				if (extensionLoader != null) {
+					extensionLoader.loadProviders(this);
+					extensionLoader = null;
+				}
+			}
 		}
 		return Collections.unmodifiableList(extensions);
 		}
@@ -89,5 +90,36 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	protected void setExtensionLoaderInternal(IExtensionLoader<IDeltaFactory> extensionLoader) {
 		this.extensionLoader = extensionLoader;
 		}
+	
+	
+	
+	@Override
+	public synchronized boolean addExtension(IDeltaFactory extension) {
+	if (extension != null) {
+		for (final IDeltaFactory t : extensions) {
+			if (t.getId().equals(extension.getId())) {
+				return false;
+			}
+		}
+		if (extension.initExtension()) {
+			extensions.add(extension);
+			return true;
+		}
+	}
+	return false;
+}
+	
+	
+	@Override
+	public IDeltaFactory getExtension(String id) throws NoSuchExtensionException {
+		java.util.Objects.requireNonNull(id, "ID must not be null!");
+
+	for (final IDeltaFactory extension : getExtensions()) {
+		if (id.equals(extension.getId())) {
+			return extension;
+		}
+	}
+	throw new NoSuchExtensionException("No extension found for ID " + id);
+}
 
 }

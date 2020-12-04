@@ -17,6 +17,7 @@ import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.event.FeatureIDEEvent;
+import de.ovgu.featureide.fm.core.io.EclipseFileSystem;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.utilities.LogOperations;
@@ -119,22 +120,21 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 
 	private void findVariants(ConfigurationProject configurationProject) {
 		for (Path path : configurationProject.getFeatureProject().getAllConfigurations()) {
-			String projectName = path.getFileName().toString().substring(0, path.getFileName().toString().lastIndexOf("."));
-//			for (IFile file : configurationProject.getFeatureProject().getAllConfigurations()) {
-//				String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
+			IFile file = (IFile) EclipseFileSystem.getResource(path);
+			String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
 			IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
 			if (project.exists()) {
 				configurationProject.addVariant(project);
 			} else {
-//				try {
-//					IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
-//					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
-//					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
-//					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-//					m.setAttribute(IMarker.LINE_NUMBER, 0);
-//				} catch (CoreException e) {
-//					LogOperations.logError("Marker cannot be created!", e);
-//				}
+				try {
+					IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
+					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
+					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+					m.setAttribute(IMarker.LINE_NUMBER, 0);
+				} catch (CoreException e) {
+					LogOperations.logError("Marker cannot be created!", e);
+				}
 			}
 		}
 		configurationProject.getMappingManager().load();

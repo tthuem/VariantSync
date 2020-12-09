@@ -1,4 +1,4 @@
-package org.de.variantsync.core;
+package de.variantsync.core;
 
 /**
  * Hello world!

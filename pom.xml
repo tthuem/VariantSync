@@ -19,10 +19,9 @@
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
         <module>de.tubs.variantsync.update</module>
-
+		<module>de.variantsync.core</module>
         <!--test module -->
         <module>de.tubs.variantsync.core-test</module>
-    <module>de.variantsync.core</module>
   </modules>
 
      <repositories>

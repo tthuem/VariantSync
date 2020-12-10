@@ -54,7 +54,6 @@ public class DiffUtilsTest {
 	public void testPatch1() throws DiffException {
 		Patch<String> patch = DiffUtils.diff(lines1, lines3, 1);
 		assertTrue(patch.getDeltas().size() == 3);
-		
 	}
 
 	@Test

@@ -324,10 +324,11 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return new DefaultMarkerHandler();
 	}
 
-	/*
+
+
 	@Override
 	public boolean initExtension() {
 		return true;
-	}**/
+	}
 
 }

@@ -1,5 +1,7 @@
 package de.tubs.variantsync.core.managers;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +10,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 
 import de.ovgu.featureide.core.CorePlugin;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.event.FeatureIDEEvent;
+import de.ovgu.featureide.fm.core.io.EclipseFileSystem;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.utilities.LogOperations;
@@ -115,7 +119,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	}
 
 	private void findVariants(ConfigurationProject configurationProject) {
-		for (IFile file : configurationProject.getFeatureProject().getAllConfigurations()) {
+		for (Path path : configurationProject.getFeatureProject().getAllConfigurations()) {
+			IFile file = (IFile) EclipseFileSystem.getResource(path);
 			String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
 			IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
 			if (project.exists()) {

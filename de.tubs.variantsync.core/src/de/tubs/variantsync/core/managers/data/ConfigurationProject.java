@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IProject;
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
+import de.ovgu.featureide.fm.core.io.EclipseFileSystem;
 import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
 import de.tubs.variantsync.core.managers.AManager;
 import de.tubs.variantsync.core.managers.FeatureContextManager;
@@ -75,13 +76,14 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 
 	public Configuration getConfigurationForVariant(IProject project) {
 		if (project != null) {
-			for (IFile configPath : configurationProject.getAllConfigurations()) {
+			for (Path confPath : configurationProject.getAllConfigurations()) {
+				IFile configPath = (IFile) EclipseFileSystem.getResource(confPath);
 				String configFileName = configPath.getName();
 				String configName = configFileName.substring(0, configFileName.lastIndexOf('.'));
 				System.out.println("[ConfigurationProject.getConfigurationForVariant] Check name equality Project(" + project.getName() + ") with Config(" + configName + ")");
 				if (configName.equals(project.getName())) {
 					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
-					if (configurationManager != null) return configurationManager.getObject();
+					if (configurationManager != null) return configurationManager.getObject();			
 				}
 			}
 		}

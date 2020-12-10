@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
-import de.ovgu.featureide.fm.core.io.IPersistentFormat;
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
@@ -23,7 +23,7 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	public static final String FILENAME = ".contexts.xml";
 
 	@Override
-	public IPersistentFormat<List<FeatureContext>> getInstance() {
+	public APersistentFormat<List<FeatureContext>> getInstance() {
 		return new FeatureContextFormat();
 	}
 

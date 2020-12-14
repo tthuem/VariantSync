@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AST<Grammar, Value> {
-    int UUID;
+    static int count;
+	int UUID;
     Grammar type;
     Value value;
     List<AST<Grammar, Value>> children = new ArrayList<>();
     
 	public AST(Grammar type, Value value) {
 		super();
+		this.UUID = count++;
 		this.type = type;
 		this.value = value;
 	}
 	
-    public enum LineGrammar {
-        Directory, File, Line
-    }
-
 }

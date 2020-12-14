@@ -7,7 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import de.variantsync.core.AST.LineGrammar;
+import de.variantsync.core.EnumLineGrammar.LineGrammar;
+
 
 
 public class Parser 

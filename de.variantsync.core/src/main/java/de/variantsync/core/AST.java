@@ -4,35 +4,37 @@ import java.util.*;
 
 
 public class AST<Grammar, Value> {
-	public static void main(String[] args) {
-		AST<EnumLineGrammar.LineGrammar, String> srcDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "src");
+    public static void main(String[] args) {
+        AST<EnumLineGrammar.LineGrammar, String> srcDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "src");
         AST<EnumLineGrammar.LineGrammar, String> mainDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "main");
         AST<EnumLineGrammar.LineGrammar, String> testDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "test");
-		AST<EnumLineGrammar.LineGrammar, String> mainJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Main.java");
-		AST<EnumLineGrammar.LineGrammar, String> emptyJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Empty.java");
+        AST<EnumLineGrammar.LineGrammar, String> mainJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Main.java");
+        AST<EnumLineGrammar.LineGrammar, String> emptyJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Empty.java");
         AST<EnumLineGrammar.LineGrammar, String> emptyTetJava = new AST<>(EnumLineGrammar.LineGrammar.File, "EmptyTest.java");
-		srcDir.children.add(testDir);
-		testDir.children.add(emptyTetJava);
-		srcDir.children.add(mainDir);
+        srcDir.children.add(testDir);
+        testDir.children.add(emptyTetJava);
+        srcDir.children.add(mainDir);
         mainDir.children.add(mainJava);
-		mainDir.children.add(emptyJava);
+        mainDir.children.add(emptyJava);
 
 
-		mainJava.children.addAll(Arrays.asList(
-				new AST<>(EnumLineGrammar.LineGrammar.Line, "public class Main {"),
-				new AST<>(EnumLineGrammar.LineGrammar.Line, "    public static void main(String[] args)"),
-				new AST<>(EnumLineGrammar.LineGrammar.Line, "        System.out.println(\"Hello World\");"),
-				new AST<>(EnumLineGrammar.LineGrammar.Line, "    }"),
-				new AST<>(EnumLineGrammar.LineGrammar.Line, "}")));
-		System.out.println(srcDir.size);
-		System.out.println(srcDir);
-	}
+        mainJava.children.addAll(Arrays.asList(
+                new AST<>(EnumLineGrammar.LineGrammar.Line, "public class Main {"),
+                new AST<>(EnumLineGrammar.LineGrammar.Line, "    public static void main(String[] args)"),
+                new AST<>(EnumLineGrammar.LineGrammar.Line, "        System.out.println(\"Hello World\");"),
+                new AST<>(EnumLineGrammar.LineGrammar.Line, "    }"),
+                new AST<>(EnumLineGrammar.LineGrammar.Line, "}")));
+        System.out.println(srcDir.size);
+        System.out.println(srcDir);
+    }
 
     UUID id;
     Grammar type;
     Value value;
     int size;
     List<AST<Grammar, Value>> children;
+
+    private final String INDENT_STRING = "    ";
 
 
     /**
@@ -54,51 +56,51 @@ public class AST<Grammar, Value> {
 
     @Override
     public String toString() {
-    	String out = "";
-    	if(value == null) {
-    		return out;
-		} else {
-    		int[] level = {1};
-    		out += value + "\n";
+        StringBuilder result = new StringBuilder();
+        if (value == null) {
+            return result.toString();
+        } else {
+            int[] level = {1};
+            result.append(value + "\n");
 
-            HashSet<Integer>  levelFinished = new HashSet<>(); // eg. is level 3 finished?
-    		out += toString(level,levelFinished,children);
-
-		}
-
-    	return out;
-	}
-
-	private String toString(int[] level, HashSet<Integer> levelFinished,List<AST<Grammar,Value>> children )  {
-        String out = "";
-        if(levelFinished.contains(level[0])) {
-            level[0]++;
-            out += "  ";
+            HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
+            for (AST<Grammar, Value> child : children) {
+                toString(result, child, level, levelFinished, false);
+            }
         }
-        if (children.size() == 0) {
-            return out;
+
+        return result.toString();
+    }
+
+
+    private void toString(StringBuilder result, AST<Grammar, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
+        for (int i = 0; i < level[0]; i++) {
+            String toAppend = INDENT_STRING + "\u2502 ";
+            if (i == level[0] - 1) {
+                toAppend = INDENT_STRING + "\u251C\u2500 ";
+                if (isLast) {
+                    toAppend = INDENT_STRING + "\u2514\u2500 ";
+                }
+
+            }
+            result.append(toAppend);
+
         }
-        int index = children.size() -1;
-        for(AST<Grammar,Value> child : children) {
-            if(index == 0) {
+        result.append(parent.value + " Depth: " + level[0] + "\n");
+        level[0]++;
+        for (AST<Grammar, Value> child : parent.children) {
+            isLast = false;
+            if (parent.children.indexOf(child) == parent.children.size() - 1) {
                 //last elem
-                out += "\u2514\u2500 " + child.value + " l:" + level[0] + "\n";
-                out +="\u2502";
-                levelFinished.add(--level[0]);
+                levelFinished.add(level[0] - 1);
+                isLast = true;
+            } else if (parent.children.indexOf(child) == 0) {
+                levelFinished.remove(level[0] - 1);
             }
-            else {
-                out += "\u251C\u2500 " + child.value + " l:" + level[0]  + "\n";
-                out +="\u2502";
-            }
-
-
-            out += /*"\u2514\u2500" +*/ toString(level, levelFinished,child.children);
-            index--;
+            toString(result, child, level, levelFinished, isLast);
 
         }
-        levelFinished.add(level[0]);
         level[0]--;
-        return out;
     }
 
     public AST(Grammar type, Value value) {
@@ -129,7 +131,7 @@ public class AST<Grammar, Value> {
                     }
 
                 }
-				System.err.println("AST-WARNING: Child could not be added!");
+                System.err.println("AST-WARNING: Child could not be added!");
             }
         }
     }

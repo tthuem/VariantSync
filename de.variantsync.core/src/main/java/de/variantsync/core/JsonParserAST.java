@@ -1,32 +1,38 @@
 package de.variantsync.core;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 class JsonParserAST {
 	
-	Gson gson = new Gson();
+	static Gson gson = new Gson();
 	
-	public JsonParserAST() {
-	}
 	
-	public String exportAST(AST ast){
+	public static <A,B> String exportAST(AST<A,B> ast){
 		
-		return gson.toJson(ast);
-	}
-	
-	public AST importAST(String json) {
+		Type type = new TypeToken<AST<A,B>>() {}.getType();  
 		
-		return gson.fromJson(json, AST.class);
+		return gson.toJson(ast, type);
 	}
 	
-	
-	public String exportToFile(Path path, AST ast){
+	public static <A,B> AST<A,B> importAST(String json) {
+		
+		Type type = new TypeToken<AST<A,B>>() {}.getType();  
 
-    	String content = gson.toJson(ast);
+		return gson.fromJson(json, type);
+	}
+	
+	
+	public static <A,B> String exportToFile(Path path, AST<A,B> ast){
+
+		Type type = new TypeToken<AST<A,B>>() {}.getType();  
+
+    	String content = gson.toJson(ast, type);
         try {
 			Files.writeString(path, content);
 		} catch (IOException e) {
@@ -37,7 +43,7 @@ class JsonParserAST {
         return content;
 	}
 	
-	public AST importFromFile(Path path) {
+	public static <A,B> AST<A,B> importFromFile(Path path) {
 		
         String json = "";
 		try {
@@ -48,7 +54,9 @@ class JsonParserAST {
 			return null;
 		}
 		
-		return gson.fromJson(json, AST.class);
+		Type type = new TypeToken<AST<A,B>>() {}.getType();  
+		
+		return gson.fromJson(json, type);
 	}
 
 }

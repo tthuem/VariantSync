@@ -60,13 +60,13 @@ public class AST<Grammar, Value> {
         if (value == null) {
             return result.toString();
         } else {
-            int[] level = {1};
+            int[] level = {0};
             result.append(value + "\n");
 
             HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
-            for (AST<Grammar, Value> child : children) {
-                toString(result, child, level, levelFinished, false);
-            }
+            //levelFinished.add(level[0]);
+            //level[0]++;
+            toString(result, this, level, levelFinished, false);
         }
 
         return result.toString();
@@ -76,25 +76,35 @@ public class AST<Grammar, Value> {
     private void toString(StringBuilder result, AST<Grammar, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
         for (int i = 0; i < level[0]; i++) {
             String toAppend = INDENT_STRING + "\u2502 ";
+            if (levelFinished.contains(i)) {
+                // no need of signs like | because of depth
+                toAppend = INDENT_STRING + "  ";
+            }
             if (i == level[0] - 1) {
-                toAppend = INDENT_STRING + "\u251C\u2500 ";
+                // end of indent make arrow
+                toAppend = INDENT_STRING + "\u251C\u2500";
                 if (isLast) {
-                    toAppend = INDENT_STRING + "\u2514\u2500 ";
+                    // last child of parent, no arrow down needed
+                    toAppend = INDENT_STRING + "\u2514\u2500";
                 }
 
             }
             result.append(toAppend);
 
         }
-        result.append(parent.value + " Depth: " + level[0] + "\n");
+        result.append(parent.value);
+        result.append("Depth: ");
+        result.append(level[0]);
+        result.append("\n");
         level[0]++;
         for (AST<Grammar, Value> child : parent.children) {
             isLast = false;
             if (parent.children.indexOf(child) == parent.children.size() - 1) {
-                //last elem
+                // last child of subtree, meaning level finished, needs |
                 levelFinished.add(level[0] - 1);
                 isLast = true;
             } else if (parent.children.indexOf(child) == 0) {
+                // first child of new sub tree with unfinished level needs |
                 levelFinished.remove(level[0] - 1);
             }
             toString(result, child, level, levelFinished, isLast);

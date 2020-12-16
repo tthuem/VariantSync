@@ -92,8 +92,10 @@ public class AST<Grammar, Value> {
             result.append(toAppend);
 
         }
+
+        result.append(" ");
         result.append(parent.value);
-        result.append("Depth: ");
+        result.append(" Depth: ");
         result.append(level[0]);
         result.append("\n");
         level[0]++;

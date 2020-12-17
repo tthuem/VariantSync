@@ -90,11 +90,7 @@ public class AST<Grammar, Value> {
 
         }
 
-        result.append(" ");
-        result.append(parent.value);
-        result.append(" Depth: ");
-        result.append(level[0]);
-        result.append("\n");
+        result.append(" ").append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(level[0]).append("\n");
         level[0]++;
         for (AST<Grammar, Value> child : parent.children) {
             isLast = false;

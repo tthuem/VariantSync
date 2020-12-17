@@ -6,11 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 class JsonParserAST {
 	
-	static Gson gson = new Gson();
+	static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	
 	
 	public static <A,B> String exportAST(AST<A,B> ast){

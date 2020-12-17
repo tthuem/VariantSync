@@ -5,34 +5,31 @@ import java.util.*;
 
 public class AST<Grammar, Value> {
     public static void main(String[] args) {
-        AST<EnumLineGrammar.LineGrammar, String> srcDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "src");
-        AST<EnumLineGrammar.LineGrammar, String> mainDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "main");
-        AST<EnumLineGrammar.LineGrammar, String> testDir = new AST<>(EnumLineGrammar.LineGrammar.Directory, "test");
-        AST<EnumLineGrammar.LineGrammar, String> mainJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Main.java");
-        AST<EnumLineGrammar.LineGrammar, String> emptyJava = new AST<>(EnumLineGrammar.LineGrammar.File, "Empty.java");
-        AST<EnumLineGrammar.LineGrammar, String> emptyTetJava = new AST<>(EnumLineGrammar.LineGrammar.File, "EmptyTest.java");
-        srcDir.children.add(testDir);
-        testDir.children.add(emptyTetJava);
-        srcDir.children.add(mainDir);
-        mainDir.children.add(mainJava);
-        mainDir.children.add(emptyJava);
+        AST<LineGrammar, String> srcDir = new AST<>(LineGrammar.Directory, "src");
+        AST<LineGrammar, String> mainDir = new AST<>(LineGrammar.Directory, "main");
+        AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
+        AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.File, "Main.java");
+        AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.File, "Empty.java");
+        AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.File, "EmptyTest.java");
+        srcDir.addChild(testDir);
+        testDir.addChild(emptyTetJava);
+        srcDir.addChild(mainDir);
+        mainDir.addChild(mainJava);
+        mainDir.addChild(emptyJava);
 
-
-        mainJava.children.addAll(Arrays.asList(
-                new AST<>(EnumLineGrammar.LineGrammar.Line, "public class Main {"),
-                new AST<>(EnumLineGrammar.LineGrammar.Line, "    public static void main(String[] args)"),
-                new AST<>(EnumLineGrammar.LineGrammar.Line, "        System.out.println(\"Hello World\");"),
-                new AST<>(EnumLineGrammar.LineGrammar.Line, "    }"),
-                new AST<>(EnumLineGrammar.LineGrammar.Line, "}")));
-        System.out.println(srcDir.size);
+        mainJava.addChildren(Arrays.asList(
+                new AST<>(LineGrammar.Line, "public class Main {"),
+                new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
+                new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"),
+                new AST<>(LineGrammar.Line, "    }"),
+                new AST<>(LineGrammar.Line, "}")));
         System.out.println(srcDir);
     }
 
-    UUID id;
-    Grammar type;
-    Value value;
-    int size;
-    List<AST<Grammar, Value>> children;
+    private UUID id;
+    private Grammar type;
+    private Value value;
+    private List<AST<Grammar, Value>> children;
 
     private final String INDENT_STRING = "    ";
 
@@ -60,7 +57,7 @@ public class AST<Grammar, Value> {
         if (value == null) {
             return result.toString();
         } else {
-            int[] level = {0};
+            int[] level = {0}; //pointer magic
             result.append(value + "\n");
 
             HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
@@ -120,42 +117,29 @@ public class AST<Grammar, Value> {
         this.type = type;
         this.value = value;
         this.children = new ArrayList<>();
-        size = 1;
     }
 
-    public void add(Grammar gram, Value val) {
-        if (value == null) {
-            id = UUID.randomUUID();
-            type = gram;
-            value = val;
-            children = new ArrayList<>();
-            size = 1;
-        } else {
-            AST<Grammar, Value> toAdd = new AST<>(gram, val);
-            if (children.size() == 0) {
-                children.add(toAdd);
-            } else {
-                for (AST<Grammar, Value> act : children) {
-                    if (isValidChild(act, toAdd)) {
-                        act.children.add(toAdd);
-                        size++;
-                        break;
-                    }
 
-                }
-                System.err.println("AST-WARNING: Child could not be added!");
-            }
+    public void addChildren(List<AST<Grammar, Value>> toAdd) {
+        if(toAdd != null) {
+            children.addAll(toAdd);
+        }
+    }
+
+    public void addChild(AST<Grammar, Value> toAdd) {
+        if(toAdd != null) {
+            children.add(toAdd);
         }
     }
 
     private boolean isValidChild(AST<Grammar, Value> parent, AST<Grammar, Value> child) {
-        if (parent.type instanceof EnumLineGrammar.LineGrammar) {
-            if (parent.type == EnumLineGrammar.LineGrammar.Directory) {
+        if (parent.type instanceof LineGrammar) {
+            if (parent.type == LineGrammar.Directory) {
                 //Dir can't have line as child
-                return child.type != EnumLineGrammar.LineGrammar.Line;
-            } else if (parent.type == EnumLineGrammar.LineGrammar.File) {
+                return child.type != LineGrammar.Line;
+            } else if (parent.type == LineGrammar.File) {
                 //File can't have dir or file as child
-                return child.type == EnumLineGrammar.LineGrammar.Line;
+                return child.type == LineGrammar.Line;
             } else {
                 //Line is always leaf node
                 return false;

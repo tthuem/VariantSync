@@ -24,8 +24,8 @@ public class JsonParserTest {
     	//init
     	exampleAst = new AST<>(LineGrammar.Directory, "src");
     	AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.File, "Main.java");
-    	exampleAst.children.add(mainJava);
-    	mainJava.children.addAll(Arrays.asList(
+    	exampleAst.addChild(mainJava);
+    	mainJava.addChildren(Arrays.asList(
     	        new AST<>(LineGrammar.Line, "public class Main {"),
     	        new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
     	        new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"),

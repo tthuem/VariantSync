@@ -3,6 +3,7 @@ package de.variantsync.core;
 import java.util.*;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 
 public class AST<Grammar, Value> {
@@ -28,13 +29,17 @@ public class AST<Grammar, Value> {
         System.out.println(srcDir);
     }
 
-    @Expose 
+    @Expose
+    @SerializedName(value = "uuid")
     private UUID id;
     @Expose 
-    private Grammar type;
-    @Expose 
+    @SerializedName(value = "value")
     private Value value;
-    @Expose 
+    @Expose
+    @SerializedName(value = "grammar_type")
+    private Grammar type;
+    @Expose
+    @SerializedName(value = "children")
     private List<AST<Grammar, Value>> children;
 
     private final String INDENT_STRING = "    ";

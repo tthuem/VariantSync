@@ -2,6 +2,8 @@ package de.variantsync.core;
 
 import java.util.*;
 
+import com.google.gson.annotations.Expose;
+
 
 public class AST<Grammar, Value> {
     public static void main(String[] args) {
@@ -26,9 +28,13 @@ public class AST<Grammar, Value> {
         System.out.println(srcDir);
     }
 
+    @Expose 
     private UUID id;
+    @Expose 
     private Grammar type;
+    @Expose 
     private Value value;
+    @Expose 
     private List<AST<Grammar, Value>> children;
 
     private final String INDENT_STRING = "    ";

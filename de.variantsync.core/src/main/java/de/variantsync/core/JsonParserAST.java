@@ -11,7 +11,7 @@ import com.google.gson.reflect.TypeToken;
 
 class JsonParserAST {
 	
-	static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	static Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 	
 	
 	public static <A,B> String exportAST(AST<A,B> ast){

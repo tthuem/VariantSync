@@ -50,7 +50,7 @@ public class JsonParserTest {
 		AST<LineGrammar, String> ast = JsonParserAST.importAST(json);
     	
     	//rexport imported AST
-    	String jsonSec= JsonParserAST.exportAST(ast);
+    	String jsonSec = JsonParserAST.exportAST(ast);
     	
     	
     	
@@ -77,6 +77,33 @@ public class JsonParserTest {
     	
     	//rexport imported AST
     	String jsonSec= JsonParserAST.exportAST(ast);
+
+    	
+    	//print
+    	System.out.println("FileFirst:"+json);
+    	
+    	System.out.println("FileSecond:"+jsonSec);
+    	
+    	//compare json
+    	assertTrue(json.equals(jsonSec));
+    	
+    	//delete created file
+    	Files.delete(exmaplePath);
+    }
+    
+    @Test
+    public void TestJsonParserASTtoFileToString() throws IOException
+    {	
+    	
+    	//export to json file
+    	JsonParserAST.exportToFile(exmaplePath, exampleAst);
+    	
+    	//import ast from file
+    	AST<LineGrammar, String> ast = JsonParserAST.importFromFile(exmaplePath);
+    	
+    	//get toString
+    	String json = exampleAst.toString();
+    	String jsonSec = ast.toString();
 
     	
     	//print

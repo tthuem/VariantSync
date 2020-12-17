@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import de.variantsync.core.EnumLineGrammar.LineGrammar;
+import de.variantsync.core.LineGrammar;
 
 
 
@@ -30,14 +30,14 @@ public class Parser
 	    	result = new AST<>(LineGrammar.Directory, folder.getName(folder.getNameCount()-1).toString());
 	    	DirectoryStream<Path> directoryStream = Files.newDirectoryStream(folder);
 		    for (Path entry : directoryStream) {
-			    result.children.add(parseDirectory(entry));
+			    result.addChild(parseDirectory(entry));
 		    }
 	    } else {
 			if (!isBinaryFile(folder)) {
 				result = new AST<>(LineGrammar.File, folder.getName(folder.getNameCount()-1).toString());
 		        List<String> fileStream = Files.readAllLines(folder);
 		        for (String line : fileStream) {
-		        	result.children.add(new AST<>(LineGrammar.Line, line));
+		        	result.addChild(new AST<>(LineGrammar.Line, line));
 		        }
 			}
 		}

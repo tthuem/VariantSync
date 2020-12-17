@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.variantsync.core.EnumLineGrammar.LineGrammar;
+import de.variantsync.core.LineGrammar;
 
 public class JsonParserTest {
 	

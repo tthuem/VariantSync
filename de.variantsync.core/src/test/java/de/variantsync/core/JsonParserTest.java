@@ -10,8 +10,6 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.variantsync.core.LineGrammar;
-
 public class JsonParserTest {
 	
 	AST<LineGrammar, String> exampleAst;
@@ -23,7 +21,7 @@ public class JsonParserTest {
     {
     	//init
     	exampleAst = new AST<>(LineGrammar.Directory, "src");
-    	AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.File, "Main.java");
+    	AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
     	exampleAst.addChild(mainJava);
     	mainJava.addChildren(Arrays.asList(
     	        new AST<>(LineGrammar.Line, "public class Main {"),

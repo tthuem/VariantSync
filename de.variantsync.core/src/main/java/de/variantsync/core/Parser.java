@@ -7,23 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import de.variantsync.core.LineGrammar;
 
+public class Parser {
 
-
-public class Parser 
-{
-    public static void main( String[] args )
-    {
-    	Path path = Paths.get("src");
-    	try {
-			AST<LineGrammar, String> tryAndError = parseDirectory(path);
-			System.out.println();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
     public static AST<LineGrammar, String> parseDirectory(Path folder) throws IOException {
     	AST<LineGrammar, String> result = null;
 	    if (Files.isDirectory(folder)) {
@@ -34,17 +20,19 @@ public class Parser
 		    }
 	    } else {
 			if (!isBinaryFile(folder)) {
-				result = new AST<>(LineGrammar.File, folder.getName(folder.getNameCount()-1).toString());
-		        List<String> fileStream = Files.readAllLines(folder);
-		        for (String line : fileStream) {
-		        	result.addChild(new AST<>(LineGrammar.Line, line));
-		        }
+				result = new AST<>(LineGrammar.TextFile, folder.getName(folder.getNameCount()-1).toString());
+				List<String> fileStream = Files.readAllLines(folder);
+				for (String line : fileStream) {
+					result.addChild(new AST<>(LineGrammar.Line, line));
+				}
+			} else {
+				result = new AST<>(LineGrammar.BinaryFile, folder.getName(folder.getNameCount()-1).toString());
 			}
 		}
 	    return result;
     }
     
-    public static boolean isBinaryFile(Path file) {
+    private static boolean isBinaryFile(Path file) {
 		try {
 			String type = Files.probeContentType(file);
 			if (type == null) {

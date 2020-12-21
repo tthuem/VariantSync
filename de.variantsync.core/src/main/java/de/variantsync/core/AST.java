@@ -11,9 +11,9 @@ public class AST<Grammar, Value> {
         AST<LineGrammar, String> srcDir = new AST<>(LineGrammar.Directory, "src");
         AST<LineGrammar, String> mainDir = new AST<>(LineGrammar.Directory, "main");
         AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
-        AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.File, "Main.java");
-        AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.File, "Empty.java");
-        AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.File, "EmptyTest.java");
+        AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
+        AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.TextFile, "Empty.java");
+        AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
         srcDir.addChild(testDir);
         testDir.addChild(emptyTetJava);
         srcDir.addChild(mainDir);
@@ -144,7 +144,7 @@ public class AST<Grammar, Value> {
             if (parent.type == LineGrammar.Directory) {
                 //Dir can't have line as child
                 return child.type != LineGrammar.Line;
-            } else if (parent.type == LineGrammar.File) {
+            } else if (parent.type == LineGrammar.TextFile) {
                 //File can't have dir or file as child
                 return child.type == LineGrammar.Line;
             } else {

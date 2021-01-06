@@ -10,7 +10,7 @@
         <tycho-version>2.1.0</tycho-version>
         <tycho-extras-version>2.1.0</tycho-extras-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <eclipse-repo.url>https://download.eclipse.org/releases/2020-09/</eclipse-repo.url>
+        <eclipse-repo.url>https://download.eclipse.org/releases/2019-12/</eclipse-repo.url>
         <tycho.testArgLine/>
     </properties>
 
@@ -19,7 +19,7 @@
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
         <module>de.tubs.variantsync.update</module>
-		<module>de.variantsync.core</module>
+	<module>de.variantsync.core</module>
         <!--test module -->
         <module>de.tubs.variantsync.core-test</module>
   </modules>
@@ -52,8 +52,8 @@
                 <version>${tycho-version}</version>
                 <configuration>
                     <useUIHarness>true</useUIHarness>
-					<!--use JDK: $HOME_JAVA-->
-					<useJDK>SYSTEM</useJDK>
+		    <!--use JDK: $HOME_JAVA-->
+		    <useJDK>SYSTEM</useJDK>
                 </configuration>
             </plugin>            
             <plugin>

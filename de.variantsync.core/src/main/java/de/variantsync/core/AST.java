@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class AST<Grammar, Value> {
+
 	@Expose @SerializedName(value = "uuid") private UUID id;
 	@Expose @SerializedName(value = "value") private Value value;
 	@Expose @SerializedName(value = "grammar_type") private Grammar type;
@@ -103,6 +104,25 @@ public class AST<Grammar, Value> {
 		if (toAdd != null) {
 			children.add(toAdd);
 		}
+	}
+
+	public int size() {
+		if (children.size() == 0) {
+			return 0;
+		} else {
+			return size(children, 1);
+		}
+	}
+
+	private int size(List<AST<Grammar, Value>> children, int tmpSize) {
+		if (children.size() != 0) {
+			for (AST<Grammar, Value> act : children) {
+				System.out.println(act.value + " tmpSize " + tmpSize + " childs " + act.children.size());
+				tmpSize = size(act.children, tmpSize);
+			}
+			tmpSize += children.size();
+		}
+		return tmpSize;
 	}
 
 	private AST() {

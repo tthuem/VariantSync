@@ -117,7 +117,7 @@ public class AST<Grammar, Value> {
 	private int size(List<AST<Grammar, Value>> children, int tmpSize) {
 		if (children.size() != 0) {
 			for (AST<Grammar, Value> act : children) {
-				System.out.println(act.value + " tmpSize " + tmpSize + " childs " + act.children.size());
+				//System.out.println(act.value + " tmpSize " + tmpSize + " childs " + act.children.size());
 				tmpSize = size(act.children, tmpSize);
 			}
 			tmpSize += children.size();

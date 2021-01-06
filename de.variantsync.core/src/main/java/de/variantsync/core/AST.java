@@ -69,7 +69,7 @@ public class AST<Grammar, Value> {
             return result.toString();
         } else {
             int[] level = {0}; //pointer magic
-            result.append(value + "\n");
+            //result.append(value + "\n");
 
             HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
             //levelFinished.add(level[0]);
@@ -98,10 +98,11 @@ public class AST<Grammar, Value> {
 
             }
             result.append(toAppend);
+            if(i != 0) result.append(" ");
 
         }
 
-        result.append(" ").append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(level[0]).append("\n");
+        result.append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(level[0]).append("\n");
         level[0]++;
         for (AST<Grammar, Value> child : parent.children) {
             isLast = false;

@@ -8,7 +8,7 @@ jdk:
 #-----start GUI testing stuff
 services:
   - xvfb
-#-----end GUI testin stuff
+#-----end GUI testing stuff
 cache:
   directories:
   - "$HOME/.m2"

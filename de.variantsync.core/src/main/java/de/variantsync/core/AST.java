@@ -6,27 +6,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class AST<Grammar, Value> {
-
-	public static void main(String[] args) {
-		AST<LineGrammar, String> srcDir = new AST<>(LineGrammar.Directory, "src");
-		AST<LineGrammar, String> mainDir = new AST<>(LineGrammar.Directory, "main");
-		AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
-		AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
-		AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.TextFile, "Empty.java");
-		AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
-		srcDir.addChild(testDir);
-		testDir.addChild(emptyTetJava);
-		srcDir.addChild(mainDir);
-		mainDir.addChild(mainJava);
-		mainDir.addChild(emptyJava);
-
-		mainJava.addChildren(
-				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
-						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
-						new AST<>(LineGrammar.Line, "}")));
-		System.out.println(srcDir);
-	}
-
 	@Expose @SerializedName(value = "uuid") private UUID id;
 	@Expose @SerializedName(value = "value") private Value value;
 	@Expose @SerializedName(value = "grammar_type") private Grammar type;
@@ -125,7 +104,7 @@ public class AST<Grammar, Value> {
 			children.add(toAdd);
 		}
 	}
-	
+
 	private AST() {
 		/**
 		 * Empty AST is forbidden at the moment.

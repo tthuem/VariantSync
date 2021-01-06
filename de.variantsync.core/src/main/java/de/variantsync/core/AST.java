@@ -125,25 +125,7 @@ public class AST<Grammar, Value> {
 			children.add(toAdd);
 		}
 	}
-
-	private boolean isValidChild(AST<Grammar, Value> parent, AST<Grammar, Value> child) {
-		if (parent.type instanceof LineGrammar) {
-			if (parent.type == LineGrammar.Directory) {
-				//Dir can't have line as child
-				return child.type != LineGrammar.Line;
-			} else if (parent.type == LineGrammar.TextFile) {
-				//File can't have dir or file as child
-				return child.type == LineGrammar.Line;
-			} else {
-				//Line is always leaf node
-				return false;
-			}
-		} else {
-			throw new IllegalArgumentException("Grammar has wrong type: " + parent.type.getClass());
-		}
-
-	}
-
+	
 	private AST() {
 		/**
 		 * Empty AST is forbidden at the moment.

@@ -1,11 +1,7 @@
 package de.variantsync.core;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -39,14 +35,8 @@ public class ASTTest {
 
 	@Test public void sizeTest() {
 		assertEquals(11, ast.size());
-
-		mainJava = null;
-		int size = ast.size();
-		//TODO: FIND OUT WHY THIS IS NOT WORKING
-		//assertEquals(6,size);
-
 		ast = new AST<>(null, null);
-		assertEquals(0, ast.size());
+		assertEquals(1, ast.size());
 	}
 
 	@Test public void toStringTest() {

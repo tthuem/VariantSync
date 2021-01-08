@@ -107,23 +107,13 @@ public class AST<Grammar, Value> {
 	}
 
 	public int size() {
-		if (children.size() == 0) {
-			return 0;
-		} else {
-			return size(children, 1);
-		}
-	}
-
-	private int size(List<AST<Grammar, Value>> children, int tmpSize) {
-		if (children.size() != 0) {
-			for (AST<Grammar, Value> act : children) {
-				//System.out.println(act.value + " tmpSize " + tmpSize + " childs " + act.children.size());
-				tmpSize = size(act.children, tmpSize);
-			}
-			tmpSize += children.size();
+		int tmpSize = 1;
+		for (AST<Grammar, Value> act : children) {
+			tmpSize += act.size();
 		}
 		return tmpSize;
 	}
+
 
 	private AST() {
 		/**

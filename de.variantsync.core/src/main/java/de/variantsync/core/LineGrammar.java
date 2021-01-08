@@ -1,9 +1,11 @@
 package de.variantsync.core;
 
+import de.variantsync.core.interfaces.Grammar;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public enum LineGrammar {
+public enum LineGrammar implements Grammar<LineGrammar> {
 	Directory, TextFile, BinaryFile, Line;
 
 	private List<Object> addAttributes;
@@ -20,11 +22,11 @@ public enum LineGrammar {
 		return addAttributes;
 	}
 
-	private boolean isValidChild(LineGrammar parent, LineGrammar child) {
-		if (parent == LineGrammar.Directory) {
+	@Override public boolean isValidChild(LineGrammar child) {
+		if (this == LineGrammar.Directory) {
 			//Dir can't have line as child
 			return child != LineGrammar.Line;
-		} else if (parent == LineGrammar.TextFile || parent == LineGrammar.BinaryFile) {
+		} else if (this == LineGrammar.TextFile || this == LineGrammar.BinaryFile) {
 			//File can't have dir or file as child
 			return child == LineGrammar.Line;
 		} else {
@@ -34,4 +36,16 @@ public enum LineGrammar {
 
 	}
 
+	@Override public OptionalType getTypeOf(LineGrammar sym) {
+		switch (sym) {
+		case Directory:
+			return OptionalType.NodeOptional;
+		case TextFile:
+		case BinaryFile:
+		case Line:
+			return OptionalType.TreeOptional;
+		default:
+			throw new IllegalArgumentException("[BUG] There is not OptionalType for symbol " + sym + " specified!");
+		}
+	}
 }

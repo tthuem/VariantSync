@@ -29,14 +29,14 @@ public class FeatureContextWizard extends Wizard {
 	public FeatureContextWizard(FeatureContext context) {
 		super();
 		setWindowTitle("Feature ConfigurationProject Wizard");
-		
+
 		{
 			ConfigurationProject activeConfigurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-			
+
 			if (activeConfigurationProject == null) {
 				throw new ProjectNotFoundException(ProjectNotFoundException.Type.CONFIGURATION);
 			}
-			
+
 			IFeatureProject featureProject = activeConfigurationProject.getFeatureProject();
 			IFeatureModel featuremodel = featureProject.getFeatureModel();
 			this.features = featuremodel.getFeatures();

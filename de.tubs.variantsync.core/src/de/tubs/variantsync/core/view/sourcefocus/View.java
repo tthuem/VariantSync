@@ -56,17 +56,17 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private static class ComboBoxSelectionDispatcher implements Runnable {
 		private Combo combobox;
 		public int selectionIndex = -1;
-		
+
 		public ComboBoxSelectionDispatcher(Combo combobox) {
 			this.combobox = combobox;
 		}
-		
+
 		@Override
 		public void run() {
 			selectionIndex = combobox.getSelectionIndex();
 		}
 	}
-	
+
 	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.sourcefocus";
 
 	private Combo cbFeature;
@@ -109,7 +109,9 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		cbFeature.setLayoutData(gridData);
 		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		if (configurationProject != null) cbFeature.setItems(configurationProject.getFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+		if (configurationProject != null)
+			cbFeature.setItems(
+					configurationProject.getFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 		cbFeature.select(0);
 		cbFeature.addSelectionListener(this);
 
@@ -270,7 +272,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 					PatchesManager patchesManager = configurationProject.getPatchesManager();
 					List<IPatch<?>> patches = patchesManager.getPatches();
 					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
-					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
+					if (actualPatch != null && !patches.contains(actualPatch))
+						patches.add(actualPatch);
 
 					if (patches != null && !patches.isEmpty() && !tvChanges.getControl().isDisposed()) {
 						tvChanges.setInput(ProjectTree.construct(feature, patches));
@@ -289,7 +292,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		ITreeSelection selection = tvChanges.getStructuredSelection();
 		if (selection.size() == 1) {
 			Object o = selection.getFirstElement();
-			if (o instanceof TreeNode) o = ((TreeNode) o).getData();
+			if (o instanceof TreeNode)
+				o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
@@ -301,10 +305,12 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			IPath res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
-				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
+				if (o instanceof TreeNode)
+					o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
 					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null) res = delta.getResource().getProjectRelativePath();
+					if (res == null)
+						res = delta.getResource().getProjectRelativePath();
 					if (!res.equals(delta.getResource().getProjectRelativePath())) {
 						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
@@ -322,7 +328,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		List<IProject> targets = targetsCalculator.getTargetsForFeatureContext(lastSelections);
 		if (targets != null && !targetsList.isDisposed()) {
 			targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
-			if (!targets.isEmpty()) btnSync.setEnabled(true);
+			if (!targets.isEmpty())
+				btnSync.setEnabled(true);
 		}
 	}
 
@@ -348,7 +355,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case FEATURECONTEXT_REMOVED:
 			ComboBoxSelectionDispatcher dispatcher = new ComboBoxSelectionDispatcher(cbFeature);
 			Display.getDefault().syncExec(dispatcher);
-			cbFeature.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+			cbFeature.setItems(
+					VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 			cbFeature.select(dispatcher.selectionIndex);
 		default:
 			break;

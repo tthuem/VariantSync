@@ -27,7 +27,8 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	}
 
 	public IPatch<?> getActualContextPatch() {
-		if (actualPatch == null) return null;
+		if (actualPatch == null)
+			return null;
 		return this.actualPatch;
 	}
 
@@ -50,7 +51,8 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	public void closeActualPatch() {
 		if (actualPatch != null) {
 			actualPatch.setEndTime(System.currentTimeMillis());
-			if (!actualPatch.isEmpty() && !patches.contains(actualPatch)) patches.add(actualPatch);
+			if (!actualPatch.isEmpty() && !patches.contains(actualPatch))
+				patches.add(actualPatch);
 			actualPatch = null;
 			fireEvent(new VariantSyncEvent(this, EventType.PATCH_CLOSED, null, null));
 		}
@@ -64,7 +66,8 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	public void load() {
 		if (configurationProject.getFeatureProject() != null) {
 			List<IPatch<?>> patches = new ArrayList<>();
-			FileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches,
+			FileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject()
+					.getFile(PatchFormat.FILENAME).getLocationURI()), patches,
 					new PatchFormat(configurationProject.getFeatureProject()));
 			if (!patches.isEmpty()) {
 				setPatches(patches);
@@ -86,8 +89,9 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 
 	@Override
 	public void save() {
-		FileHandler.save(Paths.get(configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches,
-				new PatchFormat(configurationProject.getFeatureProject()));
+		FileHandler.save(Paths.get(
+				configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()),
+				patches, new PatchFormat(configurationProject.getFeatureProject()));
 	}
 
 }

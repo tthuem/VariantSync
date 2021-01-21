@@ -32,10 +32,12 @@ public class CodeMappingHandler {
 				// Get factory and marker handler for delta
 				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
 				IMarkerHandler markerHandler = deltaFactory.getMarkerHandler();
-				List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
+				List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(),
+						delta);
 
 				// Get current context
-				ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+				ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
+						.getActiveConfigurationProject();
 				MappingManager mappingManager = configurationProject.getMappingManager();
 				if (configurationProject != null) {
 					// Get file with current mappings
@@ -72,9 +74,11 @@ public class CodeMappingHandler {
 	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
 		try {
 			IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
-			List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
+			List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset,
+					length);
 
-			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
+					.getActiveConfigurationProject();
 			MappingManager mappingManager = configurationProject.getMappingManager();
 			if (configurationProject != null) {
 				SourceFile sourceFile = mappingManager.getMapping(file);
@@ -109,7 +113,8 @@ public class CodeMappingHandler {
 	}
 
 	/**
-	 * Returns true, if a marker information exists at the given line in the given file
+	 * Returns true, if a marker information exists at the given line in the given
+	 * file
 	 * 
 	 * @param sourceFile
 	 * @param line
@@ -126,7 +131,8 @@ public class CodeMappingHandler {
 	}
 
 	/**
-	 * Removes a given marker information in the given file and returns true, if a mapping was removed
+	 * Removes a given marker information in the given file and returns true, if a
+	 * mapping was removed
 	 * 
 	 * @param sourceFile
 	 * @param variantSyncMarker

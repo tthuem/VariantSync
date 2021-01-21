@@ -16,16 +16,20 @@ public class APatch<T> implements IPatch<T> {
 
 	@Override
 	public void addDelta(IDelta<T> delta) {
-		if (delta.getPatch() == null) delta.setPatch(this);
-		if (delta.getContext() == "") delta.setContext(feature);
+		if (delta.getPatch() == null)
+			delta.setPatch(this);
+		if (delta.getContext() == "")
+			delta.setContext(feature);
 		deltas.add(delta);
 	}
 
 	@Override
 	public void addDeltas(List<IDelta<T>> deltas) {
 		for (IDelta<T> delta : deltas) {
-			if (delta.getPatch() == null) delta.setPatch(this);
-			if (delta.getContext() == "") delta.setContext(feature);
+			if (delta.getPatch() == null)
+				delta.setPatch(this);
+			if (delta.getContext() == "")
+				delta.setContext(feature);
 		}
 		this.deltas.addAll(deltas);
 	}
@@ -91,18 +95,27 @@ public class APatch<T> implements IPatch<T> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		APatch<?> other = (APatch<?>) obj;
 		if (deltas == null) {
-			if (other.deltas != null) return false;
-		} else if (!deltas.equals(other.deltas)) return false;
-		if (endTime != other.endTime) return false;
+			if (other.deltas != null)
+				return false;
+		} else if (!deltas.equals(other.deltas))
+			return false;
+		if (endTime != other.endTime)
+			return false;
 		if (feature == null) {
-			if (other.feature != null) return false;
-		} else if (!feature.equals(other.feature)) return false;
-		if (startTime != other.startTime) return false;
+			if (other.feature != null)
+				return false;
+		} else if (!feature.equals(other.feature))
+			return false;
+		if (startTime != other.startTime)
+			return false;
 		return true;
 	}
 

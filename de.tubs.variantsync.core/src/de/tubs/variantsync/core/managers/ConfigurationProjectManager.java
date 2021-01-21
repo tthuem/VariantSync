@@ -26,7 +26,8 @@ import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
-public class ConfigurationProjectManager extends AManager implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
+public class ConfigurationProjectManager extends AManager
+		implements IEventListener, de.ovgu.featureide.fm.core.base.event.IEventListener {
 
 	private static HashMap<IFeatureProject, ConfigurationProject> INSTANCES = new HashMap<>();
 	private static ConfigurationProject lastRequestedConfiguration = null;
@@ -39,7 +40,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 			} catch (CoreException e) {
 				LogOperations.logError("A marker could not be deleted", e);
 			}
-			if (project.getProjectName().equals(VariantSyncPlugin.getDefault().getPreferenceStore().getString("lastRequestedConfiguration"))) {
+			if (project.getProjectName().equals(
+					VariantSyncPlugin.getDefault().getPreferenceStore().getString("lastRequestedConfiguration"))) {
 				lastConfiguration = getConfigurationProject(project);
 			} else {
 				getConfigurationProject(project);
@@ -47,7 +49,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 		}
 		if (lastConfiguration != null && lastRequestedConfiguration != lastConfiguration) {
 			lastRequestedConfiguration = lastConfiguration;
-			fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedConfiguration));
+			fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null,
+					lastRequestedConfiguration));
 		}
 		for (ConfigurationProject configurationProject : INSTANCES.values()) {
 			findVariants(configurationProject);
@@ -82,7 +85,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 					ConfigurationProject configurationProject = INSTANCES.get(featureProject);
 					if (lastRequestedConfiguration != configurationProject) {
 						lastRequestedConfiguration = configurationProject;
-						fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedConfiguration));
+						fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null,
+								lastRequestedConfiguration));
 					}
 					return configurationProject;
 				}
@@ -92,7 +96,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 			INSTANCES.put(project, configurationProject);
 			if (lastRequestedConfiguration != configurationProject) {
 				lastRequestedConfiguration = configurationProject;
-				fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedConfiguration));
+				fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null,
+						lastRequestedConfiguration));
 			}
 			return configurationProject;
 		}
@@ -103,16 +108,16 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	 * Loads all contexts which are saved in a XML-file.
 	 */
 	private List<IFeatureProject> findConfigurationProjects() {
-		//System.out.println("[ConfigurationProjectManager.findConfigurationProjects]");
+		// System.out.println("[ConfigurationProjectManager.findConfigurationProjects]");
 		List<IFeatureProject> projects = new ArrayList<>();
 		for (IFeatureProject project : CorePlugin.getFeatureProjects()) {
-			//System.out.print("    project " + project.getProjectName());
+			// System.out.print(" project " + project.getProjectName());
 			if (project.getComposerID().equals("de.tubs.variantsync.core.composer")) {
 				LogOperations.logInfo("Found configuration project with name: " + project.getProjectName());
 				projects.add(project);
-				//System.out.println("    is variant composing");
+				// System.out.println(" is variant composing");
 			} else {
-				//System.out.println("    is NOT variant composing");
+				// System.out.println(" is NOT variant composing");
 			}
 		}
 		return projects;
@@ -142,8 +147,10 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 
 	public IFeatureProject getFeatureProject(IProject project) {
 		for (IFeatureProject featureProject : INSTANCES.keySet()) {
-			if (project.getName().equals(featureProject.getProjectName())) return featureProject;
-			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getVariants().contains(project)) return featureProject;
+			if (project.getName().equals(featureProject.getProjectName()))
+				return featureProject;
+			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getVariants().contains(project))
+				return featureProject;
 		}
 		return null;
 	}
@@ -164,7 +171,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	 * @return
 	 */
 	public ConfigurationProject getActiveConfigurationProject() {
-		if (VariantSyncPlugin.getEditorInput() == null) return lastRequestedConfiguration;
+		if (VariantSyncPlugin.getEditorInput() == null)
+			return lastRequestedConfiguration;
 		return getConfigurationProject(VariantSyncPlugin.getEditorInput().getProject());
 	}
 
@@ -177,7 +185,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 			LogOperations.logInfo("Model Event" + event);
 			if (event.getSource() instanceof IFeatureModel) {
 				IFeatureModel model = (IFeatureModel) event.getSource();
-				List<String> featureExpressions = getActiveConfigurationProject().getFeatureContextManager().getContextsAsStrings();
+				List<String> featureExpressions = getActiveConfigurationProject().getFeatureContextManager()
+						.getContextsAsStrings();
 				for (IFeature feature : model.getFeatures()) {
 					if (!featureExpressions.contains(feature.getName())) {
 						getActiveConfigurationProject().getFeatureContextManager().addContext(feature.getName());

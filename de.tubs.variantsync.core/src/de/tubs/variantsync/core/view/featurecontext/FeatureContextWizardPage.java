@@ -115,7 +115,8 @@ public class FeatureContextWizardPage extends WizardPage {
 
 						@Override
 						public boolean select(Viewer viewer, Object parentElement, Object element) {
-							return ((IFeature) element).getName().toLowerCase(Locale.ENGLISH).contains(txtSearch.getText().toLowerCase(Locale.ENGLISH));
+							return ((IFeature) element).getName().toLowerCase(Locale.ENGLISH)
+									.contains(txtSearch.getText().toLowerCase(Locale.ENGLISH));
 						}
 					};
 					tabFeatures.addFilter(searchFilter);
@@ -188,9 +189,11 @@ public class FeatureContextWizardPage extends WizardPage {
 		txtContext = new SimpleSyntaxHighlightEditor(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.BORDER, Operator.NAMES);
 
 		txtContext.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		if (featureContext != null) txtContext.setText(featureContext.name);
+		if (featureContext != null)
+			txtContext.setText(featureContext.name);
 		txtContext.setMargins(10, 5, 3, 5);
-		if (featureContext != null) txtContext.setBackground(ColorPalette.toSwtColor(featureContext.highlighter));
+		if (featureContext != null)
+			txtContext.setBackground(ColorPalette.toSwtColor(featureContext.highlighter));
 
 		txtContext.addModifyListener(new ModifyListener() {
 
@@ -208,7 +211,8 @@ public class FeatureContextWizardPage extends WizardPage {
 			colors.add(color.getColorName());
 		}
 		cbColors.setItems(colors.toArray(new String[] {}));
-		if (featureContext != null) cbColors.select(featureContext.highlighter.ordinal());
+		if (featureContext != null)
+			cbColors.select(featureContext.highlighter.ordinal());
 
 		cbColors.addSelectionListener(new SelectionListener() {
 
@@ -218,7 +222,8 @@ public class FeatureContextWizardPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
 
 		setControl(composite);

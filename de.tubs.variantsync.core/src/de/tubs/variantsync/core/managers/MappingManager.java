@@ -89,7 +89,8 @@ public class MappingManager extends AManager implements ISaveableManager {
 	public void load() {
 		for (IProject project : configurationProject.getVariants()) {
 			List<SourceFile> sourceFiles = new ArrayList<>();
-			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
+			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles,
+					new CodeMappingFormat(project));
 			if (!sourceFiles.isEmpty()) {
 				addCodeMapping(project, sourceFiles);
 			}
@@ -99,8 +100,8 @@ public class MappingManager extends AManager implements ISaveableManager {
 	@Override
 	public void save() {
 		for (IProject project : codeMappings.keySet()) {
-			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), codeMappings.get(project),
-					new CodeMappingFormat(project));
+			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()),
+					codeMappings.get(project), new CodeMappingFormat(project));
 		}
 	}
 

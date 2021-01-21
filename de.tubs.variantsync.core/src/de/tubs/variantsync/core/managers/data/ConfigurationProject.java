@@ -22,7 +22,8 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
 /**
- * A class for managing all informations about the product line for one configuration project
+ * A class for managing all informations about the product line for one
+ * configuration project
  *
  * @author Christopher Sontag
  * @since 1.1
@@ -38,7 +39,8 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	private List<IProject> projects = new ArrayList<>();
 
 	public IFeatureProject getFeatureProject() {
-		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null : null;
+		return configurationProject != null ? configurationProject.getProject().exists() ? configurationProject : null
+				: null;
 	}
 
 	public void setFeatureProject(IFeatureProject configurationProject) {
@@ -60,7 +62,8 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 
 	public IProject getVariant(String name) {
 		for (IProject project : this.projects) {
-			if (project.getName().equals(name)) return project;
+			if (project.getName().equals(name))
+				return project;
 		}
 		return null;
 	}
@@ -79,11 +82,11 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 				IFile configPath = (IFile) EclipseFileSystem.getResource(confPath);
 				String configFileName = configPath.getName();
 				String configName = configFileName.substring(0, configFileName.lastIndexOf('.'));
-				System.out.println(
-						"[ConfigurationProject.getConfigurationForVariant] Check name equality Project(" + project.getName() + ") with Config(" + configName
-								+ ")");
+				System.out.println("[ConfigurationProject.getConfigurationForVariant] Check name equality Project("
+						+ project.getName() + ") with Config(" + configName + ")");
 				if (configName.equals(project.getName())) {
-					ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
+					ConfigurationManager configurationManager = ConfigurationManager
+							.getInstance(Paths.get(configPath.getRawLocationURI()));
 					if (configurationManager != null) {
 						return configurationManager.getObject();
 					}
@@ -97,7 +100,8 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		return configurationProject.getFeatureModel().getFeatures();
 	}
 
-	@Override public void reset() {
+	@Override
+	public void reset() {
 		projects.clear();
 	}
 
@@ -113,13 +117,15 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		return patchesManager;
 	}
 
-	@Override public void save() {
+	@Override
+	public void save() {
 		featureContextManager.save();
 		mappingManager.save();
 		patchesManager.save();
 	}
 
-	@Override public void load() {
+	@Override
+	public void load() {
 		featureContextManager.load();
 		mappingManager.load();
 		patchesManager.load();

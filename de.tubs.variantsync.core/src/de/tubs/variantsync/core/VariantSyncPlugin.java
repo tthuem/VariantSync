@@ -60,18 +60,21 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor
 	 */
-	public VariantSyncPlugin() {}
+	public VariantSyncPlugin() {
+	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void start(BundleContext ctxt) throws Exception {
 		super.start(ctxt);
 		plugin = this;
 
-		DeltaFactoryManager
-				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class));
+		DeltaFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID,
+				IDeltaFactory.extensionID, IDeltaFactory.class));
 
 		configurationProjectManager.initalize();
 
@@ -87,7 +90,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void stop(BundleContext ctxt) throws Exception {
 		configurationProjectManager.terminate();
@@ -137,7 +142,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 * Returns an image descriptor for the image file at the given plug-in relative
+	 * path.
 	 * 
 	 * @param path the path
 	 * @return the image descriptor
@@ -147,7 +153,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Always good to have this static method as when dealing with IResources having a interface to get the editor is very handy
+	 * Always good to have this static method as when dealing with IResources having
+	 * a interface to get the editor is very handy
 	 *
 	 * @return
 	 */
@@ -160,9 +167,11 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	public static IFile getEditorInput() {
-		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null) return null;
+		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null)
+			return null;
 		IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (editorPart == null || !(editorPart instanceof IFileEditorInput)) return null;
+		if (editorPart == null || !(editorPart instanceof IFileEditorInput))
+			return null;
 		return ((IFileEditorInput) editorPart.getEditorInput()).getFile();
 	}
 
@@ -191,7 +200,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	public static void addNature(IProject project) {
-		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Adding VariantSync nature to " + project.getName());
+		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(
+				"Adding VariantSync nature to " + project.getName());
 		try {
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();

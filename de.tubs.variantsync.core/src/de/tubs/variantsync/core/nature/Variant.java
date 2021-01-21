@@ -9,32 +9,32 @@ public class Variant implements IProjectNature {
 	public static final String NATURE_ID = "de.tubs.variantsync.core.variant";
 	private IProject project;
 
-    @Override
-    public void configure() throws CoreException {
-        // only called once the nature has been set
-    	
-    	//TODO: Create .variantHistory file
+	@Override
+	public void configure() throws CoreException {
+		// only called once the nature has been set
 
-        // configure the project...
-    }
+		// TODO: Create .variantHistory file
 
-    @Override
-    public void deconfigure() throws CoreException {
-        // only called once the nature has been set
-    	
-    	//This should !not! delete the .variantHistory file
+		// configure the project...
+	}
 
-        // reset the project configuration...
-    }
+	@Override
+	public void deconfigure() throws CoreException {
+		// only called once the nature has been set
 
-    @Override
-    public IProject getProject() {
-        return project;
-    }
+		// This should !not! delete the .variantHistory file
 
-    @Override
-    public void setProject(IProject project) {
-        this.project = project;
-    }
+		// reset the project configuration...
+	}
+
+	@Override
+	public IProject getProject() {
+		return project;
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		this.project = project;
+	}
 
 }

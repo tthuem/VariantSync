@@ -21,13 +21,13 @@
 package de.tubs.variantsync.core.utilities.event;
 
 /**
- * Event triggered by changes to a feature model or its elements.
- * <br/>
+ * Event triggered by changes to a feature model or its elements. <br/>
  * <br/>
  * Each event contains the following information:
  * <ul>
  * <li>an event type which determine the kind of event</li>
- * <li>the sender (source) of this event, i.e., which object fired this event</li>
+ * <li>the sender (source) of this event, i.e., which object fired this
+ * event</li>
  * <li>the old value (if available), and the new value</li>
  * </ul>
  * <br/>
@@ -35,7 +35,8 @@ package de.tubs.variantsync.core.utilities.event;
  * This events are intended to be processed by {@link IEventListener} instances.
  * <br/>
  * <br/>
- * For usage to fire <code>VariantSyncEvent</code>s, see {@link ConfigurationProject#fireEvent(VariantSyncEvent)}.
+ * For usage to fire <code>VariantSyncEvent</code>s, see
+ * {@link ConfigurationProject#fireEvent(VariantSyncEvent)}.
  * 
  * @author Sebastian Krieter
  * @author Marcus Pinnecke
@@ -89,7 +90,7 @@ public class VariantSyncEvent {
 		 */
 		CONFIGURATIONPROJECT_SET,
 		/**
-		 * The configuration project has changed 
+		 * The configuration project has changed
 		 */
 		CONFIGURATIONPROJECT_CHANGED,
 		/**
@@ -99,24 +100,24 @@ public class VariantSyncEvent {
 		/**
 		 * A variant was removed
 		 */
-		VARIANT_REMOVED, 
+		VARIANT_REMOVED,
 		/**
 		 * Call after all projects are initalized
 		 */
 		INITALIZED
 	}
-	
+
 	static VariantSyncEvent[] defaultEvents = new VariantSyncEvent[EventType.values().length];
 	static {
 		for (EventType e : EventType.values()) {
 			defaultEvents[e.ordinal()] = new VariantSyncEvent(e);
 		}
 	}
-	
+
 	public static VariantSyncEvent getDefault(final EventType e) {
 		return defaultEvents[e.ordinal()];
 	}
-	
+
 	private final Object source;
 	private final EventType eventType;
 	private final Object oldValue;
@@ -125,7 +126,7 @@ public class VariantSyncEvent {
 	private VariantSyncEvent(EventType e) {
 		this(null, e);
 	}
-	
+
 	public VariantSyncEvent(Object source, EventType eventType) {
 		this(source, eventType, null, null);
 	}
@@ -158,5 +159,5 @@ public class VariantSyncEvent {
 		return "VariantSyncEvent [source=" + source + ", eventType=" + eventType + ", oldValue=" + oldValue
 				+ ", newValue=" + newValue + "]";
 	}
-	
+
 }

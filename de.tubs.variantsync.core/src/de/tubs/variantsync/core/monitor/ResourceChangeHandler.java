@@ -13,7 +13,8 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
- * Listener which notifies resource changes in workspace that have already happened.
+ * Listener which notifies resource changes in workspace that have already
+ * happened.
  *
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
@@ -23,7 +24,8 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class ResourceChangeHandler implements IResourceChangeListener, ISaveParticipant {
 
 	/**
-	 * Notifies ResourceDeltaListener that some resource changes have already happened.
+	 * Notifies ResourceDeltaListener that some resource changes have already
+	 * happened.
 	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -37,7 +39,8 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 	}
 
 	/**
-	 * Ensures that resource monitoring is active even if variantsync plugin is not active in eclipse.
+	 * Ensures that resource monitoring is active even if variantsync plugin is not
+	 * active in eclipse.
 	 * 
 	 * @throws CoreException resources could not be monitored
 	 */

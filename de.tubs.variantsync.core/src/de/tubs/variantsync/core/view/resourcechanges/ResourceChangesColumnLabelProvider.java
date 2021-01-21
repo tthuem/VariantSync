@@ -48,11 +48,13 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 					break;
 				case CHANGED:
 					cell.setText("CHANGED");
-					cell.setImage(VariantSyncPlugin.getDefault().getImageDescriptor("icons/change_obj.gif").createImage());
+					cell.setImage(
+							VariantSyncPlugin.getDefault().getImageDescriptor("icons/change_obj.gif").createImage());
 					break;
 				case REMOVED:
 					cell.setText("REMOVED");
-					cell.setImage(VariantSyncPlugin.getDefault().getImageDescriptor("icons/delete_obj.gif").createImage());
+					cell.setImage(
+							VariantSyncPlugin.getDefault().getImageDescriptor("icons/delete_obj.gif").createImage());
 					break;
 				default:
 					break;
@@ -75,7 +77,8 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 				for (IProject project : ((IDelta<?>) o).getSynchronizedProjects()) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects
+						: projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;
@@ -85,7 +88,8 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 				for (IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>) o))) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects
+						: projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;
@@ -95,7 +99,8 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 				for (IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>) o))) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects
+						: projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;

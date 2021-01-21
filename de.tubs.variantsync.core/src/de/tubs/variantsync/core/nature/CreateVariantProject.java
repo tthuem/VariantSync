@@ -72,7 +72,8 @@ public class CreateVariantProject extends AbstractHandler {
 			IJavaProject javaProject = JavaCore.create(project);
 
 			// set build path
-			IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(project.getFullPath().append("src")), JavaRuntime.getDefaultJREContainerEntry() };
+			IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(project.getFullPath().append("src")),
+					JavaRuntime.getDefaultJREContainerEntry() };
 
 			progressMonitor.setSubTaskName("Setting build paths of project");
 			javaProject.setRawClasspath(buildPath, project.getFullPath().append("bin"), progressMonitor);

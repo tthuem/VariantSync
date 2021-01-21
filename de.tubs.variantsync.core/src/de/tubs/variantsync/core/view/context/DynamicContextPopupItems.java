@@ -31,8 +31,10 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
  */
 public class DynamicContextPopupItems extends ContributionItem implements IEventListener {
 
-	public static Image base = VariantSyncPlugin.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/public_co.gif").createImage();
-	public static Image composed = VariantSyncPlugin.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/protected_co.gif").createImage();
+	public static Image base = VariantSyncPlugin
+			.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/public_co.gif").createImage();
+	public static Image composed = VariantSyncPlugin
+			.imageDescriptorFromPlugin(VariantSyncPlugin.PLUGIN_ID, "icons/protected_co.gif").createImage();
 
 	@Override
 	public void fill(final Menu menu, int index) {
@@ -56,7 +58,8 @@ public class DynamicContextPopupItems extends ContributionItem implements IEvent
 	}
 
 	private void handleSelection(FeatureContext fe) {
-		IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().getActiveEditor();
 		if (editorPart instanceof AbstractTextEditor) {
 			int offset = 0;
 			int length = 0;

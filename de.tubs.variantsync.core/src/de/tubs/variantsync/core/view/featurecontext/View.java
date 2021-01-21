@@ -58,10 +58,12 @@ public class View extends ViewPart implements IEventListener {
 		}
 
 		@Override
-		public void partClosed(IWorkbenchPart part) {}
+		public void partClosed(IWorkbenchPart part) {
+		}
 
 		@Override
-		public void partDeactivated(IWorkbenchPart part) {}
+		public void partDeactivated(IWorkbenchPart part) {
+		}
 
 		@Override
 		public void partOpened(IWorkbenchPart part) {
@@ -92,7 +94,8 @@ public class View extends ViewPart implements IEventListener {
 
 				Table table = (Table) event.widget;
 				int columnCount = table.getColumnCount();
-				if (columnCount == 0) return;
+				if (columnCount == 0)
+					return;
 				Rectangle area = table.getClientArea();
 				int totalAreaWdith = area.width;
 				int lineWidth = table.getGridLineWidth();
@@ -132,7 +135,8 @@ public class View extends ViewPart implements IEventListener {
 				createFeatureExpression();
 			}
 		};
-		addExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
+		addExpression.setImageDescriptor(
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
 		toolBarManager.add(addExpression);
 
 		IAction editExpression = new Action("", Action.AS_PUSH_BUTTON) {
@@ -142,7 +146,8 @@ public class View extends ViewPart implements IEventListener {
 				editFeatureExpression();
 			}
 		};
-		editExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
+		editExpression.setImageDescriptor(
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
 		toolBarManager.add(editExpression);
 
 		IAction removeExpression = new Action("", Action.AS_PUSH_BUTTON) {
@@ -152,7 +157,8 @@ public class View extends ViewPart implements IEventListener {
 				deleteFeatureExpression();
 			}
 		};
-		removeExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
+		removeExpression.setImageDescriptor(
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
 		toolBarManager.add(removeExpression);
 	}
 
@@ -167,7 +173,8 @@ public class View extends ViewPart implements IEventListener {
 		if (!featureExpressionTable.isDisposed()) {
 			final TableItem[] selection = featureExpressionTable.getSelection();
 			if (selection.length == 1) {
-				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
+				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(),
+						new FeatureContextWizard((FeatureContext) selection[0].getData()));
 				dialog.create();
 				if (dialog.open() == Window.OK) {
 					this.updateFeatureExpressionList();

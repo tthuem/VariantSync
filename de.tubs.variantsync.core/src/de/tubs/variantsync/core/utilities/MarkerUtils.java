@@ -26,11 +26,12 @@ import de.tubs.variantsync.core.managers.data.FeatureContext;
  */
 public class MarkerUtils {
 
-	private static List<String> annotationMarkers = Arrays.asList("de.tubs.variantsync.marker.highlighter.red", "de.tubs.variantsync.marker.highlighter.orange",
-			"de.tubs.variantsync.marker.highlighter.yellow", "de.tubs.variantsync.marker.highlighter.darkgreen",
-			"de.tubs.variantsync.marker.highlighter.lightgreen", "de.tubs.variantsync.marker.highlighter.cyan",
-			"de.tubs.variantsync.marker.highlighter.lightgrey", "de.tubs.variantsync.marker.highlighter.blue",
-			"de.tubs.variantsync.marker.highlighter.margenta", "de.tubs.variantsync.marker.highlighter.pink");
+	private static List<String> annotationMarkers = Arrays.asList("de.tubs.variantsync.marker.highlighter.red",
+			"de.tubs.variantsync.marker.highlighter.orange", "de.tubs.variantsync.marker.highlighter.yellow",
+			"de.tubs.variantsync.marker.highlighter.darkgreen", "de.tubs.variantsync.marker.highlighter.lightgreen",
+			"de.tubs.variantsync.marker.highlighter.cyan", "de.tubs.variantsync.marker.highlighter.lightgrey",
+			"de.tubs.variantsync.marker.highlighter.blue", "de.tubs.variantsync.marker.highlighter.margenta",
+			"de.tubs.variantsync.marker.highlighter.pink");
 
 	/**
 	 * Removes all markers for all projects in the list
@@ -93,7 +94,8 @@ public class MarkerUtils {
 				try {
 					returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
 				} catch (CoreException e) {
-					LogOperations.logError("File does not exists or can not be accessed because the project is closed", e);
+					LogOperations.logError("File does not exists or can not be accessed because the project is closed",
+							e);
 				}
 			}
 		}
@@ -128,8 +130,8 @@ public class MarkerUtils {
 	 * Adds a marker to the resource
 	 * 
 	 * @param res
-	 * @param start - Starting line
-	 * @param end - Ending line
+	 * @param start   - Starting line
+	 * @param end     - Ending line
 	 * @param context
 	 * @param color
 	 */
@@ -163,7 +165,8 @@ public class MarkerUtils {
 				try {
 					IDocument document = null;
 					try {
-						document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider().getDocument(VariantSyncPlugin.getEditor().getEditorInput());
+						document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider()
+								.getDocument(VariantSyncPlugin.getEditor().getEditorInput());
 					} catch (NullPointerException e) {
 						LogOperations.logError("Marker line is not available in the document", e);
 					}
@@ -173,7 +176,8 @@ public class MarkerUtils {
 					int start = regionStart.getOffset();
 					int end = regionStart.getOffset() + regionEnd.getLength();
 
-					markerId = addMarker(file, start, end, configurationProject.getFeatureContextManager().getContext(mi.getContext()));
+					markerId = addMarker(file, start, end,
+							configurationProject.getFeatureContextManager().getContext(mi.getContext()));
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}

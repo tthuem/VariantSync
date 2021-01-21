@@ -34,8 +34,10 @@ public class TargetsCalculator {
 		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 		for (IProject project : configurationProject.getVariants()) {
 			Configuration config = configurationProject.getConfigurationForVariant(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
-			if (project != delta.getProject() && isTargetWithoutConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
+			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext()))
+				continue;
+			if (project != delta.getProject() && isTargetWithoutConflict(project, delta)
+					&& !delta.getSynchronizedProjects().contains(project))
 				targets.add(project);
 		}
 		return targets;
@@ -52,15 +54,18 @@ public class TargetsCalculator {
 		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 		for (IProject project : configurationProject.getVariants()) {
 			Configuration config = configurationProject.getConfigurationForVariant(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
-			if (project != delta.getProject() && isTargetWithConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
+			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext()))
+				continue;
+			if (project != delta.getProject() && isTargetWithConflict(project, delta)
+					&& !delta.getSynchronizedProjects().contains(project))
 				targets.add(project);
 		}
 		return targets;
 	}
 
 	/**
-	 * Returns all target projects which have feature context selected in their configuration
+	 * Returns all target projects which have feature context selected in their
+	 * configuration
 	 * 
 	 * @param deltas
 	 * @return
@@ -73,8 +78,9 @@ public class TargetsCalculator {
 				Configuration config = configurationProject.getConfigurationForVariant(project);
 				if (config != null) {
 					for (IDelta<?> delta : deltas) {
-						if (config.getSelectedFeatureNames().contains(delta.getContext()) && !targets.contains(project) && (!delta.getProject().equals(project))
-							&& !delta.getSynchronizedProjects().contains(project)) {
+						if (config.getSelectedFeatureNames().contains(delta.getContext()) && !targets.contains(project)
+								&& (!delta.getProject().equals(project))
+								&& !delta.getSynchronizedProjects().contains(project)) {
 							targets.add(project);
 						}
 					}
@@ -85,7 +91,8 @@ public class TargetsCalculator {
 	}
 
 	/**
-	 * Checks whether the given delta can be applied to the given project without conflicts.
+	 * Checks whether the given delta can be applied to the given project without
+	 * conflicts.
 	 * 
 	 * @param project
 	 * @param delta
@@ -110,13 +117,16 @@ public class TargetsCalculator {
 		} catch (NoSuchExtensionException e) {
 			LogOperations.logError("PatchFactory not found", e);
 		}
-		if (factory == null) return false;
-		if (factory.verifyDelta(file, delta)) return true;
+		if (factory == null)
+			return false;
+		if (factory.verifyDelta(file, delta))
+			return true;
 		return false;
 	}
 
 	/**
-	 * Checks whether the given delta can be applied to the given project with conflicts.
+	 * Checks whether the given delta can be applied to the given project with
+	 * conflicts.
 	 * 
 	 * @param project
 	 * @param delta

@@ -21,10 +21,11 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 
 	private IExtensionLoader<IDeltaFactory> extensionLoader;
 	private final List<IDeltaFactory> extensions = new ArrayList<>();
-	
+
 	public DeltaFactoryManager() {
-		IDeltaFactory[] y = new IDeltaFactory[]{getDefaultFactory()};
-		IExtensionLoader<IDeltaFactory> x = new EclipseExtensionLoader<IDeltaFactory>(VariantSyncPlugin.PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class);
+		IDeltaFactory[] y = new IDeltaFactory[] { getDefaultFactory() };
+		IExtensionLoader<IDeltaFactory> x = new EclipseExtensionLoader<IDeltaFactory>(VariantSyncPlugin.PLUGIN_ID,
+				IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class);
 		setExtensionLoaderInternal(x);
 		addExtension(getDefaultFactory());
 	}
@@ -49,7 +50,8 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	}
 
 	/**
-	 * Returns the specific factory for the given file. If no factory supports the file then the default factory is returned
+	 * Returns the specific factory for the given file. If no factory supports the
+	 * file then the default factory is returned
 	 * 
 	 * @param file
 	 * @return factory which supports the file
@@ -72,7 +74,7 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 	public static IDeltaFactory getDefaultFactory() {
 		return DefaultDeltaFactory.getInstance();
 	}
-	
+
 	@Override
 	public synchronized List<IDeltaFactory> getExtensions() {
 		if (extensionLoader != null) {
@@ -84,41 +86,38 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 			}
 		}
 		return Collections.unmodifiableList(extensions);
-		}
-	
+	}
+
 	protected void setExtensionLoaderInternal(IExtensionLoader<IDeltaFactory> extensionLoader) {
 		this.extensionLoader = extensionLoader;
-		}
-	
-	
-	
+	}
+
 	@Override
 	public synchronized boolean addExtension(IDeltaFactory extension) {
-	if (extension != null) {
-		for (final IDeltaFactory t : extensions) {
-			if (t.getId().equals(extension.getId())) {
-				return false;
+		if (extension != null) {
+			for (final IDeltaFactory t : extensions) {
+				if (t.getId().equals(extension.getId())) {
+					return false;
+				}
+			}
+			if (extension.initExtension()) {
+				extensions.add(extension);
+				return true;
 			}
 		}
-		if (extension.initExtension()) {
-			extensions.add(extension);
-			return true;
-		}
+		return false;
 	}
-	return false;
-}
-	
-	
+
 	@Override
 	public IDeltaFactory getExtension(String id) throws NoSuchExtensionException {
 		java.util.Objects.requireNonNull(id, "ID must not be null!");
 
-	for (final IDeltaFactory extension : getExtensions()) {
-		if (id.equals(extension.getId())) {
-			return extension;
+		for (final IDeltaFactory extension : getExtensions()) {
+			if (id.equals(extension.getId())) {
+				return extension;
+			}
 		}
+		throw new NoSuchExtensionException("No extension found for ID " + id);
 	}
-	throw new NoSuchExtensionException("No extension found for ID " + id);
-}
 
 }

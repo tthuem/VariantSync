@@ -9,8 +9,9 @@ import org.eclipse.core.resources.IProject;
 import de.tubs.variantsync.core.patch.ADelta;
 
 /**
- * This interface defines delta.<br><b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>. For
- * implementations see also {@link ADelta}
+ * This interface defines delta.<br>
+ * <b>Classes implementing this interface should implement also {@link #clone()}
+ * and {@link #equals(Object)}<b>. For implementations see also {@link ADelta}
  * 
  * @author Christopher Sontag
  * @version 1.0
@@ -40,7 +41,8 @@ public interface IDelta<T> extends Cloneable {
 	T getOriginal();
 
 	/**
-	 * Returns original as string. Do not use this method outside of saving or loading!
+	 * Returns original as string. Do not use this method outside of saving or
+	 * loading!
 	 * 
 	 * @return
 	 */
@@ -54,7 +56,8 @@ public interface IDelta<T> extends Cloneable {
 	void setOriginal(T original);
 
 	/**
-	 * Sets original from string. Do not use this method outside of saving or loading!
+	 * Sets original from string. Do not use this method outside of saving or
+	 * loading!
 	 * 
 	 * @param original
 	 */
@@ -68,7 +71,8 @@ public interface IDelta<T> extends Cloneable {
 	T getRevised();
 
 	/**
-	 * Returns revised as string. Do not use this method outside of saving or loading!
+	 * Returns revised as string. Do not use this method outside of saving or
+	 * loading!
 	 * 
 	 * @return
 	 */
@@ -82,7 +86,8 @@ public interface IDelta<T> extends Cloneable {
 	void setRevised(T revised);
 
 	/**
-	 * Sets revised from string. Do not use this method outside of saving or loading!
+	 * Sets revised from string. Do not use this method outside of saving or
+	 * loading!
 	 * 
 	 * @param revised
 	 */

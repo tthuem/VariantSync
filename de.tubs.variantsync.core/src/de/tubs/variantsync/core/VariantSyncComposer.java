@@ -17,11 +17,13 @@ import de.tubs.variantsync.core.managers.persistence.FeatureContextFormat;
 
 public class VariantSyncComposer extends ComposerExtensionClass {
 
-	@Override public void performFullBuild(Path config) {
+	@Override
+	public void performFullBuild(Path config) {
 		VariantSyncPlugin.getConfigurationProjectManager().reinitialize();
 	}
 
-	@Override public void addCompiler(IProject project, String sourcePath, String configPath, String buildPath) {
+	@Override
+	public void addCompiler(IProject project, String sourcePath, String configPath, String buildPath) {
 		File featureContextFile = new File(project.getFile(FeatureContextFormat.FILENAME).getLocationURI());
 		try {
 			featureContextFile.createNewFile();
@@ -30,60 +32,74 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 		}
 	}
 
-	@Override public boolean hasSourceFolder() {
+	@Override
+	public boolean hasSourceFolder() {
 		return false;
 	}
 
-	@Override public boolean hasFeatureFolder() {
+	@Override
+	public boolean hasFeatureFolder() {
 		return false;
 	}
 
-	@Override public boolean hasBuildFolder() {
+	@Override
+	public boolean hasBuildFolder() {
 		return false;
 	}
 
-	@Override public boolean createFolderForFeatures() {
+	@Override
+	public boolean createFolderForFeatures() {
 		return false;
 	}
 
-	@Override public boolean showContextFieldsAndMethods() {
+	@Override
+	public boolean showContextFieldsAndMethods() {
 		return false;
 	}
 
-	@Override public boolean hasMetaProductGeneration() {
+	@Override
+	public boolean hasMetaProductGeneration() {
 		return false;
 	}
 
-	@Override public Mechanism getGenerationMechanism() {
+	@Override
+	public Mechanism getGenerationMechanism() {
 		return null;
 	}
 
-	@Override public boolean supportsAndroid() {
+	@Override
+	public boolean supportsAndroid() {
 		return false;
 	}
 
-	@Override public boolean supportsMigration() {
+	@Override
+	public boolean supportsMigration() {
 		return false;
 	}
 
-	@Override public boolean clean() {
+	@Override
+	public boolean clean() {
 		return false;
 	}
 
-	@Override public void postCompile(IResourceDelta delta, IFile buildFile) {
+	@Override
+	public void postCompile(IResourceDelta delta, IFile buildFile) {
 
 	}
 
-	@Override public void copyNotComposedFiles(Configuration config, IFolder destination) {
+	@Override
+	public void copyNotComposedFiles(Configuration config, IFolder destination) {
 
 	}
 
-	@Override public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures, ArrayList<String> mandatoryFeatures)
-			throws IOException, CoreException {
+	@Override
+	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures,
+			ArrayList<String> mandatoryFeatures) throws IOException, CoreException {
 
 	}
 
-	@Override public boolean supportsPartialFeatureProject() {
+	@Override
+	public boolean supportsPartialFeatureProject() {
 		return false;
 	}
 

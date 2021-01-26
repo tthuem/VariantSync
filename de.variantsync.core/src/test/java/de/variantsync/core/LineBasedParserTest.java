@@ -15,7 +15,7 @@ import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.assertEquals;
 
 
-public class ParserTest {
+public class LineBasedParserTest {
     private AST<LineGrammar, String> srcDir;
 
     @Rule
@@ -57,7 +57,8 @@ public class ParserTest {
         byte[] bytes = "stringForCreationOfByteArray".getBytes();
         Files.write(binFile, bytes);
 
-    	AST<LineGrammar, String> parsedAST = Parser.parseDirectory(src);
+		LineBasedParser parser = new LineBasedParser();
+		AST<LineGrammar, String> parsedAST = parser.parseDirectory(src);
 
     	// Test fails at the moment due to an inequality of the toString() methods
         // waiting for equals() method for AST

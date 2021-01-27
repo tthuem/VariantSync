@@ -69,7 +69,8 @@ public class Tree {
 		TreeNode returnNode = null;
 		int i = 0;
 
-		if (currentNode == null || dataToFind == null) return null;
+		if (currentNode == null || dataToFind == null)
+			return null;
 
 		if (currentNode.getData() != null) {
 			if (currentNode.getData().equals(dataToFind)) {

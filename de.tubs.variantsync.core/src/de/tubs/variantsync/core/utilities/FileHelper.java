@@ -19,7 +19,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Class to retrieve file content when the workspace is busy. This class also enables to retrieve history states.
+ * Class to retrieve file content when the workspace is busy. This class also
+ * enables to retrieve history states.
  * 
  * @author Christopher Sontag
  */
@@ -87,9 +88,10 @@ public class FileHelper {
 	}
 
 	/**
-	 * Reads content from file using buffered reader. Adds each line in file to List<String>.
+	 * Reads content from file using buffered reader. Adds each line in file to
+	 * List<String>.
 	 *
-	 * @param in buffered Reader for file
+	 * @param in      buffered Reader for file
 	 * @param charset
 	 * @return list with file content
 	 */
@@ -97,7 +99,8 @@ public class FileHelper {
 		List<String> fileContent = new LinkedList<String>();
 		String line = "";
 		BufferedReader reader = null;
-		if (charset == null) charset = (String) "UTF-8";
+		if (charset == null)
+			charset = (String) "UTF-8";
 		try {
 			reader = new BufferedReader(new InputStreamReader(in, charset));
 			while ((line = reader.readLine()) != null) {
@@ -116,7 +119,8 @@ public class FileHelper {
 	}
 
 	/**
-	 * Writes content to a IFile resource using a buffered writer. Each line is one item in lines
+	 * Writes content to a IFile resource using a buffered writer. Each line is one
+	 * item in lines
 	 * 
 	 * @param res
 	 * @param lines
@@ -127,7 +131,8 @@ public class FileHelper {
 			file.delete();
 		}
 		File parentDir = file.getParentFile();
-		if (!parentDir.exists()) parentDir.mkdirs();
+		if (!parentDir.exists())
+			parentDir.mkdirs();
 		PrintWriter out = null;
 		try {
 			file.createNewFile();

@@ -94,7 +94,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = true;
 		cbVariant.setLayoutData(gridData);
 		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		if (configurationProject != null) cbVariant.setItems(configurationProject.getVariantNames().toArray(new String[] {}));
+		if (configurationProject != null)
+			cbVariant.setItems(configurationProject.getVariantNames().toArray(new String[] {}));
 		cbVariant.addSelectionListener(this);
 
 		tvChanges = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
@@ -210,17 +211,21 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 					PatchesManager patchesManager = configurationProject.getPatchesManager();
 					List<IPatch<?>> patches = patchesManager.getPatches();
 					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
-					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
+					if (actualPatch != null && !patches.contains(actualPatch))
+						patches.add(actualPatch);
 
-					Configuration config = configurationProject.getConfigurationForVariant(configurationProject.getVariant(project));
+					Configuration config = configurationProject
+							.getConfigurationForVariant(configurationProject.getVariant(project));
 					if (config != null) {
 						Set<String> selectedFeatures = config.getSelectedFeatureNames();
 						List<IPatch<?>> checkedPatches = new ArrayList<>();
 						for (IPatch<?> patch : patches) {
-							if (selectedFeatures.contains(patch.getContext())) checkedPatches.add(patch);
+							if (selectedFeatures.contains(patch.getContext()))
+								checkedPatches.add(patch);
 						}
 
-						if (patches != null && !patches.isEmpty()) tvChanges.setInput(FeatureTree.construct(project, checkedPatches));
+						if (patches != null && !patches.isEmpty())
+							tvChanges.setInput(FeatureTree.construct(project, checkedPatches));
 						tvChanges.expandToLevel(3);
 					}
 				}
@@ -237,7 +242,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		// Only one element selected
 		if (selection.size() == 1) {
 			Object o = selection.getFirstElement();
-			if (o instanceof TreeNode) o = ((TreeNode) o).getData();
+			if (o instanceof TreeNode)
+				o = ((TreeNode) o).getData();
 			if (o instanceof IDelta) {
 				IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
@@ -251,10 +257,12 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			IPath res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
-				if (o instanceof TreeNode) o = ((TreeNode) o).getData();
+				if (o instanceof TreeNode)
+					o = ((TreeNode) o).getData();
 				if (o instanceof IDelta) {
 					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null) res = delta.getResource().getProjectRelativePath();
+					if (res == null)
+						res = delta.getResource().getProjectRelativePath();
 					if (!res.equals(delta.getResource().getProjectRelativePath())) {
 						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
@@ -281,7 +289,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case VARIANT_ADDED:
 		case VARIANT_REMOVED:
 			int oldSelection = cbVariant.getSelectionIndex();
-			cbVariant.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+			cbVariant.setItems(
+					VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 			cbVariant.select(oldSelection);
 		default:
 			break;

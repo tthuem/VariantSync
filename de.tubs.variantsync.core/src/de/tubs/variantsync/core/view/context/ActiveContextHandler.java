@@ -29,8 +29,10 @@ public class ActiveContextHandler extends AbstractHandler implements IElementUpd
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		boolean oldValue = active;
 		VariantSyncPlugin.getActiveMappingManager().setActive(!oldValue);
-		if (!oldValue) updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
-		else updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		if (!oldValue)
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
+		else
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
 		active = !oldValue;
 		return null;
 	}

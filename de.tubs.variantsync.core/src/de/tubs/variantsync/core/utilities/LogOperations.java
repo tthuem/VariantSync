@@ -15,7 +15,8 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
  */
 public class LogOperations {
 
-	private LogOperations() {}
+	private LogOperations() {
+	}
 
 	/**
 	 * Logs specified information.
@@ -40,7 +41,7 @@ public class LogOperations {
 	/**
 	 * Logs specified error.
 	 * 
-	 * @param message human-readable message, localized to the current locale
+	 * @param message   human-readable message, localized to the current locale
 	 * @param exception low-level exception, or <code>null</code> if not applicable
 	 */
 	public static void logError(String message, Throwable exception) {
@@ -50,11 +51,12 @@ public class LogOperations {
 	/**
 	 * Logs specified information.
 	 * 
-	 * @param severity the severity; one of the following: <code>IStatus.OK</code>, <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
-	 *        <code>IStatus.WARNING</code>
-	 * @param pluginId unique identifier of the relevant plug-in
-	 * @param code plug-in-specific status code, or <code>OK</code>
-	 * @param message human-readable message, localized to the current locale
+	 * @param severity  the severity; one of the following: <code>IStatus.OK</code>,
+	 *                  <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
+	 *                  <code>IStatus.WARNING</code>
+	 * @param pluginId  unique identifier of the relevant plug-in
+	 * @param code      plug-in-specific status code, or <code>OK</code>
+	 * @param message   human-readable message, localized to the current locale
 	 * @param exception low-level exception, or <code>null</code> if not applicable
 	 */
 	public static void log(int severity, int code, String message, Throwable exception) {
@@ -64,11 +66,12 @@ public class LogOperations {
 	/**
 	 * Creates status object representing specified information.
 	 * 
-	 * @param severity the severity; one of the following: <code>IStatus.OK</code>, <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
-	 *        <code>IStatus.WARNING</code>
-	 * @param pluginId unique identifier of the relevant plug-in
-	 * @param code plug-in-specific status code, or <code>OK</code>
-	 * @param message human-readable message, localized to the current locale
+	 * @param severity  the severity; one of the following: <code>IStatus.OK</code>,
+	 *                  <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
+	 *                  <code>IStatus.WARNING</code>
+	 * @param pluginId  unique identifier of the relevant plug-in
+	 * @param code      plug-in-specific status code, or <code>OK</code>
+	 * @param message   human-readable message, localized to the current locale
 	 * @param exception low-level exception, or <code>null</code> if not applicable.
 	 * @return the status object (not <code>null</code>)
 	 */

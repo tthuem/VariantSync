@@ -25,7 +25,8 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 		List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
 		for (IDelta<Chunk<String>> delta : deltas) {
 			Chunk revised = delta.getRevised();
-			IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
+			IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1,
+					revised.getLines().size() - 1, true);
 			variantSyncMarker.setContext(delta.getContext());
 			variantSyncMarkers.add(variantSyncMarker);
 		}
@@ -38,7 +39,8 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 	}
 
 	@Override
-	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
+	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta,
+			List<IVariantSyncMarker> variantSyncMarkers) {
 		for (CodeMapping codeMapping : sourceFile.getMappings()) {
 			IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
 			IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());

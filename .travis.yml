@@ -4,10 +4,10 @@ language: java
 jdk:
   - openjdk11
 
-#-----start GUI testing stuff
+#-----start GUI testing
 services:
   - xvfb
-#-----end GUI testing stuff
+#-----end GUI testing
 cache:
   directories:
   - "$HOME/.m2"

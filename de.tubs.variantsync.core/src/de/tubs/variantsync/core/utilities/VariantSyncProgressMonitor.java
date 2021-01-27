@@ -4,18 +4,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A progress monitor to keep track of probably time intensive jobs
+ * 
  * @author Christopher Sontag
  * @since 1.1
  */
 public class VariantSyncProgressMonitor implements IProgressMonitor {
 
 	private static final String PREFIX = "VariantSync ";
-	
+
 	private boolean isCanceled = false;
 	private String taskName = "";
 	private String subTaskName = "";
 	public double worked = 0;
-	
+
 	public VariantSyncProgressMonitor(String taskName) {
 		super();
 		this.taskName = taskName;
@@ -84,7 +85,5 @@ public class VariantSyncProgressMonitor implements IProgressMonitor {
 	public String getTaskName() {
 		return taskName;
 	}
-	
-	
 
 }

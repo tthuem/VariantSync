@@ -33,7 +33,8 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 	private static final String PATCHES = "Patches";
 	private static final String PATCH = "Patch";
 	private static final String DELTA = "Delta";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + PATCHES + "[\\s>]");
+	private static final Pattern CONTENT_REGEX = Pattern
+			.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + PATCHES + "[\\s>]");
 
 	public static final String FILENAME = ".patches.xml";
 
@@ -43,12 +44,11 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 		this.project = project;
 	}
 
-	
 	@Override
 	public APersistentFormat<List<IPatch<?>>> getInstance() {
 		return new PatchFormat(null);
 	}
-	
+
 	public IPersistentFormat<List<IPatch<?>>> getInstance(IFeatureProject project) {
 		return new PatchFormat(project);
 	}
@@ -87,7 +87,8 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 					try {
 						deltaFactory = DeltaFactoryManager.getFactoryById(eDelta.getAttribute("factoryId"));
 					} catch (NoSuchExtensionException e) {
-						LogOperations.logInfo("Could not find extension point for factoryId: " + eDelta.getAttribute("factoryId"));
+						LogOperations.logInfo(
+								"Could not find extension point for factoryId: " + eDelta.getAttribute("factoryId"));
 						continue;
 					}
 
@@ -105,7 +106,8 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 					delta.setType(DELTATYPE.valueOf(eDelta.getAttribute("type")));
 
 					for (final Element eSyncronizedProject : getElements(eDelta.getElementsByTagName("Project"))) {
-						delta.addSynchronizedProject(ResourcesPlugin.getWorkspace().getRoot().getProject(eSyncronizedProject.getAttribute("name")));
+						delta.addSynchronizedProject(ResourcesPlugin.getWorkspace().getRoot()
+								.getProject(eSyncronizedProject.getAttribute("name")));
 					}
 					for (final Element eProperty : getElements(eDelta.getElementsByTagName("Property"))) {
 						delta.addProperty(eProperty.getAttribute("key"), eProperty.getAttribute("value"));

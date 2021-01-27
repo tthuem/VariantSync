@@ -22,7 +22,7 @@ public interface IPatchFactory {
 	/**
 	 * Patches a resource with a given patch.
 	 * 
-	 * @param res - resource
+	 * @param res   - resource
 	 * @param patch - patch
 	 * @return patched temp resource
 	 */

@@ -62,9 +62,11 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	}
 
 	@Override
-	public List<IDelta<Chunk<String>>> createDeltas(IFile res, IFileState oldState, long timestamp, DELTATYPE kind) throws DiffException {
+	public List<IDelta<Chunk<String>>> createDeltas(IFile res, IFileState oldState, long timestamp, DELTATYPE kind)
+			throws DiffException {
 		// Check for null arguments
-		if (res == null || oldState == null || kind == null) return null;
+		if (res == null || oldState == null || kind == null)
+			return null;
 
 		// Get the current mappings
 		List<String> currentFilelines = null;
@@ -116,7 +118,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public IDelta<Chunk<String>> createDeltas(IFile res, IDelta<?> originalDelta) {
-		if (res == null) return null;
+		if (res == null)
+			return null;
 		if (originalDelta instanceof DefaultDelta) {
 			DefaultDelta defaultDelta = (DefaultDelta) originalDelta;
 			IDelta<Chunk<String>> delta = new DefaultDelta(res, getId());
@@ -133,7 +136,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	@Override
 	public List<IDelta<Chunk<String>>> createDeltas(IFile original, IFile revised) throws DiffException {
 		// Check for null arguments
-		if (original == null || revised == null) return null;
+		if (original == null || revised == null)
+			return null;
 
 		// Get the current mappings
 		List<String> currentFilelines = FileHelper.getFileLines(original);
@@ -275,7 +279,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		Chunk<String> chunkOriginal = patch.getOriginal();
 		Chunk<String> chunkRevised = patch.getRevised();
 
-		if (chunkOriginal == null || chunkRevised == null) return false;
+		if (chunkOriginal == null || chunkRevised == null)
+			return false;
 
 		Delta<String> delta = null;
 		switch (patch.getType()) {
@@ -303,7 +308,8 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		} catch (PatchFailedException e) {
 			return false;
 		} catch (IndexOutOfBoundsException e) {
-			LogOperations.logDebug("An IndexOutOfBoundsException occured. The file used for comparision has fewer lines than what was changed by the delta.");
+			LogOperations.logDebug(
+					"An IndexOutOfBoundsException occured. The file used for comparision has fewer lines than what was changed by the delta.");
 			return false;
 		}
 		return true;
@@ -323,8 +329,6 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	public IMarkerHandler getMarkerHandler() {
 		return new DefaultMarkerHandler();
 	}
-
-
 
 	@Override
 	public boolean initExtension() {

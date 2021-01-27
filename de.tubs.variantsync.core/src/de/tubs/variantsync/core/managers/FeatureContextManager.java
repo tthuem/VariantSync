@@ -88,7 +88,8 @@ public class FeatureContextManager extends AManager implements ISaveableManager 
 					fireEvent(new VariantSyncEvent(this, EventType.FEATURECONTEXT_ADDED, null, fe));
 				}
 			}
-		} else throw new ProjectNotFoundException(Type.CONFIGURATION);
+		} else
+			throw new ProjectNotFoundException(Type.CONFIGURATION);
 	}
 
 	public FeatureContext getContext(String name) {
@@ -108,8 +109,8 @@ public class FeatureContextManager extends AManager implements ISaveableManager 
 	@Override
 	public void load() {
 		List<FeatureContext> contexts = new ArrayList<>();
-		FileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject().getFile(FeatureContextFormat.FILENAME).getLocationURI()), contexts,
-				new FeatureContextFormat());
+		FileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject()
+				.getFile(FeatureContextFormat.FILENAME).getLocationURI()), contexts, new FeatureContextFormat());
 		if (contexts.isEmpty()) {
 			try {
 				importFeaturesFromModel();
@@ -124,8 +125,8 @@ public class FeatureContextManager extends AManager implements ISaveableManager 
 
 	@Override
 	public void save() {
-		FileHandler.save(Paths.get(configurationProject.getFeatureProject().getProject().getFile(FeatureContextFormat.FILENAME).getLocationURI()),
-				getContexts(), new FeatureContextFormat());
+		FileHandler.save(Paths.get(configurationProject.getFeatureProject().getProject()
+				.getFile(FeatureContextFormat.FILENAME).getLocationURI()), getContexts(), new FeatureContextFormat());
 	}
 
 }

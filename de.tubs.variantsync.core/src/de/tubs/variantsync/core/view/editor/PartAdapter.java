@@ -26,7 +26,8 @@ import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
- * PartAdapter for the editor. Creates and updates the markers of the current file of the editor
+ * PartAdapter for the editor. Creates and updates the markers of the current
+ * file of the editor
  * 
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
@@ -129,7 +130,8 @@ public class PartAdapter implements IPartListener, IEventListener {
 						markers.add(codeMapping.getMarkerInformation());
 					}
 				}
-				if (!markers.isEmpty()) MarkerUtils.setMarker(currentFile, markers);
+				if (!markers.isEmpty())
+					MarkerUtils.setMarker(currentFile, markers);
 			}
 			return Status.OK_STATUS;
 		}

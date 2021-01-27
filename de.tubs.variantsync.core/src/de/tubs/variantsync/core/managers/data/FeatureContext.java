@@ -3,15 +3,15 @@ package de.tubs.variantsync.core.managers.data;
 import de.ovgu.featureide.fm.core.color.FeatureColor;
 
 public class FeatureContext {
-	
+
 	public String name;
 	public FeatureColor highlighter;
-	
+
 	public FeatureContext() {
 		this.name = "";
 		this.highlighter = FeatureColor.NO_COLOR;
 	}
-	
+
 	public FeatureContext(String name) {
 		super();
 		this.name = name;
@@ -55,7 +55,5 @@ public class FeatureContext {
 			return false;
 		return true;
 	}
-	
-	
-	
+
 }

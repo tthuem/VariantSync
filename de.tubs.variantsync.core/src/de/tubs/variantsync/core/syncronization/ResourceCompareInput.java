@@ -54,7 +54,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 	/*
 	 * Creates an compare editor input for the given selection.
 	 */
-	public ResourceCompareInput(CompareConfiguration config, IFile fAncestorResource, IFile fLeftResource, IFile fRightResource) {
+	public ResourceCompareInput(CompareConfiguration config, IFile fAncestorResource, IFile fLeftResource,
+			IFile fRightResource) {
 		super(config);
 		this.fAncestorResource = fAncestorResource;
 		this.fLeftResource = fLeftResource;
@@ -75,7 +76,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 		private ITypedElement fLastId;
 		private String fLastName;
 
-		public MyDiffNode(IDiffContainer parent, int description, ITypedElement ancestor, ITypedElement left, ITypedElement right) {
+		public MyDiffNode(IDiffContainer parent, int description, ITypedElement ancestor, ITypedElement left,
+				ITypedElement right) {
 			super(parent, description, ancestor, left, right);
 		}
 
@@ -83,7 +85,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 			super.fireChange();
 			setDirty(true);
 			fDirty = true;
-			if (fDiffViewer != null) fDiffViewer.refresh(this);
+			if (fDiffViewer != null)
+				fDiffViewer.refresh(this);
 		}
 
 		void clearDirty() {
@@ -91,14 +94,17 @@ public class ResourceCompareInput extends CompareEditorInput {
 		}
 
 		public String getName() {
-			if (fLastName == null) fLastName = super.getName();
-			if (fDirty) return '<' + fLastName + '>';
+			if (fLastName == null)
+				fLastName = super.getName();
+			if (fDirty)
+				return '<' + fLastName + '>';
 			return fLastName;
 		}
 
 		public ITypedElement getId() {
 			ITypedElement id = super.getId();
-			if (id == null) return fLastId;
+			if (id == null)
+				return fLastId;
 			fLastId = id;
 			return id;
 		}
@@ -112,7 +118,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 
 		protected IStructureComparator createChild(IResource child) {
 			String name = child.getName();
-			if (CompareUIPlugin.getDefault().filter(name, child instanceof IContainer, false)) return null;
+			if (CompareUIPlugin.getDefault().filter(name, child instanceof IContainer, false))
+				return null;
 			return new FilteredBufferedResourceNode(child);
 		}
 	}
@@ -140,8 +147,10 @@ public class ResourceCompareInput extends CompareEditorInput {
 						Object element = ss.getFirstElement();
 						if (element instanceof MyDiffNode) {
 							ITypedElement te = ((MyDiffNode) element).getId();
-							if (te != null) enable = !ITypedElement.FOLDER_TYPE.equals(te.getType());
-						} else enable = true;
+							if (te != null)
+								enable = !ITypedElement.FOLDER_TYPE.equals(te.getType());
+						} else
+							enable = true;
 					}
 				}
 				fOpenAction.setEnabled(enable);
@@ -160,14 +169,16 @@ public class ResourceCompareInput extends CompareEditorInput {
 	public boolean isEnabled(ISelection s) {
 
 		IResource[] selection = Utilities.getResources(s);
-		if (selection.length < 2 || selection.length > 3) return false;
+		if (selection.length < 2 || selection.length > 3)
+			return false;
 
 		boolean threeWay = selection.length == 3;
 
 		if (threeWay)
 			// It only makes sense if they're all mutually comparable.
 			// If not, the user should compare two of them.
-			return comparable(selection[0], selection[1]) && comparable(selection[0], selection[2]) && comparable(selection[1], selection[2]);
+			return comparable(selection[0], selection[1]) && comparable(selection[0], selection[2])
+					&& comparable(selection[1], selection[2]);
 
 		return comparable(selection[0], selection[1]);
 	}
@@ -203,7 +214,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 	 */
 	private boolean hasStructure(IResource input) {
 
-		if (input instanceof IContainer) return true;
+		if (input instanceof IContainer)
+			return true;
 
 		if (input instanceof IFile) {
 			IFile file = (IFile) input;
@@ -218,12 +230,14 @@ public class ResourceCompareInput extends CompareEditorInput {
 	}
 
 	/*
-	 * Creates a <code>IStructureComparator</code> for the given input. Returns <code>null</code> if no <code>IStructureComparator</code> can be found for the
-	 * <code>IResource</code>.
+	 * Creates a <code>IStructureComparator</code> for the given input. Returns
+	 * <code>null</code> if no <code>IStructureComparator</code> can be found for
+	 * the <code>IResource</code>.
 	 */
 	private IStructureComparator getStructure(IResource input) {
 
-		if (input instanceof IContainer) return new FilteredBufferedResourceNode(input);
+		if (input instanceof IContainer)
+			return new FilteredBufferedResourceNode(input);
 
 		if (input instanceof IFile) {
 			IStructureComparator rn = new FilteredBufferedResourceNode(input);
@@ -246,7 +260,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 			// with the file system appear as empty
 			fLeftResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
 			fRightResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
-			if (fThreeWay && fAncestorResource != null) fAncestorResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
+			if (fThreeWay && fAncestorResource != null)
+				fAncestorResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
 			// end fix
 
 			pm.beginTask(Utilities.getString("ResourceCompare.taskName"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
@@ -268,7 +283,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 			Differencer d = new Differencer() {
 
 				protected Object visit(Object parent, int description, Object ancestor, Object left, Object right) {
-					return new MyDiffNode((IDiffContainer) parent, description, (ITypedElement) ancestor, (ITypedElement) left, (ITypedElement) right);
+					return new MyDiffNode((IDiffContainer) parent, description, (ITypedElement) ancestor,
+							(ITypedElement) left, (ITypedElement) right);
 				}
 			};
 
@@ -301,9 +317,11 @@ public class ResourceCompareInput extends CompareEditorInput {
 	private String buildLabel(IResource r) {
 		// for a linked resource in a hidden project use its local file system
 		// location
-		if (r.isLinked() && r.getProject().isHidden()) return r.getLocation().toString();
+		if (r.isLinked() && r.getProject().isHidden())
+			return r.getLocation().toString();
 		String n = r.getFullPath().toString();
-		if (n.charAt(0) == IPath.SEPARATOR) return n.substring(1);
+		if (n.charAt(0) == IPath.SEPARATOR)
+			return n.substring(1);
 		return n;
 	}
 
@@ -313,7 +331,8 @@ public class ResourceCompareInput extends CompareEditorInput {
 			try {
 				commit(pm, (DiffNode) fRoot);
 			} finally {
-				if (fDiffViewer != null) fDiffViewer.refresh();
+				if (fDiffViewer != null)
+					fDiffViewer.refresh();
 				setDirty(false);
 			}
 		}
@@ -324,25 +343,30 @@ public class ResourceCompareInput extends CompareEditorInput {
 	 */
 	private static void commit(IProgressMonitor pm, DiffNode node) throws CoreException {
 
-		if (node instanceof MyDiffNode) ((MyDiffNode) node).clearDirty();
+		if (node instanceof MyDiffNode)
+			((MyDiffNode) node).clearDirty();
 
 		ITypedElement left = node.getLeft();
-		if (left instanceof BufferedResourceNode) ((BufferedResourceNode) left).commit(pm);
+		if (left instanceof BufferedResourceNode)
+			((BufferedResourceNode) left).commit(pm);
 
 		ITypedElement right = node.getRight();
-		if (right instanceof BufferedResourceNode) ((BufferedResourceNode) right).commit(pm);
+		if (right instanceof BufferedResourceNode)
+			((BufferedResourceNode) right).commit(pm);
 
 		IDiffElement[] children = node.getChildren();
 		if (children != null) {
 			for (int i = 0; i < children.length; i++) {
 				IDiffElement element = children[i];
-				if (element instanceof DiffNode) commit(pm, (DiffNode) element);
+				if (element instanceof DiffNode)
+					commit(pm, (DiffNode) element);
 			}
 		}
 	}
 
 	private static String normalizeCase(String s) {
-		if (NORMALIZE_CASE && s != null) return s.toUpperCase();
+		if (NORMALIZE_CASE && s != null)
+			return s.toUpperCase();
 		return s;
 	}
 

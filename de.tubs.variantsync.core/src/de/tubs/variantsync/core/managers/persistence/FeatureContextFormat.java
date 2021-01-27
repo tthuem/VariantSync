@@ -18,7 +18,8 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	private static final String ID = "FeatureContexts";
 	private static final String FEATURE_CONTEXTS = "contexts";
 	private static final String FEATURE_CONTEXT = "context";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_CONTEXTS + "[\\s>]");
+	private static final Pattern CONTENT_REGEX = Pattern
+			.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_CONTEXTS + "[\\s>]");
 
 	public static final String FILENAME = ".contexts.xml";
 
@@ -46,7 +47,8 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element e : getElements(doc.getDocumentElement().getChildNodes())) {
-			FeatureContext fe = new FeatureContext(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
+			FeatureContext fe = new FeatureContext(e.getAttribute("name"),
+					FeatureColor.getColor(e.getAttribute("highlighter")));
 			object.add(fe);
 		}
 

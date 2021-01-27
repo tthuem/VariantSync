@@ -13,12 +13,12 @@ import de.tubs.variantsync.core.utilities.TreeNode;
  * @author Christopher Sontag
  */
 public class ResourcesTree {
-	
+
 	public static Tree construct(List<IPatch<?>> patches) {
 		Tree tree = new Tree();
 		TreeNode root = new TreeNode();
 		tree.setRoot(root);
-		
+
 		for (IPatch<?> patch : patches) {
 			for (IDelta<?> delta : patch.getDeltas()) {
 				TreeNode featureNode = tree.find(delta.getContext());
@@ -38,7 +38,7 @@ public class ResourcesTree {
 				}
 			}
 		}
-		
+
 		return tree;
 	}
 

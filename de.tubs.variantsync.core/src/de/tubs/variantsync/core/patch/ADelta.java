@@ -12,8 +12,9 @@ import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 
 /**
- * This abstract class defines all fundamental methods of deltas.<br><b>Classes extending this interface should implement also {@link #clone()} and
- * {@link #equals(Object)}<b>
+ * This abstract class defines all fundamental methods of deltas.<br>
+ * <b>Classes extending this interface should implement also {@link #clone()}
+ * and {@link #equals(Object)}<b>
  * 
  * @author Christopher Sontag
  * @version 1.0
@@ -89,7 +90,8 @@ public abstract class ADelta<T> implements IDelta<T> {
 	@Override
 	public boolean isSynchronizedProject(String projectName) {
 		for (IProject project : syncronizedProjects) {
-			if (project.getName().equals(projectName)) return true;
+			if (project.getName().equals(projectName))
+				return true;
 		}
 		return false;
 	}
@@ -209,45 +211,67 @@ public abstract class ADelta<T> implements IDelta<T> {
 
 	@Override
 	public String toString() {
-		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, context=%s, factoryId=%s]", resource, revised, type, timestamp, context,
-				factoryId);
+		return String.format("ADelta [resource=%s, revised=%s, type=%s, timestamp=%s, context=%s, factoryId=%s]",
+				resource, revised, type, timestamp, context, factoryId);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		ADelta<?> other = (ADelta<?>) obj;
 		if (factoryId == null) {
-			if (other.factoryId != null) return false;
-		} else if (!factoryId.equals(other.factoryId)) return false;
+			if (other.factoryId != null)
+				return false;
+		} else if (!factoryId.equals(other.factoryId))
+			return false;
 		if (context == null) {
-			if (other.context != null) return false;
-		} else if (!context.equals(other.context)) return false;
+			if (other.context != null)
+				return false;
+		} else if (!context.equals(other.context))
+			return false;
 		if (original == null) {
-			if (other.original != null) return false;
-		} else if (!original.equals(other.original)) return false;
+			if (other.original != null)
+				return false;
+		} else if (!original.equals(other.original))
+			return false;
 		if (parent == null) {
-			if (other.parent != null) return false;
-		} //else if (!parent.equals(other.parent)) return false;
+			if (other.parent != null)
+				return false;
+		} // else if (!parent.equals(other.parent)) return false;
 		if (project == null) {
-			if (other.project != null) return false;
-		} else if (!project.equals(other.project)) return false;
+			if (other.project != null)
+				return false;
+		} else if (!project.equals(other.project))
+			return false;
 		if (properties == null) {
-			if (other.properties != null) return false;
-		} else if (!properties.equals(other.properties)) return false;
+			if (other.properties != null)
+				return false;
+		} else if (!properties.equals(other.properties))
+			return false;
 		if (resource == null) {
-			if (other.resource != null) return false;
-		} else if (!resource.equals(other.resource)) return false;
+			if (other.resource != null)
+				return false;
+		} else if (!resource.equals(other.resource))
+			return false;
 		if (revised == null) {
-			if (other.revised != null) return false;
-		} else if (!revised.equals(other.revised)) return false;
+			if (other.revised != null)
+				return false;
+		} else if (!revised.equals(other.revised))
+			return false;
 		if (syncronizedProjects == null) {
-			if (other.syncronizedProjects != null) return false;
-		} else if (!syncronizedProjects.equals(other.syncronizedProjects)) return false;
-		if (timestamp != other.timestamp) return false;
-		if (type != other.type) return false;
+			if (other.syncronizedProjects != null)
+				return false;
+		} else if (!syncronizedProjects.equals(other.syncronizedProjects))
+			return false;
+		if (timestamp != other.timestamp)
+			return false;
+		if (type != other.type)
+			return false;
 		return true;
 	}
 

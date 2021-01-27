@@ -18,11 +18,13 @@ import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
- * Contributes the combobox in the menu bar for selecting the current feature context
+ * Contributes the combobox in the menu bar for selecting the current feature
+ * context
  * 
  * @author Christopher Sontag
  */
-public class SelectContextContribution extends WorkbenchWindowControlContribution implements SelectionListener, IEventListener {
+public class SelectContextContribution extends WorkbenchWindowControlContribution
+		implements SelectionListener, IEventListener {
 
 	private CCombo selContext;
 

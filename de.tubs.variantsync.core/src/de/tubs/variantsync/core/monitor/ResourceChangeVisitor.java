@@ -26,8 +26,11 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
 /**
- * Visits given resource delta and reacts on added, removed or changed resource deltas. "A resource delta represents changes in the state of a resource tree
- * between two discrete points in time" - @see org.eclipse.core.resources.IResourceDelta. A resource tree represents a project of workspace.
+ * Visits given resource delta and reacts on added, removed or changed resource
+ * deltas. "A resource delta represents changes in the state of a resource tree
+ * between two discrete points in time" - @see
+ * org.eclipse.core.resources.IResourceDelta. A resource tree represents a
+ * project of workspace.
  *
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
@@ -38,7 +41,8 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 class ResourceChangeVisitor implements IResourceDeltaVisitor {
 
 	/**
-	 * Called from ResourceChangeListener if a resource change have happened. Filters changed resource and handle change event.
+	 * Called from ResourceChangeListener if a resource change have happened.
+	 * Filters changed resource and handle change event.
 	 */
 	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
@@ -54,7 +58,8 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	}
 
 	/**
-	 * Triggers action depending on kind of delta. Possible actions: add, remove or change file in admin folder.
+	 * Triggers action depending on kind of delta. Possible actions: add, remove or
+	 * change file in admin folder.
 	 * 
 	 * @param type kind of delta
 	 */
@@ -77,31 +82,36 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	/**
 	 * Adds patch file to admin folder.
 	 * 
-	 * @param res changed resource
+	 * @param res   changed resource
 	 * @param delta resource delta
 	 * @param flag
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleAddedResource(IResourceDelta delta) {
-		if (delta.getResource().getType() == IResource.FILE
-			&& ((delta.getFlags() & IResourceDelta.MARKERS) == 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
+		if (delta.getResource().getType() == IResource.FILE && ((delta.getFlags() & IResourceDelta.MARKERS) == 0
+				|| (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
-			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
+					.getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.getMappingManager().isActive()
+						&& !configurationProject.getFeatureContextManager().isDefault()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 						IPatchFactory patchFactory = new DefaultPatchFactory();
 						patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
-						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
+						VariantSyncPlugin.getDefault()
+								.fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
 						patch = configurationProject.getPatchesManager().getActualContextPatch();
 					}
-					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
+					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(),
+							IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
-					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					VariantSyncPlugin.getDefault()
+							.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (DiffException ex) {
@@ -110,36 +120,42 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				LogOperations.logError("PatchFactory Extension does not exist!", ex);
 			}
 		}
-		LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
+		LogOperations.logInfo(String.format("Resource %s was added with flag %s", delta.getResource().getFullPath(),
+				getFlagText(delta.getFlags())));
 	}
 
 	/**
 	 * Removes patch file from admin folder.
 	 * 
-	 * @param res changed resource
+	 * @param res   changed resource
 	 * @param delta resource delta
 	 */
 	@SuppressWarnings("unchecked")
 	private void handleRemovedResource(IResourceDelta delta) {
-		if (delta.getResource().getType() == IResource.FILE
-			&& ((delta.getFlags() & IResourceDelta.MARKERS) != 0 || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
+		if (delta.getResource().getType() == IResource.FILE && ((delta.getFlags() & IResourceDelta.MARKERS) != 0
+				|| (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0)) {
 			IFile file = (IFile) delta.getResource();
-			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
+					.getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.getMappingManager().isActive()
+						&& !configurationProject.getFeatureContextManager().isDefault()) {
 					IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 						IPatchFactory patchFactory = new DefaultPatchFactory();
 						patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
-						VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
+						VariantSyncPlugin.getDefault()
+								.fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 					} else {
 						patch = configurationProject.getPatchesManager().getActualContextPatch();
 					}
-					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(), IDelta.DELTATYPE(delta.getKind()));
+					List<IDelta<?>> deltas = factory.createDeltas(file, file.getModificationStamp(),
+							IDelta.DELTATYPE(delta.getKind()));
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
-					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					VariantSyncPlugin.getDefault()
+							.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (DiffException ex) {
@@ -148,13 +164,14 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				LogOperations.logError("PatchFactory Extension does not exist!", ex);
 			}
 		}
-		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
+		LogOperations.logInfo(String.format("Resource %s was removed with flag %s", delta.getResource().getFullPath(),
+				getFlagText(delta.getFlags())));
 	}
 
 	/**
 	 * Creates patch for changed resource.
 	 * 
-	 * @param res changed resource
+	 * @param res   changed resource
 	 * @param delta resource delta
 	 */
 	@SuppressWarnings("unchecked")
@@ -167,22 +184,28 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 				if (states.length > 0) {
 					long t = states[0].getModificationTime();
 
-					ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
+					ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
+							.getConfigurationProject(file.getProject());
 					try {
-						if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+						if (configurationProject.getMappingManager().isActive()
+								&& !configurationProject.getFeatureContextManager().isDefault()) {
 							IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
 							if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
 								IPatchFactory patchFactory = new DefaultPatchFactory();
-								patch = patchFactory.createPatch(configurationProject.getFeatureContextManager().getActual());
-								VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
+								patch = patchFactory
+										.createPatch(configurationProject.getFeatureContextManager().getActual());
+								VariantSyncPlugin.getDefault()
+										.fireEvent(new VariantSyncEvent(file, EventType.PATCH_ADDED, null, patch));
 							} else {
 								patch = configurationProject.getPatchesManager().getActualContextPatch();
 							}
-							List<IDelta<?>> deltas = factory.createDeltas(file, states[0], t, IDelta.DELTATYPE(delta.getKind()));
+							List<IDelta<?>> deltas = factory.createDeltas(file, states[0], t,
+									IDelta.DELTATYPE(delta.getKind()));
 							patch.addDeltas(deltas);
 							configurationProject.getPatchesManager().setActualContextPatch(patch);
-							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+							VariantSyncPlugin.getDefault()
+									.fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
 							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
 					} catch (DiffException ex) {
@@ -194,16 +217,23 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			} catch (CoreException e) {
 				LogOperations.logError("File states could not be retrieved.", e);
 			}
-			LogOperations.logInfo(String.format("Resource %s was changed with flag %s", delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
+			LogOperations.logInfo(String.format("Resource %s was changed with flag %s",
+					delta.getResource().getFullPath(), getFlagText(delta.getFlags())));
 		}
 	}
 
 	/**
-	 * Checks if resource does not fulfill any following criteria:<br> <ul> <li>project has nature support</li> <li>project is open</li> <li>resource still
-	 * exists</li> <li>resource is a file</li> <li>resource starts not with \".\"</li> </ul>
+	 * Checks if resource does not fulfill any following criteria:<br>
+	 * <ul>
+	 * <li>project has nature support</li>
+	 * <li>project is open</li>
+	 * <li>resource still exists</li>
+	 * <li>resource is a file</li>
+	 * <li>resource starts not with \".\"</li>
+	 * </ul>
 	 * 
 	 * @param project project resource belongs to
-	 * @param res resource to check
+	 * @param res     resource to check
 	 * @return true if any criteria was fulfilled
 	 * @throws CoreException
 	 */

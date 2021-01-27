@@ -19,7 +19,6 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 
 	@Override
 	public void performFullBuild(Path config) {
-//		public void performFullBuild(IFile config) {
 		VariantSyncPlugin.getConfigurationProjectManager().reinitialize();
 	}
 
@@ -29,7 +28,6 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 		try {
 			featureContextFile.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -97,13 +95,11 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 	@Override
 	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures,
 			ArrayList<String> mandatoryFeatures) throws IOException, CoreException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public boolean supportsPartialFeatureProject() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

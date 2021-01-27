@@ -17,10 +17,12 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 public class FeatureContextHandler implements IHandler {
 
 	@Override
-	public void addHandlerListener(IHandlerListener handlerListener) {}
+	public void addHandlerListener(IHandlerListener handlerListener) {
+	}
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+	}
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -44,6 +46,7 @@ public class FeatureContextHandler implements IHandler {
 	}
 
 	@Override
-	public void removeHandlerListener(IHandlerListener handlerListener) {}
+	public void removeHandlerListener(IHandlerListener handlerListener) {
+	}
 
 }

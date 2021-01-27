@@ -59,7 +59,8 @@ public class FeatureContextManagerPage extends WizardPage {
 
 				Table table = (Table) event.widget;
 				int columnCount = table.getColumnCount();
-				if (columnCount == 0) return;
+				if (columnCount == 0)
+					return;
 				Rectangle area = table.getClientArea();
 				int totalAreaWdith = area.width;
 				int lineWidth = table.getGridLineWidth();
@@ -103,7 +104,8 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_CLEAR));
@@ -115,7 +117,8 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
@@ -127,7 +130,8 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {}
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
 
 		updateFeatureContextList();
@@ -138,7 +142,8 @@ public class FeatureContextManagerPage extends WizardPage {
 	private void editFeatureContext() {
 		final TableItem[] selection = tabContexts.getSelection();
 		if (selection.length == 1) {
-			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
+			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(),
+					new FeatureContextWizard((FeatureContext) selection[0].getData()));
 			dialog.create();
 			if (dialog.open() == Window.OK) {
 				this.updateFeatureContextList();

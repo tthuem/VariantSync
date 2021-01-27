@@ -25,7 +25,8 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	private static final String MAPPINGS = "Mappings";
 	private static final String SOURCEFILE = "SourceFile";
 	private static final String CODEMAPPINGS = "CodeMapping";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + MAPPINGS + "[\\s>]");
+	private static final Pattern CONTENT_REGEX = Pattern
+			.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + MAPPINGS + "[\\s>]");
 
 	public static final String FILENAME = ".mapping.xml";
 
@@ -63,10 +64,12 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
-			SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
+			SourceFile sourceFile = new SourceFile(
+					ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
 			for (final Element eCM : getElements(eSF.getChildNodes())) {
-				IVariantSyncMarker variantSyncMarker = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
-						Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
+				IVariantSyncMarker variantSyncMarker = new AMarkerInformation(
+						Integer.parseInt(eCM.getAttribute("offset")), Integer.parseInt(eCM.getAttribute("length")),
+						Boolean.parseBoolean(eCM.getAttribute("isLine")));
 				variantSyncMarker.setContext(eCM.getAttribute("context"));
 				CodeMapping codeMapping = new CodeMapping(eCM.getTextContent(), variantSyncMarker);
 				sourceFile.addMapping(codeMapping);

@@ -21,9 +21,9 @@ public class AMarkerInformation implements IVariantSyncMarker {
 	 * Constructor
 	 * 
 	 * @param markerId - marker id
-	 * @param offset - offset
-	 * @param length - length
-	 * @param line - if true, the offset and length are interpreted as mappings
+	 * @param offset   - offset
+	 * @param length   - length
+	 * @param line     - if true, the offset and length are interpreted as mappings
 	 */
 	public AMarkerInformation(long markerId, int offset, int length, boolean line) {
 		this.markerId = markerId;
@@ -37,7 +37,7 @@ public class AMarkerInformation implements IVariantSyncMarker {
 	 * 
 	 * @param offset - offset
 	 * @param length - length
-	 * @param line - if true, the offset and length are interpreted as mappings
+	 * @param line   - if true, the offset and length are interpreted as mappings
 	 */
 	public AMarkerInformation(int offset, int length, boolean line) {
 		this.markerId = UUID.randomUUID().getMostSignificantBits();
@@ -50,7 +50,7 @@ public class AMarkerInformation implements IVariantSyncMarker {
 	 * Constructor
 	 * 
 	 * @param markerId - marker id
-	 * @param line - line
+	 * @param line     - line
 	 */
 	public AMarkerInformation(long markerId, int line) {
 		this.markerId = markerId;
@@ -173,7 +173,8 @@ public class AMarkerInformation implements IVariantSyncMarker {
 
 	@Override
 	public String toString() {
-		return String.format("AMarkerInformation [markerId=%s, offset=%s, length=%s, expression=%s, isLine=%s]", markerId, offset, length, expression, isLine);
+		return String.format("AMarkerInformation [markerId=%s, offset=%s, length=%s, expression=%s, isLine=%s]",
+				markerId, offset, length, expression, isLine);
 	}
 
 }

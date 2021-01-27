@@ -28,7 +28,8 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class SynchronizationHandler {
 
 	/**
-	 * Synchronizes the given delta in the given project. Returns true if the delta is successfully applied.
+	 * Synchronizes the given delta in the given project. Returns true if the delta
+	 * is successfully applied.
 	 * 
 	 * @param project
 	 * @param delta
@@ -70,7 +71,8 @@ public class SynchronizationHandler {
 
 				String originalTmpName = String.valueOf(System.currentTimeMillis());
 //				fileRight.copy(fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt").getFullPath(), true, null);
-				if (!fileRight.getProject().getFolder(".tmp").exists()) fileRight.getProject().getFolder(".tmp").create(true, false, null);
+				if (!fileRight.getProject().getFolder(".tmp").exists())
+					fileRight.getProject().getFolder(".tmp").create(true, false, null);
 				IFile fileOriginal = fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt");
 				fileOriginal.create(fileRight.getContents(), true, null);
 				CompareEditorInput rci = new ResourceCompareInput(compconf, fileBase, fileLeft, fileRight);

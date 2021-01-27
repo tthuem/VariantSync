@@ -101,8 +101,8 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public String getRepresentation() {
-		return "--- (" + this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ (" + this.revised.getPosition() + ") "
-			+ this.revised.getLines();
+		return "--- (" + this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ ("
+				+ this.revised.getPosition() + ") " + this.revised.getLines();
 	}
 
 	@Override

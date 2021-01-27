@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 
 import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.LineGrammar;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.LineBasedParser;
+import de.variantsync.core.ast.LineGrammar;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

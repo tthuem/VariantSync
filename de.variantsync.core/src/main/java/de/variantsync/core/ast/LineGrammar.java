@@ -1,4 +1,4 @@
-package de.variantsync.core;
+package de.variantsync.core.ast;
 
 import de.variantsync.core.interfaces.Grammar;
 

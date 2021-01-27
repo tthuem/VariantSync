@@ -1,4 +1,4 @@
-package de.variantsync.core;
+package de.variantsync.core.ast;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -11,7 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.interfaces.Grammar;
 
-class JsonParserAST {
+public class JsonParserAST {
 
 	static Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 

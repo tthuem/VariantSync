@@ -7,41 +7,38 @@ import com.google.gson.annotations.SerializedName;
 
 public class AST<Grammar, Value> {
 
-	@Expose @SerializedName(value = "uuid") private UUID id;
-	@Expose @SerializedName(value = "value") private Value value;
-	@Expose @SerializedName(value = "grammar_type") private Grammar type;
-	@Expose @SerializedName(value = "children") private List<AST<Grammar, Value>> children;
+	@Expose
+	@SerializedName(value = "uuid")
+	private UUID id;
+	@Expose
+	@SerializedName(value = "value")
+	private Value value;
+	@Expose
+	@SerializedName(value = "grammar_type")
+	private Grammar type;
+	@Expose
+	@SerializedName(value = "children")
+	private List<AST<Grammar, Value>> children;
 
 	private final String INDENT_STRING = "    ";
 
 	/**
-	 * TODO:
-	 * - sanity check like: A Directory can't have direct child Line or Lines are always leaf nodes
-	 * - add
-	 * - toString
-	 * - equals
-	 * - compareTo ?
-	 * - hash ?
-	 * - toList ?
-	 * - size
-	 * - get
-	 * - contains
-	 * - remove
-	 * <p>
-	 * - testing
+	 * TODO: - sanity check like: A Directory can't have direct child Line or Lines are always leaf nodes - add - toString - equals - compareTo ? - hash ? -
+	 * toList ? - size - get - contains - remove <p> - testing
 	 */
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		StringBuilder result = new StringBuilder();
 		if (value == null) {
 			return result.toString();
 		} else {
-			int[] level = { 0 }; //pointer magic
-			//result.append(value + "\n");
+			int[] level = { 0 }; // pointer magic
+			// result.append(value + "\n");
 
 			HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
-			//levelFinished.add(level[0]);
-			//level[0]++;
+			// levelFinished.add(level[0]);
+			// level[0]++;
 			toString(result, this, level, levelFinished, false);
 		}
 
@@ -114,7 +111,6 @@ public class AST<Grammar, Value> {
 		return tmpSize;
 	}
 
-
 	private AST() {
 		/**
 		 * Empty AST is forbidden at the moment.
@@ -122,4 +118,3 @@ public class AST<Grammar, Value> {
 
 	}
 }
-	

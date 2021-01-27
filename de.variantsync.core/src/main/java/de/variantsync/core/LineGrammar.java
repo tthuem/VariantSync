@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum LineGrammar implements Grammar<LineGrammar> {
+
 	Directory, TextFile, BinaryFile, Line;
 
 	private List<Object> addAttributes;
@@ -22,21 +23,23 @@ public enum LineGrammar implements Grammar<LineGrammar> {
 		return addAttributes;
 	}
 
-	@Override public boolean isValidChild(LineGrammar child) {
+	@Override
+	public boolean isValidChild(LineGrammar child) {
 		if (this == LineGrammar.Directory) {
-			//Dir can't have line as child
+			// Dir can't have line as child
 			return child != LineGrammar.Line;
 		} else if (this == LineGrammar.TextFile || this == LineGrammar.BinaryFile) {
-			//File can't have dir or file as child
+			// File can't have dir or file as child
 			return child == LineGrammar.Line;
 		} else {
-			//Line is always leaf node
+			// Line is always leaf node
 			return false;
 		}
 
 	}
 
-	@Override public OptionalType getTypeOf(LineGrammar sym) {
+	@Override
+	public OptionalType getTypeOf(LineGrammar sym) {
 		switch (sym) {
 		case Directory:
 			return OptionalType.NodeOptional;

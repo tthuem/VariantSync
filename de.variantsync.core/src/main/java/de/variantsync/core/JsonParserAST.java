@@ -8,26 +8,28 @@ import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import de.variantsync.core.ast.AST;
+import de.variantsync.core.interfaces.Grammar;
 
 class JsonParserAST {
 
 	static Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
-	public static <A, B> String exportAST(AST<A, B> ast) {
+	public static <A extends Grammar, B> String exportAST(AST<A, B> ast) {
 
 		Type type = new TypeToken<AST<A, B>>() {}.getType();
 
 		return gson.toJson(ast, type);
 	}
 
-	public static <A, B> AST<A, B> importAST(String json) {
+	public static <A extends Grammar, B> AST<A, B> importAST(String json) {
 
 		Type type = new TypeToken<AST<A, B>>() {}.getType();
 
 		return gson.fromJson(json, type);
 	}
 
-	public static <A, B> String exportToFile(Path path, AST<A, B> ast) {
+	public static <A extends Grammar, B> String exportToFile(Path path, AST<A, B> ast) {
 
 		Type type = new TypeToken<AST<A, B>>() {}.getType();
 
@@ -42,7 +44,7 @@ class JsonParserAST {
 		return content;
 	}
 
-	public static <A, B> AST<A, B> importFromFile(Path path) {
+	public static <A extends Grammar, B> AST<A, B> importFromFile(Path path) {
 
 		String json = "";
 		try {

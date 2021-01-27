@@ -4,10 +4,9 @@ import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 
+import de.variantsync.core.ast.AST;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.variantsync.core.LineGrammar;
 
 public class ASTTest {
 

@@ -1,11 +1,12 @@
-package de.variantsync.core;
+package de.variantsync.core.ast;
 
 import java.util.*;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import de.variantsync.core.interfaces.Grammar;
 
-public class AST<Grammar, Value> {
+public class AST<G extends Grammar, Value> {
 
 	@Expose
 	@SerializedName(value = "uuid")
@@ -15,10 +16,10 @@ public class AST<Grammar, Value> {
 	private Value value;
 	@Expose
 	@SerializedName(value = "grammar_type")
-	private Grammar type;
+	private G type;
 	@Expose
 	@SerializedName(value = "children")
-	private List<AST<Grammar, Value>> children;
+	private List<AST<G, Value>> children;
 
 	private final String INDENT_STRING = "    ";
 
@@ -45,7 +46,7 @@ public class AST<Grammar, Value> {
 		return result.toString();
 	}
 
-	private void toString(StringBuilder result, AST<Grammar, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
+	private void toString(StringBuilder result, AST<G, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
 		for (int i = 0; i < level[0]; i++) {
 			String toAppend = INDENT_STRING + "\u2502 ";
 			if (levelFinished.contains(i)) {
@@ -68,7 +69,7 @@ public class AST<Grammar, Value> {
 
 		result.append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(level[0]).append("\n");
 		level[0]++;
-		for (AST<Grammar, Value> child : parent.children) {
+		for (AST<G, Value> child : parent.children) {
 			isLast = false;
 			if (parent.children.indexOf(child) == parent.children.size() - 1) {
 				// last child of subtree, meaning level finished, needs |
@@ -84,20 +85,20 @@ public class AST<Grammar, Value> {
 		level[0]--;
 	}
 
-	public AST(Grammar type, Value value) {
+	public AST(G type, Value value) {
 		this.id = UUID.randomUUID();
 		this.type = type;
 		this.value = value;
 		this.children = new ArrayList<>();
 	}
 
-	public void addChildren(List<AST<Grammar, Value>> toAdd) {
+	public void addChildren(List<AST<G, Value>> toAdd) {
 		if (toAdd != null) {
 			children.addAll(toAdd);
 		}
 	}
 
-	public void addChild(AST<Grammar, Value> toAdd) {
+	public void addChild(AST<G, Value> toAdd) {
 		if (toAdd != null) {
 			children.add(toAdd);
 		}
@@ -105,7 +106,7 @@ public class AST<Grammar, Value> {
 
 	public int size() {
 		int tmpSize = 1;
-		for (AST<Grammar, Value> act : children) {
+		for (AST<G, Value> act : children) {
 			tmpSize += act.size();
 		}
 		return tmpSize;

@@ -1,5 +1,7 @@
 package de.variantsync.core;
 
+import de.variantsync.core.ast.AST;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;

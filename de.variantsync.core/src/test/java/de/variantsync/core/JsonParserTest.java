@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import de.variantsync.core.ast.AST;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -20,17 +20,16 @@ import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
- * 
+ *
  * This class handles the synchronization between variants
- * 
+ *
  * @author Christopher Sontag
  */
 public class SynchronizationHandler {
 
 	/**
-	 * Synchronizes the given delta in the given project. Returns true if the delta
-	 * is successfully applied.
-	 * 
+	 * Synchronizes the given delta in the given project. Returns true if the delta is successfully applied.
+	 *
 	 * @param project
 	 * @param delta
 	 * @return
@@ -38,19 +37,19 @@ public class SynchronizationHandler {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean handleSynchronization(IProject project, IDelta<?> delta) {
 		VariantSyncPlugin.removeResourceChangeListener();
-		IFile fileRight = project.getFile(delta.getResource().getProjectRelativePath());
-		IFile fileLeft = delta.getProject().getFile(delta.getResource().getProjectRelativePath());
+		final IFile fileRight = project.getFile(delta.getResource().getProjectRelativePath());
+		final IFile fileLeft = delta.getProject().getFile(delta.getResource().getProjectRelativePath());
 
 		try {
-			IDeltaFactory factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
+			final IDeltaFactory factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
 
 			// If delta is synchronisable
 			if (factory.verifyDelta(fileRight, delta)) {
-				IFile newFile = factory.applyDelta(fileRight, delta);
+				final IFile newFile = factory.applyDelta(fileRight, delta);
 				if (!newFile.getContents().toString().equals(fileRight.getContents().toString())) {
 					delta.addSynchronizedProject(project);
 
-					IDelta<?> newDelta = factory.createDeltas(newFile, delta);
+					final IDelta<?> newDelta = factory.createDeltas(newFile, delta);
 					CodeMappingHandler.addCodeMappingsForDeltas(Arrays.asList(newDelta));
 
 					VariantSyncPlugin.addResourceChangeListener();
@@ -59,23 +58,24 @@ public class SynchronizationHandler {
 				// if manual merge is needed
 			} else {
 				// Editor
-				org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
+				final org.eclipse.compare.CompareConfiguration compconf = new org.eclipse.compare.CompareConfiguration();
 				compconf.setLeftLabel(delta.getProject().getName());
 				compconf.setRightLabel(project.getName());
 				compconf.setAncestorLabel("Ancestor");
 				compconf.setLeftEditable(false);
 				compconf.setRightEditable(true);
 
-				HistoryStore historyStore = new HistoryStore();
-				IFile fileBase = historyStore.getState(fileLeft, delta.getTimestamp());
+				final HistoryStore historyStore = new HistoryStore();
+				final IFile fileBase = historyStore.getState(fileLeft, delta.getTimestamp());
 
-				String originalTmpName = String.valueOf(System.currentTimeMillis());
+				final String originalTmpName = String.valueOf(System.currentTimeMillis());
 //				fileRight.copy(fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt").getFullPath(), true, null);
-				if (!fileRight.getProject().getFolder(".tmp").exists())
+				if (!fileRight.getProject().getFolder(".tmp").exists()) {
 					fileRight.getProject().getFolder(".tmp").create(true, false, null);
-				IFile fileOriginal = fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt");
+				}
+				final IFile fileOriginal = fileRight.getProject().getFolder(".tmp").getFile(originalTmpName + ".txt");
 				fileOriginal.create(fileRight.getContents(), true, null);
-				CompareEditorInput rci = new ResourceCompareInput(compconf, fileBase, fileLeft, fileRight);
+				final CompareEditorInput rci = new ResourceCompareInput(compconf, fileBase, fileLeft, fileRight);
 				rci.setDirty(true);
 
 				CompareUI.openCompareDialog(rci);
@@ -83,20 +83,20 @@ public class SynchronizationHandler {
 				VariantSyncPlugin.addResourceChangeListener();
 
 				try {
-					List<IDelta<?>> deltas = factory.createDeltas(fileRight, fileOriginal);
-					for (IDelta<?> deltaFile : deltas) {
+					final List<IDelta<?>> deltas = factory.createDeltas(fileRight, fileOriginal);
+					for (final IDelta<?> deltaFile : deltas) {
 						deltaFile.setContext(delta.getContext());
 					}
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
-				} catch (DiffException e) {
+				} catch (final DiffException e) {
 					return false;
 				}
 
 				return rci.okPressed();
 			}
-		} catch (NoSuchExtensionException e) {
+		} catch (final NoSuchExtensionException e) {
 			LogOperations.logError("DeltaFactory not found", e);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("File could not be read", e);
 		}
 		VariantSyncPlugin.addResourceChangeListener();

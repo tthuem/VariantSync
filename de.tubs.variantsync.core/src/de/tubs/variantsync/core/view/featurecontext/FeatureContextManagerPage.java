@@ -27,7 +27,7 @@ import de.tubs.variantsync.core.managers.data.FeatureContext;
 
 /**
  * Page for {@link FeatureContextManager}.
- * 
+ *
  * @author Christopher Sontag
  */
 public class FeatureContextManagerPage extends WizardPage {
@@ -57,21 +57,22 @@ public class FeatureContextManagerPage extends WizardPage {
 			@Override
 			public void handleEvent(Event event) {
 
-				Table table = (Table) event.widget;
-				int columnCount = table.getColumnCount();
-				if (columnCount == 0)
+				final Table table = (Table) event.widget;
+				final int columnCount = table.getColumnCount();
+				if (columnCount == 0) {
 					return;
-				Rectangle area = table.getClientArea();
-				int totalAreaWdith = area.width;
-				int lineWidth = table.getGridLineWidth();
-				int totalGridLineWidth = (columnCount - 1) * lineWidth;
+				}
+				final Rectangle area = table.getClientArea();
+				final int totalAreaWdith = area.width;
+				final int lineWidth = table.getGridLineWidth();
+				final int totalGridLineWidth = (columnCount - 1) * lineWidth;
 				int totalColumnWidth = 0;
-				for (TableColumn column : table.getColumns()) {
+				for (final TableColumn column : table.getColumns()) {
 					totalColumnWidth = totalColumnWidth + column.getWidth();
 				}
-				int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
+				final int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
 
-				TableColumn lastCol = table.getColumns()[columnCount - 1];
+				final TableColumn lastCol = table.getColumns()[columnCount - 1];
 
 				// check diff is valid or not. setting negetive width doesnt make sense.
 				lastCol.setWidth(diff + lastCol.getWidth());
@@ -79,7 +80,7 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 		});
 
-		TableColumn tcContexts = new TableColumn(tabContexts, SWT.NONE);
+		final TableColumn tcContexts = new TableColumn(tabContexts, SWT.NONE);
 		tcContexts.setText("Name");
 		tcContexts.setWidth(600);
 		tcContexts.setResizable(true);
@@ -104,8 +105,7 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_CLEAR));
@@ -117,8 +117,7 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 		button = new Button(buttonComposite, SWT.NULL);
 		button.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
@@ -130,23 +129,21 @@ public class FeatureContextManagerPage extends WizardPage {
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 
 		updateFeatureContextList();
 		setControl(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this.getControl(), "VariantSync.FeatureContextManager");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), "VariantSync.FeatureContextManager");
 	}
 
 	private void editFeatureContext() {
 		final TableItem[] selection = tabContexts.getSelection();
 		if (selection.length == 1) {
-			WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(),
-					new FeatureContextWizard((FeatureContext) selection[0].getData()));
+			final WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
 			dialog.create();
 			if (dialog.open() == Window.OK) {
-				this.updateFeatureContextList();
+				updateFeatureContextList();
 			}
 		}
 	}
@@ -154,10 +151,10 @@ public class FeatureContextManagerPage extends WizardPage {
 	private void deleteFeatureContext() {
 		final TableItem[] selection = tabContexts.getSelection();
 		if (selection.length > 0) {
-			for (TableItem ti : selection) {
-				contexts.remove((FeatureContext) ti.getData());
+			for (final TableItem ti : selection) {
+				contexts.remove(ti.getData());
 			}
-			this.updateFeatureContextList();
+			updateFeatureContextList();
 		}
 	}
 
@@ -165,7 +162,7 @@ public class FeatureContextManagerPage extends WizardPage {
 		TableItem tableItem = null;
 		tabContexts.removeAll();
 		if (!contexts.isEmpty()) {
-			for (FeatureContext fe : contexts) {
+			for (final FeatureContext fe : contexts) {
 				tableItem = new TableItem(tabContexts, NONE);
 				tableItem.setText(fe.name);
 				tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
@@ -175,10 +172,10 @@ public class FeatureContextManagerPage extends WizardPage {
 	}
 
 	private void createFeatureContext() {
-		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
+		final WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
 		dialog.create();
 		if (dialog.open() == Window.OK) {
-			this.updateFeatureContextList();
+			updateFeatureContextList();
 		}
 	}
 

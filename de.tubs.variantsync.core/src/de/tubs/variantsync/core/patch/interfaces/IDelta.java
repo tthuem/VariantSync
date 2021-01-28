@@ -9,10 +9,9 @@ import org.eclipse.core.resources.IProject;
 import de.tubs.variantsync.core.patch.ADelta;
 
 /**
- * This interface defines delta.<br>
- * <b>Classes implementing this interface should implement also {@link #clone()}
- * and {@link #equals(Object)}<b>. For implementations see also {@link ADelta}
- * 
+ * This interface defines delta.<br> <b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>. For
+ * implementations see also {@link ADelta}
+ *
  * @author Christopher Sontag
  * @version 1.0
  * @since 18.08.2017
@@ -35,88 +34,84 @@ public interface IDelta<T> extends Cloneable {
 
 	/**
 	 * Returns original delta
-	 * 
+	 *
 	 * @return T - original delta
 	 */
 	T getOriginal();
 
 	/**
-	 * Returns original as string. Do not use this method outside of saving or
-	 * loading!
-	 * 
+	 * Returns original as string. Do not use this method outside of saving or loading!
+	 *
 	 * @return
 	 */
 	String getOriginalAsString();
 
 	/**
 	 * Sets orginal delta
-	 * 
+	 *
 	 * @param original - original delta
 	 */
 	void setOriginal(T original);
 
 	/**
-	 * Sets original from string. Do not use this method outside of saving or
-	 * loading!
-	 * 
+	 * Sets original from string. Do not use this method outside of saving or loading!
+	 *
 	 * @param original
 	 */
 	void setOriginalFromString(String original);
 
 	/**
 	 * Returns revised delta
-	 * 
+	 *
 	 * @return T - revised delta
 	 */
 	T getRevised();
 
 	/**
-	 * Returns revised as string. Do not use this method outside of saving or
-	 * loading!
-	 * 
+	 * Returns revised as string. Do not use this method outside of saving or loading!
+	 *
 	 * @return
 	 */
 	String getRevisedAsString();
 
 	/**
 	 * Sets revised delta
-	 * 
+	 *
 	 * @param revised - revised delta
 	 */
 	void setRevised(T revised);
 
 	/**
-	 * Sets revised from string. Do not use this method outside of saving or
-	 * loading!
-	 * 
+	 * Sets revised from string. Do not use this method outside of saving or loading!
+	 *
 	 * @param revised
 	 */
 	void setRevisedFromString(String revised);
 
 	/**
 	 * Returns delta type
-	 * 
+	 *
 	 * @return TYPE - type
 	 */
 	DELTATYPE getType();
 
 	/**
 	 * Sets type of delta
-	 * 
+	 *
 	 * @param type - type
 	 */
 	void setType(DELTATYPE type);
 
 	/**
 	 * Returns feature
-	 * 
+	 *
 	 * @return FeatureContext - feature context
 	 */
 	String getContext();
 
 	/**
 	 * Sets feature expression of delta
-	 * 
+	 *
 	 * @param feature - FeatureContext
 	 */
 	void setContext(String feature);
@@ -137,7 +132,7 @@ public interface IDelta<T> extends Cloneable {
 	String getFactoryId();
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	boolean isSynchronizedProject(IProject project);
@@ -151,7 +146,7 @@ public interface IDelta<T> extends Cloneable {
 	void setSynchronizedProjects(List<IProject> projects);
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	long getTimestamp();

@@ -24,7 +24,6 @@ public abstract class AMarkerHandler<T> implements IMarkerHandler<T> {
 	public abstract List<IVariantSyncMarker> getMarkers(IFile file, int offset, int length);
 
 	@Override
-	public abstract boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta,
-			List<IVariantSyncMarker> variantSyncMarkers);
+	public abstract boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta, List<IVariantSyncMarker> variantSyncMarkers);
 
 }

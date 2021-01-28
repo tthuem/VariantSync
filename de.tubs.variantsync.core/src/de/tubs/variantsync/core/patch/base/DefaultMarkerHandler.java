@@ -22,11 +22,10 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
-		List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
-		for (IDelta<Chunk<String>> delta : deltas) {
-			Chunk revised = delta.getRevised();
-			IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1,
-					revised.getLines().size() - 1, true);
+		final List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
+		for (final IDelta<Chunk<String>> delta : deltas) {
+			final Chunk revised = delta.getRevised();
+			final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
 			variantSyncMarker.setContext(delta.getContext());
 			variantSyncMarkers.add(variantSyncMarker);
 		}
@@ -39,14 +38,13 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 	}
 
 	@Override
-	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta,
-			List<IVariantSyncMarker> variantSyncMarkers) {
-		for (CodeMapping codeMapping : sourceFile.getMappings()) {
-			IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
-			IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());
+	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
+		for (final CodeMapping codeMapping : sourceFile.getMappings()) {
+			final IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
+			final IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());
 
-			int offset = marker.getAttribute(IMarker.CHAR_START, -1);
-			int length = marker.getAttribute(IMarker.CHAR_END, -1);
+			final int offset = marker.getAttribute(IMarker.CHAR_START, -1);
+			final int length = marker.getAttribute(IMarker.CHAR_END, -1);
 			if (offset != -1) {
 				cmMarkerInformation.setOffset(offset);
 				cmMarkerInformation.setLength(length - offset);

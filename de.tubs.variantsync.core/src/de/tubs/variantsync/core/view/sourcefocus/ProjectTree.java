@@ -9,18 +9,18 @@ import de.tubs.variantsync.core.utilities.TreeNode;
 
 /**
  * Wraps the patches to a tree format
- * 
+ *
  * @author Christopher Sontag
  */
 public class ProjectTree {
 
 	public static Tree construct(String feature, List<IPatch<?>> patches) {
-		Tree tree = new Tree();
-		TreeNode root = new TreeNode(feature);
+		final Tree tree = new Tree();
+		final TreeNode root = new TreeNode(feature);
 		tree.setRoot(root);
 
-		for (IPatch<?> patch : patches) {
-			for (IDelta<?> delta : patch.getDeltas()) {
+		for (final IPatch<?> patch : patches) {
+			for (final IDelta<?> delta : patch.getDeltas()) {
 				if (delta.getContext().equals(feature)) {
 					TreeNode projectNode = tree.find(delta.getProject().getName());
 					if (projectNode == null) {

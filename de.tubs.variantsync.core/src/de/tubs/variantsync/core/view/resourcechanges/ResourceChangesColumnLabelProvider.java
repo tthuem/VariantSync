@@ -13,9 +13,9 @@ import de.tubs.variantsync.core.syncronization.TargetsCalculator;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
 /**
- * 
+ *
  * LabelProvider for {@link ResourcesTree}
- * 
+ *
  * @author Christopher Sontag
  */
 public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
@@ -24,8 +24,8 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 		DELTATYPE, SOURCE, TARGETSWITHOUTCONFLICT, TARGETSWITHCONFLICT, TIMESTAMP, TARGETSSYNCHRONIZED
 	}
 
-	private TYPE type;
-	private TargetsCalculator targetsCalculator = new TargetsCalculator();
+	private final TYPE type;
+	private final TargetsCalculator targetsCalculator = new TargetsCalculator();
 
 	public ResourceChangesColumnLabelProvider(TYPE type) {
 		this.type = type;
@@ -48,13 +48,11 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 					break;
 				case CHANGED:
 					cell.setText("CHANGED");
-					cell.setImage(
-							VariantSyncPlugin.getDefault().getImageDescriptor("icons/change_obj.gif").createImage());
+					cell.setImage(VariantSyncPlugin.getDefault().getImageDescriptor("icons/change_obj.gif").createImage());
 					break;
 				case REMOVED:
 					cell.setText("REMOVED");
-					cell.setImage(
-							VariantSyncPlugin.getDefault().getImageDescriptor("icons/delete_obj.gif").createImage());
+					cell.setImage(VariantSyncPlugin.getDefault().getImageDescriptor("icons/delete_obj.gif").createImage());
 					break;
 				default:
 					break;
@@ -65,7 +63,7 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			break;
 		case SOURCE:
 			if (o instanceof IDelta) {
-				IProject project = ((IDelta<?>) o).getProject();
+				final IProject project = ((IDelta<?>) o).getProject();
 				if (project != null) {
 					cell.setText(project.getName());
 				}
@@ -74,40 +72,37 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 		case TARGETSSYNCHRONIZED:
 			if (o instanceof IDelta) {
 				String projects = "";
-				for (IProject project : ((IDelta<?>) o).getSynchronizedProjects()) {
+				for (final IProject project : ((IDelta<?>) o).getSynchronizedProjects()) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects
-						: projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;
 		case TARGETSWITHCONFLICT:
 			if (o instanceof IDelta) {
 				String projects = "";
-				for (IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>) o))) {
+				for (final IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>) o))) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects
-						: projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;
 		case TARGETSWITHOUTCONFLICT:
 			if (o instanceof IDelta) {
 				String projects = "";
-				for (IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>) o))) {
+				for (final IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>) o))) {
 					projects += project.getName() + ", ";
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects
-						: projects.substring(0, projects.lastIndexOf(","));
+				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
 				cell.setText(projects);
 			}
 			break;
 		case TIMESTAMP:
 			if (o instanceof IDelta) {
-				Timestamp stamp = new Timestamp(((IDelta<?>) o).getTimestamp());
-				Date date = new Date(stamp.getTime());
+				final Timestamp stamp = new Timestamp(((IDelta<?>) o).getTimestamp());
+				final Date date = new Date(stamp.getTime());
 				cell.setText(date.toString());
 			}
 			break;

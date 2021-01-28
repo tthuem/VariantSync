@@ -14,7 +14,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 
 /**
  * Provides the variantsync perspective settings
- * 
+ *
  * @author Christopher Sontag
  */
 public class PerspectiveFactory implements IPerspectiveFactory {

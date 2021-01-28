@@ -11,11 +11,11 @@ public class SourceFile {
 	List<CodeMapping> mappings = new ArrayList<>();
 
 	public SourceFile(IFile res) {
-		this.resource = res;
+		resource = res;
 	}
 
 	public SourceFile(IFile res, List<CodeMapping> mappings) {
-		this.resource = res;
+		resource = res;
 		this.mappings = mappings;
 	}
 
@@ -24,7 +24,7 @@ public class SourceFile {
 	}
 
 	public void setFile(IFile res) {
-		this.resource = res;
+		resource = res;
 	}
 
 	public List<CodeMapping> getMappings() {
@@ -32,7 +32,7 @@ public class SourceFile {
 	}
 
 	public void addMapping(CodeMapping mapping) {
-		this.mappings.add(mapping);
+		mappings.add(mapping);
 	}
 
 	public void setMapping(List<CodeMapping> mappings) {

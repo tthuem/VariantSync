@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A progress monitor to keep track of probably time intensive jobs
- * 
+ *
  * @author Christopher Sontag
  * @since 1.1
  */
@@ -29,12 +29,10 @@ public class VariantSyncProgressMonitor implements IProgressMonitor {
 	}
 
 	@Override
-	public void beginTask(String name, int totalWork) {
-	}
+	public void beginTask(String name, int totalWork) {}
 
 	@Override
-	public void done() {
-	}
+	public void done() {}
 
 	@Override
 	public void internalWorked(double work) {

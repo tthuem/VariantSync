@@ -24,10 +24,10 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 
 	@Override
 	public void addCompiler(IProject project, String sourcePath, String configPath, String buildPath) {
-		File featureContextFile = new File(project.getFile(FeatureContextFormat.FILENAME).getLocationURI());
+		final File featureContextFile = new File(project.getFile(FeatureContextFormat.FILENAME).getLocationURI());
 		try {
 			featureContextFile.createNewFile();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -93,8 +93,8 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 	}
 
 	@Override
-	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures,
-			ArrayList<String> mandatoryFeatures) throws IOException, CoreException {
+	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures, ArrayList<String> mandatoryFeatures)
+			throws IOException, CoreException {
 
 	}
 

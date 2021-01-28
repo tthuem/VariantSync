@@ -10,7 +10,7 @@ public class ProjectNotFoundException extends NoSuchElementException {
 		CONFIGURATION, VARIANT
 	};
 
-	private Type type;
+	private final Type type;
 
 	public ProjectNotFoundException(Type type) {
 		super("");
@@ -25,8 +25,7 @@ public class ProjectNotFoundException extends NoSuchElementException {
 
 	@Override
 	public String toString() {
-		return "A " + (type == Type.CONFIGURATION ? "configuration project" : "variant")
-				+ " does not exist in the workspace. " + getMessage();
+		return "A " + (type == Type.CONFIGURATION ? "configuration project" : "variant") + " does not exist in the workspace. " + getMessage();
 	}
 
 }

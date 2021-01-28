@@ -8,14 +8,14 @@ public class FeatureContext {
 	public FeatureColor highlighter;
 
 	public FeatureContext() {
-		this.name = "";
-		this.highlighter = FeatureColor.NO_COLOR;
+		name = "";
+		highlighter = FeatureColor.NO_COLOR;
 	}
 
 	public FeatureContext(String name) {
 		super();
 		this.name = name;
-		this.highlighter = FeatureColor.Yellow;
+		highlighter = FeatureColor.Yellow;
 	}
 
 	public FeatureContext(String name, FeatureColor highlighter) {
@@ -32,27 +32,33 @@ public class FeatureContext {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((highlighter == null) ? 0 : highlighter.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = (prime * result) + ((highlighter == null) ? 0 : highlighter.hashCode());
+		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		FeatureContext other = (FeatureContext) obj;
-		if (highlighter != other.highlighter)
+		}
+		final FeatureContext other = (FeatureContext) obj;
+		if (highlighter != other.highlighter) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 

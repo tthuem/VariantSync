@@ -33,8 +33,7 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 	private static final String PATCHES = "Patches";
 	private static final String PATCH = "Patch";
 	private static final String DELTA = "Delta";
-	private static final Pattern CONTENT_REGEX = Pattern
-			.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + PATCHES + "[\\s>]");
+	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + PATCHES + "[\\s>]");
 
 	public static final String FILENAME = ".patches.xml";
 
@@ -73,10 +72,10 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		if (doc.getDocumentElement().getChildNodes().getLength() != 0) {
-			IPatchFactory patchFactory = new DefaultPatchFactory();
+			final IPatchFactory patchFactory = new DefaultPatchFactory();
 			for (final Element ePatch : getElements(doc.getDocumentElement().getChildNodes())) {
 
-				IPatch<?> patch = patchFactory.createPatch(ePatch.getAttribute("context"));
+				final IPatch<?> patch = patchFactory.createPatch(ePatch.getAttribute("context"));
 				patch.setStartTime(Long.valueOf(ePatch.getAttribute("start")));
 				patch.setEndTime(Long.valueOf(ePatch.getAttribute("end")));
 
@@ -86,9 +85,8 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 					IDeltaFactory deltaFactory;
 					try {
 						deltaFactory = DeltaFactoryManager.getFactoryById(eDelta.getAttribute("factoryId"));
-					} catch (NoSuchExtensionException e) {
-						LogOperations.logInfo(
-								"Could not find extension point for factoryId: " + eDelta.getAttribute("factoryId"));
+					} catch (final NoSuchExtensionException e) {
+						LogOperations.logInfo("Could not find extension point for factoryId: " + eDelta.getAttribute("factoryId"));
 						continue;
 					}
 
@@ -100,14 +98,13 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 						System.out.println(res);
 					}
 
-					IDelta delta = deltaFactory.createDelta(res);
+					final IDelta delta = deltaFactory.createDelta(res);
 					delta.setContext(eDelta.getAttribute("context"));
 					delta.setTimestamp(Long.valueOf(eDelta.getAttribute("timestamp")));
 					delta.setType(DELTATYPE.valueOf(eDelta.getAttribute("type")));
 
 					for (final Element eSyncronizedProject : getElements(eDelta.getElementsByTagName("Project"))) {
-						delta.addSynchronizedProject(ResourcesPlugin.getWorkspace().getRoot()
-								.getProject(eSyncronizedProject.getAttribute("name")));
+						delta.addSynchronizedProject(ResourcesPlugin.getWorkspace().getRoot().getProject(eSyncronizedProject.getAttribute("name")));
 					}
 					for (final Element eProperty : getElements(eDelta.getElementsByTagName("Property"))) {
 						delta.addProperty(eProperty.getAttribute("key"), eProperty.getAttribute("value"));
@@ -129,44 +126,44 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(PATCHES);
 
-		for (IPatch<?> patch : object) {
-			Element ePatch = doc.createElement(PATCH);
+		for (final IPatch<?> patch : object) {
+			final Element ePatch = doc.createElement(PATCH);
 			ePatch.setAttribute("start", String.valueOf(patch.getStartTime()));
 			ePatch.setAttribute("end", String.valueOf(patch.getEndTime()));
 			ePatch.setAttribute("context", patch.getContext());
 
 			if (patch.getDeltas().get(0) instanceof IDelta<?>) {
-				for (IDelta<?> delta : patch.getDeltas()) {
-					Element eDelta = doc.createElement(DELTA);
+				for (final IDelta<?> delta : patch.getDeltas()) {
+					final Element eDelta = doc.createElement(DELTA);
 					eDelta.setAttribute("context", delta.getContext());
 					eDelta.setAttribute("res", delta.getResource().getFullPath().toOSString());
 					eDelta.setAttribute("timestamp", String.valueOf(delta.getTimestamp()));
 					eDelta.setAttribute("type", String.valueOf(delta.getType()));
 					eDelta.setAttribute("factoryId", delta.getFactoryId());
 
-					Element eSynchronizedProject = doc.createElement("SynchronizedProjects");
-					List<IProject> projects = delta.getSynchronizedProjects();
-					for (IProject project : projects) {
-						Element eProperty = doc.createElement("Project");
+					final Element eSynchronizedProject = doc.createElement("SynchronizedProjects");
+					final List<IProject> projects = delta.getSynchronizedProjects();
+					for (final IProject project : projects) {
+						final Element eProperty = doc.createElement("Project");
 						eProperty.setAttribute("name", project.getName());
 						eSynchronizedProject.appendChild(eProperty);
 					}
 					eDelta.appendChild(eSynchronizedProject);
 
-					Element eProperties = doc.createElement("Properties");
-					HashMap<String, String> properties = delta.getProperties();
-					for (String key : properties.keySet()) {
-						Element eProperty = doc.createElement("Property");
+					final Element eProperties = doc.createElement("Properties");
+					final HashMap<String, String> properties = delta.getProperties();
+					for (final String key : properties.keySet()) {
+						final Element eProperty = doc.createElement("Property");
 						eProperty.setAttribute("key", key);
 						eProperty.setAttribute("value", properties.get(key));
 						eProperties.appendChild(eProperty);
 					}
 					eDelta.appendChild(eProperties);
 
-					Element eOriginal = doc.createElement("Original");
+					final Element eOriginal = doc.createElement("Original");
 					eOriginal.setTextContent(delta.getOriginalAsString());
 					eDelta.appendChild(eOriginal);
-					Element eRevised = doc.createElement("Revised");
+					final Element eRevised = doc.createElement("Revised");
 					eRevised.setTextContent(delta.getRevisedAsString());
 					eDelta.appendChild(eRevised);
 

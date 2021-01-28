@@ -23,22 +23,20 @@ public class CodeMappingHandler {
 
 	/**
 	 * Creates mappings for given deltas
-	 * 
+	 *
 	 * @param deltas
 	 */
 	public static void addCodeMappingsForDeltas(List<IDelta<?>> deltas) {
-		for (IDelta delta : deltas) {
+		for (final IDelta delta : deltas) {
 			try {
 				// Get factory and marker handler for delta
-				IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
-				IMarkerHandler markerHandler = deltaFactory.getMarkerHandler();
-				List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(),
-						delta);
+				final IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
+				final IMarkerHandler markerHandler = deltaFactory.getMarkerHandler();
+				final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
 
 				// Get current context
-				ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
-						.getActiveConfigurationProject();
-				MappingManager mappingManager = configurationProject.getMappingManager();
+				final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+				final MappingManager mappingManager = configurationProject.getMappingManager();
 				if (configurationProject != null) {
 					// Get file with current mappings
 					SourceFile sourceFile = mappingManager.getMapping(delta.getResource());
@@ -50,13 +48,13 @@ public class CodeMappingHandler {
 					markerHandler.updateMarkerForDelta(sourceFile, delta, variantSyncMarkers);
 
 					// Add new code mapping
-					for (IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
+					for (final IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
 						variantSyncMarker.setContext(delta.getContext());
 						sourceFile.addMapping(new CodeMapping(delta.getRevisedAsString(), variantSyncMarker));
 					}
 					mappingManager.addCodeMapping(delta.getResource(), sourceFile);
 				}
-			} catch (NoSuchExtensionException e) {
+			} catch (final NoSuchExtensionException e) {
 				LogOperations.logError("Could not map the delta to a context", e);
 			}
 		}
@@ -64,7 +62,7 @@ public class CodeMappingHandler {
 
 	/**
 	 * Adds manually created mappings
-	 * 
+	 *
 	 * @param file
 	 * @param context
 	 * @param offset
@@ -73,38 +71,36 @@ public class CodeMappingHandler {
 	 */
 	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
 		try {
-			IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
-			List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset,
-					length);
+			final IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
+			final List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
 
-			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager()
-					.getActiveConfigurationProject();
-			MappingManager mappingManager = configurationProject.getMappingManager();
+			final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+			final MappingManager mappingManager = configurationProject.getMappingManager();
 			if (configurationProject != null) {
 				SourceFile sourceFile = mappingManager.getMapping(file);
 				if (sourceFile == null) {
 					sourceFile = new SourceFile(file);
 				}
-				for (IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
+				for (final IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {
 					variantSyncMarker.setContext(feature);
 					sourceFile.addMapping(new CodeMapping(content, variantSyncMarker));
 				}
 				mappingManager.addCodeMapping(file, sourceFile);
 			}
-		} catch (NoSuchExtensionException e) {
+		} catch (final NoSuchExtensionException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Returns the mapping for a given source and marker
-	 * 
+	 *
 	 * @param sourceFile
 	 * @param variantSyncMarker
 	 * @return
 	 */
 	public static CodeMapping getCodeMapping(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
-		for (CodeMapping mapping : sourceFile.getMappings()) {
+		for (final CodeMapping mapping : sourceFile.getMappings()) {
 			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
 				return mapping;
 			}
@@ -113,17 +109,16 @@ public class CodeMappingHandler {
 	}
 
 	/**
-	 * Returns true, if a marker information exists at the given line in the given
-	 * file
-	 * 
+	 * Returns true, if a marker information exists at the given line in the given file
+	 *
 	 * @param sourceFile
 	 * @param line
 	 * @return
 	 */
 	public static boolean contains(SourceFile sourceFile, int line) {
-		for (CodeMapping mapping : sourceFile.getMappings()) {
-			IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
-			if (variantSyncMarker.isLine() && variantSyncMarker.getOffset() == line) {
+		for (final CodeMapping mapping : sourceFile.getMappings()) {
+			final IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
+			if (variantSyncMarker.isLine() && (variantSyncMarker.getOffset() == line)) {
 				return true;
 			}
 		}
@@ -131,17 +126,16 @@ public class CodeMappingHandler {
 	}
 
 	/**
-	 * Removes a given marker information in the given file and returns true, if a
-	 * mapping was removed
-	 * 
+	 * Removes a given marker information in the given file and returns true, if a mapping was removed
+	 *
 	 * @param sourceFile
 	 * @param variantSyncMarker
 	 * @return
 	 */
 	public static boolean remove(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
-		List<CodeMapping> mappings = new ArrayList<>();
-		List<CodeMapping> oldMappings = sourceFile.getMappings();
-		for (CodeMapping mapping : oldMappings) {
+		final List<CodeMapping> mappings = new ArrayList<>();
+		final List<CodeMapping> oldMappings = sourceFile.getMappings();
+		for (final CodeMapping mapping : oldMappings) {
 			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
 				mappings.add(mapping);
 			}

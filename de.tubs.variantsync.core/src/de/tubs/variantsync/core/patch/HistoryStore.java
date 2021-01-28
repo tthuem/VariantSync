@@ -14,9 +14,8 @@ public class HistoryStore {
 	public static final String historyFolder = ".history";
 
 	public void addHistory(IFile file, List<String> content, long timestamp) {
-		IProject project = file.getProject();
-		IFile historyFile = project.getFolder(historyFolder)
-				.getFolder(file.getProjectRelativePath().toOSString().replace(".", "_").replace("/", "_"))
+		final IProject project = file.getProject();
+		final IFile historyFile = project.getFolder(historyFolder).getFolder(file.getProjectRelativePath().toOSString().replace(".", "_").replace("/", "_"))
 				.getFile(timestamp + ".java");
 		FileHelper.setFileLines(historyFile, content);
 	}
@@ -37,9 +36,8 @@ public class HistoryStore {
 	}
 
 	public IFile getState(IFile file, long timestamp) {
-		IProject project = file.getProject();
-		return project.getFolder(historyFolder)
-				.getFolder(file.getProjectRelativePath().toOSString().replace(".", "_").replace("/", "_"))
+		final IProject project = file.getProject();
+		return project.getFolder(historyFolder).getFolder(file.getProjectRelativePath().toOSString().replace(".", "_").replace("/", "_"))
 				.getFile(timestamp + ".txt");
 	}
 

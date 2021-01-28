@@ -14,7 +14,7 @@ import de.tubs.variantsync.core.managers.data.FeatureContext;
 
 /**
  * Wizard for creating or editing feature contexts
- * 
+ *
  * @author Christopher Sontag
  */
 public class FeatureContextWizard extends Wizard {
@@ -31,19 +31,20 @@ public class FeatureContextWizard extends Wizard {
 		setWindowTitle("Feature ConfigurationProject Wizard");
 
 		{
-			ConfigurationProject activeConfigurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+			final ConfigurationProject activeConfigurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 
 			if (activeConfigurationProject == null) {
 				throw new ProjectNotFoundException(ProjectNotFoundException.Type.CONFIGURATION);
 			}
 
-			IFeatureProject featureProject = activeConfigurationProject.getFeatureProject();
-			IFeatureModel featuremodel = featureProject.getFeatureModel();
-			this.features = featuremodel.getFeatures();
+			final IFeatureProject featureProject = activeConfigurationProject.getFeatureProject();
+			final IFeatureModel featuremodel = featureProject.getFeatureModel();
+			features = featuremodel.getFeatures();
 		}
-		this.featureContext = context;
+		featureContext = context;
 	}
 
+	@Override
 	public void addPages() {
 		page = new FeatureContextWizardPage(features, featureContext);
 		addPage(page);
@@ -51,8 +52,8 @@ public class FeatureContextWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		List<FeatureContext> contexts = configurationProject.getFeatureContextManager().getContexts();
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		final List<FeatureContext> contexts = configurationProject.getFeatureContextManager().getContexts();
 		if (featureContext != null) {
 			contexts.remove(featureContext);
 		}

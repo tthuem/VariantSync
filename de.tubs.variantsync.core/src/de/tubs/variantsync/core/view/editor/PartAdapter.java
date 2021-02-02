@@ -26,9 +26,8 @@ import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
- * PartAdapter for the editor. Creates and updates the markers of the current
- * file of the editor
- * 
+ * PartAdapter for the editor. Creates and updates the markers of the current file of the editor
+ *
  * @author Tristan Pfofe (tristan.pfofe@ckc.de)
  * @author Christopher Sontag
  * @version 1.1
@@ -85,7 +84,7 @@ public class PartAdapter implements IPartListener, IEventListener {
 
 	private void updateEditorMarkers() {
 		if (currentFile != null) {
-			MarkerUpdateJob job = new MarkerUpdateJob();
+			final MarkerUpdateJob job = new MarkerUpdateJob();
 			job.schedule();
 		}
 	}
@@ -117,21 +116,22 @@ public class PartAdapter implements IPartListener, IEventListener {
 		public IStatus runInUIThread(IProgressMonitor monitor) {
 			try {
 				MarkerUtils.cleanResource(currentFile);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				LogOperations.logError("Cannot clear all markers from: " + currentFile.getFullPath(), e);
 			}
 
-			ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
-				List<IVariantSyncMarker> markers = new ArrayList<>();
-				SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
+				final List<IVariantSyncMarker> markers = new ArrayList<>();
+				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
 				if (sourceFile != null) {
-					for (CodeMapping codeMapping : sourceFile.getMappings()) {
+					for (final CodeMapping codeMapping : sourceFile.getMappings()) {
 						markers.add(codeMapping.getMarkerInformation());
 					}
 				}
-				if (!markers.isEmpty())
+				if (!markers.isEmpty()) {
 					MarkerUtils.setMarker(currentFile, markers);
+				}
 			}
 			return Status.OK_STATUS;
 		}

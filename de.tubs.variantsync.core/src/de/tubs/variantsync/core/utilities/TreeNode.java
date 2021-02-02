@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Utility class for building treeviewer trees, see also {@link Tree}
- * 
+ *
  * @author Christopher Sontag
  */
 public class TreeNode {
@@ -25,11 +25,11 @@ public class TreeNode {
 	}
 
 	public TreeNode getParent() {
-		return this.parent;
+		return parent;
 	}
 
 	public List<TreeNode> getChildren() {
-		return this.children;
+		return children;
 	}
 
 	public int getNumberOfChildren() {
@@ -41,7 +41,7 @@ public class TreeNode {
 	}
 
 	public void setChildren(List<TreeNode> children) {
-		for (TreeNode child : children) {
+		for (final TreeNode child : children) {
 			child.parent = this;
 		}
 
@@ -59,7 +59,7 @@ public class TreeNode {
 	}
 
 	public void removeChildren() {
-		this.children = new ArrayList<TreeNode>();
+		children = new ArrayList<TreeNode>();
 	}
 
 	public void removeChildAt(int index) throws IndexOutOfBoundsException {
@@ -71,13 +71,14 @@ public class TreeNode {
 	}
 
 	public Object getData() {
-		return this.data;
+		return data;
 	}
 
 	public void setData(Object data) {
 		this.data = data;
 	}
 
+	@Override
 	public String toString() {
 		return getData() != null ? getData().toString() : "";
 	}
@@ -93,7 +94,7 @@ public class TreeNode {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TreeNode other = (TreeNode) obj;
+		final TreeNode other = (TreeNode) obj;
 		if (data == null) {
 			if (other.data != null) {
 				return false;
@@ -106,14 +107,13 @@ public class TreeNode {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = (prime * result) + ((data == null) ? 0 : data.hashCode());
 		return result;
 	}
 

@@ -9,7 +9,7 @@ public class CodeMapping {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param code
 	 * @param variantSyncMarker
 	 */
@@ -20,7 +20,7 @@ public class CodeMapping {
 
 	/**
 	 * Returns mapped code
-	 * 
+	 *
 	 * @return code
 	 */
 	public String getCode() {
@@ -29,7 +29,7 @@ public class CodeMapping {
 
 	/**
 	 * Sets mapped code
-	 * 
+	 *
 	 * @param code
 	 */
 	public void setCode(String code) {
@@ -38,7 +38,7 @@ public class CodeMapping {
 
 	/**
 	 * Returns marker information
-	 * 
+	 *
 	 * @return variantSyncMarker
 	 */
 	public IVariantSyncMarker getMarkerInformation() {
@@ -47,7 +47,7 @@ public class CodeMapping {
 
 	/**
 	 * Sets marker information
-	 * 
+	 *
 	 * @param variantSyncMarker
 	 */
 	public void setMarkerInformation(IVariantSyncMarker variantSyncMarker) {

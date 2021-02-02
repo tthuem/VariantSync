@@ -32,9 +32,9 @@ import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
- * 
+ *
  * Feature context view
- * 
+ *
  * @author Christopher Sontag
  */
 public class View extends ViewPart implements IEventListener {
@@ -45,7 +45,7 @@ public class View extends ViewPart implements IEventListener {
 
 	private Table featureExpressionTable;
 
-	private IPartListener editorListener = new IPartListener() {
+	private final IPartListener editorListener = new IPartListener() {
 
 		@Override
 		public void partActivated(IWorkbenchPart part) {
@@ -58,12 +58,10 @@ public class View extends ViewPart implements IEventListener {
 		}
 
 		@Override
-		public void partClosed(IWorkbenchPart part) {
-		}
+		public void partClosed(IWorkbenchPart part) {}
 
 		@Override
-		public void partDeactivated(IWorkbenchPart part) {
-		}
+		public void partDeactivated(IWorkbenchPart part) {}
 
 		@Override
 		public void partOpened(IWorkbenchPart part) {
@@ -92,21 +90,22 @@ public class View extends ViewPart implements IEventListener {
 			@Override
 			public void handleEvent(Event event) {
 
-				Table table = (Table) event.widget;
-				int columnCount = table.getColumnCount();
-				if (columnCount == 0)
+				final Table table = (Table) event.widget;
+				final int columnCount = table.getColumnCount();
+				if (columnCount == 0) {
 					return;
-				Rectangle area = table.getClientArea();
-				int totalAreaWdith = area.width;
-				int lineWidth = table.getGridLineWidth();
-				int totalGridLineWidth = (columnCount - 1) * lineWidth;
+				}
+				final Rectangle area = table.getClientArea();
+				final int totalAreaWdith = area.width;
+				final int lineWidth = table.getGridLineWidth();
+				final int totalGridLineWidth = (columnCount - 1) * lineWidth;
 				int totalColumnWidth = 0;
-				for (TableColumn column : table.getColumns()) {
+				for (final TableColumn column : table.getColumns()) {
 					totalColumnWidth = totalColumnWidth + column.getWidth();
 				}
-				int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
+				final int diff = totalAreaWdith - (totalColumnWidth + totalGridLineWidth);
 
-				TableColumn lastCol = table.getColumns()[columnCount - 1];
+				final TableColumn lastCol = table.getColumns()[columnCount - 1];
 
 				// check diff is valid or not. setting negetive width doesnt make sense.
 				lastCol.setWidth(diff + lastCol.getWidth());
@@ -114,51 +113,48 @@ public class View extends ViewPart implements IEventListener {
 			}
 		});
 
-		TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
+		final TableColumn featureExpressionTableColumn = new TableColumn(featureExpressionTable, SWT.NONE);
 		featureExpressionTableColumn.setText("Name");
 		featureExpressionTableColumn.setWidth(280);
 		featureExpressionTableColumn.setResizable(true);
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "VariantSync.FeatureExpressionManager");
 
-		IWorkbenchPage page = getSite().getPage();
+		final IWorkbenchPage page = getSite().getPage();
 		page.addPartListener(editorListener);
 
 		fillLocalToolBar(getViewSite().getActionBars().getToolBarManager());
 	}
 
 	private void fillLocalToolBar(IToolBarManager toolBarManager) {
-		IAction addExpression = new Action("", Action.AS_PUSH_BUTTON) {
+		final IAction addExpression = new Action("", IAction.AS_PUSH_BUTTON) {
 
 			@Override
 			public void run() {
 				createFeatureExpression();
 			}
 		};
-		addExpression.setImageDescriptor(
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
+		addExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_ADD));
 		toolBarManager.add(addExpression);
 
-		IAction editExpression = new Action("", Action.AS_PUSH_BUTTON) {
+		final IAction editExpression = new Action("", IAction.AS_PUSH_BUTTON) {
 
 			@Override
 			public void run() {
 				editFeatureExpression();
 			}
 		};
-		editExpression.setImageDescriptor(
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
+		editExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_CLEAR));
 		toolBarManager.add(editExpression);
 
-		IAction removeExpression = new Action("", Action.AS_PUSH_BUTTON) {
+		final IAction removeExpression = new Action("", IAction.AS_PUSH_BUTTON) {
 
 			@Override
 			public void run() {
 				deleteFeatureExpression();
 			}
 		};
-		removeExpression.setImageDescriptor(
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
+		removeExpression.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_DELETE));
 		toolBarManager.add(removeExpression);
 	}
 
@@ -173,11 +169,10 @@ public class View extends ViewPart implements IEventListener {
 		if (!featureExpressionTable.isDisposed()) {
 			final TableItem[] selection = featureExpressionTable.getSelection();
 			if (selection.length == 1) {
-				WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(),
-						new FeatureContextWizard((FeatureContext) selection[0].getData()));
+				final WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard((FeatureContext) selection[0].getData()));
 				dialog.create();
 				if (dialog.open() == Window.OK) {
-					this.updateFeatureExpressionList();
+					updateFeatureExpressionList();
 				}
 			}
 		}
@@ -187,10 +182,10 @@ public class View extends ViewPart implements IEventListener {
 		if (!featureExpressionTable.isDisposed()) {
 			final TableItem[] selection = featureExpressionTable.getSelection();
 			if (selection.length > 0) {
-				for (TableItem ti : selection) {
-					expressions.remove((FeatureContext) ti.getData());
+				for (final TableItem ti : selection) {
+					expressions.remove(ti.getData());
 				}
-				this.updateFeatureExpressionList();
+				updateFeatureExpressionList();
 			}
 		}
 	}
@@ -199,11 +194,11 @@ public class View extends ViewPart implements IEventListener {
 		TableItem tableItem = null;
 		if (!featureExpressionTable.isDisposed() && featureExpressionTable.isVisible()) {
 			featureExpressionTable.removeAll();
-			ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
 				expressions = configurationProject.getFeatureContextManager().getContexts();
 				if (!expressions.isEmpty()) {
-					for (FeatureContext fe : expressions) {
+					for (final FeatureContext fe : expressions) {
 						tableItem = new TableItem(featureExpressionTable, SWT.NONE);
 						tableItem.setText(fe.name);
 						tableItem.setBackground(ColorPalette.toSwtColor(fe.highlighter));
@@ -215,10 +210,10 @@ public class View extends ViewPart implements IEventListener {
 	}
 
 	private void createFeatureExpression() {
-		WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
+		final WizardDialog dialog = new WizardDialog(VariantSyncPlugin.getShell(), new FeatureContextWizard(null));
 		dialog.create();
 		if (dialog.open() == Window.OK) {
-			this.updateFeatureExpressionList();
+			updateFeatureExpressionList();
 		}
 	}
 

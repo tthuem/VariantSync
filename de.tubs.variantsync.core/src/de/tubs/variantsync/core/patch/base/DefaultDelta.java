@@ -24,19 +24,19 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 		String ret = String.valueOf(original.getPosition());
 		ret = ret + ":;:";
 
-		for (String line : (List<String>) original.getLines()) {
+		for (final String line : original.getLines()) {
 			ret = ret + line + "#:#";
 		}
 		ret = ret.substring(0, ret.lastIndexOf("#:#"));
 		ret = ret + ":;:";
 
-		for (String bLine : original.getBefore()) {
+		for (final String bLine : original.getBefore()) {
 			ret = ret + bLine + "#:#";
 		}
 		ret = ret.substring(0, ret.lastIndexOf("#:#"));
 		ret = ret + ":;:";
 
-		for (String aLine : original.getAfter()) {
+		for (final String aLine : original.getAfter()) {
 			ret = ret + aLine + "#:#";
 		}
 		ret = ret.substring(0, ret.lastIndexOf("#:#"));
@@ -46,11 +46,11 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public void setOriginalFromString(String original) {
-		List<String> elements = Arrays.asList(original.split(":;:"));
-		int pos = Integer.valueOf(elements.get(0));
-		List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
-		List<String> before = Arrays.asList(elements.get(2).split("#:#"));
-		List<String> after = Arrays.asList(elements.get(3).split("#:#"));
+		final List<String> elements = Arrays.asList(original.split(":;:"));
+		final int pos = Integer.valueOf(elements.get(0));
+		final List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
+		final List<String> before = Arrays.asList(elements.get(2).split("#:#"));
+		final List<String> after = Arrays.asList(elements.get(3).split("#:#"));
 		this.original = new Chunk<String>(pos, lines);
 		this.original.setBefore(before);
 		this.original.setAfter(after);
@@ -61,26 +61,26 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 		String ret = String.valueOf(revised.getPosition());
 		ret = ret + ":;:";
 
-		for (String line : (List<String>) revised.getLines()) {
+		for (final String line : revised.getLines()) {
 			ret = ret + line + "#:#";
 		}
-		if (!((List<String>) revised.getLines()).isEmpty()) {
+		if (!revised.getLines().isEmpty()) {
 			ret = ret.substring(0, ret.lastIndexOf("#:#"));
 		}
 		ret = ret + ":;:";
 
-		for (String bLine : revised.getBefore()) {
+		for (final String bLine : revised.getBefore()) {
 			ret = ret + bLine + "#:#";
 		}
-		if (!((List<String>) revised.getBefore()).isEmpty()) {
+		if (!revised.getBefore().isEmpty()) {
 			ret = ret.substring(0, ret.lastIndexOf("#:#"));
 		}
 		ret = ret + ":;:";
 
-		for (String aLine : revised.getAfter()) {
+		for (final String aLine : revised.getAfter()) {
 			ret = ret + aLine + "#:#";
 		}
-		if (!((List<String>) revised.getAfter()).isEmpty()) {
+		if (!revised.getAfter().isEmpty()) {
 			ret = ret.substring(0, ret.lastIndexOf("#:#"));
 		}
 
@@ -89,11 +89,11 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public void setRevisedFromString(String revised) {
-		List<String> elements = Arrays.asList(revised.split(":;:"));
-		int pos = Integer.valueOf(elements.get(0));
-		List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
-		List<String> before = Arrays.asList(elements.get(2).split("#:#"));
-		List<String> after = Arrays.asList(elements.get(3).split("#:#"));
+		final List<String> elements = Arrays.asList(revised.split(":;:"));
+		final int pos = Integer.valueOf(elements.get(0));
+		final List<String> lines = Arrays.asList(elements.get(1).split("#:#"));
+		final List<String> before = Arrays.asList(elements.get(2).split("#:#"));
+		final List<String> after = Arrays.asList(elements.get(3).split("#:#"));
 		this.revised = new Chunk<String>(pos, lines);
 		this.revised.setBefore(before);
 		this.revised.setAfter(after);
@@ -101,20 +101,19 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public String getRepresentation() {
-		return "--- (" + this.original.getPosition() + ") " + this.original.getLines() + "\n" + "+++ ("
-				+ this.revised.getPosition() + ") " + this.revised.getLines();
+		return "--- (" + original.getPosition() + ") " + original.getLines() + "\n" + "+++ (" + revised.getPosition() + ") " + revised.getLines();
 	}
 
 	@Override
 	protected Object clone() {
-		DefaultDelta defaultDelta = new DefaultDelta(this.resource, this.timestamp, this.factoryId);
-		defaultDelta.setContext(this.context);
-		defaultDelta.setOriginal(this.original);
-		defaultDelta.setPatch(this.parent);
-		defaultDelta.setProject(this.project);
-		defaultDelta.setRevised(this.revised);
-		defaultDelta.setSynchronizedProjects(this.syncronizedProjects);
-		defaultDelta.setType(this.type);
+		final DefaultDelta defaultDelta = new DefaultDelta(resource, timestamp, factoryId);
+		defaultDelta.setContext(context);
+		defaultDelta.setOriginal(original);
+		defaultDelta.setPatch(parent);
+		defaultDelta.setProject(project);
+		defaultDelta.setRevised(revised);
+		defaultDelta.setSynchronizedProjects(syncronizedProjects);
+		defaultDelta.setType(type);
 		return defaultDelta;
 	}
 

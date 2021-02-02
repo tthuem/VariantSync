@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ovgu.featureide.fm.core.io.manager.FileHandler;
+import de.ovgu.featureide.fm.core.io.manager.SimpleFileHandler;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.persistence.PatchFormat;
@@ -19,7 +19,7 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 
 	private List<IPatch<?>> patches = new ArrayList<IPatch<?>>();
 
-	private ConfigurationProject configurationProject;
+	private final ConfigurationProject configurationProject;
 
 	public PatchesManager(ConfigurationProject configurationProject) {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -27,13 +27,14 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	}
 
 	public IPatch<?> getActualContextPatch() {
-		if (actualPatch == null)
+		if (actualPatch == null) {
 			return null;
-		return this.actualPatch;
+		}
+		return actualPatch;
 	}
 
 	public void setActualContextPatch(IPatch<?> patch) {
-		this.actualPatch = patch;
+		actualPatch = patch;
 	}
 
 	public List<IPatch<?>> getPatches() {
@@ -51,13 +52,15 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	public void closeActualPatch() {
 		if (actualPatch != null) {
 			actualPatch.setEndTime(System.currentTimeMillis());
-			if (!actualPatch.isEmpty() && !patches.contains(actualPatch))
+			if (!actualPatch.isEmpty() && !patches.contains(actualPatch)) {
 				patches.add(actualPatch);
+			}
 			actualPatch = null;
 			fireEvent(new VariantSyncEvent(this, EventType.PATCH_CLOSED, null, null));
 		}
 	}
 
+	@Override
 	public void reset() {
 		patches.clear();
 	}
@@ -65,9 +68,8 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 	@Override
 	public void load() {
 		if (configurationProject.getFeatureProject() != null) {
-			List<IPatch<?>> patches = new ArrayList<>();
-			FileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject()
-					.getFile(PatchFormat.FILENAME).getLocationURI()), patches,
+			final List<IPatch<?>> patches = new ArrayList<>();
+			SimpleFileHandler.load(Paths.get(configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches,
 					new PatchFormat(configurationProject.getFeatureProject()));
 			if (!patches.isEmpty()) {
 				setPatches(patches);
@@ -89,9 +91,8 @@ public class PatchesManager extends AManager implements ISaveableManager, IEvent
 
 	@Override
 	public void save() {
-		FileHandler.save(Paths.get(
-				configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()),
-				patches, new PatchFormat(configurationProject.getFeatureProject()));
+		SimpleFileHandler.save(Paths.get(configurationProject.getFeatureProject().getProject().getFile(PatchFormat.FILENAME).getLocationURI()), patches,
+				new PatchFormat(configurationProject.getFeatureProject()));
 	}
 
 }

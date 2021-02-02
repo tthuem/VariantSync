@@ -11,16 +11,16 @@ import de.tubs.variantsync.core.utilities.FileHelper;
 
 /**
  * Wizard for synchronization of manual deltas
- * 
+ *
  * @author Christopher Sontag
  */
 @Deprecated
 public class DeltaCompareViewer extends Wizard {
 
 	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.synchronization.compare";
-	private DeltaCompareViewerPage page;
-	private IFile file;
-	private IDelta<?> delta;
+	private final DeltaCompareViewerPage page;
+	private final IFile file;
+	private final IDelta<?> delta;
 
 	public DeltaCompareViewer(IFile file, IDelta<?> delta) {
 		super();
@@ -30,13 +30,14 @@ public class DeltaCompareViewer extends Wizard {
 		page = new DeltaCompareViewerPage(file, delta);
 	}
 
+	@Override
 	public void addPages() {
 		addPage(page);
 	}
 
 	@Override
 	public boolean performFinish() {
-		List<String> lines = page.getSourceCode();
+		final List<String> lines = page.getSourceCode();
 		FileHelper.setFileLines(file, lines);
 		return true;
 	}

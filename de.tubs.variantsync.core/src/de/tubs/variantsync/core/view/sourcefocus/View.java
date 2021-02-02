@@ -46,15 +46,16 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
 /**
- * 
+ *
  * Source-focused view
- * 
+ *
  * @author Christopher Sontag
  */
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
 	private static class ComboBoxSelectionDispatcher implements Runnable {
-		private Combo combobox;
+
+		private final Combo combobox;
 		public int selectionIndex = -1;
 
 		public ComboBoxSelectionDispatcher(Combo combobox) {
@@ -74,9 +75,9 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	private SourceViewer lbChange;
 	private Button btnSync;
 	private org.eclipse.swt.widgets.List targetsList;
-	private TargetsCalculator targetsCalculator = new TargetsCalculator();
+	private final TargetsCalculator targetsCalculator = new TargetsCalculator();
 	private String feature = "";
-	private List<IDelta<?>> lastSelections = new ArrayList<>();
+	private final List<IDelta<?>> lastSelections = new ArrayList<>();
 
 	public View() {
 		VariantSyncPlugin.getDefault().addListener(this);
@@ -86,7 +87,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(4, false));
 
-		Composite selectFeature = new Composite(parent, SWT.NONE);
+		final Composite selectFeature = new Composite(parent, SWT.NONE);
 		selectFeature.setLayout(new GridLayout(4, false));
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = SWT.FILL;
@@ -94,7 +95,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessHorizontalSpace = false;
 		selectFeature.setLayoutData(gridData);
 
-		Label lblFeatureExpression = new Label(selectFeature, SWT.NONE);
+		final Label lblFeatureExpression = new Label(selectFeature, SWT.NONE);
 		lblFeatureExpression.setText("Feature Expression: ");
 		gridData = new GridData();
 		gridData.horizontalAlignment = SWT.LEFT;
@@ -108,10 +109,10 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.horizontalSpan = 2;
 		gridData.grabExcessHorizontalSpace = true;
 		cbFeature.setLayoutData(gridData);
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		if (configurationProject != null)
-			cbFeature.setItems(
-					configurationProject.getFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		if (configurationProject != null) {
+			cbFeature.setItems(configurationProject.getFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+		}
 		cbFeature.select(0);
 		cbFeature.addSelectionListener(this);
 
@@ -128,8 +129,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		tvChanges.getTree().setLayoutData(gridData);
 		setupTreeViewer(tvChanges.getTree());
 
-		CompositeRuler ruler = new CompositeRuler();
-		LineNumberRulerColumn lineNumber = new LineNumberRulerColumn();
+		final CompositeRuler ruler = new CompositeRuler();
+		final LineNumberRulerColumn lineNumber = new LineNumberRulerColumn();
 		ruler.addDecorator(0, lineNumber);
 
 		lbChange = new SourceViewer(parent, ruler, SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.FLAT);
@@ -144,7 +145,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		lbChange.getControl().setLayoutData(gridData);
 		lbChange.setEditable(false);
 
-		Composite targets = new Composite(parent, SWT.NONE);
+		final Composite targets = new Composite(parent, SWT.NONE);
 		targets.setLayout(new GridLayout(1, false));
 		gridData = new GridData();
 		gridData.verticalAlignment = SWT.FILL;
@@ -155,7 +156,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		gridData.grabExcessVerticalSpace = false;
 		targets.setLayoutData(gridData);
 
-		Label lblTargets = new Label(targets, SWT.NONE);
+		final Label lblTargets = new Label(targets, SWT.NONE);
 		lblTargets.setText("Targets:");
 		gridData = new GridData();
 		gridData.horizontalAlignment = SWT.CENTER;
@@ -192,7 +193,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(false);
 
-		TableLayout layout = new TableLayout();
+		final TableLayout layout = new TableLayout();
 		tree.setLayout(layout);
 		tree.setHeaderVisible(true);
 
@@ -245,9 +246,9 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 
 		} else if (e.getSource().equals(btnSync)) {
 
-			for (String project : targetsList.getSelection()) {
-				IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
-				for (IDelta<?> delta : lastSelections) {
+			for (final String project : targetsList.getSelection()) {
+				final IProject iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
+				for (final IDelta<?> delta : lastSelections) {
 					if (!delta.getProject().equals(iProject)) {
 						SynchronizationHandler.handleSynchronization(iProject, delta);
 					}
@@ -266,16 +267,18 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	protected void updateTreeViewer(String feature) {
 		Display.getDefault().asyncExec(new Runnable() {
 
+			@Override
 			public void run() {
-				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 				if (configurationProject != null) {
-					PatchesManager patchesManager = configurationProject.getPatchesManager();
-					List<IPatch<?>> patches = patchesManager.getPatches();
-					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
-					if (actualPatch != null && !patches.contains(actualPatch))
+					final PatchesManager patchesManager = configurationProject.getPatchesManager();
+					final List<IPatch<?>> patches = patchesManager.getPatches();
+					final IPatch<?> actualPatch = patchesManager.getActualContextPatch();
+					if ((actualPatch != null) && !patches.contains(actualPatch)) {
 						patches.add(actualPatch);
+					}
 
-					if (patches != null && !patches.isEmpty() && !tvChanges.getControl().isDisposed()) {
+					if ((patches != null) && !patches.isEmpty() && !tvChanges.getControl().isDisposed()) {
 						tvChanges.setInput(ProjectTree.construct(feature, patches));
 					}
 					tvChanges.expandToLevel(3);
@@ -289,13 +292,14 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		clearAll();
 		lastSelections.clear();
 
-		ITreeSelection selection = tvChanges.getStructuredSelection();
+		final ITreeSelection selection = tvChanges.getStructuredSelection();
 		if (selection.size() == 1) {
 			Object o = selection.getFirstElement();
-			if (o instanceof TreeNode)
+			if (o instanceof TreeNode) {
 				o = ((TreeNode) o).getData();
+			}
 			if (o instanceof IDelta) {
-				IDelta<?> delta = ((IDelta<?>) o);
+				final IDelta<?> delta = ((IDelta<?>) o);
 				lastSelections.add(delta);
 				lbChange.setDocument(new Document(delta.getRepresentation()));
 			} else {
@@ -305,12 +309,14 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 			IPath res = null;
 			String ret = "";
 			for (Object o : selection.toList()) {
-				if (o instanceof TreeNode)
+				if (o instanceof TreeNode) {
 					o = ((TreeNode) o).getData();
+				}
 				if (o instanceof IDelta) {
-					IDelta<?> delta = ((IDelta<?>) o);
-					if (res == null)
+					final IDelta<?> delta = ((IDelta<?>) o);
+					if (res == null) {
 						res = delta.getResource().getProjectRelativePath();
+					}
 					if (!res.equals(delta.getResource().getProjectRelativePath())) {
 						lbChange.setDocument(new Document("No multiple resources supported"));
 						return;
@@ -325,11 +331,12 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	}
 
 	private void updateTargets() {
-		List<IProject> targets = targetsCalculator.getTargetsForFeatureContext(lastSelections);
-		if (targets != null && !targetsList.isDisposed()) {
+		final List<IProject> targets = targetsCalculator.getTargetsForFeatureContext(lastSelections);
+		if ((targets != null) && !targetsList.isDisposed()) {
 			targetsList.setItems(getProjectNames(targets).toArray(new String[] {}));
-			if (!targets.isEmpty())
+			if (!targets.isEmpty()) {
 				btnSync.setEnabled(true);
+			}
 		}
 	}
 
@@ -353,10 +360,9 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		case FEATURECONTEXT_ADDED:
 		case FEATURECONTEXT_CHANGED:
 		case FEATURECONTEXT_REMOVED:
-			ComboBoxSelectionDispatcher dispatcher = new ComboBoxSelectionDispatcher(cbFeature);
+			final ComboBoxSelectionDispatcher dispatcher = new ComboBoxSelectionDispatcher(cbFeature);
 			Display.getDefault().syncExec(dispatcher);
-			cbFeature.setItems(
-					VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
+			cbFeature.setItems(VariantSyncPlugin.getActiveFeatureContextManager().getContextsAsStrings().toArray(new String[] {}));
 			cbFeature.select(dispatcher.selectionIndex);
 		default:
 			break;
@@ -364,8 +370,8 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 	}
 
 	private List<String> getProjectNames(List<IProject> projects) {
-		List<String> projectNames = new ArrayList<>();
-		for (IProject project : projects) {
+		final List<String> projectNames = new ArrayList<>();
+		for (final IProject project : projects) {
 			projectNames.add(project.getName());
 		}
 		return projectNames;

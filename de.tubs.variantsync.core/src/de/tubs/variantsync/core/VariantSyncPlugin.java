@@ -40,7 +40,7 @@ import de.tubs.variantsync.core.view.editor.PartAdapter;
 
 /**
  * The activator class controls the plug-in life cycle
- * 
+ *
  * @author Christopher Sontag (c.sontag@tu-bs.de)
  * @version 1.0
  * @since 1.0.0.0
@@ -55,26 +55,24 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	private static ResourceChangeHandler listener = new ResourceChangeHandler();
 	private static ConfigurationProjectManager configurationProjectManager = new ConfigurationProjectManager();
 
-	private List<IEventListener> listeners = new ArrayList<>();
+	private final List<IEventListener> listeners = new ArrayList<>();
 
 	/**
 	 * The constructor
 	 */
-	public VariantSyncPlugin() {
-	}
+	public VariantSyncPlugin() {}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-	 * BundleContext)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework. BundleContext)
 	 */
+	@Override
 	public void start(BundleContext ctxt) throws Exception {
 		super.start(ctxt);
 		plugin = this;
 
-		DeltaFactoryManager.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID,
-				IDeltaFactory.extensionID, IDeltaFactory.class));
+		DeltaFactoryManager
+				.setExtensionLoader(new EclipseExtensionLoader<>(PLUGIN_ID, IDeltaFactory.extensionPointID, IDeltaFactory.extensionID, IDeltaFactory.class));
 
 		configurationProjectManager.initalize();
 
@@ -90,10 +88,9 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-	 * BundleContext)
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework. BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext ctxt) throws Exception {
 		configurationProjectManager.terminate();
 		plugin = null;
@@ -142,9 +139,8 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative
-	 * path.
-	 * 
+	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 *
 	 * @param path the path
 	 * @return the image descriptor
 	 */
@@ -153,8 +149,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Always good to have this static method as when dealing with IResources having
-	 * a interface to get the editor is very handy
+	 * Always good to have this static method as when dealing with IResources having a interface to get the editor is very handy
 	 *
 	 * @return
 	 */
@@ -167,11 +162,13 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	public static IFile getEditorInput() {
-		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null)
+		if (VariantSyncPlugin.getActiveWorkbenchWindow() == null) {
 			return null;
-		IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		if (editorPart == null || !(editorPart instanceof IFileEditorInput))
+		}
+		final IEditorPart editorPart = VariantSyncPlugin.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if ((editorPart == null) || !(editorPart instanceof IFileEditorInput)) {
 			return null;
+		}
 		return ((IFileEditorInput) editorPart.getEditorInput()).getFile();
 	}
 
@@ -179,7 +176,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(listener);
 		try {
 			listener.registerSaveParticipant();
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			e.printStackTrace();
 		}
 	}
@@ -192,21 +189,20 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 * Listen whether the active file in the java editor changes.
 	 */
 	public void listenForActiveClass() {
-		IWorkbench wb = PlatformUI.getWorkbench();
-		IWorkbenchWindow ww = wb.getActiveWorkbenchWindow();
+		final IWorkbench wb = PlatformUI.getWorkbench();
+		final IWorkbenchWindow ww = wb.getActiveWorkbenchWindow();
 
-		PartAdapter adapter = new PartAdapter();
+		final PartAdapter adapter = new PartAdapter();
 		ww.getPartService().addPartListener(adapter);
 	}
 
 	public static void addNature(IProject project) {
-		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(
-				"Adding VariantSync nature to " + project.getName());
+		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Adding VariantSync nature to " + project.getName());
 		try {
-			IProjectDescription description = project.getDescription();
-			String[] natures = description.getNatureIds();
+			final IProjectDescription description = project.getDescription();
+			final String[] natures = description.getNatureIds();
 
-			String[] newNatures = new String[natures.length + 1];
+			final String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 1, natures.length);
 
 			newNatures[0] = Variant.NATURE_ID;
@@ -216,24 +212,24 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 			project.setDescription(description, progressMonitor);
 			progressMonitor.setSubTaskName("Refresh resources");
 			project.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("", e);
 		}
 	}
 
 	public void addListener(IEventListener listener) {
-		this.listeners.add(listener);
+		listeners.add(listener);
 
 	}
 
 	public void fireEvent(VariantSyncEvent event) {
 		System.out.println(event);
-		for (IEventListener listener : listeners) {
+		for (final IEventListener listener : listeners) {
 			listener.propertyChange(event);
 		}
 	}
 
 	public void removeListener(IEventListener listener) {
-		this.listeners.remove(listener);
+		listeners.remove(listener);
 	}
 }

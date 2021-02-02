@@ -2,7 +2,7 @@ package de.tubs.variantsync.core.utilities;
 
 /**
  * Utility class for building treeviewer trees, see also {@link TreeNode}
- * 
+ *
  * @author Christopher Sontag
  */
 public class Tree {
@@ -14,7 +14,7 @@ public class Tree {
 	}
 
 	public TreeNode getRoot() {
-		return this.root;
+		return root;
 	}
 
 	public void setRoot(TreeNode root) {
@@ -34,7 +34,7 @@ public class Tree {
 	private int auxiliaryGetNumberOfNodes(TreeNode node) {
 		int numberOfNodes = node.getNumberOfChildren();
 
-		for (TreeNode child : node.getChildren()) {
+		for (final TreeNode child : node.getChildren()) {
 			numberOfNodes += auxiliaryGetNumberOfNodes(child);
 		}
 
@@ -48,7 +48,7 @@ public class Tree {
 	public TreeNode find(Object dataToFind) {
 		TreeNode returnNode = null;
 
-		if (root != null && dataToFind != null) {
+		if ((root != null) && (dataToFind != null)) {
 			returnNode = auxiliaryFind(root, dataToFind);
 		}
 
@@ -69,8 +69,9 @@ public class Tree {
 		TreeNode returnNode = null;
 		int i = 0;
 
-		if (currentNode == null || dataToFind == null)
+		if ((currentNode == null) || (dataToFind == null)) {
 			return null;
+		}
 
 		if (currentNode.getData() != null) {
 			if (currentNode.getData().equals(dataToFind)) {
@@ -80,7 +81,7 @@ public class Tree {
 
 		if (currentNode.hasChildren()) {
 			i = 0;
-			while (returnNode == null && i < currentNode.getNumberOfChildren()) {
+			while ((returnNode == null) && (i < currentNode.getNumberOfChildren())) {
 				returnNode = auxiliaryFind(currentNode.getChildAt(i), dataToFind);
 				i++;
 			}
@@ -99,7 +100,7 @@ public class Tree {
 			int i = 0;
 			TreeNode currentNode = root;
 			String ret = root.toString() + "\n";
-			while (currentNode == null && i < currentNode.getNumberOfChildren()) {
+			while ((currentNode == null) && (i < currentNode.getNumberOfChildren())) {
 				currentNode = currentNode.getChildAt(i);
 				ret = ret + currentNode.toString() + "\n";
 				i++;

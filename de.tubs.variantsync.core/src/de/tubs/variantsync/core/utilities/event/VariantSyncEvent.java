@@ -2,17 +2,17 @@
  * Copyright (C) 2005-2017  FeatureIDE team, University of Magdeburg, Germany
  *
  * This file is part of FeatureIDE.
- * 
+ *
  * FeatureIDE is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * FeatureIDE is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with FeatureIDE.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -21,23 +21,11 @@
 package de.tubs.variantsync.core.utilities.event;
 
 /**
- * Event triggered by changes to a feature model or its elements. <br/>
- * <br/>
- * Each event contains the following information:
- * <ul>
- * <li>an event type which determine the kind of event</li>
- * <li>the sender (source) of this event, i.e., which object fired this
- * event</li>
- * <li>the old value (if available), and the new value</li>
- * </ul>
- * <br/>
- * <br/>
- * This events are intended to be processed by {@link IEventListener} instances.
- * <br/>
- * <br/>
- * For usage to fire <code>VariantSyncEvent</code>s, see
- * {@link ConfigurationProject#fireEvent(VariantSyncEvent)}.
- * 
+ * Event triggered by changes to a feature model or its elements. <br/> <br/> Each event contains the following information: <ul> <li>an event type which
+ * determine the kind of event</li> <li>the sender (source) of this event, i.e., which object fired this event</li> <li>the old value (if available), and the
+ * new value</li> </ul> <br/> <br/> This events are intended to be processed by {@link IEventListener} instances. <br/> <br/> For usage to fire
+ * <code>VariantSyncEvent</code>s, see {@link ConfigurationProject#fireEvent(VariantSyncEvent)}.
+ *
  * @author Sebastian Krieter
  * @author Marcus Pinnecke
  * @author Christopher Sontag
@@ -45,8 +33,7 @@ package de.tubs.variantsync.core.utilities.event;
 public class VariantSyncEvent {
 
 	/**
-	 * Typing of the event instance. This type have to be used in order to
-	 * distinguish of the event kind.
+	 * Typing of the event instance. This type have to be used in order to distinguish of the event kind.
 	 */
 	public enum EventType {
 		/**
@@ -109,7 +96,7 @@ public class VariantSyncEvent {
 
 	static VariantSyncEvent[] defaultEvents = new VariantSyncEvent[EventType.values().length];
 	static {
-		for (EventType e : EventType.values()) {
+		for (final EventType e : EventType.values()) {
 			defaultEvents[e.ordinal()] = new VariantSyncEvent(e);
 		}
 	}
@@ -156,8 +143,7 @@ public class VariantSyncEvent {
 
 	@Override
 	public String toString() {
-		return "VariantSyncEvent [source=" + source + ", eventType=" + eventType + ", oldValue=" + oldValue
-				+ ", newValue=" + newValue + "]";
+		return "VariantSyncEvent [source=" + source + ", eventType=" + eventType + ", oldValue=" + oldValue + ", newValue=" + newValue + "]";
 	}
 
 }

@@ -93,8 +93,8 @@ public class VariantSyncComposer extends ComposerExtensionClass {
 	}
 
 	@Override
-	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures, ArrayList<String> mandatoryFeatures)
-			throws IOException, CoreException {
+	public void buildPartialFeatureProjectAssets(IFolder sourceFolder, ArrayList<String> removedFeatures,
+			ArrayList<String> mandatoryFeatures) throws IOException, CoreException {
 
 	}
 

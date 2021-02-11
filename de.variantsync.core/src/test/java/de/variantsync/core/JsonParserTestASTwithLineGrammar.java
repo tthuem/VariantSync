@@ -8,12 +8,12 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import de.variantsync.core.ast.AST;
-import de.variantsync.core.ast.JsonParserAST;
+import de.variantsync.core.ast.JsonParserASTwithLineGrammar;
 import de.variantsync.core.ast.LineGrammar;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JsonParserTest {
+public class JsonParserTestASTwithLineGrammar {
 
 	AST<LineGrammar, String> exampleAst;
 	Path exmaplePath;
@@ -24,10 +24,10 @@ public class JsonParserTest {
 		exampleAst = new AST<>(LineGrammar.Directory, "src");
 		AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
 		exampleAst.addChild(mainJava);
-		mainJava.addChildren(
-				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
-						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
-						new AST<>(LineGrammar.Line, "}")));
+		mainJava.addChildren(Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"),
+				new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
+				new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"),
+				new AST<>(LineGrammar.Line, "    }"), new AST<>(LineGrammar.Line, "}")));
 
 		exmaplePath = Path.of("out.txt");
 
@@ -37,13 +37,13 @@ public class JsonParserTest {
 	public void TestJsonParserAST() {
 
 		// export to json
-		String json = JsonParserAST.exportAST(exampleAst);
+		String json = JsonParserASTwithLineGrammar.exportAST(exampleAst);
 
 		// import ast from json
-		AST<LineGrammar, String> ast = JsonParserAST.importAST(json);
+		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importAST(json);
 
 		// rexport imported AST
-		String jsonSec = JsonParserAST.exportAST(ast);
+		String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
 
 		// print
 		System.out.println("First:" + json);
@@ -59,13 +59,13 @@ public class JsonParserTest {
 	public void TestJsonParserASTtoFile() throws IOException {
 
 		// export to json file
-		String json = JsonParserAST.exportToFile(exmaplePath, exampleAst);
+		String json = JsonParserASTwithLineGrammar.exportToFile(exmaplePath, exampleAst);
 
 		// import ast from file
-		AST<LineGrammar, String> ast = JsonParserAST.importFromFile(exmaplePath);
+		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
 
 		// rexport imported AST
-		String jsonSec = JsonParserAST.exportAST(ast);
+		String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
 
 		// print
 		System.out.println("FileFirst:" + json);
@@ -83,10 +83,10 @@ public class JsonParserTest {
 	public void TestJsonParserASTtoFileToString() throws IOException {
 
 		// export to json file
-		JsonParserAST.exportToFile(exmaplePath, exampleAst);
+		JsonParserASTwithLineGrammar.exportToFile(exmaplePath, exampleAst);
 
 		// import ast from file
-		AST<LineGrammar, String> ast = JsonParserAST.importFromFile(exmaplePath);
+		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
 
 		// get toString
 		String json = exampleAst.toString();

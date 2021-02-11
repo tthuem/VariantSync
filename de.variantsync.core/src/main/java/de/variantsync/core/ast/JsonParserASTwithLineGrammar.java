@@ -11,27 +11,42 @@ import com.google.gson.reflect.TypeToken;
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.interfaces.Grammar;
 
-public class JsonParserAST {
+/**
+ * 
+ * Uses gson to import and export ASTs to and from json. A generic use of
+ * grammar is not possible, hence for each grammar a different class has to be
+ * created. In this case the used grammar is LineGrammar.
+ * 
+ * @author jerem
+ *
+ */
+public class JsonParserASTwithLineGrammar {
 
 	static Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
 	public static <A extends Grammar, B> String exportAST(AST<A, B> ast) {
 
-		Type type = new TypeToken<AST<A, B>>() {}.getType();
+		// generic use of A not possible, instead declare used Grammar here
+		Type type = new TypeToken<AST<LineGrammar, B>>() {
+		}.getType();
 
 		return gson.toJson(ast, type);
 	}
 
 	public static <A extends Grammar, B> AST<A, B> importAST(String json) {
 
-		Type type = new TypeToken<AST<A, B>>() {}.getType();
+		// generic use of A not possible, instead declare used Grammar here
+		Type type = new TypeToken<AST<LineGrammar, B>>() {
+		}.getType();
 
 		return gson.fromJson(json, type);
 	}
 
 	public static <A extends Grammar, B> String exportToFile(Path path, AST<A, B> ast) {
 
-		Type type = new TypeToken<AST<A, B>>() {}.getType();
+		// generic use of A not possible, instead declare used Grammar here
+		Type type = new TypeToken<AST<LineGrammar, B>>() {
+		}.getType();
 
 		String content = gson.toJson(ast, type);
 		try {
@@ -55,7 +70,9 @@ public class JsonParserAST {
 			return null;
 		}
 
-		Type type = new TypeToken<AST<A, B>>() {}.getType();
+		// generic use of A not possible, instead declare used Grammar here
+		Type type = new TypeToken<AST<LineGrammar, B>>() {
+		}.getType();
 
 		return gson.fromJson(json, type);
 	}

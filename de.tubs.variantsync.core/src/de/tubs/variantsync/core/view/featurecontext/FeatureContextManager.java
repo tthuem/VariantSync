@@ -14,7 +14,7 @@ import de.tubs.variantsync.core.managers.data.FeatureContext;
  */
 public class FeatureContextManager extends Wizard {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.featurecontexts.manage";
+	public static final String ID = String.format("%s.views.featurecontexts.manage", VariantSyncPlugin.PLUGIN_ID);
 
 	private final List<FeatureContext> expressions;
 

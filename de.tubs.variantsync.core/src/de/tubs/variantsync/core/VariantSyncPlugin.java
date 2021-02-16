@@ -197,11 +197,12 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	}
 
 	public static void addNature(IProject project) {
-		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Adding VariantSync nature to " + project.getName());
+		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(String.format("Adding VariantSync nature to %s", project.getName()));
 		try {
 			final IProjectDescription description = project.getDescription();
 			final String[] natures = description.getNatureIds();
 
+			// the natures array is copied to a newNatures array, in which the variant NATURE_ID is added as first element
 			final String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 1, natures.length);
 

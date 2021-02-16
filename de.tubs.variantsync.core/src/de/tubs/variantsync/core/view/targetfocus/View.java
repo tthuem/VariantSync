@@ -54,7 +54,7 @@ import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelP
  */
 public class View extends ViewPart implements SelectionListener, ISelectionChangedListener, IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.targetfocus";
+	public static final String ID = String.format("%s.views.targetfocus", VariantSyncPlugin.PLUGIN_ID);
 
 	private Combo cbVariant;
 	private TreeViewer tvChanges;
@@ -275,7 +275,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 						return;
 					}
 					lastSelections.add(delta);
-					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
+					if (ret.isEmpty()) {
+						ret += delta.getRepresentation();
+					} else {
+						ret += String.format("%n%n%s", delta.getRepresentation());
+					}
 					btnSync.setEnabled(true);
 				}
 			}

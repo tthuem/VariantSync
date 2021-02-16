@@ -36,7 +36,7 @@ public class DefaultPatchFactory implements IPatchFactory {
 				final IDeltaFactory<?> factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
 				newFile = factory.applyDelta(newFile, delta);
 			} catch (final NoSuchExtensionException e) {
-				LogOperations.logError("Could not find extension with id: " + delta.getFactoryId(), e);
+				LogOperations.logError(String.format("Could not find extension with id: %s", delta.getFactoryId()), e);
 			}
 		}
 		return newFile;

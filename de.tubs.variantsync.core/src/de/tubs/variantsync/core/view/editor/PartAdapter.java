@@ -117,7 +117,7 @@ public class PartAdapter implements IPartListener, IEventListener {
 			try {
 				MarkerUtils.cleanResource(currentFile);
 			} catch (final CoreException e) {
-				LogOperations.logError("Cannot clear all markers from: " + currentFile.getFullPath(), e);
+				LogOperations.logError(String.format("Cannot clear all markers from: %s", currentFile.getFullPath()), e);
 			}
 
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();

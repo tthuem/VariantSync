@@ -147,12 +147,14 @@ public class FeatureContextWizardPage extends WizardPage {
 				final TableItem[] selectedItem = tabFeatures.getTable().getSelection();
 				if (selectedItem.length > 0) {
 					String featureName = selectedItem[0].getText();
+					// if the featureName is of the following structure:
+					// arbitrary amount of chars until the first occurence of 1 or more consecutive spaces followed by an arbitrary amount of chars
 					if (featureName.matches(".*?\\s+.*")) {
-						featureName = "\"" + featureName + "\"";
+						featureName += String.format("\"%s\"", featureName);
 					} else {
 						for (final String op : Operator.NAMES) {
 							if (featureName.equalsIgnoreCase(op)) {
-								featureName = "\"" + featureName + "\"";
+								featureName += String.format("\"%s\"", featureName);
 								break;
 							}
 						}

@@ -143,7 +143,7 @@ public class VariantSyncEvent {
 
 	@Override
 	public String toString() {
-		return "VariantSyncEvent [source=" + source + ", eventType=" + eventType + ", oldValue=" + oldValue + ", newValue=" + newValue + "]";
+		return String.format("VariantSyncEvent [source=%s, eventType=%s, oldValue=%s, newValue=%s]", source, eventType, oldValue, newValue);
 	}
 
 }

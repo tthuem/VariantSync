@@ -17,7 +17,7 @@ import de.tubs.variantsync.core.utilities.FileHelper;
 @Deprecated
 public class DeltaCompareViewer extends Wizard {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.synchronization.compare";
+	public static final String ID = String.format("%s.views.synchronization.compare", VariantSyncPlugin.PLUGIN_ID);
 	private final DeltaCompareViewerPage page;
 	private final IFile file;
 	private final IDelta<?> delta;

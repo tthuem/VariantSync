@@ -99,10 +99,10 @@ public class Tree {
 		if (root != null) {
 			int i = 0;
 			TreeNode currentNode = root;
-			String ret = root.toString() + "\n";
+			String ret = String.format("%s%n", root.toString());
 			while ((currentNode == null) && (i < currentNode.getNumberOfChildren())) {
 				currentNode = currentNode.getChildAt(i);
-				ret = ret + currentNode.toString() + "\n";
+				ret += ret + String.format("%s%n", currentNode.toString());
 				i++;
 			}
 			return ret;

@@ -64,7 +64,7 @@ public class APatch<T> implements IPatch<T> {
 
 	@Override
 	public String toString() {
-		return "APatch [deltas=" + deltas + "]";
+		return String.format("APatch [deltas= %s ]", deltas);
 	}
 
 	@Override

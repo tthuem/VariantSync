@@ -106,7 +106,7 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 		for (final IFeatureProject project : CorePlugin.getFeatureProjects()) {
 			// System.out.print(" project " + project.getProjectName());
 			if (project.getComposerID().equals("de.tubs.variantsync.core.composer")) {
-				LogOperations.logInfo("Found configuration project with name: " + project.getProjectName());
+				LogOperations.logInfo(String.format("Found configuration project with name: %s", project.getProjectName()));
 				projects.add(project);
 				// System.out.println(" is variant composing");
 			} else {
@@ -126,7 +126,7 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 			} else {
 				try {
 					final IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
-					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
+					m.setAttribute(IMarker.MESSAGE, String.format("Project %s is missing in the workspace", projectName));
 					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 					m.setAttribute(IMarker.LINE_NUMBER, 0);
@@ -176,9 +176,9 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	public void propertyChange(FeatureIDEEvent event) {
 		switch (event.getEventType()) {
 		case FEATURE_ADD:
-			LogOperations.logInfo("Feature added: " + event);
+			LogOperations.logInfo(String.format("Feature added: %s", event));
 		case MODEL_DATA_SAVED:
-			LogOperations.logInfo("Model Event" + event);
+			LogOperations.logInfo(String.format("Model Event %s", event));
 			if (event.getSource() instanceof IFeatureModel) {
 				final IFeatureModel model = (IFeatureModel) event.getSource();
 				final List<String> featureExpressions = getActiveConfigurationProject().getFeatureContextManager().getContextsAsStrings();

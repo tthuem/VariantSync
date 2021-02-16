@@ -19,7 +19,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".perspective";
+	public static final String ID = String.format("%s.perspective", VariantSyncPlugin.PLUGIN_ID);
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {

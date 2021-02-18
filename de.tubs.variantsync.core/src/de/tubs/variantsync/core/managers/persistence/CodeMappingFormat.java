@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.IPersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -35,7 +36,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	}
 
 	@Override
-	public IPersistentFormat<List<SourceFile>> getInstance() {
+	public APersistentFormat<List<SourceFile>> getInstance() {
 		return new CodeMappingFormat(null);
 	}
 
@@ -62,12 +63,12 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
-			SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
+			final SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
 			for (final Element eCM : getElements(eSF.getChildNodes())) {
-				IVariantSyncMarker variantSyncMarker = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
+				final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
 						Integer.parseInt(eCM.getAttribute("length")), Boolean.parseBoolean(eCM.getAttribute("isLine")));
 				variantSyncMarker.setContext(eCM.getAttribute("context"));
-				CodeMapping codeMapping = new CodeMapping(eCM.getTextContent(), variantSyncMarker);
+				final CodeMapping codeMapping = new CodeMapping(eCM.getTextContent(), variantSyncMarker);
 				sourceFile.addMapping(codeMapping);
 			}
 			object.add(sourceFile);
@@ -78,12 +79,12 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(MAPPINGS);
 
-		for (SourceFile sf : object) {
-			Element file = doc.createElement(SOURCEFILE);
+		for (final SourceFile sf : object) {
+			final Element file = doc.createElement(SOURCEFILE);
 			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));
 
-			for (CodeMapping cm : sf.getMappings()) {
-				Element line = doc.createElement(CODEMAPPINGS);
+			for (final CodeMapping cm : sf.getMappings()) {
+				final Element line = doc.createElement(CODEMAPPINGS);
 				line.setAttribute("context", cm.getMarkerInformation().getContext());
 				line.setAttribute("offset", String.valueOf(cm.getMarkerInformation().getOffset()));
 				line.setAttribute("length", String.valueOf(cm.getMarkerInformation().getLength()));

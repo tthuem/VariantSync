@@ -22,9 +22,9 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.view.resourcechanges.ResourceChangesColumnLabelProvider.TYPE;
 
 /**
- * 
+ *
  * Resource changes view
- * 
+ *
  * @author Christopher Sontag
  */
 public class View extends ViewPart implements IEventListener {
@@ -51,7 +51,7 @@ public class View extends ViewPart implements IEventListener {
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 
-		TableLayout layout = new TableLayout();
+		final TableLayout layout = new TableLayout();
 		tree.setLayout(layout);
 		tree.setHeaderVisible(true);
 
@@ -101,15 +101,20 @@ public class View extends ViewPart implements IEventListener {
 	protected void updateTreeViewer() {
 		Display.getDefault().asyncExec(new Runnable() {
 
+			@Override
 			public void run() {
-				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 				if (configurationProject != null) {
-					PatchesManager patchesManager = configurationProject.getPatchesManager();
-					List<IPatch<?>> patches = patchesManager.getPatches();
-					IPatch<?> actualPatch = patchesManager.getActualContextPatch();
-					if (actualPatch != null && !patches.contains(actualPatch)) patches.add(actualPatch);
+					final PatchesManager patchesManager = configurationProject.getPatchesManager();
+					final List<IPatch<?>> patches = patchesManager.getPatches();
+					final IPatch<?> actualPatch = patchesManager.getActualContextPatch();
+					if ((actualPatch != null) && !patches.contains(actualPatch)) {
+						patches.add(actualPatch);
+					}
 
-					if (patches != null && !patches.isEmpty()) tvResourceChanges.setInput(ResourcesTree.construct(patches));
+					if ((patches != null) && !patches.isEmpty()) {
+						tvResourceChanges.setInput(ResourcesTree.construct(patches));
+					}
 					tvResourceChanges.expandToLevel(3);
 				}
 			}

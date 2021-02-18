@@ -26,7 +26,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
  * Manual mapping action available in the editor
- * 
+ *
  * @author Christopher Sontag
  */
 public class DynamicContextPopupItems extends ContributionItem implements IEventListener {
@@ -36,15 +36,16 @@ public class DynamicContextPopupItems extends ContributionItem implements IEvent
 
 	@Override
 	public void fill(final Menu menu, int index) {
-		List<FeatureContext> features = VariantSyncPlugin.getActiveFeatureContextManager().getContexts();
+		final List<FeatureContext> features = VariantSyncPlugin.getActiveFeatureContextManager().getContexts();
 		for (final FeatureContext fe : features) {
-			MenuItem menuItem = new MenuItem(menu, SWT.PUSH, index);
+			final MenuItem menuItem = new MenuItem(menu, SWT.PUSH, index);
 			menuItem.setText(fe.name);
 			menuItem.setImage(fe.isComposed() ? composed : base);
 
 			if (!fe.name.contains(FeatureContextManager.DEFAULT_CONTEXT_NAME)) {
 				menuItem.addSelectionListener(new SelectionAdapter() {
 
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						handleSelection(fe);
 					}
@@ -56,22 +57,22 @@ public class DynamicContextPopupItems extends ContributionItem implements IEvent
 	}
 
 	private void handleSelection(FeatureContext fe) {
-		IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		final IEditorPart editorPart = VariantSyncPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if (editorPart instanceof AbstractTextEditor) {
 			int offset = 0;
 			int length = 0;
 			String selectedText = null;
-			IEditorSite iEditorSite = editorPart.getEditorSite();
+			final IEditorSite iEditorSite = editorPart.getEditorSite();
 			if (iEditorSite != null) {
-				ISelectionProvider selectionProvider = iEditorSite.getSelectionProvider();
+				final ISelectionProvider selectionProvider = iEditorSite.getSelectionProvider();
 				if (selectionProvider != null) {
-					ISelection iSelection = selectionProvider.getSelection();
+					final ISelection iSelection = selectionProvider.getSelection();
 					if (!iSelection.isEmpty()) {
 						selectedText = ((ITextSelection) iSelection).getText();
 						offset = ((ITextSelection) iSelection).getOffset();
 						length = ((ITextSelection) iSelection).getLength();
 
-						IFile file = (IFile) editorPart.getEditorInput().getAdapter(IFile.class);
+						final IFile file = editorPart.getEditorInput().getAdapter(IFile.class);
 
 						if (length > 0) {
 							// Add mapping to file

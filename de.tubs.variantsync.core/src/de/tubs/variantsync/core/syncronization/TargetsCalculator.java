@@ -18,61 +18,67 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
  * Calculates all target projects for given deltas.
- * 
+ *
  * @author Christopher Sontag
  */
 public class TargetsCalculator {
 
 	/**
 	 * Returns target projects without conflicts.
-	 * 
+	 *
 	 * @param delta
 	 * @return
 	 */
 	public List<IProject> getTargetsWithoutConflict(IDelta<?> delta) {
-		List<IProject> targets = new ArrayList<>();
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		for (IProject project : configurationProject.getVariants()) {
-			Configuration config = configurationProject.getConfigurationForVariant(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
-			if (project != delta.getProject() && isTargetWithoutConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
+		final List<IProject> targets = new ArrayList<>();
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (final IProject project : configurationProject.getVariants()) {
+			final Configuration config = configurationProject.getConfigurationForVariant(project);
+			if ((config == null) || !config.getSelectedFeatureNames().contains(delta.getContext())) {
+				continue;
+			}
+			if ((project != delta.getProject()) && isTargetWithoutConflict(project, delta) && !delta.getSynchronizedProjects().contains(project)) {
 				targets.add(project);
+			}
 		}
 		return targets;
 	}
 
 	/**
 	 * Returns target projects with conflicts.
-	 * 
+	 *
 	 * @param delta
 	 * @return
 	 */
 	public List<IProject> getTargetsWithConflict(IDelta<?> delta) {
-		List<IProject> targets = new ArrayList<>();
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		for (IProject project : configurationProject.getVariants()) {
-			Configuration config = configurationProject.getConfigurationForVariant(project);
-			if (config == null || !config.getSelectedFeatureNames().contains(delta.getContext())) continue;
-			if (project != delta.getProject() && isTargetWithConflict(project, delta) && !delta.getSynchronizedProjects().contains(project))
+		final List<IProject> targets = new ArrayList<>();
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (final IProject project : configurationProject.getVariants()) {
+			final Configuration config = configurationProject.getConfigurationForVariant(project);
+			if ((config == null) || !config.getSelectedFeatureNames().contains(delta.getContext())) {
+				continue;
+			}
+			if ((project != delta.getProject()) && isTargetWithConflict(project, delta) && !delta.getSynchronizedProjects().contains(project)) {
 				targets.add(project);
+			}
 		}
 		return targets;
 	}
 
 	/**
 	 * Returns all target projects which have feature context selected in their configuration
-	 * 
+	 *
 	 * @param deltas
 	 * @return
 	 */
 	public List<IProject> getTargetsForFeatureContext(List<IDelta<?>> deltas) {
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		List<IProject> targets = new ArrayList<>();
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		final List<IProject> targets = new ArrayList<>();
 		if (configurationProject != null) {
-			for (IProject project : configurationProject.getVariants()) {
-				Configuration config = configurationProject.getConfigurationForVariant(project);
+			for (final IProject project : configurationProject.getVariants()) {
+				final Configuration config = configurationProject.getConfigurationForVariant(project);
 				if (config != null) {
-					for (IDelta<?> delta : deltas) {
+					for (final IDelta<?> delta : deltas) {
 						if (config.getSelectedFeatureNames().contains(delta.getContext()) && !targets.contains(project) && (!delta.getProject().equals(project))
 							&& !delta.getSynchronizedProjects().contains(project)) {
 							targets.add(project);
@@ -86,14 +92,14 @@ public class TargetsCalculator {
 
 	/**
 	 * Checks whether the given delta can be applied to the given project without conflicts.
-	 * 
+	 *
 	 * @param project
 	 * @param delta
 	 * @return true, if delta can be applied without problems
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public boolean isTargetWithoutConflict(IProject project, IDelta<?> delta) {
-		IFile file = project.getFile(delta.getResource().getProjectRelativePath());
+		final IFile file = project.getFile(delta.getResource().getProjectRelativePath());
 		if (!file.exists() && delta.getType().equals(DELTATYPE.ADDED)) {
 			return true;
 		}
@@ -107,17 +113,21 @@ public class TargetsCalculator {
 		IDeltaFactory factory = null;
 		try {
 			factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
-		} catch (NoSuchExtensionException e) {
+		} catch (final NoSuchExtensionException e) {
 			LogOperations.logError("PatchFactory not found", e);
 		}
-		if (factory == null) return false;
-		if (factory.verifyDelta(file, delta)) return true;
+		if (factory == null) {
+			return false;
+		}
+		if (factory.verifyDelta(file, delta)) {
+			return true;
+		}
 		return false;
 	}
 
 	/**
 	 * Checks whether the given delta can be applied to the given project with conflicts.
-	 * 
+	 *
 	 * @param project
 	 * @param delta
 	 * @return true, if delta can be applied only with problems

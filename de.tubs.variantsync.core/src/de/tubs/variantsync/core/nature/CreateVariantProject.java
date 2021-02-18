@@ -27,17 +27,17 @@ public class CreateVariantProject extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
+		final ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
 		if (currentSelection instanceof IStructuredSelection) {
 
-			Object firstElement = ((IStructuredSelection) currentSelection).getFirstElement();
+			final Object firstElement = ((IStructuredSelection) currentSelection).getFirstElement();
 
 			// Get an IResource as an adapter from the current selection
-			IAdapterManager adapterManager = Platform.getAdapterManager();
-			IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
+			final IAdapterManager adapterManager = Platform.getAdapterManager();
+			final IResource resourceAdapter = adapterManager.getAdapter(firstElement, IResource.class);
 
 			if (resourceAdapter != null) {
-				IResource resource = resourceAdapter;
+				final IResource resource = resourceAdapter;
 
 				String projectName = resource.getName();
 				projectName = projectName.substring(0, projectName.lastIndexOf("."));
@@ -53,26 +53,26 @@ public class CreateVariantProject extends AbstractHandler {
 	}
 
 	private IProject createJavaProjectWithVariantNature(String projectName) {
-		VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Create Project " + projectName);
+		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Create Project " + projectName);
 		// create project
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(projectName);
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final IProject project = root.getProject(projectName);
 		try {
 			progressMonitor.setSubTaskName("Create and open project");
 			project.create(progressMonitor);
 			project.open(progressMonitor);
 
 			// set natures
-			IProjectDescription description = project.getDescription();
+			final IProjectDescription description = project.getDescription();
 			description.setNatureIds(new String[] { Variant.NATURE_ID, JavaCore.NATURE_ID });
 
 			// create java project
 			progressMonitor.setSubTaskName("Setting needed natures");
 			project.setDescription(description, progressMonitor);
-			IJavaProject javaProject = JavaCore.create(project);
+			final IJavaProject javaProject = JavaCore.create(project);
 
 			// set build path
-			IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(project.getFullPath().append("src")), JavaRuntime.getDefaultJREContainerEntry() };
+			final IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(project.getFullPath().append("src")), JavaRuntime.getDefaultJREContainerEntry() };
 
 			progressMonitor.setSubTaskName("Setting build paths of project");
 			javaProject.setRawClasspath(buildPath, project.getFullPath().append("bin"), progressMonitor);
@@ -91,7 +91,7 @@ public class CreateVariantProject extends AbstractHandler {
 				folder.create(true, true, progressMonitor);
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return project;

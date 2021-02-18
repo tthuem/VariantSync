@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.tubs.variantsync.core.feature_0.0.3.qualifier.jar" id="de.tubs.variantsync.core.feature" version="0.0.3.qualifier">
-      <category name="VariantSync"/>
-   </feature>
-   <category-def name="VariantSync" label="VariantSync">
-      <description>
-         VariantSync is a tool to develop variants separately as in clone-and-own and to automate change propagation by using domain knowledge of developers. VariantSync detects and logs changes during development, tags these changes to feature expressions and automates the synchronization of changes between variants. As a side effect, using VariantSync for a while may increase the feature-to-code map-ping and, thus, ease a potential later migration to a product line. VariantSync is an open-source Eclipse plug-in distributed under L-GPL.
-      </description>
-   </category-def>
-   <repository-reference location="http://featureide.cs.ovgu.de/update/v3/" enabled="true" />
-   <repository-reference location="http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide/nightly/p2-updateSite/" enabled="true" />
+	<feature
+		url="features/de.tubs.variantsync.core.feature_0.0.3.qualifier.jar"
+		id="de.tubs.variantsync.core.feature" version="0.0.3.qualifier">
+		<category name="VariantSync" />
+	</feature>
+	<category-def name="VariantSync" label="VariantSync">
+		<description>
+			VariantSync is a tool to develop variants separately as in clone-and-own and to
+			automate change propagation by using domain knowledge of developers.
+			VariantSync detects and logs changes during development, tags these
+			changes to feature expressions and automates the synchronization of
+			changes between variants. As a side effect, using VariantSync for a
+			while may increase the feature-to-code map-ping and, thus, ease a
+			potential later migration to a product line. VariantSync is an
+			open-source Eclipse plug-in distributed under L-GPL.
+		</description>
+	</category-def>
+	<repository-reference
+		location="http://featureide.cs.ovgu.de/update/v3/" enabled="true" />
+	<repository-reference
+		location="http://wwwiti.cs.uni-magdeburg.de/iti_db/research/featureide/nightly/p2-updateSite/"
+		enabled="true" />
 </site>

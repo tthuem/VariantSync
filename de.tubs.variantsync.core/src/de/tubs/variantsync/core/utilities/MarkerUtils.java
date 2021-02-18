@@ -20,7 +20,7 @@ import de.tubs.variantsync.core.managers.data.FeatureContext;
 
 /**
  * Utilities for creating specialized VariantSync eclipse resource markers
- * 
+ *
  * @author Christopher Sontag
  * @since 15.08.2017
  */
@@ -34,27 +34,28 @@ public class MarkerUtils {
 
 	/**
 	 * Removes all markers for all projects in the list
-	 * 
+	 *
 	 * @param projectList
 	 * @throws CoreException
 	 */
 	public static void cleanProjects(List<IProject> projectList) throws CoreException {
-		for (IProject p : projectList)
+		for (final IProject p : projectList) {
 			cleanProject(p);
+		}
 	}
 
 	/**
 	 * Removes all markers for the project
-	 * 
+	 *
 	 * @param project
 	 * @throws CoreException
 	 */
 	public static void cleanProject(IProject project) throws CoreException {
-		List<IMarker> markers = getMarkers(project);
-		for (IMarker marker : markers) {
+		final List<IMarker> markers = getMarkers(project);
+		for (final IMarker marker : markers) {
 			try {
 				marker.delete();
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				throw e;
 			}
 		}
@@ -62,17 +63,17 @@ public class MarkerUtils {
 
 	/**
 	 * Removes all markers from the given resource
-	 * 
+	 *
 	 * @param res
 	 * @throws CoreException
 	 */
 	public static void cleanResource(IResource res) throws CoreException {
-		if (res != null && res.exists()) {
-			List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
-			for (IMarker marker : markers) {
+		if ((res != null) && res.exists()) {
+			final List<IMarker> markers = Arrays.asList(res.findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE));
+			for (final IMarker marker : markers) {
 				try {
 					marker.delete();
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					e.printStackTrace();
 				}
 			}
@@ -81,18 +82,18 @@ public class MarkerUtils {
 
 	/**
 	 * Returns all markers for the given resource
-	 * 
+	 *
 	 * @param res
 	 * @return List<IMarker> - All markers of the resource with DEPTH_INFINITE
 	 * @throws CoreException
 	 */
 	public static List<IMarker> getMarkers(IResource res) {
-		List<IMarker> returnList = new ArrayList<IMarker>();
+		final List<IMarker> returnList = new ArrayList<IMarker>();
 		if (res != null) {
-			for (String marker : annotationMarkers) {
+			for (final String marker : annotationMarkers) {
 				try {
 					returnList.addAll(Arrays.asList(res.findMarkers(marker, true, IResource.DEPTH_INFINITE)));
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					LogOperations.logError("File does not exists or can not be accessed because the project is closed", e);
 				}
 			}
@@ -102,7 +103,7 @@ public class MarkerUtils {
 
 	/**
 	 * Wrapper for res.getMarker(id)
-	 * 
+	 *
 	 * @param res
 	 * @param id
 	 * @return marker with id
@@ -113,7 +114,7 @@ public class MarkerUtils {
 
 	/**
 	 * Returns the id of a code highlighting annotation
-	 * 
+	 *
 	 * @param color
 	 * @return String - The id of the annotation highlighter
 	 */
@@ -126,7 +127,7 @@ public class MarkerUtils {
 
 	/**
 	 * Adds a marker to the resource
-	 * 
+	 *
 	 * @param res
 	 * @param start - Starting line
 	 * @param end - Ending line
@@ -143,7 +144,7 @@ public class MarkerUtils {
 				marker.setAttribute(IMarker.CHAR_END, posEnd);
 				return marker.getId();
 			}
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("Marker can not be created", e);
 		}
 		return -1;
@@ -151,30 +152,30 @@ public class MarkerUtils {
 
 	/**
 	 * Adds the given markers to the given file
-	 * 
+	 *
 	 * @param file
 	 * @param markers
 	 */
 	public static void setMarker(IFile file, List<IVariantSyncMarker> markers) {
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
-		for (IVariantSyncMarker mi : markers) {
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		for (final IVariantSyncMarker mi : markers) {
 			long markerId = -1;
 			if (mi.isLine()) {
 				try {
 					IDocument document = null;
 					try {
-						document = (IDocument) VariantSyncPlugin.getEditor().getDocumentProvider().getDocument(VariantSyncPlugin.getEditor().getEditorInput());
-					} catch (NullPointerException e) {
+						document = VariantSyncPlugin.getEditor().getDocumentProvider().getDocument(VariantSyncPlugin.getEditor().getEditorInput());
+					} catch (final NullPointerException e) {
 						LogOperations.logError("Marker line is not available in the document", e);
 					}
 
-					IRegion regionStart = document.getLineInformation(mi.getOffset());
-					IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
-					int start = regionStart.getOffset();
-					int end = regionStart.getOffset() + regionEnd.getLength();
+					final IRegion regionStart = document.getLineInformation(mi.getOffset());
+					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
+					final int start = regionStart.getOffset();
+					final int end = regionStart.getOffset() + regionEnd.getLength();
 
 					markerId = addMarker(file, start, end, configurationProject.getFeatureContextManager().getContext(mi.getContext()));
-				} catch (BadLocationException e) {
+				} catch (final BadLocationException e) {
 					e.printStackTrace();
 				}
 			} else {

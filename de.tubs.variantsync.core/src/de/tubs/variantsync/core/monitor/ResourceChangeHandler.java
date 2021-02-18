@@ -30,7 +30,7 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			try {
 				event.getDelta().accept(new ResourceChangeVisitor());
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				LogOperations.logError("ResourceChangeVisitor could not be set.", e);
 			}
 		}
@@ -38,16 +38,16 @@ public class ResourceChangeHandler implements IResourceChangeListener, ISavePart
 
 	/**
 	 * Ensures that resource monitoring is active even if variantsync plugin is not active in eclipse.
-	 * 
+	 *
 	 * @throws CoreException resources could not be monitored
 	 */
 	public void registerSaveParticipant() throws CoreException {
-		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		final IWorkspace ws = ResourcesPlugin.getWorkspace();
 
 		// Registers the given plug-in's workspace save participant, and returns
 		// an object describing the workspace state at the time of the last save
 		// in which the bundle participated.
-		ISavedState ss = ws.addSaveParticipant(VariantSyncPlugin.PLUGIN_ID, this);
+		final ISavedState ss = ws.addSaveParticipant(VariantSyncPlugin.PLUGIN_ID, this);
 		if (ss != null) {
 
 			// used to receive notification of changes that might have happened

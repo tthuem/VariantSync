@@ -12,7 +12,7 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 
 /**
  * Contributes the start and stop button to the menu bar
- * 
+ *
  * @author Christopher Sontag
  */
 public class ActiveContextHandler extends AbstractHandler implements IElementUpdater {
@@ -27,10 +27,13 @@ public class ActiveContextHandler extends AbstractHandler implements IElementUpd
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		boolean oldValue = active;
+		final boolean oldValue = active;
 		VariantSyncPlugin.getActiveMappingManager().setActive(!oldValue);
-		if (!oldValue) updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
-		else updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		if (!oldValue) {
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_stop.gif"));
+		} else {
+			updateElement.setIcon(VariantSyncPlugin.getDefault().getImageDescriptor("icons/nav_go.gif"));
+		}
 		active = !oldValue;
 		return null;
 	}

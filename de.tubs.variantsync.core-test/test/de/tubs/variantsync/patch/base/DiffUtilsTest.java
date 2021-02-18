@@ -52,13 +52,13 @@ public class DiffUtilsTest {
 
 	@Test
 	public void testPatch1() throws DiffException {
-		Patch<String> patch = DiffUtils.diff(lines1, lines3, 1);
+		final Patch<String> patch = DiffUtils.diff(lines1, lines3, 1);
 		assertTrue(patch.getDeltas().size() == 3);
 	}
 
 	@Test
 	public void testPatch2() throws DiffException {
-		Patch<String> patch = DiffUtils.diff(lines1, lines4, 1);
+		final Patch<String> patch = DiffUtils.diff(lines1, lines4, 1);
 		assertTrue(patch.getDeltas().size() == 1);
 	}
 

@@ -27,7 +27,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Creates a empty delta object
-	 * 
+	 *
 	 * @param res
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Creates a delta object for a resource
-	 * 
+	 *
 	 * @param res - resource
 	 * @param timestamp - timestamp
 	 * @param kind - type of change
@@ -45,7 +45,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Creates patch object from a changed resource.
-	 * 
+	 *
 	 * @param res - resource
 	 * @param oldState - last history state
 	 * @param kind - type of change
@@ -55,7 +55,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Creates a delta copy with different resource.
-	 * 
+	 *
 	 * @param res - new file pointer
 	 * @param originalDelta - delta to copy
 	 * @return delta copy with new file pointer
@@ -64,7 +64,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Creates a delta copy with different resource.
-	 * 
+	 *
 	 * @param res - new file pointer
 	 * @param originalDelta - delta to copy
 	 * @return delta copy with new file pointer
@@ -73,7 +73,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Patches a resource with a given patch.
-	 * 
+	 *
 	 * @param res - resource
 	 * @param patch - patch
 	 * @return patched temp resource
@@ -82,7 +82,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Unpatches a revised resource for a given patch.
-	 * 
+	 *
 	 * @param res - the resource
 	 * @param patch - patch
 	 * @return original resource
@@ -91,7 +91,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Verifies that the given patch can be applied to the given resource
-	 * 
+	 *
 	 * @param res - the resource
 	 * @param delta - the patch to verify
 	 * @return true if the patch can be applied
@@ -100,7 +100,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Checks whether the file is supported
-	 * 
+	 *
 	 * @param file
 	 * @return true if the file is supported
 	 */
@@ -108,7 +108,7 @@ public interface IDeltaFactory<T> extends IExtension {
 
 	/**
 	 * Returns the marker handler for deltas of this type
-	 * 
+	 *
 	 * @return
 	 */
 	IMarkerHandler<T> getMarkerHandler();

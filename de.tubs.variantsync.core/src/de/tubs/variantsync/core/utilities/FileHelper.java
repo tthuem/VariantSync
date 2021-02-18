@@ -20,14 +20,14 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Class to retrieve file content when the workspace is busy. This class also enables to retrieve history states.
- * 
+ *
  * @author Christopher Sontag
  */
 public class FileHelper {
 
 	/**
 	 * Returns the latest history of an IFile resource
-	 * 
+	 *
 	 * @param res
 	 * @return
 	 */
@@ -35,7 +35,7 @@ public class FileHelper {
 		IFileState[] states = null;
 		try {
 			states = res.getHistory(null);
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("File states could not be retrieved.", e);
 		}
 		if (states.length > 0) {
@@ -46,7 +46,7 @@ public class FileHelper {
 
 	/**
 	 * Returns all lines of an IFile resource as an list of strings
-	 * 
+	 *
 	 * @param res
 	 * @return
 	 */
@@ -54,7 +54,7 @@ public class FileHelper {
 		List<String> currentFilelines = new ArrayList<>();
 		try {
 			currentFilelines = readFile(res.getContents(), res.getCharset());
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("File could not be accessed.", e);
 		}
 		return currentFilelines;
@@ -62,7 +62,7 @@ public class FileHelper {
 
 	/**
 	 * Returns all lines of an IFile history state resource as an list of strings
-	 * 
+	 *
 	 * @param state
 	 * @return
 	 */
@@ -70,7 +70,7 @@ public class FileHelper {
 		List<String> currentFilelines = new ArrayList<>();
 		try {
 			currentFilelines = readFile(state.getContents(), state.getCharset());
-		} catch (CoreException e) {
+		} catch (final CoreException e) {
 			LogOperations.logError("History can not be accessed.", e);
 		}
 		return currentFilelines;
@@ -78,7 +78,7 @@ public class FileHelper {
 
 	/**
 	 * Overwrites the IFile resource with the given lines
-	 * 
+	 *
 	 * @param res
 	 * @param lines
 	 */
@@ -94,16 +94,18 @@ public class FileHelper {
 	 * @return list with file content
 	 */
 	private static List<String> readFile(InputStream in, String charset) {
-		List<String> fileContent = new LinkedList<String>();
+		final List<String> fileContent = new LinkedList<String>();
 		String line = "";
 		BufferedReader reader = null;
-		if (charset == null) charset = (String) "UTF-8";
+		if (charset == null) {
+			charset = "UTF-8";
+		}
 		try {
 			reader = new BufferedReader(new InputStreamReader(in, charset));
 			while ((line = reader.readLine()) != null) {
 				fileContent.add(line);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LogOperations.logError("BufferedReader could not be opened.", e);
 		} finally {
 			try {
@@ -117,25 +119,27 @@ public class FileHelper {
 
 	/**
 	 * Writes content to a IFile resource using a buffered writer. Each line is one item in lines
-	 * 
+	 *
 	 * @param res
 	 * @param lines
 	 */
 	public static void writeFile(IFile res, List<String> lines) {
-		File file = new File(res.getRawLocationURI());
+		final File file = new File(res.getRawLocationURI());
 		if (file.exists()) {
 			file.delete();
 		}
-		File parentDir = file.getParentFile();
-		if (!parentDir.exists()) parentDir.mkdirs();
+		final File parentDir = file.getParentFile();
+		if (!parentDir.exists()) {
+			parentDir.mkdirs();
+		}
 		PrintWriter out = null;
 		try {
 			file.createNewFile();
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			for (String line : lines) {
+			for (final String line : lines) {
 				out.println(line);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LogOperations.logError("File can not be created.", e);
 		} finally {
 			if (out != null) {
@@ -144,7 +148,7 @@ public class FileHelper {
 			}
 			try {
 				ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				LogOperations.logInfo("Refresh could not be made because the workspace is locked up.");
 			}
 		}

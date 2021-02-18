@@ -19,7 +19,7 @@ public class LogOperations {
 
 	/**
 	 * Logs specified information.
-	 * 
+	 *
 	 * @param message human-readable message, localized to the current locale
 	 */
 	public static void logInfo(String message) {
@@ -28,7 +28,7 @@ public class LogOperations {
 
 	/**
 	 * Logs specified information.
-	 * 
+	 *
 	 * @param message human-readable message, localized to the current locale
 	 */
 	public static void logDebug(String message) {
@@ -39,7 +39,7 @@ public class LogOperations {
 
 	/**
 	 * Logs specified error.
-	 * 
+	 *
 	 * @param message human-readable message, localized to the current locale
 	 * @param exception low-level exception, or <code>null</code> if not applicable
 	 */
@@ -49,7 +49,7 @@ public class LogOperations {
 
 	/**
 	 * Logs specified information.
-	 * 
+	 *
 	 * @param severity the severity; one of the following: <code>IStatus.OK</code>, <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
 	 *        <code>IStatus.WARNING</code>
 	 * @param pluginId unique identifier of the relevant plug-in
@@ -63,7 +63,7 @@ public class LogOperations {
 
 	/**
 	 * Creates status object representing specified information.
-	 * 
+	 *
 	 * @param severity the severity; one of the following: <code>IStatus.OK</code>, <code>IStatus.ERROR</code>, <code>IStatus.INFO</code>, or
 	 *        <code>IStatus.WARNING</code>
 	 * @param pluginId unique identifier of the relevant plug-in
@@ -78,7 +78,7 @@ public class LogOperations {
 
 	/**
 	 * Logs given status.
-	 * 
+	 *
 	 * @param status status to log
 	 */
 	public static void log(IStatus status) {

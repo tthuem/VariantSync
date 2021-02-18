@@ -15,7 +15,7 @@ public class DefaultPatchFactory implements IPatchFactory {
 
 	@Override
 	public IPatch<IDelta<?>> createPatch(String context) {
-		IPatch<IDelta<?>> patch = new APatch<IDelta<?>>();
+		final IPatch<IDelta<?>> patch = new APatch<IDelta<?>>();
 		patch.setContext(context);
 		patch.setStartTime(System.currentTimeMillis());
 		return patch;
@@ -23,7 +23,7 @@ public class DefaultPatchFactory implements IPatchFactory {
 
 	@Override
 	public IPatch<IDelta<?>> createPatch() {
-		IPatch<IDelta<?>> patch = new APatch<IDelta<?>>();
+		final IPatch<IDelta<?>> patch = new APatch<IDelta<?>>();
 		return patch;
 	}
 
@@ -31,11 +31,11 @@ public class DefaultPatchFactory implements IPatchFactory {
 	@Override
 	public IFile applyDelta(IFile file, IPatch<?> patch) {
 		IFile newFile = file;
-		for (IDelta delta : patch.getDeltas()) {
+		for (final IDelta delta : patch.getDeltas()) {
 			try {
-				IDeltaFactory<?> factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
+				final IDeltaFactory<?> factory = DeltaFactoryManager.getFactoryById(delta.getFactoryId());
 				newFile = factory.applyDelta(newFile, delta);
-			} catch (NoSuchExtensionException e) {
+			} catch (final NoSuchExtensionException e) {
 				LogOperations.logError("Could not find extension with id: " + delta.getFactoryId(), e);
 			}
 		}

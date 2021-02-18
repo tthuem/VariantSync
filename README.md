@@ -1,4 +1,4 @@
-# VariantSync
+# VariantSync [![Build Status](https://travis-ci.org/tthuem/VariantSync.svg?branch=seproj_ulm_2020)](https://travis-ci.org/tthuem/VariantSync)
 === Automating the Synchronization of Software Variants ===
 
 VariantSync is a tool to develop variants separately as in clone-and-own and to automate change propagation by using domain knowledge of developers. VariantSync detects and logs changes during development, tags these changes to feature expressions and automates the synchronization

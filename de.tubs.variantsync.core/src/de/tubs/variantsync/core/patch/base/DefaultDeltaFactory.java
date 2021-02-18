@@ -26,7 +26,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 
 /**
  * DefaultDeltaFactory
- * 
+ *
  * @author Christopher Sontag
  * @since 18.08.2017
  */
@@ -34,7 +34,7 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	private static IDeltaFactory<?> instance = new DefaultDeltaFactory();
-	private HistoryStore historyStore = new HistoryStore();
+	private final HistoryStore historyStore = new HistoryStore();
 
 	@Override
 	public String getId() {
@@ -57,25 +57,27 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public List<IDelta<Chunk<String>>> createDeltas(IFile res, long timestamp, DELTATYPE kind) throws DiffException {
-		IFileState state = FileHelper.getLatestHistory((IFile) res);
+		final IFileState state = FileHelper.getLatestHistory(res);
 		return createDeltas(res, state, timestamp, kind);
 	}
 
 	@Override
 	public List<IDelta<Chunk<String>>> createDeltas(IFile res, IFileState oldState, long timestamp, DELTATYPE kind) throws DiffException {
 		// Check for null arguments
-		if (res == null || oldState == null || kind == null) return null;
+		if ((res == null) || (oldState == null) || (kind == null)) {
+			return null;
+		}
 
 		// Get the current mappings
 		List<String> currentFilelines = null;
 		if (res.exists() && !kind.equals(DELTATYPE.REMOVED)) {
-			currentFilelines = FileHelper.getFileLines((IFile) res);
+			currentFilelines = FileHelper.getFileLines(res);
 		} else {
 			currentFilelines = new ArrayList<>();
 		}
 
 		// Get the history mappings
-		List<String> historyFilelines = FileHelper.getFileLines(oldState);
+		final List<String> historyFilelines = FileHelper.getFileLines(oldState);
 
 		// DiffUtils are 0-based, Eclipse instead 1-based
 		currentFilelines.add(0, "");
@@ -85,17 +87,17 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		Patch<String> patch;
 		try {
 			patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
-		} catch (com.github.difflib.algorithm.DiffException e) {
+		} catch (final com.github.difflib.algorithm.DiffException e) {
 			throw new DiffException(e.getMessage());
 		}
 
 		// If a patch was created wrap it in Delta
-		if (!patch.getDeltas().isEmpty() && patch.getDeltas().size() > 0) {
+		if (!patch.getDeltas().isEmpty() && (patch.getDeltas().size() > 0)) {
 
-			List<IDelta<Chunk<String>>> deltas = new ArrayList<>();
-			for (Delta<String> originalDelta : patch.getDeltas()) {
+			final List<IDelta<Chunk<String>>> deltas = new ArrayList<>();
+			for (final Delta<String> originalDelta : patch.getDeltas()) {
 
-				IDelta<Chunk<String>> delta = new DefaultDelta(res, getId());
+				final IDelta<Chunk<String>> delta = new DefaultDelta(res, getId());
 				delta.setType(kind);
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
@@ -116,10 +118,12 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public IDelta<Chunk<String>> createDeltas(IFile res, IDelta<?> originalDelta) {
-		if (res == null) return null;
+		if (res == null) {
+			return null;
+		}
 		if (originalDelta instanceof DefaultDelta) {
-			DefaultDelta defaultDelta = (DefaultDelta) originalDelta;
-			IDelta<Chunk<String>> delta = new DefaultDelta(res, getId());
+			final DefaultDelta defaultDelta = (DefaultDelta) originalDelta;
+			final IDelta<Chunk<String>> delta = new DefaultDelta(res, getId());
 			delta.setType(defaultDelta.getType());
 			delta.setOriginal(defaultDelta.getOriginal());
 			delta.setRevised(defaultDelta.getRevised());
@@ -133,13 +137,15 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	@Override
 	public List<IDelta<Chunk<String>>> createDeltas(IFile original, IFile revised) throws DiffException {
 		// Check for null arguments
-		if (original == null || revised == null) return null;
+		if ((original == null) || (revised == null)) {
+			return null;
+		}
 
 		// Get the current mappings
-		List<String> currentFilelines = FileHelper.getFileLines(original);
+		final List<String> currentFilelines = FileHelper.getFileLines(original);
 
 		// Get the history mappings
-		List<String> historyFilelines = FileHelper.getFileLines(revised);
+		final List<String> historyFilelines = FileHelper.getFileLines(revised);
 
 		// DiffUtils are 0-based, Eclipse instead 1-based
 		currentFilelines.add(0, "");
@@ -149,17 +155,17 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		Patch<String> patch;
 		try {
 			patch = DiffUtils.diff(new ArrayList<String>(historyFilelines), new ArrayList<String>(currentFilelines), 2);
-		} catch (com.github.difflib.algorithm.DiffException e) {
+		} catch (final com.github.difflib.algorithm.DiffException e) {
 			throw new DiffException(e.getMessage());
 		}
 
 		// If a patch was created wrap it in Delta
-		if (!patch.getDeltas().isEmpty() && patch.getDeltas().size() > 0) {
+		if (!patch.getDeltas().isEmpty() && (patch.getDeltas().size() > 0)) {
 
-			List<IDelta<Chunk<String>>> deltas = new ArrayList<>();
-			for (Delta<String> originalDelta : patch.getDeltas()) {
+			final List<IDelta<Chunk<String>>> deltas = new ArrayList<>();
+			for (final Delta<String> originalDelta : patch.getDeltas()) {
 
-				IDelta<Chunk<String>> delta = new DefaultDelta(original, getId());
+				final IDelta<Chunk<String>> delta = new DefaultDelta(original, getId());
 				delta.setType(DELTATYPE.CHANGED);
 				delta.setOriginal(originalDelta.getOriginal());
 				delta.setRevised(originalDelta.getRevised());
@@ -181,10 +187,10 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 	@Override
 	public IFile applyDelta(IFile res, IDelta<Chunk<String>> patch) {
 		try {
-			Patch<String> p = new Patch<String>();
+			final Patch<String> p = new Patch<String>();
 
-			Chunk<String> chunkOriginal = patch.getOriginal();
-			Chunk<String> chunkRevised = patch.getRevised();
+			final Chunk<String> chunkOriginal = patch.getOriginal();
+			final Chunk<String> chunkRevised = patch.getRevised();
 
 			Delta<String> delta = null;
 			switch (patch.getType()) {
@@ -206,7 +212,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 			}
 			p.addDelta(delta);
 
-			List<String> linesOld = FileHelper.getFileLines(res);
+			final List<String> linesOld = FileHelper.getFileLines(res);
 			List<String> linesNew;
 
 			// DiffUtils are 0-based, Eclipse instead 1-based
@@ -221,7 +227,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 				FileHelper.setFileLines(res, linesNew);
 			}
-		} catch (PatchFailedException e) {
+		} catch (final PatchFailedException e) {
 			LogOperations.logError("Error when patching file", e);
 		}
 		return res;
@@ -229,10 +235,10 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public IFile reverseDelta(IFile res, IDelta<Chunk<String>> patch) {
-		Patch<String> p = new Patch<String>();
+		final Patch<String> p = new Patch<String>();
 
-		Chunk<String> chunkOriginal = patch.getOriginal();
-		Chunk<String> chunkRevised = patch.getRevised();
+		final Chunk<String> chunkOriginal = patch.getOriginal();
+		final Chunk<String> chunkRevised = patch.getRevised();
 
 		Delta<String> delta = null;
 		switch (patch.getType()) {
@@ -254,7 +260,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		}
 		p.addDelta(delta);
 
-		List<String> linesNew = FileHelper.getFileLines(res);
+		final List<String> linesNew = FileHelper.getFileLines(res);
 		linesNew.add(0, "");
 
 		List<String> linesOld;
@@ -272,10 +278,12 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public boolean verifyDelta(IFile res, IDelta<Chunk<String>> patch) {
-		Chunk<String> chunkOriginal = patch.getOriginal();
-		Chunk<String> chunkRevised = patch.getRevised();
+		final Chunk<String> chunkOriginal = patch.getOriginal();
+		final Chunk<String> chunkRevised = patch.getRevised();
 
-		if (chunkOriginal == null || chunkRevised == null) return false;
+		if ((chunkOriginal == null) || (chunkRevised == null)) {
+			return false;
+		}
 
 		Delta<String> delta = null;
 		switch (patch.getType()) {
@@ -296,13 +304,13 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 			return false;
 		}
 
-		List<String> lines = FileHelper.getFileLines(res);
+		final List<String> lines = FileHelper.getFileLines(res);
 		lines.add(0, "");
 		try {
 			delta.verify(lines);
-		} catch (PatchFailedException e) {
+		} catch (final PatchFailedException e) {
 			return false;
-		} catch (IndexOutOfBoundsException e) {
+		} catch (final IndexOutOfBoundsException e) {
 			LogOperations.logDebug("An IndexOutOfBoundsException occured. The file used for comparision has fewer lines than what was changed by the delta.");
 			return false;
 		}
@@ -324,10 +332,9 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return new DefaultMarkerHandler();
 	}
 
-	/*
 	@Override
 	public boolean initExtension() {
 		return true;
-	}**/
+	}
 
 }

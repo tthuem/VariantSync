@@ -9,18 +9,18 @@ import de.tubs.variantsync.core.utilities.TreeNode;
 
 /**
  * Wraps the patches to a tree format
- * 
+ *
  * @author Christopher Sontag
  */
 public class ResourcesTree {
-	
+
 	public static Tree construct(List<IPatch<?>> patches) {
-		Tree tree = new Tree();
-		TreeNode root = new TreeNode();
+		final Tree tree = new Tree();
+		final TreeNode root = new TreeNode();
 		tree.setRoot(root);
-		
-		for (IPatch<?> patch : patches) {
-			for (IDelta<?> delta : patch.getDeltas()) {
+
+		for (final IPatch<?> patch : patches) {
+			for (final IDelta<?> delta : patch.getDeltas()) {
 				TreeNode featureNode = tree.find(delta.getContext());
 				if (featureNode == null) {
 					featureNode = new TreeNode(delta.getContext());
@@ -38,7 +38,7 @@ public class ResourcesTree {
 				}
 			}
 		}
-		
+
 		return tree;
 	}
 

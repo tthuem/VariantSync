@@ -6,7 +6,7 @@ public interface IPatchFactory {
 
 	/**
 	 * Create a new patch under the given context
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -14,14 +14,14 @@ public interface IPatchFactory {
 
 	/**
 	 * NOTE: Use this only for calculations otherwise it could lead to misbehavior
-	 * 
+	 *
 	 * @return {@link IPatch}
 	 */
 	IPatch<IDelta<?>> createPatch();
 
 	/**
 	 * Patches a resource with a given patch.
-	 * 
+	 *
 	 * @param res - resource
 	 * @param patch - patch
 	 * @return patched temp resource

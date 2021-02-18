@@ -6,9 +6,9 @@ import de.tubs.variantsync.core.utilities.Tree;
 import de.tubs.variantsync.core.utilities.TreeNode;
 
 /**
- * 
+ *
  * ContentProvider for {@link FeatureTree}
- * 
+ *
  * @author Christopher Sontag
  */
 public class TargetFocusTreeContentProvider implements ITreeContentProvider {

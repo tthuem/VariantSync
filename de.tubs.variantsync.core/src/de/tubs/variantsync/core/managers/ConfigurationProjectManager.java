@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.managers;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.event.FeatureIDEEvent;
+import de.ovgu.featureide.fm.core.io.EclipseFileSystem;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.utilities.LogOperations;
@@ -29,10 +31,10 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 
 	public void initalize() {
 		ConfigurationProject lastConfiguration = null;
-		for (IFeatureProject project : findConfigurationProjects()) {
+		for (final IFeatureProject project : findConfigurationProjects()) {
 			try {
 				MarkerUtils.cleanProject(project.getProject());
-			} catch (CoreException e) {
+			} catch (final CoreException e) {
 				LogOperations.logError("A marker could not be deleted", e);
 			}
 			if (project.getProjectName().equals(VariantSyncPlugin.getDefault().getPreferenceStore().getString("lastRequestedConfiguration"))) {
@@ -41,11 +43,11 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 				getConfigurationProject(project);
 			}
 		}
-		if (lastConfiguration != null && lastRequestedConfiguration != lastConfiguration) {
+		if ((lastConfiguration != null) && (lastRequestedConfiguration != lastConfiguration)) {
 			lastRequestedConfiguration = lastConfiguration;
 			fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedConfiguration));
 		}
-		for (ConfigurationProject configurationProject : INSTANCES.values()) {
+		for (final ConfigurationProject configurationProject : INSTANCES.values()) {
 			findVariants(configurationProject);
 			configurationProject.load();
 		}
@@ -59,13 +61,13 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	}
 
 	public void terminate() {
-		if (lastRequestedConfiguration != null && lastRequestedConfiguration.getFeatureProject() != null) {
+		if ((lastRequestedConfiguration != null) && (lastRequestedConfiguration.getFeatureProject() != null)) {
 			VariantSyncPlugin.getDefault().getPreferenceStore().setValue("lastRequestedConfiguration",
 					lastRequestedConfiguration.getFeatureProject().getProjectName());
 		}
 
-		for (ConfigurationProject configurationProject : INSTANCES.values()) {
-			if (configurationProject != null && configurationProject.getFeatureProject().getProject().exists()) {
+		for (final ConfigurationProject configurationProject : INSTANCES.values()) {
+			if ((configurationProject != null) && configurationProject.getFeatureProject().getProject().exists()) {
 				configurationProject.save();
 			}
 		}
@@ -73,9 +75,9 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 
 	public ConfigurationProject getConfigurationProject(IFeatureProject project) {
 		if (project != null) {
-			for (IFeatureProject featureProject : INSTANCES.keySet()) {
+			for (final IFeatureProject featureProject : INSTANCES.keySet()) {
 				if (featureProject.getProjectName().equals(project.getProjectName())) {
-					ConfigurationProject configurationProject = INSTANCES.get(featureProject);
+					final ConfigurationProject configurationProject = INSTANCES.get(featureProject);
 					if (lastRequestedConfiguration != configurationProject) {
 						lastRequestedConfiguration = configurationProject;
 						fireEvent(new VariantSyncEvent(this, EventType.CONFIGURATIONPROJECT_CHANGED, null, lastRequestedConfiguration));
@@ -83,7 +85,7 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 					return configurationProject;
 				}
 			}
-			ConfigurationProject configurationProject = new ConfigurationProject();
+			final ConfigurationProject configurationProject = new ConfigurationProject();
 			configurationProject.setFeatureProject(project);
 			INSTANCES.put(project, configurationProject);
 			if (lastRequestedConfiguration != configurationProject) {
@@ -99,35 +101,36 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	 * Loads all contexts which are saved in a XML-file.
 	 */
 	private List<IFeatureProject> findConfigurationProjects() {
-		//System.out.println("[ConfigurationProjectManager.findConfigurationProjects]");
-		List<IFeatureProject> projects = new ArrayList<>();
-		for (IFeatureProject project : CorePlugin.getFeatureProjects()) {
-			//System.out.print("    project " + project.getProjectName());
+		// System.out.println("[ConfigurationProjectManager.findConfigurationProjects]");
+		final List<IFeatureProject> projects = new ArrayList<>();
+		for (final IFeatureProject project : CorePlugin.getFeatureProjects()) {
+			// System.out.print(" project " + project.getProjectName());
 			if (project.getComposerID().equals("de.tubs.variantsync.core.composer")) {
 				LogOperations.logInfo("Found configuration project with name: " + project.getProjectName());
 				projects.add(project);
-				//System.out.println("    is variant composing");
+				// System.out.println(" is variant composing");
 			} else {
-				//System.out.println("    is NOT variant composing");
+				// System.out.println(" is NOT variant composing");
 			}
 		}
 		return projects;
 	}
 
 	private void findVariants(ConfigurationProject configurationProject) {
-		for (IFile file : configurationProject.getFeatureProject().getAllConfigurations()) {
-			String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
-			IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
+		for (final Path path : configurationProject.getFeatureProject().getAllConfigurations()) {
+			final IFile file = (IFile) EclipseFileSystem.getResource(path);
+			final String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
+			final IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
 			if (project.exists()) {
 				configurationProject.addVariant(project);
 			} else {
 				try {
-					IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
+					final IMarker m = file.createMarker("de.tubs.variantsync.marker.error");
 					m.setAttribute(IMarker.MESSAGE, "Project " + projectName + " is missing in the workspace");
 					m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 					m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 					m.setAttribute(IMarker.LINE_NUMBER, 0);
-				} catch (CoreException e) {
+				} catch (final CoreException e) {
 					LogOperations.logError("Marker cannot be created!", e);
 				}
 			}
@@ -136,16 +139,20 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	}
 
 	public IFeatureProject getFeatureProject(IProject project) {
-		for (IFeatureProject featureProject : INSTANCES.keySet()) {
-			if (project.getName().equals(featureProject.getProjectName())) return featureProject;
-			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getVariants().contains(project)) return featureProject;
+		for (final IFeatureProject featureProject : INSTANCES.keySet()) {
+			if (project.getName().equals(featureProject.getProjectName())) {
+				return featureProject;
+			}
+			if (featureProject.getProject().exists() && INSTANCES.get(featureProject).getVariants().contains(project)) {
+				return featureProject;
+			}
 		}
 		return null;
 	}
 
 	public ConfigurationProject getConfigurationProject(IProject project) {
 		if (project != null) {
-			IFeatureProject featureProject = getFeatureProject(project);
+			final IFeatureProject featureProject = getFeatureProject(project);
 			if (featureProject != null) {
 				return getConfigurationProject(featureProject);
 			}
@@ -155,11 +162,13 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 
 	/**
 	 * Returns the configuration project for the active editor
-	 * 
+	 *
 	 * @return
 	 */
 	public ConfigurationProject getActiveConfigurationProject() {
-		if (VariantSyncPlugin.getEditorInput() == null) return lastRequestedConfiguration;
+		if (VariantSyncPlugin.getEditorInput() == null) {
+			return lastRequestedConfiguration;
+		}
 		return getConfigurationProject(VariantSyncPlugin.getEditorInput().getProject());
 	}
 
@@ -171,9 +180,9 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 		case MODEL_DATA_SAVED:
 			LogOperations.logInfo("Model Event" + event);
 			if (event.getSource() instanceof IFeatureModel) {
-				IFeatureModel model = (IFeatureModel) event.getSource();
-				List<String> featureExpressions = getActiveConfigurationProject().getFeatureContextManager().getContextsAsStrings();
-				for (IFeature feature : model.getFeatures()) {
+				final IFeatureModel model = (IFeatureModel) event.getSource();
+				final List<String> featureExpressions = getActiveConfigurationProject().getFeatureContextManager().getContextsAsStrings();
+				for (final IFeature feature : model.getFeatures()) {
 					if (!featureExpressions.contains(feature.getName())) {
 						getActiveConfigurationProject().getFeatureContextManager().addContext(feature.getName());
 					}
@@ -192,7 +201,7 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 		switch (event.getEventType()) {
 		case CONFIGURATIONPROJECT_SET:
 			if (event.getSource() instanceof ConfigurationProject) {
-				ConfigurationProject context = (ConfigurationProject) event.getSource();
+				final ConfigurationProject context = (ConfigurationProject) event.getSource();
 				if (context.getFeatureProject() != null) {
 					context.getFeatureProject().getFeatureModelManager().addListener(this);
 				}

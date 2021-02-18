@@ -19,7 +19,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 
 /**
  * Contributes the combobox in the menu bar for selecting the current feature context
- * 
+ *
  * @author Christopher Sontag
  */
 public class SelectContextContribution extends WorkbenchWindowControlContribution implements SelectionListener, IEventListener {
@@ -40,11 +40,11 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 		// Should solve Eclipse Bug 471313 and can be only used with FillLayout
 		parent.getParent().setRedraw(true);
 
-		Composite composite = new Composite(parent, SWT.FILL);
+		final Composite composite = new Composite(parent, SWT.FILL);
 		composite.setLayout(new FillLayout());
 
 		selContext = new CCombo(composite, SWT.FLAT | SWT.BORDER | SWT.FILL);
-		ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+		final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 		if (configurationProject != null) {
 			selContext.setText(configurationProject.getFeatureContextManager().getActual());
 		} else {
@@ -65,19 +65,20 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 	private void updateCCombo() {
 		Display.getDefault().asyncExec(new Runnable() {
 
+			@Override
 			public void run() {
-				ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
+				final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 				if (configurationProject != null) {
 					try {
-						FeatureContextManager featureContextManager = configurationProject.getFeatureContextManager();
-						int curSel = selContext.getSelectionIndex();
+						final FeatureContextManager featureContextManager = configurationProject.getFeatureContextManager();
+						final int curSel = selContext.getSelectionIndex();
 						selContext.setItems(featureContextManager.getContextsAsStrings().toArray(new String[] {}));
 						if (curSel != -1) {
 							selContext.select(curSel);
 						} else {
 							selContext.setText(featureContextManager.getActual());
 						}
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						LogOperations.logError("Cannot update selection combo box in toolbar", e);
 					}
 				}
@@ -87,7 +88,7 @@ public class SelectContextContribution extends WorkbenchWindowControlContributio
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		String context = selContext.getItem(selContext.getSelectionIndex());
+		final String context = selContext.getItem(selContext.getSelectionIndex());
 
 		VariantSyncPlugin.getActiveFeatureContextManager().setActual(context);
 	}

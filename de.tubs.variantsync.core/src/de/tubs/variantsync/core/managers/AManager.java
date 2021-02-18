@@ -7,7 +7,7 @@ public abstract class AManager {
 
 	/**
 	 * Wrapper for {@link VariantSyncPlugin#fireEvent(VariantSyncEvent)}
-	 * 
+	 *
 	 * @param variantSyncEvent
 	 */
 	protected void fireEvent(VariantSyncEvent variantSyncEvent) {

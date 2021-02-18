@@ -8,7 +8,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
-import de.ovgu.featureide.fm.core.io.manager.FileHandler;
+import de.ovgu.featureide.fm.core.io.manager.SimpleFileHandler;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.SourceFile;
@@ -19,7 +19,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 public class MappingManager extends AManager implements ISaveableManager {
 
 	private HashMap<IProject, List<SourceFile>> codeMappings = new HashMap<>();
-	private ConfigurationProject configurationProject;
+	private final ConfigurationProject configurationProject;
 
 	public MappingManager(ConfigurationProject configurationProject) {
 		this.configurationProject = configurationProject;
@@ -28,11 +28,11 @@ public class MappingManager extends AManager implements ISaveableManager {
 	private boolean isActive;
 
 	public boolean isActive() {
-		return this.isActive;
+		return isActive;
 	}
 
 	public void setActive(boolean status) {
-		this.isActive = status;
+		isActive = status;
 		if (isActive) {
 			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_START, null,
 					VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject()));
@@ -43,8 +43,8 @@ public class MappingManager extends AManager implements ISaveableManager {
 	}
 
 	public SourceFile getMapping(IFile file) {
-		if (file != null && codeMappings.containsKey(file.getProject())) {
-			for (SourceFile sourceFile : codeMappings.get(file.getProject())) {
+		if ((file != null) && codeMappings.containsKey(file.getProject())) {
+			for (final SourceFile sourceFile : codeMappings.get(file.getProject())) {
 				if (sourceFile.getFile().getFullPath().equals(file.getFullPath())) {
 					return sourceFile;
 				}
@@ -62,12 +62,12 @@ public class MappingManager extends AManager implements ISaveableManager {
 	}
 
 	public void addCodeMapping(IProject project, List<SourceFile> files) {
-		this.codeMappings.put(project, files);
+		codeMappings.put(project, files);
 	}
 
 	public void addCodeMapping(IFile file, SourceFile sourceFile) {
 		List<SourceFile> sourceFiles = codeMappings.get(file.getProject());
-		if (sourceFiles == null || sourceFiles.isEmpty()) {
+		if ((sourceFiles == null) || sourceFiles.isEmpty()) {
 			sourceFiles = new ArrayList<>();
 			addCodeMapping(file.getProject(), sourceFiles);
 		}
@@ -87,9 +87,9 @@ public class MappingManager extends AManager implements ISaveableManager {
 
 	@Override
 	public void load() {
-		for (IProject project : configurationProject.getVariants()) {
-			List<SourceFile> sourceFiles = new ArrayList<>();
-			FileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
+		for (final IProject project : configurationProject.getVariants()) {
+			final List<SourceFile> sourceFiles = new ArrayList<>();
+			SimpleFileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
 			if (!sourceFiles.isEmpty()) {
 				addCodeMapping(project, sourceFiles);
 			}
@@ -98,8 +98,8 @@ public class MappingManager extends AManager implements ISaveableManager {
 
 	@Override
 	public void save() {
-		for (IProject project : codeMappings.keySet()) {
-			FileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), codeMappings.get(project),
+		for (final IProject project : codeMappings.keySet()) {
+			SimpleFileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), codeMappings.get(project),
 					new CodeMappingFormat(project));
 		}
 	}

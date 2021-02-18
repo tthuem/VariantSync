@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import de.ovgu.featureide.fm.core.color.FeatureColor;
-import de.ovgu.featureide.fm.core.io.IPersistentFormat;
+import de.ovgu.featureide.fm.core.io.APersistentFormat;
 import de.ovgu.featureide.fm.core.io.Problem;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
@@ -23,7 +23,7 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	public static final String FILENAME = ".contexts.xml";
 
 	@Override
-	public IPersistentFormat<List<FeatureContext>> getInstance() {
+	public APersistentFormat<List<FeatureContext>> getInstance() {
 		return new FeatureContextFormat();
 	}
 
@@ -46,7 +46,7 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element e : getElements(doc.getDocumentElement().getChildNodes())) {
-			FeatureContext fe = new FeatureContext(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
+			final FeatureContext fe = new FeatureContext(e.getAttribute("name"), FeatureColor.getColor(e.getAttribute("highlighter")));
 			object.add(fe);
 		}
 
@@ -57,7 +57,7 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 		final Element root = doc.createElement(FEATURE_CONTEXTS);
 
 		Element e;
-		for (FeatureContext fe : object) {
+		for (final FeatureContext fe : object) {
 			e = doc.createElement(FEATURE_CONTEXT);
 			e.setAttribute("name", fe.name);
 			e.setAttribute("highlighter", fe.highlighter.getColorName());

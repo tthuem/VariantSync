@@ -9,8 +9,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+	<groupId>de.tubs.variantsync.core</groupId>
 	<artifactId>de.tubs.variantsync.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	
-	<groupId>de.tubs.variantsync.core</groupId>
 </project>

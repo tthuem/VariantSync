@@ -1,6 +1,6 @@
 #!/bin/bash
 cd de.variantsync.core
-mvn clsean verify
+mvn clean verify
 eLevel=$?
 
 if [ $eLevel -eq 0 ] 

@@ -8,8 +8,7 @@ import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import de.variantsync.core.ast.AST;
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 /**
  * 

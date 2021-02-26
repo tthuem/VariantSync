@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 public class AST<G extends Grammar, Value> {
 

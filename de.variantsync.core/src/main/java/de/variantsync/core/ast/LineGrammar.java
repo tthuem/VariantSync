@@ -1,6 +1,6 @@
 package de.variantsync.core.ast;
 
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 import java.util.ArrayList;
 import java.util.List;

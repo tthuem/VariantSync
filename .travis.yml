@@ -13,5 +13,5 @@ cache:
   - "$HOME/.m2"
 install: true
 script:
-  - chmod -x vsBuild.sh
+  - chmod +x vsBuild.sh
   - ./vsBuild.sh

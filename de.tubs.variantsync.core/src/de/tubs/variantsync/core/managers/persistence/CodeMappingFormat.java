@@ -16,8 +16,8 @@ import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import de.ovgu.featureide.fm.core.io.xml.AXMLFormat;
 import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.SourceFile;
-import de.tubs.variantsync.core.utilities.AMarkerInformation;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
+import de.variantsync.core.marker.AMarkerInformation;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 

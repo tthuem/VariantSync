@@ -19,11 +19,11 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.SourceFile;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.MarkerUtils;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 /**
  * PartAdapter for the editor. Creates and updates the markers of the current file of the editor

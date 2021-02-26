@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IFile;
 import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public abstract class AMarkerHandler<T> implements IMarkerHandler<T> {
 

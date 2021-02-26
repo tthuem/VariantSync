@@ -15,8 +15,8 @@ import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
 import de.tubs.variantsync.core.utilities.LogOperations;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class CodeMappingHandler {

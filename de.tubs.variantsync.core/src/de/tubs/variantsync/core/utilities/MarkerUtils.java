@@ -17,6 +17,7 @@ import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.FeatureContext;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 /**
  * Utilities for creating specialized VariantSync eclipse resource markers

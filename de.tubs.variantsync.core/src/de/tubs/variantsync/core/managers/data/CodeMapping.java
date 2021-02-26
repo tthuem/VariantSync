@@ -1,6 +1,6 @@
 package de.tubs.variantsync.core.managers.data;
 
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class CodeMapping {
 

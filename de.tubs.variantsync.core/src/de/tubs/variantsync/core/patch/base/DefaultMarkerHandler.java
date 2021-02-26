@@ -13,9 +13,9 @@ import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.patch.AMarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
-import de.tubs.variantsync.core.utilities.AMarkerInformation;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
 import de.tubs.variantsync.core.utilities.MarkerUtils;
+import de.variantsync.core.marker.AMarkerInformation;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 
 import de.tubs.variantsync.core.managers.data.SourceFile;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public interface IMarkerHandler<T> {
 

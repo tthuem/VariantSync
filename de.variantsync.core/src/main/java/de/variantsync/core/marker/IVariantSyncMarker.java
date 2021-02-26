@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.utilities;
+package de.variantsync.core.marker;
 
 public interface IVariantSyncMarker {
 

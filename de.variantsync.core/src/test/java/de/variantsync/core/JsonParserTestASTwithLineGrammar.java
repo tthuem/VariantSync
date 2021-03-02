@@ -24,10 +24,10 @@ public class JsonParserTestASTwithLineGrammar {
 		exampleAst = new AST<>(LineGrammar.Directory, "src");
 		AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
 		exampleAst.addChild(mainJava);
-		mainJava.addChildren(Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"),
-				new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
-				new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"),
-				new AST<>(LineGrammar.Line, "    }"), new AST<>(LineGrammar.Line, "}")));
+		mainJava.addChildren(
+				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
+						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
+						new AST<>(LineGrammar.Line, "}")));
 
 		exmaplePath = Path.of("out.txt");
 

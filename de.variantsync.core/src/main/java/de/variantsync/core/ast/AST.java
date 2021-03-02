@@ -23,11 +23,6 @@ public class AST<G extends Grammar, Value> {
 
 	private final String INDENT_STRING = "    ";
 
-	/**
-	 * TODO: - sanity check like: A Directory can't have direct child Line or Lines are always leaf nodes - add - toString - equals - compareTo ? - hash ? -
-	 * toList ? - size - get - contains - remove <p> - testing
-	 */
-
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
@@ -35,11 +30,8 @@ public class AST<G extends Grammar, Value> {
 			return result.toString();
 		} else {
 			int[] level = { 0 }; // pointer magic
-			// result.append(value + "\n");
 
 			HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
-			// levelFinished.add(level[0]);
-			// level[0]++;
 			toString(result, this, level, levelFinished, false);
 		}
 

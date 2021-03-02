@@ -1,6 +1,5 @@
 package de.variantsync.core;
 
-import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 

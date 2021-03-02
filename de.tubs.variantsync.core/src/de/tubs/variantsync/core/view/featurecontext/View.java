@@ -39,7 +39,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
  */
 public class View extends ViewPart implements IEventListener {
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.featurecontexts";
+	public static final String ID = String.format("%s.views.featurecontexts", VariantSyncPlugin.PLUGIN_ID);
 
 	private List<FeatureContext> expressions;
 

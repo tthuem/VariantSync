@@ -21,27 +21,29 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public String getOriginalAsString() {
-		String ret = String.valueOf(original.getPosition());
-		ret = ret + ":;:";
+		StringBuilder ret = new StringBuilder(String.valueOf(original.getPosition()));
+		ret.append(":;:");
 
 		for (final String line : original.getLines()) {
-			ret = ret + line + "#:#";
+			ret.append(line);
+			ret.append("#:#");
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
-		ret = ret + ":;:";
+		ret = new StringBuilder(ret.substring(0, ret.lastIndexOf("#:#")));
+		ret.append(":;:");
 
 		for (final String bLine : original.getBefore()) {
-			ret = ret + bLine + "#:#";
+			ret.append(bLine);
+			ret.append("#:#");
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
-		ret = ret + ":;:";
+		ret = new StringBuilder(ret.substring(0, ret.lastIndexOf("#:#")));
+		ret.append(":;:");
 
 		for (final String aLine : original.getAfter()) {
-			ret = ret + aLine + "#:#";
+			ret.append(aLine);
+			ret.append("#:#");
 		}
-		ret = ret.substring(0, ret.lastIndexOf("#:#"));
 
-		return ret;
+		return ret.substring(0, ret.lastIndexOf("#:#"));
 	}
 
 	@Override
@@ -58,33 +60,36 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public String getRevisedAsString() {
-		String ret = String.valueOf(revised.getPosition());
-		ret = ret + ":;:";
+		StringBuilder ret = new StringBuilder(String.valueOf(revised.getPosition()));
+		ret.append(":;:");
 
 		for (final String line : revised.getLines()) {
-			ret = ret + line + "#:#";
+			ret.append(line);
+			ret.append("#:#");
 		}
 		if (!revised.getLines().isEmpty()) {
-			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+			ret = new StringBuilder(ret.substring(0, ret.lastIndexOf("#:#")));
 		}
-		ret = ret + ":;:";
+		ret.append(":;:");
 
 		for (final String bLine : revised.getBefore()) {
-			ret = ret + bLine + "#:#";
+			ret.append(bLine);
+			ret.append("#:#");
 		}
 		if (!revised.getBefore().isEmpty()) {
-			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+			ret = new StringBuilder(ret.substring(0, ret.lastIndexOf("#:#")));
 		}
-		ret = ret + ":;:";
+		ret.append(":;:");
 
 		for (final String aLine : revised.getAfter()) {
-			ret = ret + aLine + "#:#";
+			ret.append(aLine);
+			ret.append("#:#");
 		}
 		if (!revised.getAfter().isEmpty()) {
-			ret = ret.substring(0, ret.lastIndexOf("#:#"));
+			ret = new StringBuilder(ret.substring(0, ret.lastIndexOf("#:#")));
 		}
 
-		return ret;
+		return ret.toString();
 	}
 
 	@Override
@@ -101,7 +106,7 @@ public class DefaultDelta extends ADelta<Chunk<String>> {
 
 	@Override
 	public String getRepresentation() {
-		return "--- (" + original.getPosition() + ") " + original.getLines() + "\n" + "+++ (" + revised.getPosition() + ") " + revised.getLines();
+		return String.format("--- (%s) %s%n+++ (%s) %s", original.getPosition(), original.getLines(), revised.getPosition(), revised.getLines());
 	}
 
 	@Override

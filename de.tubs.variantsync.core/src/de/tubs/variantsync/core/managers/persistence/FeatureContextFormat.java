@@ -18,6 +18,9 @@ public class FeatureContextFormat extends AXMLFormat<List<FeatureContext>> {
 	private static final String ID = "FeatureContexts";
 	private static final String FEATURE_CONTEXTS = "contexts";
 	private static final String FEATURE_CONTEXT = "context";
+
+	// the xml pattern should start with an optional standard xml-starting line (e.g. <?xml charSequenceOfArbitraryLength?>)
+	// followed by an xml tag starting with the FEATURE_CONTEXTS string
 	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + FEATURE_CONTEXTS + "[\\s>]");
 
 	public static final String FILENAME = ".contexts.xml";

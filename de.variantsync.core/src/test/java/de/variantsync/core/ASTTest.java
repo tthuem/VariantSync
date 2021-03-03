@@ -1,12 +1,14 @@
 package de.variantsync.core;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.LineGrammar;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ASTTest {
 
@@ -16,11 +18,11 @@ public class ASTTest {
 	@Before
 	public void setup() {
 		ast = new AST<>(LineGrammar.Directory, "src");
-		AST<LineGrammar, String> mainDir = new AST<>(LineGrammar.Directory, "main");
-		AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
+		final AST<LineGrammar, String> mainDir = new AST<>(LineGrammar.Directory, "main");
+		final AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
 		mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
-		AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.TextFile, "Empty.java");
-		AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
+		final AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.TextFile, "Empty.java");
+		final AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
 		ast.addChild(testDir);
 		testDir.addChild(emptyTetJava);
 		ast.addChild(mainDir);
@@ -42,7 +44,7 @@ public class ASTTest {
 
 	@Test
 	public void toStringTest() {
-		String expected = "Directory src Depth: 0\n" + "    ├─Directory test Depth: 1\n" + "    │     └─ TextFile EmptyTest.java Depth: 2\n"
+		final String expected = "Directory src Depth: 0\n" + "    ├─Directory test Depth: 1\n" + "    │     └─ TextFile EmptyTest.java Depth: 2\n"
 			+ "    └─Directory main Depth: 1\n" + "          ├─ TextFile Main.java Depth: 2\n" + "          │      ├─ Line public class Main { Depth: 3\n"
 			+ "          │      ├─ Line     public static void main(String[] args) Depth: 3\n"
 			+ "          │      ├─ Line         System.out.println(\"Hello World\"); Depth: 3\n" + "          │      ├─ Line     } Depth: 3\n"

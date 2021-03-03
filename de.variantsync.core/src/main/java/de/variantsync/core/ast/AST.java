@@ -1,9 +1,13 @@
 package de.variantsync.core.ast;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import de.variantsync.core.interfaces.Grammar;
 
 public class AST<G extends Grammar, Value> {
@@ -25,13 +29,13 @@ public class AST<G extends Grammar, Value> {
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		if (value == null) {
 			return result.toString();
 		} else {
-			int[] level = { 0 }; // pointer magic
+			final int[] level = { 0 }; // pointer magic
 
-			HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
+			final HashSet<Integer> levelFinished = new HashSet<>(); // eg. is level 3 finished?
 			toString(result, this, level, levelFinished, false);
 		}
 
@@ -45,7 +49,7 @@ public class AST<G extends Grammar, Value> {
 				// no need of signs like | because of depth
 				toAppend = INDENT_STRING + "  ";
 			}
-			if (i == level[0] - 1) {
+			if (i == (level[0] - 1)) {
 				// end of indent make arrow
 				toAppend = INDENT_STRING + "\u251C\u2500";
 				if (isLast) {
@@ -55,15 +59,17 @@ public class AST<G extends Grammar, Value> {
 
 			}
 			result.append(toAppend);
-			if (i != 0) result.append(" ");
+			if (i != 0) {
+				result.append(" ");
+			}
 
 		}
 
 		result.append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(level[0]).append("\n");
 		level[0]++;
-		for (AST<G, Value> child : parent.children) {
+		for (final AST<G, Value> child : parent.children) {
 			isLast = false;
-			if (parent.children.indexOf(child) == parent.children.size() - 1) {
+			if (parent.children.indexOf(child) == (parent.children.size() - 1)) {
 				// last child of subtree, meaning level finished, needs |
 				levelFinished.add(level[0] - 1);
 				isLast = true;
@@ -98,7 +104,7 @@ public class AST<G extends Grammar, Value> {
 
 	public int size() {
 		int tmpSize = 1;
-		for (AST<G, Value> act : children) {
+		for (final AST<G, Value> act : children) {
 			tmpSize += act.size();
 		}
 		return tmpSize;

@@ -8,13 +8,14 @@ import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import de.variantsync.core.interfaces.Grammar;
 
 /**
- * 
+ *
  * Uses gson to import and export ASTs to and from json. A generic use of grammar is not possible, hence for each grammar a different class has to be created.
  * In this case the used grammar is LineGrammar.
- * 
+ *
  * @author jerem
  *
  */
@@ -25,7 +26,7 @@ public class JsonParserASTwithLineGrammar {
 	public static <A extends Grammar, B> String exportAST(AST<A, B> ast) {
 
 		// generic use of A not possible, instead declare used Grammar here
-		Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
+		final Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
 
 		return gson.toJson(ast, type);
 	}
@@ -33,7 +34,7 @@ public class JsonParserASTwithLineGrammar {
 	public static <A extends Grammar, B> AST<A, B> importAST(String json) {
 
 		// generic use of A not possible, instead declare used Grammar here
-		Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
+		final Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
 
 		return gson.fromJson(json, type);
 	}
@@ -41,12 +42,12 @@ public class JsonParserASTwithLineGrammar {
 	public static <A extends Grammar, B> String exportToFile(Path path, AST<A, B> ast) {
 
 		// generic use of A not possible, instead declare used Grammar here
-		Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
+		final Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
 
-		String content = gson.toJson(ast, type);
+		final String content = gson.toJson(ast, type);
 		try {
 			Files.writeString(path, content);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -59,13 +60,13 @@ public class JsonParserASTwithLineGrammar {
 		String json = "";
 		try {
 			json = Files.readString(path);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 
 		// generic use of A not possible, instead declare used Grammar here
-		Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
+		final Type type = new TypeToken<AST<LineGrammar, B>>() {}.getType();
 
 		return gson.fromJson(json, type);
 	}

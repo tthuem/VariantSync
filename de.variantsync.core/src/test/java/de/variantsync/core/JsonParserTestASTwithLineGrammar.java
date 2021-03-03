@@ -7,11 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.JsonParserASTwithLineGrammar;
 import de.variantsync.core.ast.LineGrammar;
-import org.junit.Before;
-import org.junit.Test;
 
 public class JsonParserTestASTwithLineGrammar {
 
@@ -22,7 +23,7 @@ public class JsonParserTestASTwithLineGrammar {
 	public void InitJsonTest() throws IOException {
 		// init
 		exampleAst = new AST<>(LineGrammar.Directory, "src");
-		AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
+		final AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
 		exampleAst.addChild(mainJava);
 		mainJava.addChildren(
 				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
@@ -37,13 +38,13 @@ public class JsonParserTestASTwithLineGrammar {
 	public void TestJsonParserAST() {
 
 		// export to json
-		String json = JsonParserASTwithLineGrammar.exportAST(exampleAst);
+		final String json = JsonParserASTwithLineGrammar.exportAST(exampleAst);
 
 		// import ast from json
-		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importAST(json);
+		final AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importAST(json);
 
 		// rexport imported AST
-		String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
+		final String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
 
 		// print
 		System.out.println("First:" + json);
@@ -59,13 +60,13 @@ public class JsonParserTestASTwithLineGrammar {
 	public void TestJsonParserASTtoFile() throws IOException {
 
 		// export to json file
-		String json = JsonParserASTwithLineGrammar.exportToFile(exmaplePath, exampleAst);
+		final String json = JsonParserASTwithLineGrammar.exportToFile(exmaplePath, exampleAst);
 
 		// import ast from file
-		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
+		final AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
 
 		// rexport imported AST
-		String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
+		final String jsonSec = JsonParserASTwithLineGrammar.exportAST(ast);
 
 		// print
 		System.out.println("FileFirst:" + json);
@@ -86,11 +87,11 @@ public class JsonParserTestASTwithLineGrammar {
 		JsonParserASTwithLineGrammar.exportToFile(exmaplePath, exampleAst);
 
 		// import ast from file
-		AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
+		final AST<LineGrammar, String> ast = JsonParserASTwithLineGrammar.importFromFile(exmaplePath);
 
 		// get toString
-		String json = exampleAst.toString();
-		String jsonSec = ast.toString();
+		final String json = exampleAst.toString();
+		final String jsonSec = ast.toString();
 
 		// print
 		System.out.println("FileFirst:" + json);

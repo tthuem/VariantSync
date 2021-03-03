@@ -14,15 +14,15 @@ public class LineBasedParser {
 		AST<LineGrammar, String> result;
 		if (Files.isDirectory(folder)) {
 			result = new AST<>(LineGrammar.Directory, folder.getFileName().toString());
-			DirectoryStream<Path> directoryStream = Files.newDirectoryStream(folder);
-			for (Path entry : directoryStream) {
+			final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(folder);
+			for (final Path entry : directoryStream) {
 				result.addChild(parseDirectory(entry));
 			}
 		} else {
 			if (!isBinaryFile(folder)) {
 				result = new AST<>(LineGrammar.TextFile, folder.getFileName().toString());
-				List<String> fileStream = Files.readAllLines(folder);
-				for (String line : fileStream) {
+				final List<String> fileStream = Files.readAllLines(folder);
+				for (final String line : fileStream) {
 					result.addChild(new AST<>(LineGrammar.Line, line));
 				}
 			} else {
@@ -34,7 +34,7 @@ public class LineBasedParser {
 
 	private static boolean isBinaryFile(Path file) {
 		try {
-			String type = Files.probeContentType(file);
+			final String type = Files.probeContentType(file);
 			if (type == null) {
 				// type couldn't be determined => assume binary
 				return true;
@@ -42,7 +42,7 @@ public class LineBasedParser {
 				// non-binary
 				return false;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 		// type isn't text => assume binary

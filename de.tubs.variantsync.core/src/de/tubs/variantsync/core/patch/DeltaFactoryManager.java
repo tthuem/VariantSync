@@ -115,7 +115,7 @@ public class DeltaFactoryManager extends ExtensionManager<IDeltaFactory> {
 				return extension;
 			}
 		}
-		String errorMsg = String.format("No extension found for ID %s", id);
+		final String errorMsg = String.format("No extension found for ID %s", id);
 		throw new NoSuchExtensionException(errorMsg);
 	}
 

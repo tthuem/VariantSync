@@ -1,9 +1,9 @@
 package de.variantsync.core.ast;
 
-import de.variantsync.core.interfaces.Grammar;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import de.variantsync.core.interfaces.Grammar;
 
 public enum LineGrammar implements Grammar<LineGrammar> {
 
@@ -28,7 +28,7 @@ public enum LineGrammar implements Grammar<LineGrammar> {
 		if (this == LineGrammar.Directory) {
 			// Dir can't have line as child
 			return child != LineGrammar.Line;
-		} else if (this == LineGrammar.TextFile || this == LineGrammar.BinaryFile) {
+		} else if ((this == LineGrammar.TextFile) || (this == LineGrammar.BinaryFile)) {
 			// File can't have dir or file as child
 			return child == LineGrammar.Line;
 		} else {

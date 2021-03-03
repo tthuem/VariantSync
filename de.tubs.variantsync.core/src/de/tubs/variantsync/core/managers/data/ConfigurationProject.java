@@ -38,7 +38,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	private List<IProject> projects = new ArrayList<>();
 
 	public IFeatureProject getFeatureProject() {
-		if (configurationProject != null && configurationProject.getProject().exists()) {
+		if ((configurationProject != null) && configurationProject.getProject().exists()) {
 			return configurationProject;
 		}
 

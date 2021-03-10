@@ -58,35 +58,38 @@ public class AST<G extends Grammar, Value> {
 		} else {
 			final int depth = 0;
 
-			final HashSet<Integer> levelFinished = new HashSet<>(); // eg. is depth 3 finished?
-			toString(result, this, depth, levelFinished, false);
+			HashSet<Integer> levelFinished = new HashSet<>(); // determines if all child nodes of the actual node on this depth have been drawn or not
+			boolean isActualElementLastElement = false;
+			toString(result, this, depth, levelFinished, isActualElementLastElement);
 		}
 
 		return result.toString();
 	}
 
 	private void toString(StringBuilder result, AST<G, Value> parent, int depth, HashSet<Integer> levelFinished, boolean isLast) {
-		String nextSeparator = "\u2502";
-		String nextActSeparator =  "\u251C\u2500";
-		String lastSeparator = "\u2514\u2500";
+		final String nextSeparator = "\u2502";
+		final String nextActSeparator = "\u251C\u2500";
+		final String lastSeparator = "\u2514\u2500";
+
+		//choose separator according to whether or not there are child nodes left
 		for (int i = 0; i < depth; i++) {
-			String toAppend = INDENT_STRING + nextSeparator + " ";
+			StringBuilder line = new StringBuilder(INDENT_STRING).append(nextSeparator).append(" ");
 			if (levelFinished.contains(i)) {
 				// no need of signs like | because of depth
-				toAppend = INDENT_STRING + "  ";
+				line = new StringBuilder(INDENT_STRING).append("  ");
 			}
 			if (i == (depth - 1)) {
 				// end of indent make arrow
-				toAppend = INDENT_STRING + nextActSeparator;
+				line = new StringBuilder(INDENT_STRING).append(nextActSeparator);
 				if (isLast) {
 					// last child of parent, no arrow down needed
-					toAppend = INDENT_STRING + lastSeparator;
+					line = new StringBuilder(INDENT_STRING).append(lastSeparator);
 				}
 
 			}
-			result.append(toAppend);
+			result.append(line.toString());
 			if (i != 0) {
-				result.append(" ");
+				result.append(" "); //only to satisfy unit test for the moment
 			}
 
 		}

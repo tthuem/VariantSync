@@ -16,6 +16,40 @@ public class AST<G extends Grammar, Value> {
 
 	private static transient final String INDENT_STRING = "    ";
 
+	public AST(G type, Value value) {
+		this.id = UUID.randomUUID();
+		this.type = type;
+		this.value = value;
+		this.children = new ArrayList<>();
+	}
+
+	public void addChildren(List<AST<G, Value>> toAdd) {
+		if (toAdd != null) {
+			children.addAll(toAdd);
+		}
+	}
+
+	public void addChild(AST<G, Value> toAdd) {
+		if (toAdd != null) {
+			children.add(toAdd);
+		}
+	}
+
+	public int size() {
+		int tmpSize = 1;
+		for (final AST<G, Value> act : children) {
+			tmpSize += act.size();
+		}
+		return tmpSize;
+	}
+
+	private AST() {
+		/**
+		 * Empty AST is forbidden at the moment.
+		 */
+
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
@@ -32,9 +66,9 @@ public class AST<G extends Grammar, Value> {
 	}
 
 	private void toString(StringBuilder result, AST<G, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
-        String nextSeparator = "\u2502";
-        String nextActSeparator =  "\u251C\u2500";
-        String lastSeparator = "\u2514\u2500";
+		String nextSeparator = "\u2502";
+		String nextActSeparator =  "\u251C\u2500";
+		String lastSeparator = "\u2514\u2500";
 		for (int i = 0; i < level[0]; i++) {
 			String toAppend = INDENT_STRING + nextSeparator + " ";
 			if (levelFinished.contains(i)) {
@@ -73,39 +107,5 @@ public class AST<G extends Grammar, Value> {
 
 		}
 		level[0]--;
-	}
-
-	public AST(G type, Value value) {
-		this.id = UUID.randomUUID();
-		this.type = type;
-		this.value = value;
-		this.children = new ArrayList<>();
-	}
-
-	public void addChildren(List<AST<G, Value>> toAdd) {
-		if (toAdd != null) {
-			children.addAll(toAdd);
-		}
-	}
-
-	public void addChild(AST<G, Value> toAdd) {
-		if (toAdd != null) {
-			children.add(toAdd);
-		}
-	}
-
-	public int size() {
-		int tmpSize = 1;
-		for (final AST<G, Value> act : children) {
-			tmpSize += act.size();
-		}
-		return tmpSize;
-	}
-
-	private AST() {
-		/**
-		 * Empty AST is forbidden at the moment.
-		 */
-
 	}
 }

@@ -1,5 +1,7 @@
 package de.variantsync.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,14 +32,14 @@ public class LineBasedParserTest {
 		srcDir.addChild(mainDir);
 		final AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
 		srcDir.addChild(testDir);
+		final AST<LineGrammar, String> binFile = new AST<>(LineGrammar.BinaryFile, "BinaryFile");
+		mainDir.addChild(binFile);
 		final AST<LineGrammar, String> mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
 		mainDir.addChild(mainJava);
 		mainJava.addChildren(
 				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
 						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
 						new AST<>(LineGrammar.Line, "}")));
-		final AST<LineGrammar, String> binFile = new AST<>(LineGrammar.BinaryFile, "binaryFile");
-		mainDir.addChild(binFile);
 	}
 
 	@Test
@@ -46,19 +48,20 @@ public class LineBasedParserTest {
 		final Path mainDir = Files.createDirectory(Paths.get(src + File.separator + "main"));
 		final Path testDir = Files.createDirectory(Paths.get(src + File.separator + "test"));
 		final Path mainFile = Files.createFile(Paths.get(mainDir + File.separator + "Main.java"));
-		Files.writeString(mainFile,
-				"public class Main {\n" + "    public static void main(String[] args)\n" + "        System.out.println(\"Hello World\");\n" + "    }\n" + "}");
+		final String fileContent =
+			String.format("public class Main {%n    public static void main(String[] args)%n        System.out.println(\"Hello World\");%n    }%n}");
+		Files.writeString(mainFile, fileContent);
 
-		final Path binFile = Files.createFile(Paths.get(mainDir + File.separator + "binaryFile"));
+		final Path binFile = Files.createFile(Paths.get(mainDir + File.separator + "BinaryFile"));
 		final byte[] bytes = "stringForCreationOfByteArray".getBytes();
 		Files.write(binFile, bytes);
 
 		final LineBasedParser parser = new LineBasedParser();
 		final AST<LineGrammar, String> parsedAST = parser.parseDirectory(src);
 
-		// Test fails at the moment due to an inequality of the toString() methods
-		// waiting for equals() method for AST
-//    	assertEquals(parsedAST, srcDir);
+		// Testing only the equality of the toString() methods at the moment
+		// waiting for equals() method for AST for comparison of the real AST-Objects
+		assertEquals(parsedAST.toString(), srcDir.toString());
 	}
 
 }

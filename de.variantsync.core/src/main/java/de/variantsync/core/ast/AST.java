@@ -32,18 +32,21 @@ public class AST<G extends Grammar, Value> {
 	}
 
 	private void toString(StringBuilder result, AST<G, Value> parent, int[] level, HashSet<Integer> levelFinished, boolean isLast) {
+        String nextSeparator = "\u2502";
+        String nextActSeparator =  "\u251C\u2500";
+        String lastSeparator = "\u2514\u2500";
 		for (int i = 0; i < level[0]; i++) {
-			String toAppend = INDENT_STRING + "\u2502 ";
+			String toAppend = INDENT_STRING + nextSeparator + " ";
 			if (levelFinished.contains(i)) {
 				// no need of signs like | because of depth
 				toAppend = INDENT_STRING + "  ";
 			}
 			if (i == (level[0] - 1)) {
 				// end of indent make arrow
-				toAppend = INDENT_STRING + "\u251C\u2500";
+				toAppend = INDENT_STRING + nextActSeparator;
 				if (isLast) {
 					// last child of parent, no arrow down needed
-					toAppend = INDENT_STRING + "\u2514\u2500";
+					toAppend = INDENT_STRING + lastSeparator;
 				}
 
 			}

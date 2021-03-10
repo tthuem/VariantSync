@@ -5,27 +5,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import de.variantsync.core.interfaces.Grammar;
 
 public class AST<G extends Grammar, Value> {
 
-	@Expose
-	@SerializedName(value = "uuid")
 	private UUID id;
-	@Expose
-	@SerializedName(value = "value")
 	private Value value;
-	@Expose
-	@SerializedName(value = "grammar_type")
 	private G type;
-	@Expose
-	@SerializedName(value = "children")
 	private List<AST<G, Value>> children;
 
-	private final String INDENT_STRING = "    ";
+	private static transient final String INDENT_STRING = "    ";
 
 	@Override
 	public String toString() {

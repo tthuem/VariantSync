@@ -1,5 +1,6 @@
 package de.variantsync.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class JsonParserTestASTWithLineGrammar {
 		System.out.println("Second:" + jsonSec);
 
 		// compare json
-		assertTrue(json.equals(jsonSec));
+		assertEquals(json, jsonSec);
 
 	}
 
@@ -74,7 +75,7 @@ public class JsonParserTestASTWithLineGrammar {
 		System.out.println("FileSecond:" + jsonSec);
 
 		// compare json
-		assertTrue(json.equals(jsonSec));
+		assertEquals(json, jsonSec);
 
 		// delete created file
 		Files.delete(examplePath);
@@ -99,7 +100,7 @@ public class JsonParserTestASTWithLineGrammar {
 		System.out.println("FileSecond:" + jsonSec);
 
 		// compare json
-		assertTrue(json.equals(jsonSec));
+		assertEquals(json, jsonSec);
 
 		// delete created file
 		Files.delete(examplePath);

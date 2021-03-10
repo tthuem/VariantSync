@@ -42,11 +42,11 @@ public enum LineGrammar implements Grammar<LineGrammar> {
 	public OptionalType getTypeOf(LineGrammar sym) {
 		switch (sym) {
 		case Directory:
-			return OptionalType.NodeOptional;
+			return OptionalType.Wrapper;
 		case TextFile:
 		case BinaryFile:
 		case Line:
-			return OptionalType.TreeOptional;
+			return OptionalType.Optional;
 		default:
 			throw new IllegalArgumentException("[BUG] There is not OptionalType for symbol " + sym + " specified!");
 		}

@@ -25,8 +25,8 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 		final List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
 		for (final IDelta<Chunk<String>> delta : deltas) {
 			final Chunk revised = delta.getRevised();
-			// For the realisation of markers, the MarkerUtils.setMarker-method uses Editor/Document-information provided by IDocument
-			// IDocument is 0-based, what means that every line number has to be reduced by 1
+			// For the display of markers, the utilities.MarkerUtils.setMarker-method uses Editor/Document-information provided by IDocument.
+			// IDocument is 0-based (so the first line is line 0 in IDocument), which means that every line number has to be reduced by 1
 			final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
 			variantSyncMarker.setContext(delta.getContext());
 			variantSyncMarkers.add(variantSyncMarker);

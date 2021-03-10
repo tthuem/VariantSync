@@ -22,9 +22,9 @@ public class ASTTest {
 		final AST<LineGrammar, String> testDir = new AST<>(LineGrammar.Directory, "test");
 		mainJava = new AST<>(LineGrammar.TextFile, "Main.java");
 		final AST<LineGrammar, String> emptyJava = new AST<>(LineGrammar.TextFile, "Empty.java");
-		final AST<LineGrammar, String> emptyTetJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
+		final AST<LineGrammar, String> emptyTestJava = new AST<>(LineGrammar.TextFile, "EmptyTest.java");
 		ast.addChild(testDir);
-		testDir.addChild(emptyTetJava);
+		testDir.addChild(emptyTestJava);
 		ast.addChild(mainDir);
 		mainDir.addChild(mainJava);
 		mainDir.addChild(emptyJava);

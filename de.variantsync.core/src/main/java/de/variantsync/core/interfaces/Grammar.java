@@ -3,7 +3,7 @@ package de.variantsync.core.interfaces;
 public interface Grammar<T> {
 
 	enum OptionalType {
-		NodeOptional, TreeOptional, Mandatory
+		Wrapper, Optional, Mandatory
 	}
 
 	public boolean isValidChild(T child);

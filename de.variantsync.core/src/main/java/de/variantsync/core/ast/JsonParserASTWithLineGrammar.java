@@ -19,7 +19,7 @@ import de.variantsync.core.interfaces.Grammar;
  * @author jerem
  *
  */
-public class JsonParserASTwithLineGrammar {
+public class JsonParserASTWithLineGrammar {
 
 	static Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 

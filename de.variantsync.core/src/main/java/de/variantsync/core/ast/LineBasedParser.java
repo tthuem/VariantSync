@@ -10,23 +10,23 @@ public class LineBasedParser {
 
 	public LineBasedParser() {}
 
-	public AST<LineGrammar, String> parseDirectory(Path folder) throws IOException {
+	public AST<LineGrammar, String> parseDirectory(Path path) throws IOException {
 		AST<LineGrammar, String> result;
-		if (Files.isDirectory(folder)) {
-			result = new AST<>(LineGrammar.Directory, folder.getFileName().toString());
-			final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(folder);
+		if (Files.isDirectory(path)) {
+			result = new AST<>(LineGrammar.Directory, path.getFileName().toString());
+			final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path);
 			for (final Path entry : directoryStream) {
 				result.addChild(parseDirectory(entry));
 			}
 		} else {
-			if (!isBinaryFile(folder)) {
-				result = new AST<>(LineGrammar.TextFile, folder.getFileName().toString());
-				final List<String> fileStream = Files.readAllLines(folder);
+			if (!isBinaryFile(path)) {
+				result = new AST<>(LineGrammar.TextFile, path.getFileName().toString());
+				final List<String> fileStream = Files.readAllLines(path);
 				for (final String line : fileStream) {
 					result.addChild(new AST<>(LineGrammar.Line, line));
 				}
 			} else {
-				result = new AST<>(LineGrammar.BinaryFile, folder.getFileName().toString());
+				result = new AST<>(LineGrammar.BinaryFile, path.getFileName().toString());
 			}
 		}
 		return result;

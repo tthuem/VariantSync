@@ -102,7 +102,7 @@ public class Tree {
 			String ret = String.format("%s%n", root.toString());
 			while ((currentNode == null) && (i < currentNode.getNumberOfChildren())) {
 				currentNode = currentNode.getChildAt(i);
-				ret += ret + String.format("%s%n", currentNode.toString());
+				ret += String.format("%s%n", currentNode.toString());
 				i++;
 			}
 			return ret;

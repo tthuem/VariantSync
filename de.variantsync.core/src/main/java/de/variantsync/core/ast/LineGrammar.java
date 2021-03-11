@@ -1,27 +1,10 @@
 package de.variantsync.core.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.variantsync.core.interfaces.Grammar;
 
 public enum LineGrammar implements Grammar<LineGrammar> {
 
 	Directory, TextFile, BinaryFile, Line;
-
-	private List<Object> addAttributes;
-
-	LineGrammar() {
-		addAttributes = new ArrayList<>();
-	}
-
-	LineGrammar(List<Object> addAttributes) {
-		this.addAttributes = addAttributes;
-	}
-
-	public List<Object> getAttributes() {
-		return addAttributes;
-	}
 
 	@Override
 	public boolean isValidChild(LineGrammar child) {

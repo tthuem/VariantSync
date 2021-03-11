@@ -26,9 +26,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	private static final String SOURCEFILE = "SourceFile";
 	private static final String CODEMAPPINGS = "CodeMapping";
 
-	// the xml pattern should start with an optional standard xml-starting line (e.g. <?xml charSequenceOfArbitraryLength?>)
-	// followed by an xml tag starting with the MAPPINGS string
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + MAPPINGS + "[\\s>]");
+	private static final Pattern CONTENT_REGEX = FormatHelper.createContentRegex(MAPPINGS);
 
 	public static final String FILENAME = ".mapping.xml";
 
@@ -111,5 +109,4 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	public String getName() {
 		return "CodeMapping";
 	}
-
 }

@@ -47,8 +47,7 @@ public class ASTTest {
 	@Test
 	public void toStringTest() {
 		final String expected = "Directory src Depth: 0\n" + "    ├─Directory test Depth: 1\n" + "    │     └─ TextFile EmptyTest.java Depth: 2\n"
-			+ "    └─Directory main Depth: 1\n" + "          ├─ TextFile Main.java Depth: 2\n"
-			+ "          │      ├─ Line public class Main { Depth: 3\n"
+			+ "    └─Directory main Depth: 1\n" + "          ├─ TextFile Main.java Depth: 2\n" + "          │      ├─ Line public class Main { Depth: 3\n"
 			+ "          │      ├─ Line     public static void main(String[] args) Depth: 3\n"
 			+ "          │      ├─ Line         System.out.println(\"Hello World\"); Depth: 3\n" + "          │      ├─ Line     } Depth: 3\n"
 			+ "          │      └─ Line } Depth: 3\n" + "          └─ TextFile Empty.java Depth: 2\n";

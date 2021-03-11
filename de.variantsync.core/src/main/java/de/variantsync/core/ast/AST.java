@@ -58,8 +58,8 @@ public class AST<G extends Grammar, Value> {
 		} else {
 			final int depth = 0;
 
-			HashSet<Integer> levelFinished = new HashSet<>(); // determines if all child nodes of the actual node on this depth have been drawn or not
-			boolean isActualElementLastElement = false;
+			final HashSet<Integer> levelFinished = new HashSet<>(); // determines if all child nodes of the actual node on this depth have been drawn or not
+			final boolean isActualElementLastElement = false;
 			toString(result, this, depth, levelFinished, isActualElementLastElement);
 		}
 
@@ -71,7 +71,7 @@ public class AST<G extends Grammar, Value> {
 		final String nextActSeparator = "\u251C\u2500";
 		final String lastSeparator = "\u2514\u2500";
 
-		//choose separator according to whether or not there are child nodes left
+		// choose separator according to whether or not there are child nodes left
 		for (int i = 0; i < depth; i++) {
 			StringBuilder line = new StringBuilder(INDENT_STRING).append(nextSeparator).append(" ");
 			if (levelFinished.contains(i)) {
@@ -89,7 +89,7 @@ public class AST<G extends Grammar, Value> {
 			}
 			result.append(line.toString());
 			if (i != 0) {
-				result.append(" "); //only to satisfy unit test for the moment
+				result.append(" "); // only to satisfy unit test for the moment
 			}
 
 		}

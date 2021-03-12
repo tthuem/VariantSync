@@ -42,21 +42,21 @@ public class JsonParserASTWithLineGrammar {
 
 	static Gson prettyStringGsonBuilder = new GsonBuilder().setPrettyPrinting().setFieldNamingStrategy(customPolicy).create();
 
-	public static String toJson(AST<LineGrammar, String> ast) {
+	public static <B> String toJson(AST<LineGrammar, B> ast) {
 
 		final Type type = new TypeToken<AST<LineGrammar, String>>() {}.getType();
 
 		return prettyStringGsonBuilder.toJson(ast, type);
 	}
 
-	public static AST<LineGrammar, String> toAST(String json) {
+	public static <B> AST<LineGrammar, B> toAST(String json) {
 
 		final Type type = new TypeToken<AST<LineGrammar, String>>() {}.getType();
 
 		return prettyStringGsonBuilder.fromJson(json, type);
 	}
 
-	public static String exportAST(Path path, AST<LineGrammar, String> ast) {
+	public static <B> String exportAST(Path path, AST<LineGrammar, B> ast) {
 
 		final String content = toJson(ast);
 		try {
@@ -69,7 +69,7 @@ public class JsonParserASTWithLineGrammar {
 		return content;
 	}
 
-	public static AST<LineGrammar, String> importAST(Path path) {
+	public static <B> AST<LineGrammar, B> importAST(Path path) {
 
 		String json = "";
 		try {

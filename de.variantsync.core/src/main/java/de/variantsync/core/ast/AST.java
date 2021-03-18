@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import de.variantsync.core.grammar.Grammar;
+import org.prop4j.*;
 
 public class AST<G extends Grammar, Value> {
 
@@ -22,6 +23,7 @@ public class AST<G extends Grammar, Value> {
 	private List<AST<G, Value>> children;
 
 	private final String INDENT_STRING = "    ";
+	private Node mappings;
 
 	/**
 	 * TODO: - sanity check like: A Directory can't have direct child Line or Lines are always leaf nodes - add - toString - equals - compareTo ? - hash ? -

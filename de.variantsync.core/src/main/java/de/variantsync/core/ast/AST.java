@@ -122,7 +122,7 @@ public class AST<G extends Grammar, Value> {
     }
 
     private void toString(StringBuilder result, AST<G, Value> parent, int depth, HashSet<Integer> levelFinished, boolean isLast) {
-        // choose separator according to whether or not there are subtrees left
+        // print enough INDENT_STRINGS and choose separator according to whether or not there are subtrees left
         for (int i = 0; i < depth; i++) {
             StringBuilder line = new StringBuilder(INDENT_STRING).append(NEXT_SEPARATOR);
             if (levelFinished.contains(i)) {

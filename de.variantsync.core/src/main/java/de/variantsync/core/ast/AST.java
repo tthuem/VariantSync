@@ -15,6 +15,9 @@ public class AST<G extends Grammar, Value> {
 	private List<AST<G, Value>> children;
 
 	private static transient final String INDENT_STRING = "    ";
+	public static transient final String NEXT_SEPARATOR = "\u2502";
+	public static transient final String NEXT_ACT_SEPARATOR = "\u251C\u2500";
+	public static transient final String LAST_SEPARATOR = "\u2514\u2500";
 
 	public AST(G type, Value value) {
 		this.id = UUID.randomUUID();
@@ -67,34 +70,29 @@ public class AST<G extends Grammar, Value> {
 	}
 
 	private void toString(StringBuilder result, AST<G, Value> parent, int depth, HashSet<Integer> levelFinished, boolean isLast) {
-		final String nextSeparator = "\u2502";
-		final String nextActSeparator = "\u251C\u2500";
-		final String lastSeparator = "\u2514\u2500";
+
 
 		// choose separator according to whether or not there are child nodes left
 		for (int i = 0; i < depth; i++) {
-			StringBuilder line = new StringBuilder(INDENT_STRING).append(nextSeparator).append(" ");
+			StringBuilder line = new StringBuilder(INDENT_STRING).append(NEXT_SEPARATOR);
 			if (levelFinished.contains(i)) {
 				// no need of signs like | because of depth
-				line = new StringBuilder(INDENT_STRING).append("  ");
+				line = new StringBuilder(INDENT_STRING);
 			}
 			if (i == (depth - 1)) {
 				// end of indent make arrow
-				line = new StringBuilder(INDENT_STRING).append(nextActSeparator);
+				line = new StringBuilder(INDENT_STRING).append(NEXT_ACT_SEPARATOR);
 				if (isLast) {
 					// last child of parent, no arrow down needed
-					line = new StringBuilder(INDENT_STRING).append(lastSeparator);
+					line = new StringBuilder(INDENT_STRING).append(LAST_SEPARATOR);
 				}
 
 			}
 			result.append(line.toString());
-			if (i != 0) {
-				result.append(" "); // only to satisfy unit test for the moment
-			}
 
 		}
-
-		result.append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(depth).append("\n");
+		result.append(String.format("%s %s Depth: %d%n",parent.type,parent.value,depth));
+		//result.append(parent.type).append(" ").append(parent.value).append(" Depth: ").append(depth).append("\n");
 		depth++;
 		for (final AST<G, Value> child : parent.children) {
 			isLast = false;

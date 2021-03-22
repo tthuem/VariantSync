@@ -22,9 +22,9 @@ public class AST<G extends Grammar, Value> {
 
     // all attributes which should not be visible to the GSON parser need to be at least transient
     public static transient final String INDENT_STRING = "    ";
-    public static transient final String NEXT_SEPARATOR = "\u2502";
-    public static transient final String NEXT_ACT_SEPARATOR = "\u251C\u2500";
-    public static transient final String LAST_SEPARATOR = "\u2514\u2500";
+    public static transient final String NEXT_SEPARATOR = "\u2502 ";
+    public static transient final String NEXT_ACT_SEPARATOR = "\u251C\u2500 ";
+    public static transient final String LAST_SEPARATOR = "\u2514\u2500 ";
 
     public AST(G type, Value value) {
         this.id = UUID.randomUUID();
@@ -139,7 +139,7 @@ public class AST<G extends Grammar, Value> {
             }
             result.append(line.toString());
         }
-        result.append(String.format(" %s %s uuid: %d%n", parent.type, parent.value, parent.id.getMostSignificantBits()));
+        result.append(String.format("%s %s uuid: %d%n", parent.type, parent.value, parent.getId().getMostSignificantBits()));
         depth++;
         for (final AST<G, Value> child : parent.subtree) {
             isLast = false;

@@ -46,34 +46,46 @@ public class ASTTest {
     }
 
     @Test
-    public void sizeTest() {
+    public void sizeInitialTest() {
         assertEquals(11, root.size());
         root = new AST<>(null, null);
         assertEquals(1, root.size());
     }
 
     @Test
-    public void toStringTest() {
+    public void sizeOnEmptyASTTest() {
+        root = new AST<>(null, null);
+        assertEquals(1, root.size());
+    }
+
+    @Test
+    public void toStringInitialTest() {
         String[] lines = root.toString().split(String.format("%n"));
         assertEquals(11, lines.length);
         // test root values
         String[] rootAttributes = lines[0].split(" ");
         assertEquals(4, rootAttributes.length);
-        // in general checking like this is not possible due to the nature of AST.INDENT_STRING
-        // but root line does not contain AST.INDENT_STRING
-        assertEquals(rootAttributes[0], root.getType().toString()); //Type
-        assertEquals(rootAttributes[1], root.getValue()); // Value
-        assertEquals(rootAttributes[2], "uuid:");
-        assertEquals(rootAttributes[3], ((Long) root.getId().getMostSignificantBits()).toString()); // UUID
+
+        //check root values
+        checkStringRoot(root, rootAttributes);
 
         // check subtrees
-        printSubTree(root, lines);
+        checkStringSubTree(root, lines);
     }
 
-    private void printSubTree(AST<LineGrammar, String> node, String[] lines) {
+    private void checkStringRoot(AST<LineGrammar, String> node, String[] rootAttributes) {
+        assertEquals(0, lineIndex);
+        // in general checking like this is not possible due to the nature of AST.INDENT_STRING
+        // but root line does not contain AST.INDENT_STRING
+        assertEquals(node.getType().toString(), rootAttributes[0]); // Type
+        assertEquals(node.getValue(), rootAttributes[1]); // Value
+        assertEquals( "uuid:", rootAttributes[2]);
+        assertEquals(((Long) node.getId().getMostSignificantBits()).toString(),rootAttributes[3]); // UUID
+    }
+
+    private void checkStringSubTree(AST<LineGrammar, String> node, String[] lines) {
         lineIndex++;
         for (final AST<LineGrammar, String> child : node.getSubtree()) {
-            System.out.printf("%s %s %3$d%n", child.getType().toString(), child.getValue(), child.getId().getMostSignificantBits());
             String line = lines[lineIndex];
             assertTrue(line.contains(AST.INDENT_STRING));
             assertTrue(line.contains(AST.NEXT_SEPARATOR)
@@ -84,7 +96,7 @@ public class ASTTest {
             assertTrue(line.contains(child.getValue()));
             assertTrue(line.contains(((Long) child.getId().getMostSignificantBits()).toString()));
 
-            printSubTree(child, lines);
+            checkStringSubTree(child, lines);
         }
     }
 }

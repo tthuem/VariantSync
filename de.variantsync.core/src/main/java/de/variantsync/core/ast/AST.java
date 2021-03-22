@@ -54,16 +54,28 @@ public class AST<G extends Grammar, Value> {
 		return subtrees;
 	}
 
-	public void addChildren(List<AST<G, Value>> toAdd) {
+	/**
+	 * At the moment it is not allowed to add null as an AST.
+	 * @param toAdd List of AST which should be added as subtrees
+	 * @return true if all items where successfully added
+	 */
+	public boolean addChildren(List<AST<G, Value>> toAdd) {
 		if (toAdd != null) {
-			subtrees.addAll(toAdd);
+			return subtrees.addAll(toAdd);
 		}
+		return false;
 	}
 
-	public void addChild(AST<G, Value> toAdd) {
+	/**
+	 * At the moment it is not allowed to add null as an AST.
+	 * @param toAdd Single AST which should be added as subtree
+	 * @return true if the item was successfully added
+	 */
+	public boolean addChild(AST<G, Value> toAdd) {
 		if (toAdd != null) {
-			subtrees.add(toAdd);
+			return subtrees.add(toAdd);
 		}
+		return false;
 	}
 
 	public int size() {

@@ -3,17 +3,18 @@ package de.variantsync.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.LineGrammar;
 
-//TODO. Add compare method to AST and then compare ASTs with this method.
-
+/**
+ * Here you can find the unit tests for the AST data structure.
+ *
+ * @author eric
+ */
 public class ASTTest {
     AST<LineGrammar, String> root;
     AST<LineGrammar, String> mainDir;

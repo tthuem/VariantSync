@@ -10,8 +10,9 @@ import de.variantsync.core.interfaces.Grammar;
 /**
  * This class represents the Abstract Syntax Tree data structure.
  *
- * @param <G>
- * @param <Value>
+ * @param <G>     a generic which needs to extend the Grammar class, defining the type of the AST
+ * @param <Value> a generic which defines the value of the actual AST
+ * @author eric
  */
 public class AST<G extends Grammar, Value> {
 

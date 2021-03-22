@@ -19,7 +19,7 @@ public class AST<G extends Grammar, Value> {
 	private UUID id;
 	private Value value;
 	private G type;
-	private List<AST<G, Value>> subtree;
+	private List<AST<G, Value>> subtrees;
 
 	// all attributes which should not be visible to the GSON parser need to be at least transient
 	public static transient final String INDENT_STRING = "    ";
@@ -31,7 +31,7 @@ public class AST<G extends Grammar, Value> {
 		this.id = UUID.randomUUID();
 		this.type = type;
 		this.value = value;
-		this.subtree = new ArrayList<>();
+		this.subtrees = new ArrayList<>();
 	}
 
 	public UUID getId() {
@@ -46,25 +46,25 @@ public class AST<G extends Grammar, Value> {
 		return type;
 	}
 
-	public List<AST<G, Value>> getSubtree() {
-		return subtree;
+	public List<AST<G, Value>> getSubtrees() {
+		return subtrees;
 	}
 
 	public void addChildren(List<AST<G, Value>> toAdd) {
 		if (toAdd != null) {
-			subtree.addAll(toAdd);
+			subtrees.addAll(toAdd);
 		}
 	}
 
 	public void addChild(AST<G, Value> toAdd) {
 		if (toAdd != null) {
-			subtree.add(toAdd);
+			subtrees.add(toAdd);
 		}
 	}
 
 	public int size() {
 		int tmpSize = 1;
-		for (final AST<G, Value> act : subtree) {
+		for (final AST<G, Value> act : subtrees) {
 			tmpSize += act.size();
 		}
 		return tmpSize;
@@ -78,12 +78,12 @@ public class AST<G extends Grammar, Value> {
 	}
 
 	public int getMaxDepth() {
-		if (subtree.size() == 0) {
+		if (subtrees.size() == 0) {
 			return 0;
 		}
 
 		int maxDepth = 0;
-		for (final AST<G, Value> node : subtree) {
+		for (final AST<G, Value> node : subtrees) {
 			maxDepth = Math.max(node.getMaxDepth(), maxDepth);
 		}
 		return ++maxDepth;
@@ -130,13 +130,13 @@ public class AST<G extends Grammar, Value> {
 		}
 		result.append(String.format("%s %s uuid: %d%n", parent.type, parent.value, parent.getId().getMostSignificantBits()));
 		depth++;
-		for (final AST<G, Value> child : parent.subtree) {
+		for (final AST<G, Value> child : parent.subtrees) {
 			isLast = false;
-			if (parent.subtree.indexOf(child) == (parent.subtree.size() - 1)) {
+			if (parent.subtrees.indexOf(child) == (parent.subtrees.size() - 1)) {
 				// reached last child of parent
 				levelFinished.add(depth - 1);
 				isLast = true;
-			} else if (parent.subtree.indexOf(child) == 0) {
+			} else if (parent.subtrees.indexOf(child) == 0) {
 				// first child of new sub tree with unfinished depth so it needs NEXT_SEPARATOR later
 				levelFinished.remove(depth - 1);
 			}

@@ -95,7 +95,7 @@ public class ASTTest {
 
 	private void checkStringSubTree(AST<LineGrammar, String> node, String[] lines) {
 		lineIndex++;
-		for (final AST<LineGrammar, String> child : node.getSubtree()) {
+		for (final AST<LineGrammar, String> child : node.getSubtrees()) {
 			final String line = lines[lineIndex];
 			assertTrue(line.contains(AST.INDENT_STRING));
 			assertTrue(line.contains(AST.NEXT_SEPARATOR) || line.contains(AST.NEXT_ACT_SEPARATOR) || line.contains(AST.LAST_SEPARATOR));

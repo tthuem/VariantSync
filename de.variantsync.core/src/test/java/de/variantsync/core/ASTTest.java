@@ -1,9 +1,11 @@
 package de.variantsync.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +49,29 @@ public class ASTTest {
 
 	@Test
 	public void addOnInitialTest() {
-		final AST<LineGrammar, String> newTree = new AST<>(LineGrammar.Directory, "newROOT");
-		final int oldSize = root.getSubtrees().size();
-		root.addChild(newTree);
+		AST<LineGrammar, String> newTree = new AST<>(LineGrammar.Directory, "newROOT");
+		int oldSize = root.getSubtrees().size();
+		assertTrue(root.addChild(newTree));
 		assertEquals(oldSize + 1, root.getSubtrees().size());
 
+		newTree = new AST<>(LineGrammar.Line, "!LineYouAreLookingFor");
+		oldSize = root.getSubtrees().size();
+		assertFalse(root.addChild(newTree));
+		assertEquals(oldSize, root.getSubtrees().size());
+	}
+
+	@Test
+	public void addAllOnInitialTest() {
+		List<AST<LineGrammar, String>> newTrees = Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.BinaryFile, "101010"),
+				new AST<>(LineGrammar.TextFile, "fancyFile.txt"), new AST<>(LineGrammar.Directory, "fancyFolder"));
+		int oldSize = root.getSubtrees().size();
+		assertFalse(root.addChildren(newTrees));
+		assertEquals(oldSize + 3, root.getSubtrees().size());
+
+		newTrees = Arrays.asList(new AST<>(LineGrammar.Directory, "public class Main {"), new AST<>(LineGrammar.BinaryFile, "101010"));
+		oldSize = root.getSubtrees().size();
+		assertTrue(root.addChildren(newTrees));
+		assertEquals(oldSize + 2, root.getSubtrees().size());
 	}
 
 	@Test(expected = UnsupportedOperationException.class)

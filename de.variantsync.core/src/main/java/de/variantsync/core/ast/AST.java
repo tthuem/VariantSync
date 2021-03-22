@@ -78,26 +78,31 @@ public class AST<G extends Grammar, Value> {
 	}
 
 	/**
-	 * At the moment it is not allowed to add null as an AST.
+	 * This method calls the addChild method for each element of the given list. ASTs which would be rejected by the addChild method are skipped.
 	 *
 	 * @param toAdd List of AST which should be added as subtrees
 	 * @return true if all items where successfully added
 	 */
 	public boolean addChildren(List<AST<G, Value>> toAdd) {
+		boolean out = true;
 		if (toAdd != null) {
-			toAdd.forEach(this::addChild);
+			for (final AST<G, Value> elem : toAdd) {
+				if (!addChild(elem)) {
+					out = false;
+				}
+			}
 		}
-		return false;
+		return out;
 	}
 
 	/**
-	 * At the moment it is not allowed to add null as an AST.
+	 * This method adds an element to the AST by checking its validity through the the Grammar G and assuring that the element is not null.
 	 *
 	 * @param toAdd Single AST which should be added as subtree
 	 * @return true if the item was successfully added
 	 */
 	public boolean addChild(AST<G, Value> toAdd) {
-		if ((toAdd != null) && type.isValidChild(toAdd)) {
+		if ((toAdd != null) && type.isValidChild(toAdd.type)) {
 			return subtrees.add(toAdd);
 		}
 		return false;

@@ -47,16 +47,16 @@ public class ASTTest {
 
 	@Test
 	public void addOnInitialTest() {
-		AST<LineGrammar,String> newTree = new AST<>(LineGrammar.Directory,"newROOT");
+		final AST<LineGrammar, String> newTree = new AST<>(LineGrammar.Directory, "newROOT");
 		final int oldSize = root.getSubtrees().size();
 		root.addChild(newTree);
-		assertEquals(oldSize + 1,root.getSubtrees().size());
+		assertEquals(oldSize + 1, root.getSubtrees().size());
 
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void addOnSubtreesList() {
-		root.getSubtrees().add(new AST<>(LineGrammar.Directory,"evilDir"));
+		root.getSubtrees().add(new AST<>(LineGrammar.Directory, "evilDir"));
 	}
 
 	@Test

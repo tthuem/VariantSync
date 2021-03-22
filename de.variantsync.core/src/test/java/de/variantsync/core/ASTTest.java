@@ -46,7 +46,7 @@ public class ASTTest {
     }
 
     @Test
-    public void sizeInitialTest() {
+    public void sizeOnInitialTest() {
         assertEquals(11, root.size());
         root = new AST<>(null, null);
         assertEquals(1, root.size());
@@ -59,7 +59,7 @@ public class ASTTest {
     }
 
     @Test
-    public void toStringInitialTest() {
+    public void toStringOnInitialTest() {
         String[] lines = root.toString().split(String.format("%n"));
         assertEquals(11, lines.length);
         // test root values

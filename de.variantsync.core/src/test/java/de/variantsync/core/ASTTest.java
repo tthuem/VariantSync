@@ -47,8 +47,6 @@ public class ASTTest {
 	@Test
 	public void sizeOnInitialTest() {
 		assertEquals(11, root.size());
-		root = new AST<>(null, null);
-		assertEquals(1, root.size());
 	}
 
 	@Test

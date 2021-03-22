@@ -27,11 +27,15 @@ public class AST<G extends Grammar, Value> {
 	public static transient final String NEXT_ACT_SEPARATOR = "\u251C\u2500 ";
 	public static transient final String LAST_SEPARATOR = "\u2514\u2500 ";
 
-	public AST(G type, Value value) {
-		this.id = UUID.randomUUID();
+	public AST(G type, Value value, UUID id) {
+		this.id = id;
 		this.type = type;
 		this.value = value;
 		this.subtrees = new ArrayList<>();
+	}
+
+	public AST(G type, Value value) {
+		this(type, value, UUID.randomUUID());
 	}
 
 	public UUID getId() {

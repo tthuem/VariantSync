@@ -59,6 +59,17 @@ public class ASTTest {
     }
 
     @Test
+    public void getMaxDepthOnInitialTest() {
+        assertEquals(3,root.getMaxDepth());
+    }
+
+    @Test
+    public void getMaxDepthOnEmptyASTTest() {
+        root = new AST<>(null, null);
+        assertEquals(0,root.getMaxDepth());
+    }
+
+    @Test
     public void toStringOnInitialTest() {
         String[] lines = root.toString().split(String.format("%n"));
         assertEquals(11, lines.length);

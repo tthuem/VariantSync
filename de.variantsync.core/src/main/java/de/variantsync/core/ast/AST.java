@@ -42,24 +42,12 @@ public class AST<G extends Grammar, Value> {
         return value;
     }
 
-    public void setValue(Value value) {
-        this.value = value;
-    }
-
     public G getType() {
         return type;
     }
 
-    public void setType(G type) {
-        this.type = type;
-    }
-
     public List<AST<G, Value>> getSubtree() {
         return subtree;
-    }
-
-    public void setSubtree(List<AST<G, Value>> subtree) {
-        this.subtree = subtree;
     }
 
     public void addChildren(List<AST<G, Value>> toAdd) {

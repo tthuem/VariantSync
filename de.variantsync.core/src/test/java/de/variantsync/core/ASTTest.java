@@ -23,6 +23,7 @@ public class ASTTest {
 	AST<LineGrammar, String> testDir;
 	AST<LineGrammar, String> mainJava;
 	int lineIndex = 0; // only for toString testing
+	final int INITIAL_AST_SIZE = 11;
 
 	@Before
 	public void setup() {
@@ -45,8 +46,22 @@ public class ASTTest {
 	}
 
 	@Test
+	public void addOnInitialTest() {
+		AST<LineGrammar,String> newTree = new AST<>(LineGrammar.Directory,"newROOT");
+		final int oldSize = root.getSubtrees().size();
+		root.addChild(newTree);
+		assertEquals(oldSize + 1,root.getSubtrees().size());
+
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void addOnSubtreesList() {
+		root.getSubtrees().add(new AST<>(LineGrammar.Directory,"evilDir"));
+	}
+
+	@Test
 	public void sizeOnInitialTest() {
-		assertEquals(11, root.size());
+		assertEquals(INITIAL_AST_SIZE, root.size());
 	}
 
 	@Test
@@ -69,7 +84,7 @@ public class ASTTest {
 	@Test
 	public void toStringOnInitialTest() {
 		final String[] lines = root.toString().split(String.format("%n"));
-		assertEquals(11, lines.length);
+		assertEquals(INITIAL_AST_SIZE, lines.length);
 		// test root values
 		final String[] rootAttributes = lines[0].split(" ");
 		assertEquals(4, rootAttributes.length);

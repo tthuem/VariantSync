@@ -85,7 +85,7 @@ public class AST<G extends Grammar, Value> {
 	 */
 	public boolean addChildren(List<AST<G, Value>> toAdd) {
 		if (toAdd != null) {
-			return subtrees.addAll(toAdd);
+			toAdd.forEach(this::addChild);
 		}
 		return false;
 	}
@@ -97,7 +97,7 @@ public class AST<G extends Grammar, Value> {
 	 * @return true if the item was successfully added
 	 */
 	public boolean addChild(AST<G, Value> toAdd) {
-		if (toAdd != null) {
+		if ((toAdd != null) && type.isValidChild(toAdd)) {
 			return subtrees.add(toAdd);
 		}
 		return false;

@@ -24,7 +24,7 @@ public class ASTTest {
 	AST<LineGrammar, String> mainDir;
 	AST<LineGrammar, String> testDir;
 	AST<LineGrammar, String> mainJava;
-	int lineIndex = 0; // only for toString testing
+	int lineIndex = 0; // only for printTree() testing
 	final int INITIAL_AST_SIZE = 11;
 	final int INITIAL_TOSTRING_ROWS = 10;
 
@@ -120,14 +120,14 @@ public class ASTTest {
 	}
 
 	@Test
-	public void getMaxDepthOnInitialTest() {
-		assertEquals(3, root.getMaxDepth());
+	public void getDepthOnInitialTest() {
+		assertEquals(3, root.getDepth());
 	}
 
 	@Test
-	public void getMaxDepthOnEmptyASTTest() {
+	public void getDepthOnEmptyASTTest() {
 		root = new AST<>(null, null);
-		assertEquals(0, root.getMaxDepth());
+		assertEquals(0, root.getDepth());
 	}
 
 	@Test

@@ -65,14 +65,14 @@ public class AST<G extends Grammar, V> {
 		return Collections.unmodifiableList(subtrees);
 	}
 
-	public int getMaxDepth() {
-		if (subtrees.size() == 0) {
-			return 0;
+	public int getDepth() {
+		int maxDepth = 1;
+		if (subtrees.isEmpty()) {
+			return maxDepth;
 		}
 
-		int maxDepth = 0;
 		for (final AST<G, V> node : subtrees) {
-			maxDepth = Math.max(node.getMaxDepth(), maxDepth);
+			maxDepth = Math.max(node.getDepth(), maxDepth);
 		}
 		return ++maxDepth;
 	}

@@ -9,18 +9,18 @@ import java.util.UUID;
 import de.variantsync.core.interfaces.Grammar;
 
 /**
- * This class represents the Abstract Syntax Tree data structure.
+ * This class represents the Abstract Syntax Tree data structure. This also tests the LineGrammar indirectly.
  *
  * @param <G> a generic which needs to extend the Grammar class, defining the type of the AST
- * @param <Value> a generic which defines the value of the actual AST
+ * @param <V> a generic which defines the value of the actual AST
  * @author eric
  */
-public class AST<G extends Grammar, Value> {
+public class AST<G extends Grammar, V> {
 
 	private UUID id;
-	private Value value;
 	private G type;
-	private List<AST<G, Value>> subtrees;
+	private V value;
+	private List<AST<G, V>> subtrees;
 
 	// all attributes which should not be visible to the GSON parser need to be at least transient
 	public static transient final String INDENT_STRING = "    ";
@@ -28,15 +28,15 @@ public class AST<G extends Grammar, Value> {
 	public static transient final String NEXT_ACT_SEPARATOR = "\u251C\u2500 ";
 	public static transient final String LAST_SEPARATOR = "\u2514\u2500 ";
 
-	public AST(G type, Value value, UUID id) {
+	public AST(UUID id, G type, V value) {
 		this.id = id;
 		this.type = type;
 		this.value = value;
 		this.subtrees = new ArrayList<>();
 	}
 
-	public AST(G type, Value value) {
-		this(type, value, UUID.randomUUID());
+	public AST(G type, V value) {
+		this(UUID.randomUUID(), type, value);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class AST<G extends Grammar, Value> {
 		return id;
 	}
 
-	public Value getValue() {
+	public V getValue() {
 		return value;
 	}
 
@@ -61,7 +61,7 @@ public class AST<G extends Grammar, Value> {
 	/**
 	 * @return the subtrees as an unmodifiable List
 	 */
-	public List<AST<G, Value>> getSubtrees() {
+	public List<AST<G, V>> getSubtrees() {
 		return Collections.unmodifiableList(subtrees);
 	}
 
@@ -71,7 +71,7 @@ public class AST<G extends Grammar, Value> {
 		}
 
 		int maxDepth = 0;
-		for (final AST<G, Value> node : subtrees) {
+		for (final AST<G, V> node : subtrees) {
 			maxDepth = Math.max(node.getMaxDepth(), maxDepth);
 		}
 		return ++maxDepth;
@@ -83,10 +83,10 @@ public class AST<G extends Grammar, Value> {
 	 * @param toAdd List of AST which should be added as subtrees
 	 * @return true if all items where successfully added
 	 */
-	public boolean addChildren(List<AST<G, Value>> toAdd) {
+	public boolean addChildren(List<AST<G, V>> toAdd) {
 		boolean out = true;
 		if (toAdd != null) {
-			for (final AST<G, Value> elem : toAdd) {
+			for (final AST<G, V> elem : toAdd) {
 				if (!addChild(elem)) {
 					out = false;
 				}
@@ -101,7 +101,7 @@ public class AST<G extends Grammar, Value> {
 	 * @param toAdd Single AST which should be added as subtree
 	 * @return true if the item was successfully added
 	 */
-	public boolean addChild(AST<G, Value> toAdd) {
+	public boolean addChild(AST<G, V> toAdd) {
 		if ((toAdd != null) && type.isValidChild(toAdd.type)) {
 			return subtrees.add(toAdd);
 		}
@@ -110,20 +110,29 @@ public class AST<G extends Grammar, Value> {
 
 	public int size() {
 		int tmpSize = 1;
-		for (final AST<G, Value> act : subtrees) {
+		for (final AST<G, V> act : subtrees) {
 			tmpSize += act.size();
 		}
 		return tmpSize;
 	}
 
 	/**
-	 * This recursive method prints for each tree element the Grammar type, the Value and (for the sake of readability) only the most significant bits of the
-	 * UUID. It returns the AST as human readable tree.
-	 *
-	 * @return AST as readable String
+	 * This method returns only the most significant bits of the UUID, the type,
+	 * value and subtree size as a String of the actual AST.
+	 * @return UUID, Type, Value, subtree size as String
 	 */
 	@Override
 	public String toString() {
+		return String.format("[ Id: %d, Type: %s, Value: %s, Subtree-size: %d ]",id.getMostSignificantBits(),type.toString(),value.toString(),subtrees.size());
+	}
+
+	/**
+	 * This recursive method prints for each tree element the Grammar type, the Value and (for the sake of readability) only the most significant bits of the
+	 * UUID. It returns the whole AST as human readable tree.
+	 *
+	 * @return AST as readable String
+	 */
+	public String printTree() {
 		final StringBuilder result = new StringBuilder();
 		if (value == null) {
 			return result.toString();
@@ -132,12 +141,12 @@ public class AST<G extends Grammar, Value> {
 
 			final HashSet<Integer> levelFinished = new HashSet<>(); // determines if all subtrees of the actual tree on this depth have been drawn or not
 			final boolean isActualElementLastElement = false;
-			toString(result, this, depth, levelFinished, isActualElementLastElement);
+			printTree(result, this, depth, levelFinished, isActualElementLastElement);
 		}
 		return result.toString();
 	}
 
-	private void toString(StringBuilder result, AST<G, Value> parent, int depth, HashSet<Integer> levelFinished, boolean isLast) {
+	private void printTree(StringBuilder result, AST<G, V> parent, int depth, HashSet<Integer> levelFinished, boolean isLast) {
 		// print enough INDENT_STRINGS and choose separator according to whether or not there are subtrees left
 		for (int i = 0; i < depth; i++) {
 			StringBuilder line = new StringBuilder(INDENT_STRING).append(NEXT_SEPARATOR);
@@ -157,7 +166,7 @@ public class AST<G extends Grammar, Value> {
 		}
 		result.append(String.format("%s %s uuid: %d%n", parent.type, parent.value, parent.getId().getMostSignificantBits()));
 		depth++;
-		for (final AST<G, Value> child : parent.subtrees) {
+		for (final AST<G, V> child : parent.subtrees) {
 			isLast = false;
 			if (parent.subtrees.indexOf(child) == (parent.subtrees.size() - 1)) {
 				// reached last child of parent
@@ -167,7 +176,7 @@ public class AST<G extends Grammar, Value> {
 				// first child of new sub tree with unfinished depth so it needs NEXT_SEPARATOR later
 				levelFinished.remove(depth - 1);
 			}
-			toString(result, child, depth, levelFinished, isLast);
+			printTree(result, child, depth, levelFinished, isLast);
 		}
 	}
 }

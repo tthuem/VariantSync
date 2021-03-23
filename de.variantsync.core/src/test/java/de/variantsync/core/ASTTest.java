@@ -26,6 +26,7 @@ public class ASTTest {
 	AST<LineGrammar, String> mainJava;
 	int lineIndex = 0; // only for toString testing
 	final int INITIAL_AST_SIZE = 11;
+	final int INITIAL_TOSTRING_ROWS = 10;
 
 	@Before
 	public void setup() {
@@ -45,6 +46,34 @@ public class ASTTest {
 				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
 						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
 						new AST<>(LineGrammar.Line, "}")));
+	}
+
+	@Test
+	public void toStringOnInitialTest() {
+		String[] lines = root.toString().split(" ");
+		assertEquals(INITIAL_TOSTRING_ROWS,lines.length);
+		// this loop skips the names of the variable and only checks their value
+		for(int i = 2; i < lines.length; i = i + 2){
+			if(lines[i].charAt(lines[i].length() -1) == ',') {
+				lines[i] = lines[i].substring(0,lines[i].length() - 1);
+			}
+			switch (i) {
+				case 2:
+					assertEquals(root.getId().getMostSignificantBits(),Long.parseLong(lines[i]));
+					break;
+				case 4:
+					assertEquals(root.getType().toString(),lines[i]);
+					break;
+				case 6:
+					assertEquals(root.getValue().toString(), lines[i]);
+					break;
+				case 8:
+					assertEquals(root.getSubtrees().size(),Integer.parseInt(lines[i]));
+					break;
+				default:
+					throw new IllegalArgumentException(String.format("toStringOnInitialTest has incorrect lines size: %d",i));
+			}
+		}
 	}
 
 	@Test
@@ -102,8 +131,8 @@ public class ASTTest {
 	}
 
 	@Test
-	public void toStringOnInitialTest() {
-		final String[] lines = root.toString().split(String.format("%n"));
+	public void printTreeOnInitialTest() {
+		final String[] lines = root.printTree().split(String.format("%n"));
 		assertEquals(INITIAL_AST_SIZE, lines.length);
 		// test root values
 		final String[] rootAttributes = lines[0].split(" ");

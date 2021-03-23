@@ -117,13 +117,14 @@ public class AST<G extends Grammar, V> {
 	}
 
 	/**
-	 * This method returns only the most significant bits of the UUID, the type,
-	 * value and subtree size as a String of the actual AST.
+	 * This method returns only the most significant bits of the UUID, the type, value and subtree size as a String of the actual AST.
+	 *
 	 * @return UUID, Type, Value, subtree size as String
 	 */
 	@Override
 	public String toString() {
-		return String.format("[ Id: %d, Type: %s, Value: %s, Subtree-size: %d ]",id.getMostSignificantBits(),type.toString(),value.toString(),subtrees.size());
+		return String.format("[ Id: %d, Type: %s, Value: %s, Subtree-size: %d ]", id.getMostSignificantBits(), type.toString(), value.toString(),
+				subtrees.size());
 	}
 
 	/**

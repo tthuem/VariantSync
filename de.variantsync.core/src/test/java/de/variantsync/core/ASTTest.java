@@ -50,28 +50,28 @@ public class ASTTest {
 
 	@Test
 	public void toStringOnInitialTest() {
-		String[] lines = root.toString().split(" ");
-		assertEquals(INITIAL_TOSTRING_ROWS,lines.length);
+		final String[] lines = root.toString().split(" ");
+		assertEquals(INITIAL_TOSTRING_ROWS, lines.length);
 		// this loop skips the names of the variable and only checks their value
-		for(int i = 2; i < lines.length; i = i + 2){
-			if(lines[i].charAt(lines[i].length() -1) == ',') {
-				lines[i] = lines[i].substring(0,lines[i].length() - 1);
+		for (int i = 2; i < lines.length; i = i + 2) {
+			if (lines[i].charAt(lines[i].length() - 1) == ',') {
+				lines[i] = lines[i].substring(0, lines[i].length() - 1);
 			}
 			switch (i) {
-				case 2:
-					assertEquals(root.getId().getMostSignificantBits(),Long.parseLong(lines[i]));
-					break;
-				case 4:
-					assertEquals(root.getType().toString(),lines[i]);
-					break;
-				case 6:
-					assertEquals(root.getValue().toString(), lines[i]);
-					break;
-				case 8:
-					assertEquals(root.getSubtrees().size(),Integer.parseInt(lines[i]));
-					break;
-				default:
-					throw new IllegalArgumentException(String.format("toStringOnInitialTest has incorrect lines size: %d",i));
+			case 2:
+				assertEquals(root.getId().getMostSignificantBits(), Long.parseLong(lines[i]));
+				break;
+			case 4:
+				assertEquals(root.getType().toString(), lines[i]);
+				break;
+			case 6:
+				assertEquals(root.getValue().toString(), lines[i]);
+				break;
+			case 8:
+				assertEquals(root.getSubtrees().size(), Integer.parseInt(lines[i]));
+				break;
+			default:
+				throw new IllegalArgumentException(String.format("toStringOnInitialTest has incorrect lines size: %d", i));
 			}
 		}
 	}

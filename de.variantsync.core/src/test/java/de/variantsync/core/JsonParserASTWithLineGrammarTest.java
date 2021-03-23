@@ -16,7 +16,7 @@ import de.variantsync.core.ast.LineGrammar;
 
 //TODO. Add compare method to AST and then compare ASTs with this method.
 
-public class JsonParserTestASTWithLineGrammar {
+public class JsonParserASTWithLineGrammarTest {
 
 	AST<LineGrammar, String> exampleAst;
 	Path examplePath;

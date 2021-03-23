@@ -68,7 +68,7 @@ public class ResourceCompareInput extends CompareEditorInput {
 
 		@Override
 		public String toString() {
-			return "MyDiffNode [fDirty=" + fDirty + ", fLastId=" + fLastId + ", fLastName=" + fLastName + "]";
+			return String.format("MyDiffNode [fDirty=%s, fLastId=%s, fLastName=%s]", fDirty, fLastId, fLastName);
 		}
 
 		private boolean fDirty = false;
@@ -99,7 +99,7 @@ public class ResourceCompareInput extends CompareEditorInput {
 				fLastName = super.getName();
 			}
 			if (fDirty) {
-				return '<' + fLastName + '>';
+				return String.format("<%s>", fLastName);
 			}
 			return fLastName;
 		}

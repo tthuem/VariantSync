@@ -75,13 +75,13 @@ public class DeltaCompareViewerPage extends WizardPage {
 	}
 
 	public List<String> getSourceCode() {
-		return Arrays.asList(sourceViewer.getDocument().get().split("\n"));
+		return Arrays.asList(sourceViewer.getDocument().get().split(String.format("%n")));
 	}
 
 	private String getStringFromList(List<String> entries) {
 		String str = "";
 		for (final String el : entries) {
-			str += el + "\n";
+			str += String.format("%s%n", el);
 		}
 		return str;
 	}

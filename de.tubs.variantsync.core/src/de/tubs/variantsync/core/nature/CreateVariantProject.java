@@ -53,7 +53,7 @@ public class CreateVariantProject extends AbstractHandler {
 	}
 
 	private IProject createJavaProjectWithVariantNature(String projectName) {
-		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor("Create Project " + projectName);
+		final VariantSyncProgressMonitor progressMonitor = new VariantSyncProgressMonitor(String.format("Create Project %s", projectName));
 		// create project
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject project = root.getProject(projectName);

@@ -25,7 +25,7 @@ public class ProjectNotFoundException extends NoSuchElementException {
 
 	@Override
 	public String toString() {
-		return "A " + (type == Type.CONFIGURATION ? "configuration project" : "variant") + " does not exist in the workspace. " + getMessage();
+		return String.format("A %s does not exist in the workspace. %s", (type == Type.CONFIGURATION ? "configuration project" : "variant"), getMessage());
 	}
 
 }

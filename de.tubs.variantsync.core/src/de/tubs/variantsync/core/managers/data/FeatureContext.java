@@ -25,6 +25,7 @@ public class FeatureContext {
 	}
 
 	public boolean isComposed() {
+		// if the name contains an or, and or not in its middle, the FeatureContext is supposed to be composed
 		return name.matches(".*(or|and|not).*");
 	}
 

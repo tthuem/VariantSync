@@ -52,7 +52,7 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 
 	@Override
 	public String toString() {
-		return "DefaultDeltaFactory [getId()=" + getId() + ", getName()=" + getName() + "]";
+		return String.format("DefaultDeltaFactory [getId()=%s, getName()=%s]", getId(), getName());
 	}
 
 	@Override

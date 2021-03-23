@@ -140,7 +140,7 @@ public class MarkerUtils {
 			IMarker marker = null;
 			if (res.exists()) {
 				marker = res.createMarker(getMarker(featureContext.highlighter));
-				marker.setAttribute(IMarker.MESSAGE, "Feature: " + featureContext.name);
+				marker.setAttribute(IMarker.MESSAGE, String.format("Feature: %s", featureContext.name));
 				marker.setAttribute(IMarker.CHAR_START, posStart);
 				marker.setAttribute(IMarker.CHAR_END, posEnd);
 				return marker.getId();

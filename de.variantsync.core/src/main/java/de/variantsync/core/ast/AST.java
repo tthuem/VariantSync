@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 /**
  * This class represents the Abstract Syntax Tree data structure. This also tests the LineGrammar indirectly.

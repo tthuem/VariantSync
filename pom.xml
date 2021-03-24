@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.tubs.variantsync</groupId>
     <artifactId>de.tubs.variantsync</artifactId>
@@ -9,9 +10,10 @@
     <properties>
         <tycho-version>2.1.0</tycho-version>
         <tycho-extras-version>2.1.0</tycho-extras-version>
+        <maven-compiler-version>3.8.1</maven-compiler-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <eclipse-repo.url>https://download.eclipse.org/releases/2020-09/</eclipse-repo.url>
-        <tycho.testArgLine></tycho.testArgLine>
+        <eclipse-repo.url>https://download.eclipse.org/releases/2019-12/</eclipse-repo.url>
+        <tycho.testArgLine/>
     </properties>
 
     <modules>
@@ -19,27 +21,38 @@
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
         <module>de.tubs.variantsync.update</module>
-
+        <module>de.variantsync.core</module>
         <!--test module -->
-        <module>de.tubs.variantsync.core-test</module>    
+        <module>de.tubs.variantsync.core-test</module>
     </modules>
 
-     <repositories>
+    <repositories>
         <repository>
             <id>eclipse-release</id>
             <url>${eclipse-repo.url}</url>
             <layout>p2</layout>
-        </repository>    
+        </repository>
         <repository>
             <id>featureide</id>
             <url>http://featureide.cs.ovgu.de/update/v3/</url>
             <layout>p2</layout>
         </repository>
-    </repositories>   
+    </repositories>
 
     <build>
         <plugins>
-            <!-- Tycho -->  
+            <!-- Maven Compiler -->
+            <!-- IntelliJ needs this to do proper resolving. Changes here should have no effect to the project JDK -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-version}</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+            <!-- Tycho -->
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-maven-plugin</artifactId>
@@ -52,16 +65,16 @@
                 <version>${tycho-version}</version>
                 <configuration>
                     <useUIHarness>true</useUIHarness>
-					<!--use JDK: $HOME_JAVA-->
-					<useJDK>SYSTEM</useJDK>
+                    <!--use JDK: $HOME_JAVA-->
+                    <useJDK>SYSTEM</useJDK>
                 </configuration>
-            </plugin>            
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
                 <configuration>
-                
+
                     <pomDependencies>consider</pomDependencies>
                     <environments>
                         <environment>
@@ -103,8 +116,8 @@
             </plugin>
 
             <!-- <plugin> -->
-                <!-- Copy non-Ecipse plugins to target/dependency so that may be referenced 
-                    for runtime use. -->
+            <!-- Copy non-Ecipse plugins to target/dependency so that may be referenced
+                for runtime use. -->
             <!-- <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.10</version>
                 <executions>
@@ -126,7 +139,7 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-p2-director-plugin</artifactId>
                     <version>${tycho.version}</version>
-                </plugin>            
+                </plugin>
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -170,7 +183,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -189,7 +202,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -211,7 +224,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

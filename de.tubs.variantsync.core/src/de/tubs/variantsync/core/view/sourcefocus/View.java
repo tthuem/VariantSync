@@ -68,7 +68,7 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 		}
 	}
 
-	public static final String ID = VariantSyncPlugin.PLUGIN_ID + ".views.sourcefocus";
+	public static final String ID = String.format("%s.views.sourcefocus", VariantSyncPlugin.PLUGIN_ID);
 
 	private Combo cbFeature;
 	private TreeViewer tvChanges;
@@ -322,7 +322,11 @@ public class View extends ViewPart implements SelectionListener, ISelectionChang
 						return;
 					}
 					lastSelections.add(delta);
-					ret += ret.isEmpty() ? delta.getRepresentation() : "\n\n" + delta.getRepresentation();
+					if (ret.isEmpty()) {
+						ret += delta.getRepresentation();
+					} else {
+						ret += String.format("%n%n%s", delta.getRepresentation());
+					}
 				}
 			}
 			lbChange.setDocument(new Document(ret));

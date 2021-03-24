@@ -33,7 +33,8 @@ public class PatchFormat extends AXMLFormat<List<IPatch<?>>> {
 	private static final String PATCHES = "Patches";
 	private static final String PATCH = "Patch";
 	private static final String DELTA = "Delta";
-	private static final Pattern CONTENT_REGEX = Pattern.compile("\\A\\s*(<[?]xml\\s.*[?]>\\s*)?<" + PATCHES + "[\\s>]");
+
+	private static final Pattern CONTENT_REGEX = XMLFormatHelper.createContentRegex(PATCHES);
 
 	public static final String FILENAME = ".patches.xml";
 

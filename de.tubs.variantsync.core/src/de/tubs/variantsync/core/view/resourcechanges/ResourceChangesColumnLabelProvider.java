@@ -73,9 +73,11 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			if (o instanceof IDelta) {
 				String projects = "";
 				for (final IProject project : ((IDelta<?>) o).getSynchronizedProjects()) {
-					projects += project.getName() + ", ";
+					projects += String.format("%s, ", project.getName());
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				if (projects.lastIndexOf(",") != -1) {
+					projects = projects.substring(0, projects.lastIndexOf(","));
+				}
 				cell.setText(projects);
 			}
 			break;
@@ -83,9 +85,11 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			if (o instanceof IDelta) {
 				String projects = "";
 				for (final IProject project : targetsCalculator.getTargetsWithConflict(((IDelta<?>) o))) {
-					projects += project.getName() + ", ";
+					projects += String.format("%s, ", project.getName());
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				if (projects.lastIndexOf(",") != -1) {
+					projects = projects.substring(0, projects.lastIndexOf(","));
+				}
 				cell.setText(projects);
 			}
 			break;
@@ -93,9 +97,11 @@ public class ResourceChangesColumnLabelProvider extends CellLabelProvider {
 			if (o instanceof IDelta) {
 				String projects = "";
 				for (final IProject project : targetsCalculator.getTargetsWithoutConflict(((IDelta<?>) o))) {
-					projects += project.getName() + ", ";
+					projects += String.format("%s, ", project.getName());
 				}
-				projects = projects.lastIndexOf(",") == -1 ? projects : projects.substring(0, projects.lastIndexOf(","));
+				if (projects.lastIndexOf(",") != -1) {
+					projects = projects.substring(0, projects.lastIndexOf(","));
+				}
 				cell.setText(projects);
 			}
 			break;

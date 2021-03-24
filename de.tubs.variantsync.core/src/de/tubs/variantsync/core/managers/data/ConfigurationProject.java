@@ -38,7 +38,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	private List<IProject> projects = new ArrayList<>();
 
 	public IFeatureProject getFeatureProject() {
-		if(configurationProject != null && configurationProject.getProject().exists()) {
+		if ((configurationProject != null) && configurationProject.getProject().exists()) {
 			return configurationProject;
 		}
 
@@ -85,8 +85,8 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 				final IFile configPath = (IFile) EclipseFileSystem.getResource(confPath);
 				final String configFileName = configPath.getName();
 				final String configName = configFileName.substring(0, configFileName.lastIndexOf('.'));
-				System.out.println("[ConfigurationProject.getConfigurationForVariant] Check name equality Project(" + project.getName() + ") with Config("
-					+ configName + ")");
+				System.out.println(String.format("[ConfigurationProject.getConfigurationForVariant] Check name equality Project(%s) with Config(%s)",
+						project.getName(), configName));
 				if (configName.equals(project.getName())) {
 					final ConfigurationManager configurationManager = ConfigurationManager.getInstance(Paths.get(configPath.getRawLocationURI()));
 					if (configurationManager != null) {

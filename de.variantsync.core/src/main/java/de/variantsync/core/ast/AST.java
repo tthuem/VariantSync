@@ -9,13 +9,13 @@ import java.util.UUID;
 import de.variantsync.core.grammar.Grammar;
 
 /**
- * This class represents the Abstract Syntax Tree data structure. This also tests the LineGrammar indirectly.
+ * This class represents the Abstract Syntax Tree data structure.
  *
  * @param <G> a generic which needs to extend the Grammar class, defining the type of the AST
  * @param <V> a generic which defines the value of the actual AST
  * @author eric
  */
-public class AST<G extends Grammar, V> {
+public class AST<G extends Grammar<G>, V> {
 
 	private UUID id;
 	private G type;
@@ -65,14 +65,14 @@ public class AST<G extends Grammar, V> {
 		return Collections.unmodifiableList(subtrees);
 	}
 
-	public int getMaxDepth() {
-		if (subtrees.size() == 0) {
-			return 0;
+	public int getDepth() {
+		int maxDepth = 1;
+		if (subtrees.isEmpty()) {
+			return maxDepth;
 		}
 
-		int maxDepth = 0;
 		for (final AST<G, V> node : subtrees) {
-			maxDepth = Math.max(node.getMaxDepth(), maxDepth);
+			maxDepth = Math.max(node.getDepth(), maxDepth);
 		}
 		return ++maxDepth;
 	}
@@ -84,8 +84,8 @@ public class AST<G extends Grammar, V> {
 	 * @return true if all items where successfully added
 	 */
 	public boolean addChildren(List<AST<G, V>> toAdd) {
-		boolean out = true;
-		if (toAdd != null) {
+		boolean out = toAdd != null;
+		if (out) {
 			for (final AST<G, V> elem : toAdd) {
 				if (!addChild(elem)) {
 					out = false;
@@ -135,9 +135,7 @@ public class AST<G extends Grammar, V> {
 	 */
 	public String printTree() {
 		final StringBuilder result = new StringBuilder();
-		if (value == null) {
-			return result.toString();
-		} else {
+		if (value != null) {
 			final int depth = 0;
 
 			final HashSet<Integer> levelFinished = new HashSet<>(); // determines if all subtrees of the actual tree on this depth have been drawn or not

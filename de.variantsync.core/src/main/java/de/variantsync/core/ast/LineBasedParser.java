@@ -43,7 +43,7 @@ public class LineBasedParser {
 				}
 			}
 		} else {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("This path does not exist: " + path);
 		}
 		return result;
 	}
@@ -62,7 +62,7 @@ public class LineBasedParser {
 				return true;
 			}
 		} else {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("This file does not exist: " + file);
 		}
 	}
 }

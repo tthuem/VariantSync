@@ -26,7 +26,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	private static final String SOURCEFILE = "SourceFile";
 	private static final String CODEMAPPINGS = "CodeMapping";
 
-	private static final Pattern CONTENT_REGEX = FormatHelper.createContentRegex(MAPPINGS);
+	private static final Pattern CONTENT_REGEX = XMLFormatHelper.createContentRegex(MAPPINGS);
 
 	public static final String FILENAME = ".mapping.xml";
 

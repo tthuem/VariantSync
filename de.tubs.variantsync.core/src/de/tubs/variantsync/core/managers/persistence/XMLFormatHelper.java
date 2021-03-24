@@ -2,7 +2,7 @@ package de.tubs.variantsync.core.managers.persistence;
 
 import java.util.regex.Pattern;
 
-public class FormatHelper {
+public class XMLFormatHelper {
 
 	// the xml pattern should start with an optional standard xml-starting line (e.g. <?xml charSequenceOfArbitraryLength?>)
 	// followed by an xml tag starting with the content string

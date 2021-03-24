@@ -8,16 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.LineGrammar;
+import org.junit.runners.MethodSorters;
 
 /**
- * Here you can find the unit tests for the AST data structure.
+ * Here you can find the unit tests for the AST data structure. This also tests the (Line)Grammar indirectly.
  *
  * @author eric
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING) // run tests in lexicographic order
 public class ASTTest {
 
 	AST<LineGrammar, String> root;
@@ -78,11 +81,16 @@ public class ASTTest {
 
 	@Test
 	public void addOnInitialTest() {
+		assertFalse(root.addChild(null));
+		assertEquals(INITIAL_AST_SIZE, root.size());
+
+		// Adding new Directory as subtree of a Directory should work
 		AST<LineGrammar, String> newTree = new AST<>(LineGrammar.Directory, "newROOT");
 		int oldSize = root.getSubtrees().size();
 		assertTrue(root.addChild(newTree));
 		assertEquals(oldSize + 1, root.getSubtrees().size());
 
+		// Adding new Line as subtree of a Directory should not work
 		newTree = new AST<>(LineGrammar.Line, "!LineYouAreLookingFor");
 		oldSize = root.getSubtrees().size();
 		assertFalse(root.addChild(newTree));
@@ -91,6 +99,9 @@ public class ASTTest {
 
 	@Test
 	public void addAllOnInitialTest() {
+		assertFalse(root.addChildren(null));
+		assertEquals(INITIAL_AST_SIZE, root.size());
+
 		List<AST<LineGrammar, String>> newTrees = Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.BinaryFile, "101010"),
 				new AST<>(LineGrammar.TextFile, "fancyFile.txt"), new AST<>(LineGrammar.Directory, "fancyFolder"));
 		int oldSize = root.getSubtrees().size();
@@ -115,19 +126,19 @@ public class ASTTest {
 
 	@Test
 	public void sizeOnEmptyASTTest() {
-		root = new AST<>(null, null);
-		assertEquals(1, root.size());
+		AST<LineGrammar, String> badAST = new AST<>(null, null);
+		assertEquals(1, badAST.size());
 	}
 
 	@Test
 	public void getDepthOnInitialTest() {
-		assertEquals(3, root.getDepth());
+		assertEquals(4, root.getDepth());
 	}
 
 	@Test
 	public void getDepthOnEmptyASTTest() {
-		root = new AST<>(null, null);
-		assertEquals(0, root.getDepth());
+		AST<LineGrammar, String> badAST = new AST<>(null, null);
+		assertEquals(1, badAST.getDepth());
 	}
 
 	@Test

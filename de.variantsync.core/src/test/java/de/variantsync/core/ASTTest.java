@@ -10,10 +10,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.LineGrammar;
-import org.junit.runners.MethodSorters;
 
 /**
  * Here you can find the unit tests for the AST data structure. This also tests the (Line)Grammar indirectly.
@@ -30,6 +30,7 @@ public class ASTTest {
 	int lineIndex = 0; // only for printTree() testing
 	final int INITIAL_AST_SIZE = 11;
 	final int INITIAL_TOSTRING_ROWS = 10;
+	final int INITIAL_ROOT_VARIABLE_COUNT = 4;
 
 	@Before
 	public void setup() {
@@ -102,12 +103,15 @@ public class ASTTest {
 		assertFalse(root.addChildren(null));
 		assertEquals(INITIAL_AST_SIZE, root.size());
 
-		List<AST<LineGrammar, String>> newTrees = Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.BinaryFile, "101010"),
-				new AST<>(LineGrammar.TextFile, "fancyFile.txt"), new AST<>(LineGrammar.Directory, "fancyFolder"));
+		// Adding new List of ASTs, only the one satisfying the isValidChild of Grammar or != null will be added,
+		// rest is ignored.
+		List<AST<LineGrammar, String>> newTrees = Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), null,
+				new AST<>(LineGrammar.BinaryFile, "101010"), new AST<>(LineGrammar.TextFile, "fancyFile.txt"), new AST<>(LineGrammar.Directory, "fancyFolder"));
 		int oldSize = root.getSubtrees().size();
 		assertFalse(root.addChildren(newTrees));
 		assertEquals(oldSize + 3, root.getSubtrees().size());
 
+		// Adding only valid subtrees to the root
 		newTrees = Arrays.asList(new AST<>(LineGrammar.Directory, "public class Main {"), new AST<>(LineGrammar.BinaryFile, "101010"));
 		oldSize = root.getSubtrees().size();
 		assertTrue(root.addChildren(newTrees));
@@ -126,7 +130,7 @@ public class ASTTest {
 
 	@Test
 	public void sizeOnEmptyASTTest() {
-		AST<LineGrammar, String> badAST = new AST<>(null, null);
+		final AST<LineGrammar, String> badAST = new AST<>(null, null);
 		assertEquals(1, badAST.size());
 	}
 
@@ -137,17 +141,19 @@ public class ASTTest {
 
 	@Test
 	public void getDepthOnEmptyASTTest() {
-		AST<LineGrammar, String> badAST = new AST<>(null, null);
+		final AST<LineGrammar, String> badAST = new AST<>(null, null);
 		assertEquals(1, badAST.getDepth());
 	}
 
 	@Test
 	public void printTreeOnInitialTest() {
+		// assure that printTrees has as many rows as the AST has subtrees
 		final String[] lines = root.printTree().split(String.format("%n"));
 		assertEquals(INITIAL_AST_SIZE, lines.length);
-		// test root values
+
+		// assure the number of printed variables of the root value
 		final String[] rootAttributes = lines[0].split(" ");
-		assertEquals(4, rootAttributes.length);
+		assertEquals(INITIAL_ROOT_VARIABLE_COUNT, rootAttributes.length);
 
 		// check root values
 		checkStringRoot(root, rootAttributes);
@@ -158,6 +164,7 @@ public class ASTTest {
 
 	private void checkStringRoot(AST<LineGrammar, String> node, String[] rootAttributes) {
 		assertEquals(0, lineIndex);
+		// this test also tests the order of the attributes but
 		// in general checking like this is not possible due to the nature of AST.INDENT_STRING
 		// but root line does not contain AST.INDENT_STRING
 		assertEquals(node.getType().toString(), rootAttributes[0]); // Type
@@ -169,6 +176,8 @@ public class ASTTest {
 	private void checkStringSubTree(AST<LineGrammar, String> node, String[] lines) {
 		lineIndex++;
 		for (final AST<LineGrammar, String> child : node.getSubtrees()) {
+			// in contrast to checkStringRoot this only checks if the attributes are contained in the string
+			// but does not assure their order
 			final String line = lines[lineIndex];
 			assertTrue(line.contains(AST.INDENT_STRING));
 			assertTrue(line.contains(AST.NEXT_SEPARATOR) || line.contains(AST.NEXT_ACT_SEPARATOR) || line.contains(AST.LAST_SEPARATOR));

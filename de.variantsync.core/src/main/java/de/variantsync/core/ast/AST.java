@@ -15,7 +15,7 @@ import de.variantsync.core.interfaces.Grammar;
  * @param <V> a generic which defines the value of the actual AST
  * @author eric
  */
-public class AST<G extends Grammar, V> {
+public class AST<G extends Grammar<G>, V> {
 
 	private UUID id;
 	private G type;
@@ -64,8 +64,6 @@ public class AST<G extends Grammar, V> {
 	public List<AST<G, V>> getSubtrees() {
 		return Collections.unmodifiableList(subtrees);
 	}
-
-
 
 	public int getDepth() {
 		int maxDepth = 1;

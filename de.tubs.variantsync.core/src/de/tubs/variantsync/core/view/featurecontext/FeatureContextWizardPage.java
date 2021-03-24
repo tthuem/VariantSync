@@ -149,11 +149,14 @@ public class FeatureContextWizardPage extends WizardPage {
 					String featureName = selectedItem[0].getText();
 					// if the featureName is of the following structure:
 					// arbitrary amount of chars until the first occurence of 1 or more consecutive spaces followed by an arbitrary amount of chars
-					// so, if the featureName contains 1 or more spaces, it is surrounded by double quotes
+					// so, if the featureName contains 1 or more spaces, it is surrounded by double quotes because the space character is needed to put features
+					// together by operators like "and" or "or"
+					// this might be a relict of previous versions because it is currently not even possible to add new features to the feature model which
+					// contain a space character in the middle
 					if (featureName.matches(".*?\\s+.*")) {
 						featureName = String.format("\"%s\"", featureName);
 					} else {
-						// if the featureName equals one of the operator names, it is also surrounded by double quotes
+						// if the featureName equals one of the operator names, it is also surrounded by double quotes for the reasons mentioned above
 						for (final String op : Operator.NAMES) {
 							if (featureName.equalsIgnoreCase(op)) {
 								featureName = String.format("\"%s\"", featureName);

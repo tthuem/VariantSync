@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.variantsync.core.grammar.Grammar;
+import de.variantsync.core.refactoring.Variant;
 
 /**
  * This class represents the Abstract Syntax Tree data structure.
@@ -15,7 +16,7 @@ import de.variantsync.core.grammar.Grammar;
  * @param <V> a generic which defines the value of the actual AST
  * @author eric
  */
-public class AST<G extends Grammar<G>, V> {
+public class AST<G extends Grammar<G>, V> implements Variant {
 
 	private UUID id;
 	private G type;

@@ -4,7 +4,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-public class Variant implements IProjectNature {
+public class VariantNature implements IProjectNature {
 
 	public static final String NATURE_ID = "de.tubs.variantsync.core.variant";
 	private IProject project;

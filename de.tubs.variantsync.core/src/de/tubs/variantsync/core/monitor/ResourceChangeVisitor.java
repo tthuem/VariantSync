@@ -14,7 +14,7 @@ import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
-import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.nature.VariantNature;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.base.DefaultPatchFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
@@ -209,7 +209,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @throws CoreException
 	 */
 	private boolean filterResource(IProject project, IResource res) throws CoreException {
-		if ((project != null) && project.isOpen() && !project.hasNature(Variant.NATURE_ID)) {
+		if ((project != null) && project.isOpen() && !project.hasNature(VariantNature.NATURE_ID)) {
 			return false;
 		}
 		if ((project != null) && !project.isOpen()) {

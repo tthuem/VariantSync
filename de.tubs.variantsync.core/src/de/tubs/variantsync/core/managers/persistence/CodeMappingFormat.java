@@ -19,6 +19,7 @@ import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.variantsync.core.marker.AMarkerInformation;
 import de.variantsync.core.marker.IVariantSyncMarker;
 
+//TODO: AST REFACTORING
 public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 
 	private static final String ID = "CodeMapping";
@@ -36,11 +37,13 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 		this.project = project;
 	}
 
+	//TODO: AST REFACTORING
 	@Override
 	public APersistentFormat<List<SourceFile>> getInstance() {
 		return new CodeMappingFormat(null);
 	}
 
+	//TODO: AST REFACTORING
 	public IPersistentFormat<List<SourceFile>> getInstance(IProject project) {
 		return new CodeMappingFormat(project);
 	}
@@ -64,6 +67,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void readDocument(Document doc, List<Problem> warnings) throws UnsupportedModelException {
 		object.clear();
 		for (final Element eSF : getElements(doc.getDocumentElement().getChildNodes())) {
+			//TODO: AST REFACTORING
 			final SourceFile sourceFile = new SourceFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(eSF.getAttribute("path"))));
 			for (final Element eCM : getElements(eSF.getChildNodes())) {
 				final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(Integer.parseInt(eCM.getAttribute("offset")),
@@ -80,6 +84,7 @@ public class CodeMappingFormat extends AXMLFormat<List<SourceFile>> {
 	protected void writeDocument(Document doc) {
 		final Element root = doc.createElement(MAPPINGS);
 
+		//TODO: AST REFACTORING
 		for (final SourceFile sf : object) {
 			final Element file = doc.createElement(SOURCEFILE);
 			file.setAttribute("path", String.valueOf(sf.getFile().getFullPath()));

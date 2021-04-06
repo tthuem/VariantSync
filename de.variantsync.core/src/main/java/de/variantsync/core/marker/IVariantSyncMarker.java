@@ -1,7 +1,7 @@
 package de.variantsync.core.marker;
 
+//TODO: AST REFACTORING
 public interface IVariantSyncMarker {
-
 	/**
 	 * Returns marker id.
 	 *

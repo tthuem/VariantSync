@@ -3,7 +3,6 @@ package de.variantsync.core.ast;
 import java.util.*;
 
 import de.variantsync.core.grammar.Grammar;
-import de.variantsync.core.refactoring.Variant;
 import org.prop4j.Node;
 
 /**
@@ -19,7 +18,7 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     private G type;
     private V value;
     private List<AST<G, V>> subtrees;
-    Node featureMapping = null;
+    public Node featureMapping = null; //eg This AST which represents a Line belongs to That Eclipse Marker
 
     // all attributes which should not be visible to the GSON parser need to be at least transient
     public static transient final String INDENT_STRING = "    ";
@@ -37,6 +36,8 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     public AST(G type, V value) {
         this(UUID.randomUUID(), type, value);
     }
+
+
 
     /**
      * Empty AST is forbidden at the moment.
@@ -75,6 +76,7 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
         }
         return ++maxDepth;
     }
+
 
     /**
      * This method calls the addChild method for each element of the given list. ASTs which would be rejected by the addChild method are skipped.
@@ -132,7 +134,7 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
 
     @Override
     public Iterator<AST<G, V>> iterator() {
-        return new ASTIterator<>(this);
+        return new ASTSubtreeRootIterator<>(this);
     }
 
     /**

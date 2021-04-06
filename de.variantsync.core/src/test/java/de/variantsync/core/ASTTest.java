@@ -1,9 +1,5 @@
 package de.variantsync.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +10,11 @@ import org.junit.runners.MethodSorters;
 
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.LineGrammar;
+import org.prop4j.Literal;
+
+import javax.sound.sampled.Line;
+
+import static org.junit.Assert.*;
 
 /**
  * Here you can find the unit tests for the AST data structure. This also tests the (Line)Grammar indirectly.
@@ -50,6 +51,40 @@ public class ASTTest {
 				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
 						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
 						new AST<>(LineGrammar.Line, "}")));
+	}
+
+	@Test
+	public void iterableAndIteratorOnInitialTest() {
+		//only returns direct subtree nodes
+		int nodeCounter = 0;
+		for(AST<?,?> node : root){
+			switch (nodeCounter) {
+				case 0:
+					assertEquals(node,testDir);
+					break;
+				case 1:
+					assertEquals(node,mainDir);
+					break;
+				default:
+					//root does not have more than 2 subtrees
+					fail();
+					break;
+
+			}
+			nodeCounter++;
+		}
+		assertEquals(root.getSubtrees().size(),nodeCounter);
+
+		//returns whole ast as (pre)ordered list
+		for(AST<?,?> node : root.toListPreorder()){
+			//System.out.println(node);
+		}
+
+		System.out.println("--------------------------------");
+		System.out.println(root.printTree());
+
+
+		assertTrue(true);
 	}
 
 	@Test

@@ -1,11 +1,13 @@
 package de.tubs.variantsync.core.managers.data;
 
 import de.variantsync.core.marker.IVariantSyncMarker;
-
+//TODO: AST REFACTORING
 public class CodeMapping {
 
 	private String code;
 	private IVariantSyncMarker variantSyncMarker;
+
+
 
 	/**
 	 * Constructor

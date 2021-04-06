@@ -15,5 +15,6 @@ public interface IMarkerHandler<T> {
 
 	List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<T>> deltas);
 
+	//TODO: AST REFACTORING
 	boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta, List<IVariantSyncMarker> variantSyncMarkers);
 }

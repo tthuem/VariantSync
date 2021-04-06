@@ -102,6 +102,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (final DiffException ex) {
@@ -140,6 +141,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (final DiffException ex) {
@@ -184,6 +186,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 							patch.addDeltas(deltas);
 							configurationProject.getPatchesManager().setActualContextPatch(patch);
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+							//TODO: AST REFACTORING
 							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
 					} catch (final DiffException ex) {

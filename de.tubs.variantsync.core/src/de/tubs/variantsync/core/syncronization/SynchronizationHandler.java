@@ -50,6 +50,7 @@ public class SynchronizationHandler {
 					delta.addSynchronizedProject(project);
 
 					final IDelta<?> newDelta = factory.createDeltas(newFile, delta);
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(Arrays.asList(newDelta));
 
 					VariantSyncPlugin.addResourceChangeListener();
@@ -87,6 +88,7 @@ public class SynchronizationHandler {
 					for (final IDelta<?> deltaFile : deltas) {
 						deltaFile.setContext(delta.getContext());
 					}
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				} catch (final DiffException e) {
 					return false;

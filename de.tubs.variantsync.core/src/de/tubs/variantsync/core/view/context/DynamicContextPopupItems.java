@@ -76,6 +76,7 @@ public class DynamicContextPopupItems extends ContributionItem implements IEvent
 
 						if (length > 0) {
 							// Add mapping to file
+							//TODO: AST REFACTORING
 							CodeMappingHandler.addCodeMappings(file, fe.name, offset, length, selectedText);
 						}
 					}

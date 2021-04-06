@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-
+//TODO: AST REFACTORING
 public class SourceFile {
 
 	private IFile resource;
 	List<CodeMapping> mappings = new ArrayList<>();
+
 
 	public SourceFile(IFile res) {
 		resource = res;

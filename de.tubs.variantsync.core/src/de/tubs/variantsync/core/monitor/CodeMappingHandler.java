@@ -19,14 +19,19 @@ import de.tubs.variantsync.core.utilities.LogOperations;
 import de.variantsync.core.marker.IVariantSyncMarker;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
+//TODO: AST REFACTORING
 public class CodeMappingHandler {
 
 	/**
 	 * Creates mappings for given deltas
-	 *
+	 * ENTRY POINT FOR FEATURE RECODRING
 	 * @param deltas
 	 */
 	public static void addCodeMappingsForDeltas(List<IDelta<?>> deltas) {
+		//TODO: AST REFACTORING
+		//This is the connection between The IDelta and the SourceFile which can be refactored to AST or
+		//we also include the IDeltas in the refactoring but this could take more time.
+/*
 		for (final IDelta delta : deltas) {
 			try {
 				// Get factory and marker handler for delta
@@ -38,6 +43,9 @@ public class CodeMappingHandler {
 				final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
 				final MappingManager mappingManager = configurationProject.getMappingManager();
 				if (configurationProject != null) {
+					//TODO: replace SoruceFile By AST, but what's whith the diffs? Should we replace the deltas?
+
+
 					// Get file with current mappings
 					SourceFile sourceFile = mappingManager.getMapping(delta.getResource());
 					if (sourceFile == null) {
@@ -58,18 +66,20 @@ public class CodeMappingHandler {
 				LogOperations.logError("Could not map the delta to a context", e);
 			}
 		}
+ */
 	}
 
 	/**
 	 * Adds manually created mappings
 	 *
 	 * @param file
-	 * @param context
 	 * @param offset
 	 * @param length
 	 * @param content
 	 */
 	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
+		//TODO: AST REFACTORING (this method is only used by DynamicContextPopupItems in ...core.view.context)
+/*
 		try {
 			final IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 			final List<IVariantSyncMarker> variantSyncMarkers = deltaFactory.getMarkerHandler().getMarkers(file, offset, length);
@@ -90,7 +100,31 @@ public class CodeMappingHandler {
 		} catch (final NoSuchExtensionException e) {
 			e.printStackTrace();
 		}
+
+ */
 	}
+
+
+	/**
+	 * Returns true, if a marker information exists at the given line in the given file
+	 *
+	 * @param sourceFile
+	 * @param line
+	 * @return
+	 */
+	public static boolean contains(SourceFile sourceFile, int line) {
+		//TODO: AST REFACTORING
+		for (final CodeMapping mapping : sourceFile.getMappings()) {
+			final IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
+			if (variantSyncMarker.isLine() && (variantSyncMarker.getOffset() == line)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//TODO: AST REFACTORING
+	//-------------------------------unused methods, maybe delete?
 
 	/**
 	 * Returns the mapping for a given source and marker
@@ -106,23 +140,6 @@ public class CodeMappingHandler {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Returns true, if a marker information exists at the given line in the given file
-	 *
-	 * @param sourceFile
-	 * @param line
-	 * @return
-	 */
-	public static boolean contains(SourceFile sourceFile, int line) {
-		for (final CodeMapping mapping : sourceFile.getMappings()) {
-			final IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
-			if (variantSyncMarker.isLine() && (variantSyncMarker.getOffset() == line)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

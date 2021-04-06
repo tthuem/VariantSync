@@ -4,12 +4,16 @@ import de.variantsync.core.grammar.Grammar;
 
 import java.util.Iterator;
 
-
-public class ASTIterator<G extends Grammar<G>,V> implements Iterator<AST<G,V>> {
+/**
+ * This iterator only iterates over root nodes of the direct subtrees of the AST without iterating over its root.
+ * @param <G> A extended form the Grammar Interface
+ * @param <V> V defines the type of the values which are stored in the AST
+ */
+public class ASTSubtreeRootIterator<G extends Grammar<G>,V> implements Iterator<AST<G,V>> {
     AST<G,V> ast;
     private int subTreeCounter = 0;
 
-    public ASTIterator(AST<G,V> ast) {
+    public ASTSubtreeRootIterator(AST<G,V> ast) {
         this.ast = ast;
     }
 

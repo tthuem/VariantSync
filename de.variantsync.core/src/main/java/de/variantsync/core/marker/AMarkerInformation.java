@@ -9,6 +9,7 @@ import java.util.UUID;
  * @author Christopher Sontag
  * @since 17.06.2016
  */
+//TODO: AST REFACTORING
 public class AMarkerInformation implements IVariantSyncMarker {
 
 	private long markerId;

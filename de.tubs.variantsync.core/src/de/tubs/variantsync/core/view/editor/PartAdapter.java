@@ -123,12 +123,16 @@ public class PartAdapter implements IPartListener, IEventListener {
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
 				final List<IVariantSyncMarker> markers = new ArrayList<>();
+				//TODO: AST REFACTORING
+/*
 				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
 				if (sourceFile != null) {
 					for (final CodeMapping codeMapping : sourceFile.getMappings()) {
 						markers.add(codeMapping.getMarkerInformation());
 					}
 				}
+
+ */
 				if (!markers.isEmpty()) {
 					MarkerUtils.setMarker(currentFile, markers);
 				}

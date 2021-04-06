@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.LineGrammar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
@@ -16,9 +18,11 @@ import de.tubs.variantsync.core.managers.persistence.CodeMappingFormat;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
+
+
 public class MappingManager extends AManager implements ISaveableManager {
 
-	private HashMap<IProject, List<SourceFile>> codeMappings = new HashMap<>();
+	private HashMap<IProject, AST<LineGrammar,String>> codeMappings = new HashMap<>();
 	private final ConfigurationProject configurationProject;
 
 	public MappingManager(ConfigurationProject configurationProject) {
@@ -41,27 +45,66 @@ public class MappingManager extends AManager implements ISaveableManager {
 					VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject(), null));
 		}
 	}
-
-	public SourceFile getMapping(IFile file) {
+	//return AST which belongs to this File NOT LINE
+	public AST<LineGrammar,String> getMapping(IFile file) {
 		if ((file != null) && codeMappings.containsKey(file.getProject())) {
-			for (final SourceFile sourceFile : codeMappings.get(file.getProject())) {
+			//TODO: AST REFACTORING
+/*
+			AST<LineGrammar,String> findings = codeMappings.get(file.getProject());
+			for (final AST<LineGrammar, String> sourceFile :findings.toListPreorder()) {
 				if (sourceFile.getFile().getFullPath().equals(file.getFullPath())) {
 					return sourceFile;
 				}
 			}
+
+ */
 		}
 		return null;
 	}
 
-	public HashMap<IProject, List<SourceFile>> getCodeMappings() {
+	@Override
+	public void reset() {
+		codeMappings.clear();
+	}
+
+	@Override
+	public void load() {
+		//TODO: AST REFACTORING
+/*
+		for (final IProject project : configurationProject.getVariants()) {
+			final List<SourceFile> sourceFiles = new ArrayList<>();
+			SimpleFileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
+			if (!sourceFiles.isEmpty()) {
+				addCodeMapping(project, sourceFiles);
+			}
+		}
+
+ */
+	}
+
+	@Override
+	public void save() {
+		//TODO: AST REFACTORING
+/*
+		for (final IProject project : codeMappings.keySet()) {
+			SimpleFileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), codeMappings.get(project),
+					new CodeMappingFormat(project));
+		}
+
+ */
+	}
+
+	//-------------------------------unused methods, maybe delete?
+/*
+	public HashMap<IProject, AST<LineGrammar,String>> getCodeMappings() {
 		return codeMappings;
 	}
 
-	public void setCodeMappings(HashMap<IProject, List<SourceFile>> codeMappings) {
+	public void setCodeMappings(HashMap<IProject, AST<LineGrammar,String>> codeMappings) {
 		this.codeMappings = codeMappings;
 	}
 
-	public void addCodeMapping(IProject project, List<SourceFile> files) {
+	public void addCodeMapping(IProject project, AST<LineGrammar,String> files) {
 		codeMappings.put(project, files);
 	}
 
@@ -79,29 +122,5 @@ public class MappingManager extends AManager implements ISaveableManager {
 		}
 		sourceFiles.add(sourceFile);
 	}
-
-	@Override
-	public void reset() {
-		codeMappings.clear();
-	}
-
-	@Override
-	public void load() {
-		for (final IProject project : configurationProject.getVariants()) {
-			final List<SourceFile> sourceFiles = new ArrayList<>();
-			SimpleFileHandler.load(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), sourceFiles, new CodeMappingFormat(project));
-			if (!sourceFiles.isEmpty()) {
-				addCodeMapping(project, sourceFiles);
-			}
-		}
-	}
-
-	@Override
-	public void save() {
-		for (final IProject project : codeMappings.keySet()) {
-			SimpleFileHandler.save(Paths.get(project.getFile(CodeMappingFormat.FILENAME).getLocationURI()), codeMappings.get(project),
-					new CodeMappingFormat(project));
-		}
-	}
-
+*/
 }

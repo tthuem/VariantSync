@@ -17,6 +17,7 @@ import de.tubs.variantsync.core.utilities.MarkerUtils;
 import de.variantsync.core.marker.AMarkerInformation;
 import de.variantsync.core.marker.IVariantSyncMarker;
 
+//TODO: AST REFACTORING
 public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 
 	@SuppressWarnings("rawtypes")
@@ -39,6 +40,7 @@ public class DefaultMarkerHandler extends AMarkerHandler<Chunk<String>> {
 		return Arrays.asList(new AMarkerInformation(offset, length, false));
 	}
 
+	//TODO: AST REFACTORING
 	@Override
 	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
 		for (final CodeMapping codeMapping : sourceFile.getMappings()) {

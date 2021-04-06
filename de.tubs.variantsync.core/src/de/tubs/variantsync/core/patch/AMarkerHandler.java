@@ -23,6 +23,7 @@ public abstract class AMarkerHandler<T> implements IMarkerHandler<T> {
 	@Override
 	public abstract List<IVariantSyncMarker> getMarkers(IFile file, int offset, int length);
 
+	//TODO: AST REFACTORING
 	@Override
 	public abstract boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<T> delta, List<IVariantSyncMarker> variantSyncMarkers);
 

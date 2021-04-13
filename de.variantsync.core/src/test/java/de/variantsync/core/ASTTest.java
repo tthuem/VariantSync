@@ -1,5 +1,6 @@
 package de.variantsync.core;
 
+
 import java.util.Arrays;
 import java.util.List;
 

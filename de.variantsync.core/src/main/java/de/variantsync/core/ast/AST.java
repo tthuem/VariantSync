@@ -3,6 +3,8 @@ package de.variantsync.core.ast;
 import java.util.*;
 
 import de.variantsync.core.grammar.Grammar;
+
+import org.prop4j.Literal;
 import org.prop4j.Node;
 
 /**
@@ -35,6 +37,11 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
 
     public AST(G type, V value) {
         this(UUID.randomUUID(), type, value);
+    }
+    
+    public AST(G type, V value, String context) {
+        this(UUID.randomUUID(), type, value);
+    	this.featureMapping = new Literal(context);
     }
 
 

@@ -1,9 +1,13 @@
 package de.tubs.variantsync.core.monitor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+
+import com.github.difflib.patch.Chunk;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
@@ -12,10 +16,13 @@ import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
+import de.tubs.variantsync.core.patch.base.DefaultMarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.utilities.LogOperations;
+import de.tubs.variantsync.core.utilities.MarkerUtils;
+import de.variantsync.core.marker.AMarkerInformation;
 import de.variantsync.core.marker.IVariantSyncMarker;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -28,6 +35,21 @@ public class CodeMappingHandler {
 	 * @param deltas
 	 */
 	public static void addCodeMappingsForDeltas(List<IDelta<?>> deltas) {
+		
+		
+//		for (final IDelta delta : deltas) {
+//			
+//			
+//			final IMarkerHandler markerHandler = new DefaultMarkerHandler();
+//			final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
+//			
+//			
+//			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+//			markerHandler.updateMarkerForDelta(, delta, variantSyncMarkers);
+//			
+//			
+//		}
+		
 		//TODO: AST REFACTORING
 		//This is the connection between The IDelta and the SourceFile which can be refactored to AST or
 		//we also include the IDeltas in the refactoring but this could take more time.
@@ -161,4 +183,47 @@ public class CodeMappingHandler {
 		return oldMappings.size() != mappings.size();
 	}
 
+	
+	////////////form getMarkerHandlder
+	
+	
+	public List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
+		final List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
+		for (final IDelta<Chunk<String>> delta : deltas) {
+			final Chunk revised = delta.getRevised();
+			// For the display of markers, the utilities.MarkerUtils.setMarker-method uses Editor/Document-information provided by IDocument.
+			// IDocument is 0-based (so the first line is line 0 in IDocument), which means that every line number has to be reduced by 1
+			final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
+			variantSyncMarker.setContext(delta.getContext());
+			variantSyncMarkers.add(variantSyncMarker);
+		}
+		return variantSyncMarkers;
+	}
+
+	
+	public List<IVariantSyncMarker> getMarkers(IFile file, int offset, int length) {
+		return Arrays.asList(new AMarkerInformation(offset, length, false));
+	}
+
+	//TODO: AST REFACTORING
+	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
+		for (final CodeMapping codeMapping : sourceFile.getMappings()) {
+			final IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
+			final IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());
+
+			final int offset = marker.getAttribute(IMarker.CHAR_START, -1);
+			final int length = marker.getAttribute(IMarker.CHAR_END, -1);
+			if (offset != -1) {
+				cmMarkerInformation.setOffset(offset);
+				cmMarkerInformation.setLength(length - offset);
+				cmMarkerInformation.setLine(false);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	
+	
 }

@@ -92,6 +92,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext ctxt) throws Exception {
+		LogOperations.logRefactor("[stop]");
 		configurationProjectManager.terminate();
 		plugin = null;
 		super.stop(ctxt);

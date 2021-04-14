@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
@@ -22,10 +23,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/de.tubs.variantsync.core/lib/diffutils-2.2-SNAPSHOT-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/de.variantsync.core-0.0.3-SNAPSHOT.jar" sourcepath="lib/de.variantsync.core-0.0.3-SNAPSHOT.jar">
-    		<attributes>
-    			<!-- <attribute name="javadoc_location" value="jar:platform:/resource/de.tubs.variantsync.core/lib/diffutils-2.2-SNAPSHOT-javadoc.jar!/"/>-->
-    		</attributes>
-    	</classpathentry>
+	<classpathentry kind="lib" path="lib/de.variantsync.core-0.0.3-SNAPSHOT.jar" sourcepath="lib/de.variantsync.core-0.0.3-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

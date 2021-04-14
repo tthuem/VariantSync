@@ -1,25 +1,40 @@
 package de.tubs.variantsync.core.managers.data;
 
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
 import de.ovgu.featureide.core.IFeatureProject;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.EclipseFileSystem;
 import de.ovgu.featureide.fm.core.io.manager.ConfigurationManager;
+import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.AManager;
 import de.tubs.variantsync.core.managers.FeatureContextManager;
 import de.tubs.variantsync.core.managers.ISaveableManager;
 import de.tubs.variantsync.core.managers.MappingManager;
 import de.tubs.variantsync.core.managers.PatchesManager;
+import de.tubs.variantsync.core.managers.persistence.FeatureContextFormat;
+import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
+import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.JsonParserASTWithLineGrammar;
+import de.variantsync.core.ast.LineBasedParser;
+import de.variantsync.core.ast.LineGrammar;
 
 /**
  * A class for managing all informations about the product line for one configuration project
@@ -34,8 +49,25 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	private final FeatureContextManager featureContextManager = new FeatureContextManager(this);
 	private final MappingManager mappingManager = new MappingManager(this);
 	private final PatchesManager patchesManager = new PatchesManager(this);
+	
+	private HashMap<IProject, AST<LineGrammar,String>> projects = new HashMap<>();
 
-	private List<IProject> projects = new ArrayList<>();
+	private boolean isActive;
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean status) {
+		isActive = status;
+		if (isActive) {
+			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_START, null,
+					VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject()));
+		} else {
+			fireEvent(new VariantSyncEvent(this, EventType.CONTEXT_RECORDING_STOP,
+					VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject(), null));
+		}
+	}
 
 	public IFeatureProject getFeatureProject() {
 		if ((configurationProject != null) && configurationProject.getProject().exists()) {
@@ -52,18 +84,18 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 
 	public List<String> getVariantNames() {
 		final List<String> projectNames = new ArrayList<>();
-		for (final IProject project : projects) {
+		for (final IProject project : projects.keySet()) {
 			projectNames.add(project.getName());
 		}
 		return projectNames;
 	}
 
-	public List<IProject> getVariants() {
-		return projects;
+	public Set<IProject> getVariants() {
+		return projects.keySet();
 	}
 
 	public IProject getVariant(String name) {
-		for (final IProject project : projects) {
+		for (final IProject project : projects.keySet()) {
 			if (project.getName().equals(name)) {
 				return project;
 			}
@@ -71,12 +103,27 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		return null;
 	}
 
-	public void setVariants(List<IProject> projects) {
-		this.projects = projects;
-	}
 
 	public void addVariant(IProject project) {
-		projects.add(project);
+		
+				
+		String pathS = project.getLocation().toOSString();
+		
+		Path path = Paths.get(pathS);
+		
+		LogOperations.logRefactor("[addVariatn] "+ path.toString());
+		
+		AST<LineGrammar, String> srcDir = null;
+		LineBasedParser parser = new LineBasedParser();
+		try {
+			srcDir = parser.parseDirectory(path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			LogOperations.logRefactor("[addVariatn] "+ e.getMessage());
+		}
+		
+		projects.put(project,srcDir);
+		
 	}
 
 	public Configuration getConfigurationForVariant(IProject project) {
@@ -121,16 +168,49 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 
 	@Override
 	public void save() {
+		
+		LogOperations.logRefactor("[save] "+ projects.entrySet().size());
+		
 		featureContextManager.save();
 		mappingManager.save();
 		patchesManager.save();
+
+		
+		for (final Entry<IProject, AST<LineGrammar, String>> entry : projects.entrySet()) {
+			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
+			
+			//linux oder windows?
+			String path = ProjectPath+"\\"+entry.getKey().getName().toString();
+			
+			LogOperations.logRefactor("[save] " + path);
+			
+			JsonParserASTWithLineGrammar.exportAST(Paths.get(path), entry.getValue());
+		}
+		
 	}
 
 	@Override
 	public void load() {
+		LogOperations.logRefactor("[load] ");
+
 		featureContextManager.load();
 		mappingManager.load();
 		patchesManager.load();
+		
+		for (final Entry<IProject, AST<LineGrammar, String>> entry : projects.entrySet()) {
+			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
+			
+			//linux oder windows?
+			String path = ProjectPath+"\\"+entry.getKey().getName().toString();
+			
+			LogOperations.logRefactor("[load] " + path);
+			
+			AST<LineGrammar, String> importedAST = JsonParserASTWithLineGrammar.importAST(Paths.get(path));
+			 
+			//ASTdiffer(entry.getValue, importedAST), getMarkers from imported, get new Lines from Worspace AST (entry.getValue()) 
+						
+			entry.setValue(importedAST);	 
+		}
 	}
 
 }

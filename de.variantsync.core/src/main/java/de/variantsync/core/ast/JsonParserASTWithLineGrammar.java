@@ -40,7 +40,7 @@ public class JsonParserASTWithLineGrammar {
 
 	};
 
-	static Gson prettyStringGsonBuilder = new GsonBuilder().setPrettyPrinting().setFieldNamingStrategy(customPolicy).create();
+	static Gson prettyStringGsonBuilder = new GsonBuilder().setPrettyPrinting().setFieldNamingStrategy(customPolicy).create(); //
 
 	public static <B> String toJson(AST<LineGrammar, B> ast) {
 
@@ -80,6 +80,11 @@ public class JsonParserASTWithLineGrammar {
 		}
 
 		return toAST(json);
+	}
+	
+	public static String getString() {
+		
+		return "da srtring";
 	}
 
 }

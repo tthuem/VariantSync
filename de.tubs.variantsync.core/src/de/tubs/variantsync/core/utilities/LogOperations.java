@@ -20,10 +20,10 @@ public class LogOperations {
 	/**
 	 * Logs specified information.
 	 *
-	 * @param message human-readable message, localized to the current locale
+	 * @param object human-readable message, localized to the current locale
 	 */
-	public static void logRefactor(String message) {
-		log(IStatus.INFO, IStatus.OK, String.format("[REFACTOR] %s",message), null);
+	public static void logRefactor(Object object) {
+		log(IStatus.INFO, IStatus.OK, String.format("[REFACTOR] %s",object), null);
 	}
 
 

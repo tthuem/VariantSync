@@ -175,7 +175,11 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 			
 			LogOperations.logRefactor("[save] " + path);
 			
-			JsonParserASTWithLineGrammar.exportAST(Paths.get(path), entry.getValue());
+			try {
+				JsonParserASTWithLineGrammar.exportAST(Paths.get(path), entry.getValue());
+			} catch (IOException e) {
+				LogOperations.logError("[saveProjects] could not export Project", e);
+			}
 		}
 		
 	}
@@ -191,7 +195,12 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 			
 			LogOperations.logRefactor("[load] " + path);
 			
-			AST<LineGrammar, String> importedAST = JsonParserASTWithLineGrammar.importAST(Paths.get(path));
+			AST<LineGrammar, String> importedAST = null;
+			try {
+				importedAST = JsonParserASTWithLineGrammar.importAST(Paths.get(path));
+			} catch (IOException e) {
+				LogOperations.logError("[loadProjects] could not import Project" + e.getMessage(), e);
+			}
 			 
 			//ASTdiffer(entry.getValue, importedAST), getMarkers from imported, get new Lines from Worspace AST (entry.getValue()) 
 						

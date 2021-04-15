@@ -43,39 +43,39 @@ public class CodeMappingHandler {
 		
 		
 
-		protected IFile resource;
-		protected IProject project = null;
-		
-		
-		protected T original;
-		protected T revised;
-		protected IDelta.DELTATYPE type;
-		Added, Removed, Changed
-		
-		
-		protected List<IProject> syncronizedProjects = new ArrayList<>();
-		protected long timestamp;
-		protected HashMap<String, String> properties = new HashMap<>();
-		protected IPatch<?> parent = null;
-		protected String context = "";
-		protected String factoryId = "";
-		
-		for (final IDelta delta : deltas) {
-			
-			
-			final IMarkerHandler markerHandler = new DefaultMarkerHandler();
-			final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
-			
-			
-			//to be implemented
-			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
-			
-			addDelta(configurationProject.getAST(delta.getProject()), delta);
-			
-			
-			markerHandler.updateMarkerForDelta(, delta, variantSyncMarkers);
-			
-		}
+//		protected IFile resource;
+//		protected IProject project = null;
+//		
+//		
+//		protected T original;
+//		protected T revised;
+//		protected IDelta.DELTATYPE type;
+//		Added, Removed, Changed
+//		
+//		
+//		protected List<IProject> syncronizedProjects = new ArrayList<>();
+//		protected long timestamp;
+//		protected HashMap<String, String> properties = new HashMap<>();
+//		protected IPatch<?> parent = null;
+//		protected String context = "";
+//		protected String factoryId = "";
+//		
+//		for (final IDelta delta : deltas) {
+//			
+//			
+//			final IMarkerHandler markerHandler = new DefaultMarkerHandler();
+//			final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
+//			
+//			
+//			//to be implemented
+//			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+//			
+//			addDelta(configurationProject.getAST(delta.getProject()), delta);
+//			
+//			
+//			markerHandler.updateMarkerForDelta(, delta, variantSyncMarkers);
+//			
+//		}
 		
 		//TODO: AST REFACTORING
 		//This is the connection between The IDelta and the SourceFile which can be refactored to AST or
@@ -254,7 +254,7 @@ public class CodeMappingHandler {
 	private static void addDelta(AST<LineGrammar, String> ast, IDelta delta) {
 		// TODO Auto-generated method stub
 		
-		AST<LineGrammar, String> file = ASTLineGrammarProcessor.getSubtree(delta.getResource().getName(), LineGrammar.TextFile, ast);
+		//AST<LineGrammar, String> file = ASTLineGrammarProcessor.getSubtree(delta.getResource().getName(), LineGrammar.TextFile, ast);
 		
 	}
 

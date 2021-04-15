@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.managers.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
@@ -170,7 +171,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
 			
 			//linux oder windows?
-			String path = ProjectPath+"\\"+entry.getKey().getName().toString();
+			String path = ProjectPath+File.separator+entry.getKey().getName().toString();
 			
 			LogOperations.logRefactor("[save] " + path);
 			
@@ -180,7 +181,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 				LogOperations.logError("[saveProjects] could not export Project", e);
 			}
 		}
-		
+	
 	}
 	
 	
@@ -190,7 +191,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
 			
 			//linux oder windows?
-			String path = ProjectPath+"\\"+entry.getKey().getName().toString();
+			String path = ProjectPath+File.separator+entry.getKey().getName().toString();
 			
 			LogOperations.logRefactor("[load] " + path);
 			

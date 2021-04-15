@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.variantsync.core.ast.AST;
-import de.variantsync.core.ast.ASTProcessor;
+import de.variantsync.core.ast.ASTLineGrammarProcessor;
 import de.variantsync.core.ast.LineGrammar;
 import de.variantsync.core.marker.AMarkerInformation;
 
@@ -51,7 +51,7 @@ public class ASTProcessorTest {
 	@Test
 	public void getMarkersTest() {
 
-		List<AMarkerInformation> markers = ASTProcessor.getMarker(root);
+		List<AMarkerInformation> markers = ASTLineGrammarProcessor.getMarker(root);
 
 		
 		

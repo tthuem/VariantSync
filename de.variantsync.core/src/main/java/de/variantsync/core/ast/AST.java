@@ -69,18 +69,13 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
      * @return the subtrees as an unmodifiable List
      */
     public List<AST<G, V>> getSubtrees() {
+    	if(subtrees.size() < 1) {
+    		return Collections.emptyList();
+    	}
         return Collections.unmodifiableList(subtrees);
     }
     
     
-    /**
-     * @return subtree with same name and LineGrammar
-     */
-	private AST<G, V> getSubtree(String name, LineGrammar textfile) {
-		return null;
-		// TODO Auto-generated method stub
-		
-	}
 
     public int getDepth() {
         int maxDepth = 1;

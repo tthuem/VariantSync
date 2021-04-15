@@ -1,12 +1,15 @@
 package de.variantsync.core.ast;
 
+import java.io.File;
 import java.util.List;
 
+
 import de.variantsync.core.marker.AMarkerInformation;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class ASTLineGrammarProcessor {
 	
-	public static List<AMarkerInformation> getMarker(AST<LineGrammar,String> ast) {
+	public static List<AMarkerInformation> getMarker(AST<LineGrammar, String> ast){
 	
 		return null;
 		
@@ -16,7 +19,7 @@ public class ASTLineGrammarProcessor {
     /**
      * @return subtree with same name and LineGrammar
      */
-	private static AST<LineGrammar, String> getSubtree(String name, LineGrammar textfile, AST<LineGrammar, String> ast) {
+	public static AST<LineGrammar, String> getSubtree(String name, LineGrammar textfile, AST<LineGrammar, String> ast) {
 		
 		if(ast.getValue() == name && ast.getType() == textfile) {
 			return ast;
@@ -33,6 +36,9 @@ public class ASTLineGrammarProcessor {
 		
 		return back;		
 	}
+	
+	
+	
 
 
 }

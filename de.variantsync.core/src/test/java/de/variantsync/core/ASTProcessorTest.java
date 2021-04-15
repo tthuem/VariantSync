@@ -51,7 +51,7 @@ public class ASTProcessorTest {
 	@Test
 	public void getMarkersTest() {
 
-		List<AMarkerInformation> markers = ASTLineGrammarProcessor.getMarker(root);
+		List<AMarkerInformation> markers = ASTLineGrammarProcessor.getMarkers(root);
 
 		
 		

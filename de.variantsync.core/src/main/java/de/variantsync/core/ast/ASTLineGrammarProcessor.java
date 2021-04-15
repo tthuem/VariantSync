@@ -1,6 +1,7 @@
 package de.variantsync.core.ast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,9 +10,17 @@ import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class ASTLineGrammarProcessor {
 	
-	public static List<AMarkerInformation> getMarker(AST<LineGrammar, String> ast){
+	public static List<AMarkerInformation> getMarkers(AST<LineGrammar, String> ast){
+		//AST -> AMarkerINformations machen
+		System.out.println(ast.featureMapping);
+		List<AMarkerInformation> out = new ArrayList<>();
+
+		for(AST<?,?> subtree : ast.getSubtrees()) {
+			System.out.println(subtree.featureMapping);
+
+		}
 	
-		return null;
+		return out;
 		
 	}
 	
@@ -26,8 +35,7 @@ public class ASTLineGrammarProcessor {
 		}
 		
 		AST<LineGrammar, String> back = null;
-		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) {
-			
+		for(AST<LineGrammar, String>  subtree : ast) {
 			if(getSubtree(name,textfile,subtree) != null) {
 				back = subtree;
 			}

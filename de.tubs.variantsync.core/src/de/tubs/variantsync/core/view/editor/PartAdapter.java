@@ -3,6 +3,9 @@ package de.tubs.variantsync.core.view.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.ASTLineGrammarProcessor;
+import de.variantsync.core.ast.LineGrammar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -122,8 +125,20 @@ public class PartAdapter implements IPartListener, IEventListener {
 
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
-				final List<IVariantSyncMarker> markers = new ArrayList<>();
-				//TODO: AST REFACTORING
+
+				AST<LineGrammar,String> projectAST = configurationProject.getAST(currentFile.getProject());
+				LogOperations.logRefactor("[PA] found project ast " + projectAST + "for file name " + currentFile.getName());
+				AST<LineGrammar,String> fileAST = ASTLineGrammarProcessor.getSubtree(currentFile.getName(), LineGrammar.TextFile,projectAST);
+				LogOperations.logRefactor("[PA] found file ast " + fileAST);
+				if(fileAST != null) {
+					LogOperations.logRefactor("[PA] SUCCESSSSSSSSS!");
+					final List<IVariantSyncMarker> markers = new ArrayList<>(ASTLineGrammarProcessor.getMarkers(fileAST));
+					if (!markers.isEmpty()) {
+						MarkerUtils.setMarker(currentFile, markers);
+					}
+				}
+
+				//TODO: AST REFACTORING traverse AST
 /*
 				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
 				if (sourceFile != null) {
@@ -133,9 +148,7 @@ public class PartAdapter implements IPartListener, IEventListener {
 				}
 
  */
-				if (!markers.isEmpty()) {
-					MarkerUtils.setMarker(currentFile, markers);
-				}
+
 			}
 			return Status.OK_STATUS;
 		}

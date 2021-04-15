@@ -47,7 +47,6 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 	private IFeatureProject configurationProject = null;
 
 	private final FeatureContextManager featureContextManager = new FeatureContextManager(this);
-	private final MappingManager mappingManager = new MappingManager(this);
 	private final PatchesManager patchesManager = new PatchesManager(this);
 	
 	private HashMap<IProject, AST<LineGrammar,String>> projects = new HashMap<>();
@@ -158,23 +157,15 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		return featureContextManager;
 	}
 
-	public MappingManager getMappingManager() {
-		return mappingManager;
+	public AST<LineGrammar,String> getAST(IProject project) {
+		return projects.get(project);
 	}
 
 	public PatchesManager getPatchesManager() {
 		return patchesManager;
 	}
-
-	@Override
-	public void save() {
-		
-		LogOperations.logRefactor("[save] "+ projects.entrySet().size());
-		
-		featureContextManager.save();
-		mappingManager.save();
-		patchesManager.save();
-
+	
+	public void saveProjects() {
 		
 		for (final Entry<IProject, AST<LineGrammar, String>> entry : projects.entrySet()) {
 			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
@@ -188,14 +179,9 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		}
 		
 	}
-
-	@Override
-	public void load() {
-		LogOperations.logRefactor("[load] ");
-
-		featureContextManager.load();
-		mappingManager.load();
-		patchesManager.load();
+	
+	
+	public void loadProjects() {
 		
 		for (final Entry<IProject, AST<LineGrammar, String>> entry : projects.entrySet()) {
 			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
@@ -211,6 +197,30 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 						
 			entry.setValue(importedAST);	 
 		}
+		
+	}
+
+	@Override
+	public void save() {
+		
+		LogOperations.logRefactor("[save] "+ projects.entrySet().size());
+		
+		featureContextManager.save();
+		patchesManager.save();
+		saveProjects();
+		
+		
+	}
+
+	@Override
+	public void load() {
+		LogOperations.logRefactor("[load] ");
+
+		featureContextManager.load();
+		patchesManager.load();
+		loadProjects();
+		
+
 	}
 
 }

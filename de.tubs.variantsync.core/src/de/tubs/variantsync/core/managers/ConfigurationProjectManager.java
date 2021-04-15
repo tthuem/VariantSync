@@ -143,7 +143,9 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 				}
 			}
 		}
-		configurationProject.getMappingManager().load();
+		
+		//replace with ConfigurationProject function load projects
+		configurationProject.loadProjects();
 	}
 
 	public IFeatureProject getFeatureProject(IProject project) {

@@ -88,7 +88,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			final IFile file = (IFile) delta.getResource();
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
@@ -127,7 +127,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			final IFile file = (IFile) delta.getResource();
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
@@ -172,7 +172,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					final ConfigurationProject configurationProject =
 						VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 					try {
-						if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+						if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 							final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
 							if (configurationProject.getPatchesManager().getActualContextPatch() == null) {

@@ -125,18 +125,20 @@ public class PartAdapter implements IPartListener, IEventListener {
 
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
-
 				AST<LineGrammar,String> projectAST = configurationProject.getAST(currentFile.getProject());
-				LogOperations.logRefactor("[PA] found project ast " + projectAST + "for file name " + currentFile.getName());
-				AST<LineGrammar,String> fileAST = ASTLineGrammarProcessor.getSubtree(currentFile.getName(), LineGrammar.TextFile,projectAST);
-				LogOperations.logRefactor("[PA] found file ast " + fileAST);
-				if(fileAST != null) {
-					LogOperations.logRefactor("[PA] SUCCESSSSSSSSS!");
-					final List<IVariantSyncMarker> markers = new ArrayList<>(ASTLineGrammarProcessor.getMarkers(fileAST));
-					if (!markers.isEmpty()) {
-						MarkerUtils.setMarker(currentFile, markers);
+				LogOperations.logRefactor("[PA] found project ast " + projectAST + " for file name " + currentFile.getName());
+				if(projectAST != null) {
+					AST<LineGrammar,String> fileAST = ASTLineGrammarProcessor.getSubtree(currentFile.getName(), LineGrammar.TextFile,projectAST);
+					LogOperations.logRefactor("[PA] found file ast " + fileAST);
+					if(fileAST != null) {
+						LogOperations.logRefactor("[PA] Found file ast for file " + fileAST.getValue());
+						final List<IVariantSyncMarker> markers = new ArrayList<>(ASTLineGrammarProcessor.getMarkers(fileAST));
+						if (!markers.isEmpty()) {
+							MarkerUtils.setMarker(currentFile, markers);
+						}
 					}
 				}
+
 
 				//TODO: AST REFACTORING traverse AST
 /*

@@ -19,7 +19,7 @@ import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent.EventType;
 
 
-
+//TODO: REMOVE THIS FILE SINCE NO FILE DEPENDS ON THIS MANAGER ANYMORE!
 public class MappingManager extends AManager implements ISaveableManager {
 
 	private HashMap<IProject, AST<LineGrammar,String>> codeMappings = new HashMap<>();

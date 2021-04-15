@@ -25,7 +25,6 @@ import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.AManager;
 import de.tubs.variantsync.core.managers.FeatureContextManager;
 import de.tubs.variantsync.core.managers.ISaveableManager;
-import de.tubs.variantsync.core.managers.MappingManager;
 import de.tubs.variantsync.core.managers.PatchesManager;
 import de.tubs.variantsync.core.managers.persistence.FeatureContextFormat;
 import de.tubs.variantsync.core.utilities.LogOperations;

@@ -13,7 +13,6 @@ import com.github.difflib.patch.Chunk;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.managers.MappingManager;
 import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.SourceFile;

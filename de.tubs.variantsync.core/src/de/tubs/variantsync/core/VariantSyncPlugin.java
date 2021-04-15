@@ -25,7 +25,6 @@ import org.osgi.framework.BundleContext;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
 import de.tubs.variantsync.core.managers.ConfigurationProjectManager;
 import de.tubs.variantsync.core.managers.FeatureContextManager;
-import de.tubs.variantsync.core.managers.MappingManager;
 import de.tubs.variantsync.core.managers.PatchesManager;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;

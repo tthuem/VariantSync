@@ -64,6 +64,10 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     public G getType() {
         return type;
     }
+    
+    public void setValue(V v) {
+    	this.value = v;
+    }
 
     /**
      * @return the subtrees as an unmodifiable List
@@ -72,7 +76,8 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     	if(subtrees.size() < 1) {
     		return Collections.emptyList();
     	}
-        return Collections.unmodifiableList(subtrees);
+        //return Collections.unmodifiableList(subtrees);
+    	return subtrees;
     }
     
     

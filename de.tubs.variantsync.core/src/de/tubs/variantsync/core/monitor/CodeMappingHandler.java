@@ -278,6 +278,8 @@ public class CodeMappingHandler {
 			
 		}
 		
+		Chunk<String> original =  (Chunk<String>)delta.getOriginal();
+		Chunk<String> revised =  (Chunk<String>)delta.getRevised();		
 		
 		//Type Change
 		
@@ -299,20 +301,54 @@ public class CodeMappingHandler {
 		 */
 		
 		
-		for(AST<LineGrammar, String> line : file) {
-			
-			String strLine = line.getValue();
-			chunk =  (Chunk<String>)delta.getOriginal();
-			List<String> linesOrig = chunk.getLines();
-			if(linesOrig.contains(strLine)) {
-				LogOperations.logRefactor("[addDelta]" + linesOrig.get(linesOrig.indexOf(strLine)) + " strline" + strLine);
-			}
+		String s = "";
+		if(revised.getLines().size() > 0 && original.getLines().size() > 0) {
+			s = "change";
+		}else if(revised.getLines().size() > 0) {
+			s = "deleted";
+		}else if(original.getLines().size() > 0) {
+			s = "added";
+		}else {
+			s = "not defined";
 		}
+		
+		
+		
+		for (int count = 0; count < file.getSubtrees().size(); count++) {
+
+			
+
+
+				if (count == original.getPosition()-1) {
+
+					for (int i = 0; i < original.getLines().size(); i++) {
+						file.getSubtrees().remove(count);
+					}
+					
+					for (int i = 0; i < revised.getLines().size(); i++) {
+							file.getSubtrees().add(count, new AST<LineGrammar, String>(LineGrammar.Line, revised.getLines().get(i), delta.getContext()));
+							count++;
+					}
+					
+
+				} 
+
+
+		}
+		
+		
+		
+//			String strLine = line.getValue();
+//			chunk =  (Chunk<String>)delta.getOriginal();
+//			List<String> linesOrig = chunk.getLines();
+//			if(linesOrig.contains(strLine)) {
+//				LogOperations.logRefactor("[addDelta]" + linesOrig.get(linesOrig.indexOf(strLine)) + " strline" + strLine);
+//			}
 		
 		for(AST<LineGrammar, String> line : file) {
 			
 			String strLine = line.getValue();
-			LogOperations.logRefactor("[addDelta] line " + strLine);
+			System.out.println("[addDelta] line " + strLine);
 		}
 	}
 

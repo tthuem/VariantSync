@@ -154,10 +154,10 @@ public class ASTTest {
 		assertEquals(oldSize + 2, root.getSubtrees().size());
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void addOnSubtreesList() {
-		root.getSubtrees().add(new AST<>(LineGrammar.Directory, "evilDir"));
-	}
+//	@Test(expected = UnsupportedOperationException.class)
+//	public void addOnSubtreesList() {
+//		root.getSubtrees().add(new AST<>(LineGrammar.Directory, "evilDir"));
+//	}
 
 	@Test
 	public void sizeOnInitialTest() {

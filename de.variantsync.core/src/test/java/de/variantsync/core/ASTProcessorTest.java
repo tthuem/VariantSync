@@ -3,13 +3,10 @@ package de.variantsync.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.ASTLineGrammarProcessor;
 import de.variantsync.core.ast.LineGrammar;
@@ -53,8 +50,7 @@ public class ASTProcessorTest {
 
 		List<AMarkerInformation> markers = ASTLineGrammarProcessor.getMarkers(root);
 
-		
-		
+
 		assertTrue(true);
 	}
 

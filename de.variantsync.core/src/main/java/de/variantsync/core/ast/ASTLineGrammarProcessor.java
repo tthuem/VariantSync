@@ -3,8 +3,6 @@ package de.variantsync.core.ast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-
 import de.variantsync.core.marker.AMarkerInformation;
 import de.variantsync.core.marker.IVariantSyncMarker;
 
@@ -16,6 +14,8 @@ public class ASTLineGrammarProcessor {
 
 		for(AST<?,?> subtree : ast.getSubtrees()) {
 			System.out.println("childs "+ subtree.getValue());
+			
+			//final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
 
 		}
 	

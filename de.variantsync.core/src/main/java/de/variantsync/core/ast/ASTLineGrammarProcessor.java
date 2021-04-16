@@ -12,11 +12,10 @@ public class ASTLineGrammarProcessor {
 	
 	public static List<AMarkerInformation> getMarkers(AST<LineGrammar, String> ast){
 		//AST -> AMarkerINformations machen
-		System.out.println(ast.featureMapping);
 		List<AMarkerInformation> out = new ArrayList<>();
 
 		for(AST<?,?> subtree : ast.getSubtrees()) {
-			System.out.println(subtree.featureMapping);
+			System.out.println("childs "+ subtree.getValue());
 
 		}
 	
@@ -36,9 +35,15 @@ public class ASTLineGrammarProcessor {
 		
 		AST<LineGrammar, String> back = null;
 		for(AST<LineGrammar, String>  subtree : ast) {
+<<<<<<< HEAD
 			
 			back = getSubtree(name,textfile,subtree);
 			if(back != null) {
+=======
+
+			back = getSubtree(name,textfile,subtree);
+			if(back != null){
+>>>>>>> 80ceafcd6a4ce3422c1fceb4dd36b1612fc2daf2
 				return back;
 			}
 			

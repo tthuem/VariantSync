@@ -30,14 +30,16 @@ public class ASTLineGrammarProcessor {
      */
 	public static AST<LineGrammar, String> getSubtree(String name, LineGrammar textfile, AST<LineGrammar, String> ast) {
 		
-		if(ast.getValue() == name && ast.getType() == textfile) {
+		if(ast.getValue().equals(name) && ast.getType() == textfile) {
 			return ast;
 		}
 		
 		AST<LineGrammar, String> back = null;
 		for(AST<LineGrammar, String>  subtree : ast) {
-			if(getSubtree(name,textfile,subtree) != null) {
-				back = subtree;
+			
+			back = getSubtree(name,textfile,subtree);
+			if(back != null) {
+				return back;
 			}
 			
 		}

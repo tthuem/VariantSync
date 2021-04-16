@@ -60,22 +60,21 @@ public class CodeMappingHandler {
 //		protected String context = "";
 //		protected String factoryId = "";
 //		
-//		for (final IDelta delta : deltas) {
-//			
-//			
-//			final IMarkerHandler markerHandler = new DefaultMarkerHandler();
-//			final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
-//			
-//			
-//			//to be implemented
-//			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
-//			
-//			addDelta(configurationProject.getAST(delta.getProject()), delta);
-//			
-//			
-//			markerHandler.updateMarkerForDelta(, delta, variantSyncMarkers);
-//			
-//		}
+		
+		LogOperations.logRefactor("[addCodeMappingsForDeltas]");
+		for (final IDelta delta : deltas) {
+			
+			
+			//final IMarkerHandler markerHandler = new DefaultMarkerHandler();
+			//final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
+			
+			
+			//to be implemented
+			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
+			
+			addDelta(configurationProject.getAST(delta.getProject()), delta);
+						
+		}
 		
 		//TODO: AST REFACTORING
 		//This is the connection between The IDelta and the SourceFile which can be refactored to AST or
@@ -252,10 +251,69 @@ public class CodeMappingHandler {
 	
 	
 	private static void addDelta(AST<LineGrammar, String> ast, IDelta delta) {
-		// TODO Auto-generated method stub
 		
-		//AST<LineGrammar, String> file = ASTLineGrammarProcessor.getSubtree(delta.getResource().getName(), LineGrammar.TextFile, ast);
+		AST<LineGrammar, String> file = ASTLineGrammarProcessor.getSubtree(delta.getResource().getName(), LineGrammar.TextFile, ast);
 		
+		LogOperations.logRefactor("[addDelta]");
+		
+		
+		LogOperations.logRefactor("[addDelta] delta original context" + delta.getContext());
+
+		
+		LogOperations.logRefactor("[addDelta] delta original type" + delta.getType());
+		
+		Chunk<String> chunk =  (Chunk<String>)delta.getOriginal();
+		LogOperations.logRefactor("[addDelta] delta original position " + chunk.getPosition());
+		for(String s : chunk.getLines()) {
+			
+			LogOperations.logRefactor("[addDelta] delta original lines strline" + s);
+			
+		}
+		
+		chunk =  (Chunk<String>)delta.getRevised();
+		LogOperations.logRefactor("[addDelta] delta revised position " + chunk.getPosition());
+		for(String s : chunk.getLines()) {
+			
+			LogOperations.logRefactor("[addDelta] delta revised lines strline" + s);
+			
+		}
+		
+		
+		//Type Change
+		
+		//change on same line, get original compare, change
+		
+		//add new line or change on empty line look at before lines and after lines, change inebetween.
+		
+		//if deleted also changed new lines equal ""?
+		
+		//revised.getPosition() - 1, revised.getLines().size() - 1
+		
+		/*
+		 * revised.size > 0 | original.size > 0 | event
+		 *         1                1           changed
+		 *         0                1           deleted
+		 *         1                0           added
+		 *         
+		 *         each is seperate event
+		 */
+		
+		
+		for(AST<LineGrammar, String> line : file) {
+			
+			String strLine = line.getValue();
+			chunk =  (Chunk<String>)delta.getOriginal();
+			List<String> linesOrig = chunk.getLines();
+			if(linesOrig.contains(strLine)) {
+				LogOperations.logRefactor("[addDelta]" + linesOrig.get(linesOrig.indexOf(strLine)) + " strline" + strLine);
+			}
+		}
+		
+		for(AST<LineGrammar, String> line : file) {
+			
+			String strLine = line.getValue();
+			LogOperations.logRefactor("[addDelta] line " + strLine);
+		}
 	}
 
 

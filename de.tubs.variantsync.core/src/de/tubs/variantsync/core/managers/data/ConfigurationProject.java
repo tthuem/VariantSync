@@ -203,8 +203,10 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 			}
 			 
 			//ASTdiffer(entry.getValue, importedAST), getMarkers from imported, get new Lines from Worspace AST (entry.getValue()) 
-			if(importedAST != null)
-				entry.setValue(importedAST);	 
+			
+			//AST do net get updated if this gets executed
+//			if(importedAST != null)
+//				entry.setValue(importedAST);	 
 		}
 		
 	}

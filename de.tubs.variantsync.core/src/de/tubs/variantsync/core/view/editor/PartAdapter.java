@@ -130,12 +130,17 @@ public class PartAdapter implements IPartListener, IEventListener {
 				LogOperations.logRefactor("[PA] found project ast " + projectAST + "for file name " + currentFile.getName());
 				AST<LineGrammar,String> fileAST = ASTLineGrammarProcessor.getSubtree(currentFile.getName(), LineGrammar.TextFile,projectAST);
 				LogOperations.logRefactor("[PA] found file ast " + fileAST);
+				
+				
+				
 				if(fileAST != null) {
 					LogOperations.logRefactor("[PA] SUCCESSSSSSSSS!");
 					final List<IVariantSyncMarker> markers = new ArrayList<>(ASTLineGrammarProcessor.getMarkers(fileAST));
 					if (!markers.isEmpty()) {
 						MarkerUtils.setMarker(currentFile, markers);
 					}
+					
+					return Status.OK_STATUS;
 				}
 
 				//TODO: AST REFACTORING traverse AST
@@ -143,14 +148,16 @@ public class PartAdapter implements IPartListener, IEventListener {
 				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
 				if (sourceFile != null) {
 					for (final CodeMapping codeMapping : sourceFile.getMappings()) {
-						markers.add(codeMapping.getMarkerInformation());
+						markers.add(codeMapping.getMarkerInformation())
+			;;
 					}
 				}
 
  */
 
 			}
-			return Status.OK_STATUS;
+			
+			return Status.CANCEL_STATUS;
 		}
 
 	}

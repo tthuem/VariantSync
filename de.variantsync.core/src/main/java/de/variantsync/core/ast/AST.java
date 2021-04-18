@@ -21,7 +21,7 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     private V value;
     private List<AST<G, V>> subtrees;
     //public Node featureMapping = null; //eg This AST which represents a Line belongs to That Eclipse Marker
-    private String featureMapping;
+    private String featureMapping = "";
     
     // all attributes which should not be visible to the GSON parser need to be at least transient
     public static transient final String INDENT_STRING = "    ";
@@ -68,6 +68,10 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     
     public void setValue(V v) {
     	this.value = v;
+    }
+    
+    public String getFeatureMapping() {
+    	return featureMapping;
     }
 
     /**

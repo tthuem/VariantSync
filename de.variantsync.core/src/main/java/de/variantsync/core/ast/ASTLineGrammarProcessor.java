@@ -8,14 +8,35 @@ import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class ASTLineGrammarProcessor {
 	
-	public static List<AMarkerInformation> getMarkers(AST<LineGrammar, String> ast){
+	public static List<IVariantSyncMarker> getMarkers(AST<LineGrammar, String> ast){
 		//AST -> AMarkerINformations machen
-		List<AMarkerInformation> out = new ArrayList<>();
+		List<IVariantSyncMarker> out = new ArrayList<>();
 
-		for(AST<?,?> subtree : ast.getSubtrees()) {
+		int count = 0;
+		int start = 0;
+		String featureContext = "";
+		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) {
+			count++;
 			System.out.println("childs "+ subtree.getValue());
+			if((!subtree.getFeatureMapping().isEmpty()) && (!featureContext.equals(subtree.getFeatureMapping()) || (featureContext.isEmpty()))) {	
+				
+				if((!featureContext.equals(subtree.getFeatureMapping()))){
+					//Marker end
+					IVariantSyncMarker aMarker = new AMarkerInformation(start, count - 1, true, featureContext);
+					out.add(aMarker);
+				}
+				
+				//Marker start
+				featureContext = subtree.getFeatureMapping();
+				start = count;
+			}
 			
-			//final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
+			if(!featureContext.isEmpty() && subtree.getFeatureMapping().isEmpty()) {
+				//Marker end
+				featureContext = "";
+				IVariantSyncMarker aMarker = new AMarkerInformation(start, count - 1, true, featureContext);
+				out.add(aMarker);
+			}
 
 		}
 	

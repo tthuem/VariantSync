@@ -48,7 +48,7 @@ public class ASTProcessorTest {
 	@Test
 	public void getMarkersTest() {
 
-		List<AMarkerInformation> markers = ASTLineGrammarProcessor.getMarkers(root);
+		//List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(root);
 
 
 		assertTrue(true);

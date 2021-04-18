@@ -32,6 +32,22 @@ public class AMarkerInformation implements IVariantSyncMarker {
 		this.length = length;
 		isLine = line;
 	}
+	
+	/**
+	 * Constructor
+	 *
+	 * @param markerId - marker id
+	 * @param offset - offset
+	 * @param length - length
+	 * @param expressio - expression
+	 */
+	public AMarkerInformation(long markerId, int offset, boolean line, String expression) {
+		this.markerId = markerId;
+		this.offset = offset;
+		isLine = line;
+		this.expression = expression;
+	}
+	
 
 	/**
 	 * Constructor

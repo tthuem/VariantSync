@@ -131,13 +131,13 @@ public class PartAdapter implements IPartListener, IEventListener {
 
 					if(fileAST != null) {
 						LogOperations.logRefactor("[PA] Found file ast for file " + fileAST.getValue());
-						//final List<IVariantSyncMarker> markers = new ArrayList<>(ASTLineGrammarProcessor.getMarkers(fileAST));
-//						if (!markers.isEmpty()) {
-//							MarkerUtils.setMarker(currentFile, markers);
-//						}
+						final List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(fileAST);
+						if (!markers.isEmpty()) {
+							MarkerUtils.setMarker(currentFile, markers);
+						}
+						return Status.OK_STATUS;
 					}
 					
-					return Status.OK_STATUS;
 
 
 				//TODO: AST REFACTORING traverse AST

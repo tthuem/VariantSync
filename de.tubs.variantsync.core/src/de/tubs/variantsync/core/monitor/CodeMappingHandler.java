@@ -69,6 +69,7 @@ public class CodeMappingHandler {
 			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
 			
 			addDelta(configurationProject.getAST(delta.getProject()), delta);
+			
 						
 		}
 		
@@ -97,7 +98,7 @@ public class CodeMappingHandler {
 					}
 
 					// Update all other annotations
-					markerHandler.updateMarkerForDelta(sourceFile, delta, variantSyncMarkers);
+					updateMarkerForDelta(sourceFile, delta, variantSyncMarkers);
 
 					// Add new code mapping
 					for (final IVariantSyncMarker variantSyncMarker : variantSyncMarkers) {

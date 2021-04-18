@@ -345,10 +345,11 @@ public class CodeMappingHandler {
 //				LogOperations.logRefactor("[addDelta]" + linesOrig.get(linesOrig.indexOf(strLine)) + " strline" + strLine);
 //			}
 		
+		int c = 0;
 		for(AST<LineGrammar, String> line : file) {
-			
+			c++;
 			String strLine = line.getValue();
-			System.out.println("[addDelta] line " + strLine);
+			System.out.println("[addDelta] line " + c + " " + strLine);
 		}
 	}
 

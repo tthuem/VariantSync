@@ -20,8 +20,9 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     private G type;
     private V value;
     private List<AST<G, V>> subtrees;
-    public Node featureMapping = null; //eg This AST which represents a Line belongs to That Eclipse Marker
-
+    //public Node featureMapping = null; //eg This AST which represents a Line belongs to That Eclipse Marker
+    private String featureMapping;
+    
     // all attributes which should not be visible to the GSON parser need to be at least transient
     public static transient final String INDENT_STRING = "    ";
     public static transient final String NEXT_SEPARATOR = "\u2502 ";
@@ -41,7 +42,7 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
     
     public AST(G type, V value, String context) {
         this(UUID.randomUUID(), type, value);
-    	this.featureMapping = new Literal(context);
+    	this.featureMapping = context;
     }
 
 

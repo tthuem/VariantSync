@@ -20,7 +20,6 @@ import de.tubs.variantsync.core.patch.HistoryStore;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDelta.DELTATYPE;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
-import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.utilities.FileHelper;
 import de.tubs.variantsync.core.utilities.LogOperations;
 
@@ -327,10 +326,6 @@ public class DefaultDeltaFactory implements IDeltaFactory<Chunk<String>> {
 		return new DefaultDelta(res, getId());
 	}
 
-	@Override
-	public IMarkerHandler getMarkerHandler() {
-		return new DefaultMarkerHandler();
-	}
 
 	@Override
 	public boolean initExtension() {

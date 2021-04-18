@@ -13,14 +13,10 @@ import com.github.difflib.patch.Chunk;
 
 import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
-import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
-import de.tubs.variantsync.core.patch.base.DefaultMarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
-import de.tubs.variantsync.core.patch.interfaces.IMarkerHandler;
 import de.tubs.variantsync.core.patch.interfaces.IPatch;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.MarkerUtils;
@@ -160,95 +156,95 @@ public class CodeMappingHandler {
 	 * @param line
 	 * @return
 	 */
-	public static boolean contains(SourceFile sourceFile, int line) {
-		//TODO: AST REFACTORING
-		for (final CodeMapping mapping : sourceFile.getMappings()) {
-			final IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
-			if (variantSyncMarker.isLine() && (variantSyncMarker.getOffset() == line)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	public static boolean contains(SourceFile sourceFile, int line) {
+//		//TODO: AST REFACTORING
+//		for (final CodeMapping mapping : sourceFile.getMappings()) {
+//			final IVariantSyncMarker variantSyncMarker = mapping.getMarkerInformation();
+//			if (variantSyncMarker.isLine() && (variantSyncMarker.getOffset() == line)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	//TODO: AST REFACTORING
 	//-------------------------------unused methods, maybe delete?
 
-	/**
-	 * Returns the mapping for a given source and marker
-	 *
-	 * @param sourceFile
-	 * @param variantSyncMarker
-	 * @return
-	 */
-	public static CodeMapping getCodeMapping(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
-		for (final CodeMapping mapping : sourceFile.getMappings()) {
-			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
-				return mapping;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Removes a given marker information in the given file and returns true, if a mapping was removed
-	 *
-	 * @param sourceFile
-	 * @param variantSyncMarker
-	 * @return
-	 */
-	public static boolean remove(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
-		final List<CodeMapping> mappings = new ArrayList<>();
-		final List<CodeMapping> oldMappings = sourceFile.getMappings();
-		for (final CodeMapping mapping : oldMappings) {
-			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
-				mappings.add(mapping);
-			}
-		}
-		sourceFile.setMapping(mappings);
-		return oldMappings.size() != mappings.size();
-	}
+//	/**
+//	 * Returns the mapping for a given source and marker
+//	 *
+//	 * @param sourceFile
+//	 * @param variantSyncMarker
+//	 * @return
+//	 */
+//	public static CodeMapping getCodeMapping(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
+//		for (final CodeMapping mapping : sourceFile.getMappings()) {
+//			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
+//				return mapping;
+//			}
+//		}
+//		return null;
+//	}
+//
+//	/**
+//	 * Removes a given marker information in the given file and returns true, if a mapping was removed
+//	 *
+//	 * @param sourceFile
+//	 * @param variantSyncMarker
+//	 * @return
+//	 */
+//	public static boolean remove(SourceFile sourceFile, IVariantSyncMarker variantSyncMarker) {
+//		final List<CodeMapping> mappings = new ArrayList<>();
+//		final List<CodeMapping> oldMappings = sourceFile.getMappings();
+//		for (final CodeMapping mapping : oldMappings) {
+//			if (!mapping.getMarkerInformation().equals(variantSyncMarker)) {
+//				mappings.add(mapping);
+//			}
+//		}
+//		sourceFile.setMapping(mappings);
+//		return oldMappings.size() != mappings.size();
+//	}
 
 	
 	////////////from getMarkerHandlder
 	
-	
-	public List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
-		final List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
-		for (final IDelta<Chunk<String>> delta : deltas) {
-			final Chunk revised = delta.getRevised();
-			// For the display of markers, the utilities.MarkerUtils.setMarker-method uses Editor/Document-information provided by IDocument.
-			// IDocument is 0-based (so the first line is line 0 in IDocument), which means that every line number has to be reduced by 1
-			final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
-			variantSyncMarker.setContext(delta.getContext());
-			variantSyncMarkers.add(variantSyncMarker);
-		}
-		return variantSyncMarkers;
-	}
-
-	
-	public List<IVariantSyncMarker> getMarkers(IFile file, int offset, int length) {
-		return Arrays.asList(new AMarkerInformation(offset, length, false));
-	}
-
-	//TODO: AST REFACTORING
-	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
-		for (final CodeMapping codeMapping : sourceFile.getMappings()) {
-			final IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
-			final IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());
-
-			final int offset = marker.getAttribute(IMarker.CHAR_START, -1);
-			final int length = marker.getAttribute(IMarker.CHAR_END, -1);
-			if (offset != -1) {
-				cmMarkerInformation.setOffset(offset);
-				cmMarkerInformation.setLength(length - offset);
-				cmMarkerInformation.setLine(false);
-				return true;
-			}
-		}
-		return false;
-	}
-	
+//	
+//	public List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
+//		final List<IVariantSyncMarker> variantSyncMarkers = new ArrayList<>();
+//		for (final IDelta<Chunk<String>> delta : deltas) {
+//			final Chunk revised = delta.getRevised();
+//			// For the display of markers, the utilities.MarkerUtils.setMarker-method uses Editor/Document-information provided by IDocument.
+//			// IDocument is 0-based (so the first line is line 0 in IDocument), which means that every line number has to be reduced by 1
+//			final IVariantSyncMarker variantSyncMarker = new AMarkerInformation(revised.getPosition() - 1, revised.getLines().size() - 1, true);
+//			variantSyncMarker.setContext(delta.getContext());
+//			variantSyncMarkers.add(variantSyncMarker);
+//		}
+//		return variantSyncMarkers;
+//	}
+//
+//	
+//	public List<IVariantSyncMarker> getMarkers(IFile file, int offset, int length) {
+//		return Arrays.asList(new AMarkerInformation(offset, length, false));
+//	}
+//
+//	//TODO: AST REFACTORING
+//	public boolean updateMarkerForDelta(SourceFile sourceFile, IDelta<Chunk<String>> delta, List<IVariantSyncMarker> variantSyncMarkers) {
+//		for (final CodeMapping codeMapping : sourceFile.getMappings()) {
+//			final IVariantSyncMarker cmMarkerInformation = codeMapping.getMarkerInformation();
+//			final IMarker marker = MarkerUtils.getMarker(delta.getResource(), cmMarkerInformation.getMarkerId());
+//
+//			final int offset = marker.getAttribute(IMarker.CHAR_START, -1);
+//			final int length = marker.getAttribute(IMarker.CHAR_END, -1);
+//			if (offset != -1) {
+//				cmMarkerInformation.setOffset(offset);
+//				cmMarkerInformation.setLength(length - offset);
+//				cmMarkerInformation.setLine(false);
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	
 	
 	private static void addDelta(AST<LineGrammar, String> ast, IDelta delta) {
 		

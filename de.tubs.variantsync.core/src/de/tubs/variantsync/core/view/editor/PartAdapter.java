@@ -19,9 +19,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.progress.UIJob;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
-import de.tubs.variantsync.core.managers.data.SourceFile;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.MarkerUtils;
 import de.tubs.variantsync.core.utilities.event.IEventListener;

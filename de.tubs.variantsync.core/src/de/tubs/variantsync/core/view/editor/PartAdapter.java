@@ -132,6 +132,10 @@ public class PartAdapter implements IPartListener, IEventListener {
 					if(fileAST != null) {
 						LogOperations.logRefactor("[PA] Found file ast for file " + fileAST.getValue());
 						final List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(fileAST);
+						for(IVariantSyncMarker i : markers) {
+								System.out.println("VariantSyncMarker: length "+ i.getLength()+" offset " + i.getOffset() + " context " + i.getContext());
+						}
+						
 						if (!markers.isEmpty()) {
 							MarkerUtils.setMarker(currentFile, markers);
 						}

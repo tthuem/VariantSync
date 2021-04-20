@@ -3,8 +3,10 @@ package de.variantsync.core.ast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import de.variantsync.core.marker.AMarkerInformation;
 import de.variantsync.core.marker.IVariantSyncMarker;
+
 
 public class ASTLineGrammarProcessor {
 	
@@ -15,17 +17,9 @@ public class ASTLineGrammarProcessor {
 		int count = 0;
 		int start = 0;
 		String featureContext = "";
-		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) {
+		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) { //( ( !featureContext.equals(subtree.getFeatureMapping()) &&  ( !featureContext.isEmpty() ) ) ||
 			count++;
-			System.out.println("childs "+ subtree.getValue());
-			if((!subtree.getFeatureMapping().isEmpty()) && (!featureContext.equals(subtree.getFeatureMapping()) || (featureContext.isEmpty()))) {	
-				
-				if((!featureContext.equals(subtree.getFeatureMapping()))){
-					//Marker end
-					IVariantSyncMarker aMarker = new AMarkerInformation(start, count - 1, true, featureContext);
-					out.add(aMarker);
-				}
-				
+			if(!subtree.getFeatureMapping().isEmpty() &&  featureContext.isEmpty()){	
 				//Marker start
 				featureContext = subtree.getFeatureMapping();
 				start = count;
@@ -33,11 +27,10 @@ public class ASTLineGrammarProcessor {
 			
 			if(!featureContext.isEmpty() && subtree.getFeatureMapping().isEmpty()) {
 				//Marker end
-				featureContext = "";
-				IVariantSyncMarker aMarker = new AMarkerInformation(start, count - 1, true, featureContext);
+				IVariantSyncMarker aMarker = new AMarkerInformation(start, count-start , true, featureContext, count);
 				out.add(aMarker);
+				featureContext = "";
 			}
-
 		}
 	
 		return out;

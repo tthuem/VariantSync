@@ -170,10 +170,13 @@ public class MarkerUtils {
 						LogOperations.logError("Marker line is not available in the document", e);
 					}
 
-					final IRegion regionStart = document.getLineInformation(mi.getOffset());
-					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
+																			//starts at 0?
+					final IRegion regionStart = document.getLineInformation(mi.getOffset()-1);
+					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength()-1);
 					final int start = regionStart.getOffset();
 					final int end = regionStart.getOffset() + regionEnd.getLength();
+					
+					System.out.println("IRegion: start "+ start +" end " + end);
 
 					markerId = addMarker(file, start, end, configurationProject.getFeatureContextManager().getContext(mi.getContext()));
 				} catch (final BadLocationException e) {

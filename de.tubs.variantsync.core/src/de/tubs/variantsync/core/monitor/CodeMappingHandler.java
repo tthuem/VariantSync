@@ -346,7 +346,7 @@ public class CodeMappingHandler {
 		for(AST<LineGrammar, String> line : file) {
 			c++;
 			String strLine = line.getValue();
-			System.out.println("[addDelta] line " + c + " " + strLine);
+			System.out.println("[addDelta] line " + c + "feature "+ line.getFeatureMapping() + " " + strLine);
 		}
 	}
 

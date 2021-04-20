@@ -41,9 +41,10 @@ public class AMarkerInformation implements IVariantSyncMarker {
 	 * @param length - length
 	 * @param expressio - expression
 	 */
-	public AMarkerInformation(long markerId, int offset, boolean line, String expression) {
+	public AMarkerInformation(int offset, int length, boolean line, String expression, long markerId) {
 		this.markerId = markerId;
 		this.offset = offset;
+		this.length = length;
 		isLine = line;
 		this.expression = expression;
 	}

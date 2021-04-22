@@ -17,9 +17,15 @@ public class ASTLineGrammarProcessor {
 		int count = 0;
 		int start = 0;
 		String featureContext = "";
-		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) { //( ( !featureContext.equals(subtree.getFeatureMapping()) &&  ( !featureContext.isEmpty() ) ) ||
+		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) {
 			count++;
-			if(!subtree.getFeatureMapping().isEmpty() &&  featureContext.isEmpty()){	
+			if(!subtree.getFeatureMapping().isEmpty() && ( featureContext.isEmpty() ||  (!featureContext.equals(subtree.getFeatureMapping()) &&   !featureContext.isEmpty()))){	
+				
+				if(!featureContext.equals(subtree.getFeatureMapping()) &&   !featureContext.isEmpty()) {
+					IVariantSyncMarker aMarker = new AMarkerInformation(start, count-start , true, featureContext, count);
+					out.add(aMarker);
+				}
+				
 				//Marker start
 				featureContext = subtree.getFeatureMapping();
 				start = count;

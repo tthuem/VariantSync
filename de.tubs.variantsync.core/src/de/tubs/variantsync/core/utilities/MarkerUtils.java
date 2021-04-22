@@ -170,11 +170,12 @@ public class MarkerUtils {
 						LogOperations.logError("Marker line is not available in the document", e);
 					}
 
+					//TODO: bug might be here for Paul issue #70
 																			//starts at 0?
 					final IRegion regionStart = document.getLineInformation(mi.getOffset()-1);
-					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength()-1);
+					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength() - 1);
 					final int start = regionStart.getOffset();
-					final int end = regionStart.getOffset() + regionEnd.getLength();
+					final int end = regionEnd.getOffset() + regionEnd.getLength();
 					
 					System.out.println("IRegion: start "+ start +" end " + end);
 

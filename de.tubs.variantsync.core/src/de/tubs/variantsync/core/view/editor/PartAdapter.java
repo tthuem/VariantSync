@@ -142,20 +142,6 @@ public class PartAdapter implements IPartListener, IEventListener {
 						return Status.OK_STATUS;
 					}
 					
-
-
-				//TODO: AST REFACTORING traverse AST
-/*
-				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
-				if (sourceFile != null) {
-					for (final CodeMapping codeMapping : sourceFile.getMappings()) {
-						markers.add(codeMapping.getMarkerInformation())
-			;;
-					}
-				}
-
- */
-
 			}
 			
 			return Status.CANCEL_STATUS;

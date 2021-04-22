@@ -38,34 +38,9 @@ public class CodeMappingHandler {
 	public static void addCodeMappingsForDeltas(List<IDelta<?>> deltas) {
 		
 		
-
-//		protected IFile resource;
-//		protected IProject project = null;
-//		
-//		
-//		protected T original;
-//		protected T revised;
-//		protected IDelta.DELTATYPE type;
-//		Added, Removed, Changed
-//		
-//		
-//		protected List<IProject> syncronizedProjects = new ArrayList<>();
-//		protected long timestamp;
-//		protected HashMap<String, String> properties = new HashMap<>();
-//		protected IPatch<?> parent = null;
-//		protected String context = "";
-//		protected String factoryId = "";
-//		
-		
 		LogOperations.logRefactor("[addCodeMappingsForDeltas]");
 		for (final IDelta delta : deltas) {
-			
-			
-			//final IMarkerHandler markerHandler = new DefaultMarkerHandler();
-			//final List<IVariantSyncMarker> variantSyncMarkers = markerHandler.getMarkersForDelta(delta.getResource(), delta);
-			
-			
-			//to be implemented
+
 			ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getActiveConfigurationProject();
 			
 			addDelta(configurationProject.getAST(delta.getProject()), delta);
@@ -124,6 +99,11 @@ public class CodeMappingHandler {
 	 */
 	public static void addCodeMappings(IFile file, String feature, int offset, int length, String content) {
 		//TODO: AST REFACTORING (this method is only used by DynamicContextPopupItems in ...core.view.context)
+		//DynamicContextPopupItems is resonsible for righ click option add Marker inside of editor.
+		//creates Markers without delta
+		// offset is charOffset not lines based.
+		// right click option needs to be removed or changed to line based, so it can be added to AST.
+		
 /*
 		try {
 			final IDeltaFactory<?> deltaFactory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
@@ -207,7 +187,7 @@ public class CodeMappingHandler {
 //	}
 
 	
-	////////////from getMarkerHandlder
+	////////////from getMarkerHandlder can be deleted
 	
 //	
 //	public List<IVariantSyncMarker> getMarkersForDeltas(IFile file, List<IDelta<Chunk<String>>> deltas) {
@@ -245,7 +225,7 @@ public class CodeMappingHandler {
 //		}
 //		return false;
 //	}
-//	
+//		////////////from getMarkerHandlder
 	
 	private static void addDelta(AST<LineGrammar, String> ast, IDelta delta) {
 		
@@ -278,6 +258,11 @@ public class CodeMappingHandler {
 		Chunk<String> original =  (Chunk<String>)delta.getOriginal();
 		Chunk<String> revised =  (Chunk<String>)delta.getRevised();		
 		
+		
+		
+		
+		//////////////////// probably not relevant
+		
 		//Type Change
 		
 		//change on same line, get original compare, change
@@ -309,38 +294,34 @@ public class CodeMappingHandler {
 			s = "not defined";
 		}
 		
+		//////////////////// probably not relevant
+
 		
 		
-		for (int count = 0; count < file.getSubtrees().size(); count++) {
+		
+		//further informatin see issue 68
+		
+		//original.getPosition gives position of where to change
+		//orginial.getLines gives list of original lines, list length can be deleted from AST
+		//revised.getLines gives list of new Lines, revised List gets substituted inside of AST for original list
+		
+		
+		for (int lines = 0; lines < file.getSubtrees().size(); lines++) {
 
-			
-
-
-				if (count == original.getPosition()-1) {
+				if (lines == original.getPosition()-1) {
 
 					for (int i = 0; i < original.getLines().size(); i++) {
-						file.getSubtrees().remove(count);
+						file.getSubtrees().remove(lines);
 					}
 					
 					for (int i = 0; i < revised.getLines().size(); i++) {
-							file.getSubtrees().add(count, new AST<LineGrammar, String>(LineGrammar.Line, revised.getLines().get(i), delta.getContext()));
-							count++;
+							file.getSubtrees().add(lines, new AST<LineGrammar, String>(LineGrammar.Line, revised.getLines().get(i), delta.getContext()));
+							lines++;
 					}
 					
 
 				} 
-
-
 		}
-		
-		
-		
-//			String strLine = line.getValue();
-//			chunk =  (Chunk<String>)delta.getOriginal();
-//			List<String> linesOrig = chunk.getLines();
-//			if(linesOrig.contains(strLine)) {
-//				LogOperations.logRefactor("[addDelta]" + linesOrig.get(linesOrig.indexOf(strLine)) + " strline" + strLine);
-//			}
 		
 		int c = 0;
 		for(AST<LineGrammar, String> line : file) {

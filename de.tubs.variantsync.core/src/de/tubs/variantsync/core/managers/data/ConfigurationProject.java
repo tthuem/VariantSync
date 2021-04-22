@@ -170,7 +170,6 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 		for (final Entry<IProject, AST<LineGrammar, String>> entry : projects.entrySet()) {
 			String ProjectPath = getFeatureProject().getProject().getLocation().toOSString();
 			
-			//linux oder windows?
 			String path = ProjectPath+File.separator+entry.getKey().getName().toString();
 			
 			LogOperations.logRefactor("[save] " + path);
@@ -202,6 +201,7 @@ public class ConfigurationProject extends AManager implements ISaveableManager {
 				LogOperations.logError("[loadProjects] could not import Project" + e.getMessage(), e);
 			}
 			 
+			//TODO: Paul implement
 			//ASTdiffer(entry.getValue, importedAST), getMarkers from imported, get new Lines from Worspace AST (entry.getValue()) 
 			
 			//AST do net get updated if this gets executed

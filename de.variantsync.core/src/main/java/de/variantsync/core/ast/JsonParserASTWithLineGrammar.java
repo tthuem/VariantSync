@@ -71,12 +71,11 @@ public class JsonParserASTWithLineGrammar {
 
 		json = Files.readString(path);
 
-
 		return toAST(json);
 	}
-	
+
 	public static String getString() {
-		
+
 		return "da srtring";
 	}
 

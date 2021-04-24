@@ -130,7 +130,6 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 		return configurationProjectManager.getActiveConfigurationProject().getFeatureContextManager();
 	}
 
-
 	public static PatchesManager getActivePatchesManager() {
 		return configurationProjectManager.getActiveConfigurationProject().getPatchesManager();
 	}

@@ -82,6 +82,8 @@ public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
 		if (subtrees.size() < 1) {
 			return Collections.emptyList();
 		}
+		
+		//TODO: make list unmodifiable, implement methods for algorithms in ASTLineGrammarProcessor
 		// return Collections.unmodifiableList(subtrees);
 		return subtrees;
 	}

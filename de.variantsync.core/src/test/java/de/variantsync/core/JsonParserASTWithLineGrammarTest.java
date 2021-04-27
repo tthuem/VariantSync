@@ -88,26 +88,26 @@ public class JsonParserASTWithLineGrammarTest {
 	@Test
 	public void TestJsonParserASTtoFileToString() throws IOException {
 
-//		// export to json file
-//		JsonParserASTWithLineGrammar.exportAST(examplePath, exampleAst);
-//
-//		// import ast from file
-//		final AST<LineGrammar, String> importedAST = JsonParserASTWithLineGrammar.importAST(examplePath);
-//
-//		// get toString
-//		final String astString = exampleAst.toString();
-//		final String importedString = importedAST.toString();
-//
-//		// print
-//		System.out.println("FileFirst:" + astString);
-//
-//		System.out.println("FileSecond:" + importedString);
-//
-//		// compare json
-//		assertEquals(astString, importedString);
-//
-//		// delete created file
-//		Files.delete(examplePath);
+		// export to json file
+		JsonParserASTWithLineGrammar.exportAST(examplePath, exampleAst);
+
+		// import ast from file
+		final AST<LineGrammar, String> importedAST = JsonParserASTWithLineGrammar.importAST(examplePath);
+
+		// get toString
+		final String astString = exampleAst.toString();
+		final String importedString = importedAST.toString();
+
+		// print
+		System.out.println("FileFirst:" + astString);
+
+		System.out.println("FileSecond:" + importedString);
+
+		// compare json
+		assertEquals(astString, importedString);
+
+		// delete created file
+		Files.delete(examplePath);
 	}
 
 }

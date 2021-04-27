@@ -16,6 +16,7 @@ public class ASTLineGrammarProcessor {
 
 		int count = 0;
 		int start = 0;
+		int size = ast.getSubtrees().size();
 		String featureContext = "";
 		for(AST<LineGrammar, String>  subtree : ast.getSubtrees()) {
 			count++;
@@ -31,9 +32,15 @@ public class ASTLineGrammarProcessor {
 				start = count;
 			}
 			
-			if(!featureContext.isEmpty() && subtree.getFeatureMapping().isEmpty()) {
+			if(!featureContext.isEmpty() && (subtree.getFeatureMapping().isEmpty() || count == size)) {
 				//Marker end
-				IVariantSyncMarker aMarker = new AMarkerInformation(start, count-start , true, featureContext, count);
+				IVariantSyncMarker aMarker = null;
+				if(count == size) {
+					// case: Marker at the end of file
+					aMarker = new AMarkerInformation(start, count-start+1 , true, featureContext, count);
+				}else {
+					aMarker = new AMarkerInformation(start, count-start , true, featureContext, count);
+				}
 				out.add(aMarker);
 				featureContext = "";
 			}

@@ -74,9 +74,5 @@ public class JsonParserASTWithLineGrammar {
 		return toAST(json);
 	}
 
-	public static String getString() {
-
-		return "da srtring";
-	}
 
 }

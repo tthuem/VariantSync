@@ -11,6 +11,7 @@ import de.variantsync.core.ast.AST;
 import de.variantsync.core.ast.ASTLineGrammarProcessor;
 import de.variantsync.core.ast.LineGrammar;
 import de.variantsync.core.marker.AMarkerInformation;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 public class ASTProcessorTest {
 	
@@ -48,10 +49,20 @@ public class ASTProcessorTest {
 	@Test
 	public void getMarkersTest() {
 
-		//List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(root);
+		AST<LineGrammar, String> mainAST = ASTLineGrammarProcessor.getSubtree("Main.java", LineGrammar.TextFile, root);
+		
+		List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(mainAST);
+		
+		IVariantSyncMarker marker = markers.get(0);
+		
+		if(marker.getLength() == 2 && marker.getOffset() == 4) {
+			assertTrue(true);
+		}else {
+			assertTrue(false);
+		}
 
 
-		assertTrue(true);
+		
 	}
 
 

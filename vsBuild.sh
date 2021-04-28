@@ -1,9 +1,9 @@
 #!/bin/bash
 cd de.variantsync.core
 mvn clean verify
-eLevel=$?
+returnCode=$?
 
-if [ $eLevel -eq 0 ] 
+if [ $returnCode -eq 0 ]
 then
    #Building library was successful
    cp target/de.variantsync.core-0.0.3-SNAPSHOT.jar ../de.tubs.variantsync.core/lib/
@@ -12,5 +12,5 @@ then
    exit $?
 else
    #Building library was not successful
-   exit $eLevel
+   exit $returnCode
 fi   

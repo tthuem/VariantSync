@@ -21,6 +21,7 @@
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
         <module>de.tubs.variantsync.update</module>
+        <!-- details why it is not possible to include the library here, see Wiki/Maven/linking plugin and library -->
         <!--<module>de.variantsync.core</module>-->
         <!--test module -->
         <module>de.tubs.variantsync.core-test</module>

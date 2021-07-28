@@ -21,7 +21,8 @@
         <module>de.tubs.variantsync.core</module>
         <module>de.tubs.variantsync.core.feature</module>
         <module>de.tubs.variantsync.update</module>
-        <module>de.variantsync.core</module>
+        <!-- details why it is not possible to include the library here, see Wiki/Maven/linking plugin and library -->
+        <!--<module>de.variantsync.core</module>-->
         <!--test module -->
         <module>de.tubs.variantsync.core-test</module>
     </modules>
@@ -38,20 +39,10 @@
             <layout>p2</layout>
         </repository>
     </repositories>
+    
 
     <build>
         <plugins>
-            <!-- Maven Compiler -->
-            <!-- IntelliJ needs this to do proper resolving. Changes here should have no effect to the project JDK -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-version}</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
             <!-- Tycho -->
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -114,7 +105,6 @@
                     <jgit.dirtyWorkingTree>ignore</jgit.dirtyWorkingTree>
                 </configuration>
             </plugin>
-
             <!-- <plugin> -->
             <!-- Copy non-Ecipse plugins to target/dependency so that may be referenced
                 for runtime use. -->

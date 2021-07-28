@@ -3,6 +3,9 @@ package de.tubs.variantsync.core.view.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.variantsync.core.ast.AST;
+import de.variantsync.core.ast.ASTLineGrammarProcessor;
+import de.variantsync.core.ast.LineGrammar;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,14 +19,12 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.progress.UIJob;
 
 import de.tubs.variantsync.core.VariantSyncPlugin;
-import de.tubs.variantsync.core.managers.data.CodeMapping;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
-import de.tubs.variantsync.core.managers.data.SourceFile;
-import de.tubs.variantsync.core.utilities.IVariantSyncMarker;
 import de.tubs.variantsync.core.utilities.LogOperations;
 import de.tubs.variantsync.core.utilities.MarkerUtils;
 import de.tubs.variantsync.core.utilities.event.IEventListener;
 import de.tubs.variantsync.core.utilities.event.VariantSyncEvent;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 /**
  * PartAdapter for the editor. Creates and updates the markers of the current file of the editor
@@ -122,18 +123,28 @@ public class PartAdapter implements IPartListener, IEventListener {
 
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getActiveConfigurationProject();
 			if (configurationProject != null) {
-				final List<IVariantSyncMarker> markers = new ArrayList<>();
-				final SourceFile sourceFile = configurationProject.getMappingManager().getMapping(currentFile);
-				if (sourceFile != null) {
-					for (final CodeMapping codeMapping : sourceFile.getMappings()) {
-						markers.add(codeMapping.getMarkerInformation());
+				AST<LineGrammar,String> projectAST = configurationProject.getAST(currentFile.getProject());
+				LogOperations.logRefactor("[PA] found project ast " + projectAST + "for file name " + currentFile.getName());
+				AST<LineGrammar,String> fileAST = ASTLineGrammarProcessor.getSubtree(currentFile.getName(), LineGrammar.TextFile,projectAST);
+				LogOperations.logRefactor("[PA] found file ast " + fileAST);
+				
+
+					if(fileAST != null) {
+						LogOperations.logRefactor("[PA] Found file ast for file " + fileAST.getValue());
+						final List<IVariantSyncMarker> markers = ASTLineGrammarProcessor.getMarkers(fileAST);
+						for(IVariantSyncMarker i : markers) {
+								System.out.println("VariantSyncMarker: length "+ i.getLength()+" offset " + i.getOffset() + " context " + i.getContext());
+						}
+						
+						if (!markers.isEmpty()) {
+							MarkerUtils.setMarker(currentFile, markers);
+						}
+						return Status.OK_STATUS;
 					}
-				}
-				if (!markers.isEmpty()) {
-					MarkerUtils.setMarker(currentFile, markers);
-				}
+					
 			}
-			return Status.OK_STATUS;
+			
+			return Status.CANCEL_STATUS;
 		}
 
 	}

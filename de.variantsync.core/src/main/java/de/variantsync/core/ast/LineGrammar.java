@@ -1,6 +1,6 @@
 package de.variantsync.core.ast;
 
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 public enum LineGrammar implements Grammar<LineGrammar> {
 

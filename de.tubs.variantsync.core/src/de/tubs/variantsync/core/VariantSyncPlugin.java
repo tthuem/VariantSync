@@ -25,11 +25,10 @@ import org.osgi.framework.BundleContext;
 import de.ovgu.featureide.fm.core.EclipseExtensionLoader;
 import de.tubs.variantsync.core.managers.ConfigurationProjectManager;
 import de.tubs.variantsync.core.managers.FeatureContextManager;
-import de.tubs.variantsync.core.managers.MappingManager;
 import de.tubs.variantsync.core.managers.PatchesManager;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.monitor.ResourceChangeHandler;
-import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.nature.VariantNature;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.interfaces.IDeltaFactory;
 import de.tubs.variantsync.core.utilities.LogOperations;
@@ -92,6 +91,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 	 */
 	@Override
 	public void stop(BundleContext ctxt) throws Exception {
+		LogOperations.logRefactor("[stop]");
 		configurationProjectManager.terminate();
 		plugin = null;
 		super.stop(ctxt);
@@ -128,10 +128,6 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 
 	public static FeatureContextManager getActiveFeatureContextManager() {
 		return configurationProjectManager.getActiveConfigurationProject().getFeatureContextManager();
-	}
-
-	public static MappingManager getActiveMappingManager() {
-		return configurationProjectManager.getActiveConfigurationProject().getMappingManager();
 	}
 
 	public static PatchesManager getActivePatchesManager() {
@@ -206,7 +202,7 @@ public class VariantSyncPlugin extends AbstractUIPlugin {
 			final String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 1, natures.length);
 
-			newNatures[0] = Variant.NATURE_ID;
+			newNatures[0] = VariantNature.NATURE_ID;
 
 			description.setNatureIds(newNatures);
 			progressMonitor.setSubTaskName("Add nature");

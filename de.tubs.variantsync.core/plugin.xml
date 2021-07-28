@@ -172,7 +172,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="de.tubs.variantsync.core.nature.Variant">
+               class="de.tubs.variantsync.core.nature.VariantNature">
          </run>
       </runtime>
       <requires-nature

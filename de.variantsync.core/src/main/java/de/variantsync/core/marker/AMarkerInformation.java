@@ -1,4 +1,4 @@
-package de.tubs.variantsync.core.utilities;
+package de.variantsync.core.marker;
 
 import java.util.UUID;
 
@@ -9,6 +9,7 @@ import java.util.UUID;
  * @author Christopher Sontag
  * @since 17.06.2016
  */
+//TODO: AST REFACTORING
 public class AMarkerInformation implements IVariantSyncMarker {
 
 	private long markerId;
@@ -31,6 +32,23 @@ public class AMarkerInformation implements IVariantSyncMarker {
 		this.length = length;
 		isLine = line;
 	}
+	
+	/**
+	 * Constructor
+	 *
+	 * @param markerId - marker id
+	 * @param offset - offset
+	 * @param length - length
+	 * @param expressio - expression
+	 */
+	public AMarkerInformation(int offset, int length, boolean line, String expression, long markerId) {
+		this.markerId = markerId;
+		this.offset = offset;
+		this.length = length;
+		isLine = line;
+		this.expression = expression;
+	}
+	
 
 	/**
 	 * Constructor

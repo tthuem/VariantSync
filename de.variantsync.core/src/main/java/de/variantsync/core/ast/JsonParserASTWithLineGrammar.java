@@ -40,7 +40,7 @@ public class JsonParserASTWithLineGrammar {
 
 	};
 
-	static Gson prettyStringGsonBuilder = new GsonBuilder().setPrettyPrinting().setFieldNamingStrategy(customPolicy).create();
+	static Gson prettyStringGsonBuilder = new GsonBuilder().setPrettyPrinting().setFieldNamingStrategy(customPolicy).create(); //
 
 	public static <B> String toJson(AST<LineGrammar, B> ast) {
 
@@ -56,30 +56,23 @@ public class JsonParserASTWithLineGrammar {
 		return prettyStringGsonBuilder.fromJson(json, type);
 	}
 
-	public static <B> String exportAST(Path path, AST<LineGrammar, B> ast) {
+	public static <B> String exportAST(Path path, AST<LineGrammar, B> ast) throws IOException {
 
 		final String content = toJson(ast);
-		try {
-			Files.writeString(path, content);
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+
+		Files.writeString(path, content);
 
 		return content;
 	}
 
-	public static <B> AST<LineGrammar, B> importAST(Path path) {
+	public static <B> AST<LineGrammar, B> importAST(Path path) throws IOException {
 
 		String json = "";
-		try {
-			json = Files.readString(path);
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+
+		json = Files.readString(path);
 
 		return toAST(json);
 	}
+
 
 }

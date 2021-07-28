@@ -3,6 +3,7 @@ package de.variantsync.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +51,39 @@ public class ASTTest {
 				Arrays.asList(new AST<>(LineGrammar.Line, "public class Main {"), new AST<>(LineGrammar.Line, "    public static void main(String[] args)"),
 						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
 						new AST<>(LineGrammar.Line, "}")));
+	}
+
+	@Test
+	public void iterableAndIteratorOnInitialTest() {
+		// only returns direct subtree nodes
+		int nodeCounter = 0;
+		for (final AST<?, ?> node : root) {
+			switch (nodeCounter) {
+			case 0:
+				assertEquals(node, testDir);
+				break;
+			case 1:
+				assertEquals(node, mainDir);
+				break;
+			default:
+				// root does not have more than 2 subtrees
+				fail();
+				break;
+
+			}
+			nodeCounter++;
+		}
+		assertEquals(root.getSubtrees().size(), nodeCounter);
+
+		// returns whole ast as (pre)ordered list
+		for (final AST<?, ?> node : root.toListPreorder()) {
+			// System.out.println(node);
+		}
+
+		System.out.println("--------------------------------");
+		System.out.println(root.printTree());
+
+		assertTrue(true);
 	}
 
 	@Test
@@ -118,10 +152,10 @@ public class ASTTest {
 		assertEquals(oldSize + 2, root.getSubtrees().size());
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void addOnSubtreesList() {
-		root.getSubtrees().add(new AST<>(LineGrammar.Directory, "evilDir"));
-	}
+//	@Test(expected = UnsupportedOperationException.class)
+//	public void addOnSubtreesList() {
+//		root.getSubtrees().add(new AST<>(LineGrammar.Directory, "evilDir"));
+//	}
 
 	@Test
 	public void sizeOnInitialTest() {

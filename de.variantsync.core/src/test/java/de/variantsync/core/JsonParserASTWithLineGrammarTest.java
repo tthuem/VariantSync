@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -32,12 +33,14 @@ public class JsonParserASTWithLineGrammarTest {
 						new AST<>(LineGrammar.Line, "        System.out.println(\"Hello World\");"), new AST<>(LineGrammar.Line, "    }"),
 						new AST<>(LineGrammar.Line, "}")));
 
-		examplePath = Path.of("out.txt");
+		examplePath = Paths.get("out.txt");
 
 	}
 
 	@Test
 	public void TestJsonParserAST() {
+		
+		
 
 		// export to json
 		final String json = JsonParserASTWithLineGrammar.toJson(exampleAst);

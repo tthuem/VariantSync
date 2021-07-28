@@ -8,8 +8,7 @@
 		<version>0.0.3-SNAPSHOT</version>
 	</parent>
 
+	<groupId>de.tubs.variantsync.core</groupId>
 	<artifactId>de.tubs.variantsync.core-test</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
-	
-	<groupId>de.tubs.variantsync.core</groupId>
 </project>

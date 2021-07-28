@@ -3,10 +3,11 @@ package de.variantsync.core.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import de.variantsync.core.interfaces.Grammar;
+import de.variantsync.core.grammar.Grammar;
 
 /**
  * This class represents the Abstract Syntax Tree data structure.
@@ -15,12 +16,15 @@ import de.variantsync.core.interfaces.Grammar;
  * @param <V> a generic which defines the value of the actual AST
  * @author eric
  */
-public class AST<G extends Grammar<G>, V> {
+public class AST<G extends Grammar<G>, V> implements Iterable<AST<G, V>> {
 
 	private UUID id;
 	private G type;
 	private V value;
 	private List<AST<G, V>> subtrees;
+	// TODO: PAUL DO REFACTOR HERE, PLZ
+	// public Node featureMapping = null; //eg This AST which represents a Line belongs to That Eclipse Marker
+	private String featureMapping = "";
 
 	// all attributes which should not be visible to the GSON parser need to be at least transient
 	public static transient final String INDENT_STRING = "    ";
@@ -37,6 +41,11 @@ public class AST<G extends Grammar<G>, V> {
 
 	public AST(G type, V value) {
 		this(UUID.randomUUID(), type, value);
+	}
+
+	public AST(G type, V value, String context) {
+		this(UUID.randomUUID(), type, value);
+		this.featureMapping = context;
 	}
 
 	/**
@@ -58,11 +67,25 @@ public class AST<G extends Grammar<G>, V> {
 		return type;
 	}
 
+	public void setValue(V v) {
+		this.value = v;
+	}
+
+	public String getFeatureMapping() {
+		return featureMapping;
+	}
+
 	/**
 	 * @return the subtrees as an unmodifiable List
 	 */
 	public List<AST<G, V>> getSubtrees() {
-		return Collections.unmodifiableList(subtrees);
+		if (subtrees.size() < 1) {
+			return Collections.emptyList();
+		}
+		
+		//TODO: make list unmodifiable, implement methods for algorithms in ASTLineGrammarProcessor
+		// return Collections.unmodifiableList(subtrees);
+		return subtrees;
 	}
 
 	public int getDepth() {
@@ -114,6 +137,26 @@ public class AST<G extends Grammar<G>, V> {
 			tmpSize += act.size();
 		}
 		return tmpSize;
+	}
+
+	public List<AST<G, V>> toListPreorder() {
+		final List<AST<G, V>> preorderList = new ArrayList<>();
+		toListPreorder(this, preorderList);
+		return preorderList;
+	}
+
+	private void toListPreorder(AST<G, V> act, List<AST<G, V>> asts) {
+		if (asts != null) {
+			asts.add(act);
+			act.getSubtrees().forEach(ast -> {
+				toListPreorder(ast, asts);
+			});
+		}
+	}
+
+	@Override
+	public Iterator<AST<G, V>> iterator() {
+		return new ASTSubtreeRootIterator<>(this);
 	}
 
 	/**
@@ -178,4 +221,5 @@ public class AST<G extends Grammar<G>, V> {
 			printTree(result, child, depth, levelFinished, isLast);
 		}
 	}
+
 }

@@ -8,6 +8,7 @@ import org.eclipse.core.resources.IProject;
 
 import de.tubs.variantsync.core.patch.ADelta;
 
+//TODO: AST REFACTORING (MAYBE NOT YET?)
 /**
  * This interface defines delta.<br> <b>Classes implementing this interface should implement also {@link #clone()} and {@link #equals(Object)}<b>. For
  * implementations see also {@link ADelta}

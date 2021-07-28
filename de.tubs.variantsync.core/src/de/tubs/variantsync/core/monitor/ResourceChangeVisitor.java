@@ -14,7 +14,7 @@ import de.ovgu.featureide.fm.core.ExtensionManager.NoSuchExtensionException;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.exceptions.DiffException;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
-import de.tubs.variantsync.core.nature.Variant;
+import de.tubs.variantsync.core.nature.VariantNature;
 import de.tubs.variantsync.core.patch.DeltaFactoryManager;
 import de.tubs.variantsync.core.patch.base.DefaultPatchFactory;
 import de.tubs.variantsync.core.patch.interfaces.IDelta;
@@ -88,7 +88,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			final IFile file = (IFile) delta.getResource();
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
@@ -102,6 +102,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (final DiffException ex) {
@@ -126,7 +127,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 			final IFile file = (IFile) delta.getResource();
 			final ConfigurationProject configurationProject = VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 			try {
-				if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+				if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 					final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 					IPatch patch;
 					if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
@@ -140,6 +141,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					patch.addDeltas(deltas);
 					configurationProject.getPatchesManager().setActualContextPatch(patch);
 					VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				}
 			} catch (final DiffException ex) {
@@ -170,7 +172,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 					final ConfigurationProject configurationProject =
 						VariantSyncPlugin.getConfigurationProjectManager().getConfigurationProject(file.getProject());
 					try {
-						if (configurationProject.getMappingManager().isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
+						if (configurationProject.isActive() && !configurationProject.getFeatureContextManager().isDefault()) {
 							final IDeltaFactory factory = DeltaFactoryManager.getInstance().getFactoryByFile(file);
 							IPatch patch;
 							if (configurationProject.getPatchesManager().getActualContextPatch() == null) {
@@ -184,6 +186,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 							patch.addDeltas(deltas);
 							configurationProject.getPatchesManager().setActualContextPatch(patch);
 							VariantSyncPlugin.getDefault().fireEvent(new VariantSyncEvent(file, EventType.PATCH_CHANGED, null, patch));
+							//TODO: AST REFACTORING
 							CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 						}
 					} catch (final DiffException ex) {
@@ -209,7 +212,7 @@ class ResourceChangeVisitor implements IResourceDeltaVisitor {
 	 * @throws CoreException
 	 */
 	private boolean filterResource(IProject project, IResource res) throws CoreException {
-		if ((project != null) && project.isOpen() && !project.hasNature(Variant.NATURE_ID)) {
+		if ((project != null) && project.isOpen() && !project.hasNature(VariantNature.NATURE_ID)) {
 			return false;
 		}
 		if ((project != null) && !project.isOpen()) {

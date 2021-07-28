@@ -37,7 +37,10 @@ public class SynchronizationHandler {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean handleSynchronization(IProject project, IDelta<?> delta) {
 		VariantSyncPlugin.removeResourceChangeListener();
+		
+		//gets file from other Variant with same path as Delta from original Variant
 		final IFile fileRight = project.getFile(delta.getResource().getProjectRelativePath());
+		//gets file from original Variant
 		final IFile fileLeft = delta.getProject().getFile(delta.getResource().getProjectRelativePath());
 
 		try {
@@ -45,11 +48,13 @@ public class SynchronizationHandler {
 
 			// If delta is synchronisable
 			if (factory.verifyDelta(fileRight, delta)) {
+				//applies Deltas to file from other Variant
 				final IFile newFile = factory.applyDelta(fileRight, delta);
 				if (!newFile.getContents().toString().equals(fileRight.getContents().toString())) {
 					delta.addSynchronizedProject(project);
 
 					final IDelta<?> newDelta = factory.createDeltas(newFile, delta);
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(Arrays.asList(newDelta));
 
 					VariantSyncPlugin.addResourceChangeListener();
@@ -87,6 +92,7 @@ public class SynchronizationHandler {
 					for (final IDelta<?> deltaFile : deltas) {
 						deltaFile.setContext(delta.getContext());
 					}
+					//TODO: AST REFACTORING
 					CodeMappingHandler.addCodeMappingsForDeltas(deltas);
 				} catch (final DiffException e) {
 					return false;

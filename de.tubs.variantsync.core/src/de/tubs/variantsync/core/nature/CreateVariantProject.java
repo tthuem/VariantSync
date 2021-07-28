@@ -64,7 +64,7 @@ public class CreateVariantProject extends AbstractHandler {
 
 			// set natures
 			final IProjectDescription description = project.getDescription();
-			description.setNatureIds(new String[] { Variant.NATURE_ID, JavaCore.NATURE_ID });
+			description.setNatureIds(new String[] { VariantNature.NATURE_ID, JavaCore.NATURE_ID });
 
 			// create java project
 			progressMonitor.setSubTaskName("Setting needed natures");

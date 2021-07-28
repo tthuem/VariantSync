@@ -1,5 +1,6 @@
 package de.tubs.variantsync.core.managers;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,8 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 		}
 		for (final ConfigurationProject configurationProject : INSTANCES.values()) {
 			findVariants(configurationProject);
+			LogOperations.logRefactor("[initialize]");
+
 			configurationProject.load();
 		}
 
@@ -56,11 +59,15 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 	}
 
 	public void reinitialize() {
+		LogOperations.logRefactor("[reinitialize]");
 		terminate();
 		initalize();
 	}
 
 	public void terminate() {
+		LogOperations.logRefactor("[terminate]");
+
+		
 		if ((lastRequestedConfiguration != null) && (lastRequestedConfiguration.getFeatureProject() != null)) {
 			VariantSyncPlugin.getDefault().getPreferenceStore().setValue("lastRequestedConfiguration",
 					lastRequestedConfiguration.getFeatureProject().getProjectName());
@@ -121,6 +128,7 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 			final IFile file = (IFile) EclipseFileSystem.getResource(path);
 			final String projectName = file.getName().substring(0, file.getName().lastIndexOf("."));
 			final IProject project = VariantSyncPlugin.getWorkspace().getProject(projectName);
+			
 			if (project.exists()) {
 				configurationProject.addVariant(project);
 			} else {
@@ -135,7 +143,9 @@ public class ConfigurationProjectManager extends AManager implements IEventListe
 				}
 			}
 		}
-		configurationProject.getMappingManager().load();
+		
+		//replace with ConfigurationProject function load projects
+		configurationProject.loadProjects();
 	}
 
 	public IFeatureProject getFeatureProject(IProject project) {

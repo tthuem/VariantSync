@@ -1,4 +1,4 @@
-package de.variantsync.core.interfaces;
+package de.variantsync.core.grammar;
 
 public interface Grammar<T> {
 

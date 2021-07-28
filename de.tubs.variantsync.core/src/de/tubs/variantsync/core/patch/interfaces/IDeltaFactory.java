@@ -106,11 +106,5 @@ public interface IDeltaFactory<T> extends IExtension {
 	 */
 	boolean isSupported(IFile file);
 
-	/**
-	 * Returns the marker handler for deltas of this type
-	 *
-	 * @return
-	 */
-	IMarkerHandler<T> getMarkerHandler();
 
 }

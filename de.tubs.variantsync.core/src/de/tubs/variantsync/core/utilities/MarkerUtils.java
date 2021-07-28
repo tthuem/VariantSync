@@ -17,6 +17,7 @@ import de.ovgu.featureide.fm.core.color.FeatureColor;
 import de.tubs.variantsync.core.VariantSyncPlugin;
 import de.tubs.variantsync.core.managers.data.ConfigurationProject;
 import de.tubs.variantsync.core.managers.data.FeatureContext;
+import de.variantsync.core.marker.IVariantSyncMarker;
 
 /**
  * Utilities for creating specialized VariantSync eclipse resource markers
@@ -169,10 +170,14 @@ public class MarkerUtils {
 						LogOperations.logError("Marker line is not available in the document", e);
 					}
 
-					final IRegion regionStart = document.getLineInformation(mi.getOffset());
-					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength());
+					//TODO: bug might be here for Paul issue #70
+																			//starts at 0?
+					final IRegion regionStart = document.getLineInformation(mi.getOffset()-1);
+					final IRegion regionEnd = document.getLineInformation(mi.getOffset() + mi.getLength() - 1);
 					final int start = regionStart.getOffset();
-					final int end = regionStart.getOffset() + regionEnd.getLength();
+					final int end = regionEnd.getOffset() + regionEnd.getLength();
+					
+					System.out.println("IRegion: start "+ start +" end " + end);
 
 					markerId = addMarker(file, start, end, configurationProject.getFeatureContextManager().getContext(mi.getContext()));
 				} catch (final BadLocationException e) {
